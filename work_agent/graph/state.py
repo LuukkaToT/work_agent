@@ -16,6 +16,7 @@ class TestFlowState(TypedDict):
     user_input: str  # 用户原始输入
     intent: str  # router 分类结果：analysis | execute | query | chat
     requirement: str  # 预留：结构化需求（目前先等于 user_input）
+    analysis_path: str  # 测试分析 markdown 落盘路径
 
     # --- 执行参数与用例 ---
     cases: list[dict]  # 从 CaseProvider 拉到的用例摘要

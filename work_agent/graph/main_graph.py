@@ -3,7 +3,7 @@
 
 当前执行分支完整路径：
   START → intake → router
-                 ├─ analysis → END          （桩）
+                 ├─ analysis → test_analysis → END
                  ├─ execute → exec_params → ask_missing → confirm_exec
                  │                ├─ proceed → exec_run → exec_poll ⟲ → collect → report
                  │                └─ cancel  → write_report
@@ -19,7 +19,8 @@ from typing import Sequence
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import Checkpointer
 
-from work_agent.graph.nodes.branches import do_analysis, do_chat, do_query
+from work_agent.graph.nodes.analysis import test_analysis
+from work_agent.graph.nodes.branches import do_chat, do_query
 from work_agent.graph.nodes.exec_flow import (
     exec_params,
     exec_poll,
@@ -71,7 +72,7 @@ def build_graph(
 
     graph.add_node("intake", intake)
     graph.add_node("router", router)
-    graph.add_node("analysis", do_analysis)
+    graph.add_node("test_analysis", test_analysis)
     graph.add_node("exec_params", exec_params)
     graph.add_node("ask_missing", ask_missing)
     graph.add_node("confirm_exec", confirm_exec)
@@ -88,14 +89,14 @@ def build_graph(
         "router",
         route_by_intent,
         {
-            "analysis": "analysis",
+            "analysis": "test_analysis",
             "execute": "exec_params",
             "query": "query",
             "chat": "chat",
         },
     )
 
-    graph.add_edge("analysis", END)
+    graph.add_edge("test_analysis", END)
 
     # 抽参 → 补缺(HITL) → 确认(HITL) → 通过才提交
     graph.add_edge("exec_params", "ask_missing")

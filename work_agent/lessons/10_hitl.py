@@ -26,6 +26,7 @@ def empty_state(text: str) -> dict:
         "user_input": text,
         "intent": "",
         "requirement": "",
+        "analysis_path": "",
         "cases": [],
         "exec_params": {},
         "run_id": "",
