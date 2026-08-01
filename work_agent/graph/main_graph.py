@@ -10,9 +10,13 @@
                  └─ chat → END              （桩）
 """
 
+from __future__ import annotations
+
 import uuid
+from typing import Sequence
 
 from langgraph.graph import END, START, StateGraph
+from langgraph.types import Checkpointer
 
 from work_agent.graph.nodes.branches import do_analysis, do_chat, do_query
 from work_agent.graph.nodes.exec_flow import (
@@ -41,11 +45,24 @@ def intake(state: TestFlowState) -> dict:
     }
 
 
-def build_graph():
-    # StateGraph(状态类型)：声明这张图上流动的数据结构
+def build_graph(
+    *,
+    checkpointer: Checkpointer | None = None,
+    interrupt_before: Sequence[str] | None = None,
+):
+    """
+    编译主图。
+
+    checkpointer:
+      传入后必须在 invoke 时带 config={"configurable": {"thread_id": "..."}}
+      状态会写入 SQLite，可跨调用 / 跨进程读取。
+
+    interrupt_before:
+      在进入这些节点「之前」暂停（需要 checkpointer）。
+      M10 用它演示断点；M11 会用来做人机确认。
+    """
     graph = StateGraph(TestFlowState)
 
-    # ---------- 注册节点：名字 → 函数 ----------
     graph.add_node("intake", intake)
     graph.add_node("router", router)
     graph.add_node("analysis", do_analysis)
@@ -57,12 +74,8 @@ def build_graph():
     graph.add_node("query", do_query)
     graph.add_node("chat", do_chat)
 
-    # ---------- 固定边：A 做完一定去 B ----------
     graph.add_edge(START, "intake")
     graph.add_edge("intake", "router")
-
-    # ---------- 条件边：根据路由函数返回值选下一条路 ----------
-    # route_by_intent 返回 "execute" 时，走到 exec_params（不是旧的桩节点）
     graph.add_conditional_edges(
         "router",
         route_by_intent,
@@ -77,9 +90,6 @@ def build_graph():
     graph.add_edge("analysis", END)
     graph.add_edge("exec_params", "exec_run")
     graph.add_edge("exec_run", "exec_poll")
-
-    # 自循环：route_after_poll 返回 "continue" 就再进 exec_poll
-    # 返回 "done" 则去收结果（缺参跳过执行时也会走这里，collect 内部会 skip）
     graph.add_conditional_edges(
         "exec_poll",
         route_after_poll,
@@ -93,5 +103,7 @@ def build_graph():
     graph.add_edge("query", END)
     graph.add_edge("chat", END)
 
-    # compile：把定义编译成可 invoke / stream 的可运行对象
-    return graph.compile()
+    return graph.compile(
+        checkpointer=checkpointer,
+        interrupt_before=list(interrupt_before) if interrupt_before else None,
+    )

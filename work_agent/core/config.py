@@ -48,6 +48,7 @@ class Settings:
     profile: Profile
     workspace_dir: Path  # 报告落盘根目录
     profile_path: Path
+    checkpoint_path: Path  # LangGraph 状态库（SQLite）
 
 
 def _load_profile(path: Path) -> Profile:
@@ -87,4 +88,5 @@ def get_settings() -> Settings:
         profile=_load_profile(profile_path),
         workspace_dir=root / "workspace",
         profile_path=profile_path,
+        checkpoint_path=root / "workspace" / "checkpoints.sqlite",
     )
