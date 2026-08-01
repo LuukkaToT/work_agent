@@ -2,12 +2,8 @@ import uuid
 
 from langgraph.graph import END, START, StateGraph
 
-from work_agent.graph.nodes.branches import (
-    do_analysis,
-    do_chat,
-    do_execute,
-    do_query,
-)
+from work_agent.graph.nodes.branches import do_analysis, do_chat, do_query
+from work_agent.graph.nodes.exec_flow import exec_params, exec_run
 from work_agent.graph.nodes.router import route_by_intent, router
 from work_agent.graph.state import TestFlowState
 
@@ -32,7 +28,8 @@ def build_graph():
     graph.add_node("intake", intake)
     graph.add_node("router", router)
     graph.add_node("analysis", do_analysis)
-    graph.add_node("execute", do_execute)
+    graph.add_node("exec_params", exec_params)
+    graph.add_node("exec_run", exec_run)
     graph.add_node("query", do_query)
     graph.add_node("chat", do_chat)
 
@@ -41,15 +38,16 @@ def build_graph():
     graph.add_conditional_edges(
         "router",
         route_by_intent,
-        { # 这里是路由表
+        {
             "analysis": "analysis",
-            "execute": "execute",
+            "execute": "exec_params",  # 关键：不再进 do_execute
             "query": "query",
             "chat": "chat",
         },
     )
     graph.add_edge("analysis", END)
-    graph.add_edge("execute", END)
+    graph.add_edge("exec_params", "exec_run")
+    graph.add_edge("exec_run", END)
     graph.add_edge("query", END)
     graph.add_edge("chat", END)
 
