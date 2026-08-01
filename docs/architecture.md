@@ -114,25 +114,38 @@ flowchart TD
 
   Analysis --> ReviewAnalysis{"HITL 确认或重写"}
   ReviewAnalysis -->|"重写"| Analysis
-  ReviewAnalysis -->|"通过"| Finish
+  ReviewAnalysis -->|"通过"| Respond
   ReviewAnalysis -->|"顺手执行"| ExecParams
 
   ExecParams --> AskMissing{"interrupt 补齐组网等缺失参数"}
   AskMissing --> ExecConfirm{"HITL 执行前确认"}
-  ExecConfirm -->|"取消"| Finish
+  ExecConfirm -->|"取消"| Respond
   ExecConfirm -->|"确认"| ExecRun["exec_run 调执行tool"]
   ExecRun --> Ledger["记入运行台账"]
   Ledger --> ExecPoll["exec_poll 轮询状态"]
   ExecPoll -->|"未完成且未超上限"| ExecPoll
   ExecPoll -->|"完成"| Collect["collect_results 拉结果与日志"]
-  ExecPoll -->|"超上限 转后台"| Finish
+  ExecPoll -->|"超上限 转后台"| Respond
   Collect --> Summary["Role result_summary 汇总失败清单"]
   Summary --> Report["report 落盘报告"]
-  Report --> Finish(["结束"])
+  Report --> Respond
 
   QueryRun --> Collect
-  QuickAnswer --> Finish
+  QuickAnswer --> Respond
+
+  Respond["respond 把结构化结果说成人话"] --> Finish(["结束"])
 ```
+
+### respond：所有分支的统一出口
+
+分支节点产出的 `summary` 是给报告、台账和程序看的结构化数据，直接丢给用户就是一堆字段。`respond` 是唯一的汇聚点，把本轮的确定性事实组织成一段中文回答，写入 `state.reply`，CLI 只展示它。
+
+两条约束决定了它的实现：
+
+- **不许编造**。run_id、用例名、版本、组网、路径、数量以 JSON 原样交给模型，prompt 里禁止改写。用户会拿着这些去查问题，改一个字符就是误导。
+- **不许中断**。它在所有分支的必经路径上，LLM 抖动不能让整轮任务失败，所以有确定性的兜底回复。
+
+chat 分支的 `answer` 本来就是人话，直接透传，不多花一次调用。回复同时落盘为 `reply.md`，用于事后复盘「当时告诉了用户什么」。
 
 ## 六、运行台账：支撑「前面那次执行怎么样了」
 

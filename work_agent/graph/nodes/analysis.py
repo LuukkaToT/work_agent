@@ -12,7 +12,7 @@ from pathlib import Path
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from work_agent.core.config import get_settings
-from work_agent.core.llm import get_chat_model
+from work_agent.core.llm import invoke_text
 from work_agent.core.skills import SkillLoader
 from work_agent.graph.state import TestFlowState
 
@@ -28,8 +28,7 @@ def test_analysis(state: TestFlowState) -> dict:
     refs = loader.select_references(pack, user_input)
     system_prompt = pack.as_system_prompt(refs)
 
-    llm = get_chat_model(temperature=0.2)
-    resp = llm.invoke(
+    text = invoke_text(
         [
             SystemMessage(content=system_prompt),
             HumanMessage(
@@ -38,16 +37,9 @@ def test_analysis(state: TestFlowState) -> dict:
                     f"{user_input}"
                 )
             ),
-        ]
+        ],
+        temperature=0.2,
     )
-    # 有的模型 content 可能是 list（多段），这里统一成 str
-    content = resp.content
-    if isinstance(content, list):
-        content = "".join(
-            block.get("text", str(block)) if isinstance(block, dict) else str(block)
-            for block in content
-        )
-    text = str(content).strip()
 
     run_dir: Path = get_settings().workspace_dir / "runs" / task_id
     run_dir.mkdir(parents=True, exist_ok=True)

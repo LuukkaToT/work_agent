@@ -2,13 +2,12 @@
 
 from langchain_core.messages import HumanMessage, SystemMessage
 
-from work_agent.core.llm import get_chat_model
+from work_agent.core.llm import invoke_text
 from work_agent.graph.state import TestFlowState
 
 
 def quick_answer(state: TestFlowState) -> dict:
-    llm = get_chat_model(temperature=0.3)
-    resp = llm.invoke(
+    answer = invoke_text(
         [
             SystemMessage(
                 content=(
@@ -17,14 +16,9 @@ def quick_answer(state: TestFlowState) -> dict:
                 )
             ),
             HumanMessage(content=state.get("user_input") or ""),
-        ]
+        ],
+        temperature=0.3,
     )
-    content = resp.content
-    if isinstance(content, list):
-        content = "".join(
-            b.get("text", str(b)) if isinstance(b, dict) else str(b) for b in content
-        )
-    answer = str(content).strip()
     return {
         "summary": {
             "status": "ok",
