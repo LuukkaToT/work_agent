@@ -19,11 +19,17 @@ class _RunRecord:
 
 class MockExecutor:
     """
+    假执行引擎，用来把图的分支跑通。接公司系统后由 real 实现替换。
+
     四场景：
-    - all_pass
-    - version_fail
-    - case_error
-    - env_error
+    - all_pass      全部通过
+    - version_fail  首条失败且 fail_kind=version
+    - case_error    首条 error 且 fail_kind=case
+    - env_error     status 直接 failed（环境不可用）
+
+    ticks_to_finish：
+    - status 被调用几次后才变 finished
+    - 默认 2：正好演示 exec_poll 自循环（第 1 次 running，第 2 次 finished）
     """
 
     def __init__(
@@ -33,6 +39,7 @@ class MockExecutor:
     ) -> None:
         self.scenario = scenario
         self.ticks_to_finish = max(1, ticks_to_finish)
+        # run_id → 内存中的执行记录（所以同一进程内必须复用本实例）
         self._runs: dict[str, _RunRecord] = {}
 
     def run(
@@ -41,6 +48,7 @@ class MockExecutor:
         version: str,
         topology: str,
     ) -> RunHandle:
+        """只「提交」任务并返回 run_id，不在这里等待跑完。"""
         if not case_names:
             raise ValueError("case_names 不能为空")
         if not version:
@@ -59,6 +67,7 @@ class MockExecutor:
         return handle
 
     def status(self, run_id: str) -> RunStatus:
+        """每调用一次，内部 ticks+1；到点后 phase 变为 finished。"""
         rec = self._require(run_id)
         if self.scenario == "env_error":
             rec.finished = True

@@ -1,3 +1,14 @@
+"""
+执行流三个节点 + 一个路由函数：
+
+  exec_params  从自然语言抽出 用例名/版本/组网
+  exec_run     调 Executor.run 提交任务（异步语义：只拿 run_id）
+  exec_poll    调 Executor.status 查一次进度
+  route_after_poll  决定是再 poll，还是去做 collect
+
+还没有 interrupt：缺组网时只写 need_input 并跳过真正执行。
+"""
+
 from typing import Optional
 
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -16,7 +27,11 @@ class ExecParamsOut(BaseModel):
 
 
 def exec_params(state: TestFlowState) -> dict:
-    """从用户话里抽出参数；版本可吃个人配置默认值，组网不静默填充。"""
+    """
+    参数优先级（与架构约定一致）：
+    - version：用户没说 → 用 profile.default_version
+    - topology：用户没说 → 留空，后面不允许静默填（跑错组网代价高）
+    """
     llm = get_chat_model(temperature=0).with_structured_output(ExecParamsOut)
     parsed: ExecParamsOut = llm.invoke(
         [
@@ -41,6 +56,7 @@ def exec_params(state: TestFlowState) -> dict:
         "topology": topology,
     }
 
+    # 顺便用 CaseProvider 校验/补全用例元信息（标题、标签）
     cases: list[dict] = []
     if parsed.case_names:
         provider = get_case_provider()
@@ -55,7 +71,10 @@ def exec_params(state: TestFlowState) -> dict:
 
 
 def exec_run(state: TestFlowState) -> dict:
-    """调用 Executor.run；缺参数则 need_input，不真跑。"""
+    """
+    提交执行。注意：这里不是「跑完」，只是拿到 run_id。
+    缺 case_names 或 topology → need_input，不调用 tool。
+    """
     params = state.get("exec_params") or {}
     case_names = params.get("case_names") or []
     version = params.get("version") or ""
@@ -65,6 +84,7 @@ def exec_run(state: TestFlowState) -> dict:
         summary = {
             "status": "need_input",
             "branch": "execute",
+            # missing：告诉上游/用户缺了啥（以后 interrupt 会用到）
             "missing": [
                 k
                 for k, ok in [
@@ -80,6 +100,7 @@ def exec_run(state: TestFlowState) -> dict:
             "audit": [{"step": "exec_run", "status": "need_input"}],
         }
 
+    # 新任务清一下缓存，拿到干净的 MockExecutor
     get_executor.cache_clear()
     ex = get_executor(scenario="all_pass")
     handle = ex.run(
@@ -108,15 +129,23 @@ def exec_run(state: TestFlowState) -> dict:
         ],
     }
 
+
 def exec_poll(state: TestFlowState) -> dict:
-    """查一次 status；没 run_id（例如缺组网）则跳过。"""
+    """
+    查一次 status。
+
+    为什么要循环：真实执行是分钟级，run 只提交；
+    mock 用 ticks_to_finish=2 模拟「第 1 次还在跑，第 2 次才完成」。
+    """
     run_id = state.get("run_id") or ""
     if not run_id:
+        # 前面 need_input 没提交：跳过，让路由走 done → collect
         return {
             "audit": [{"step": "exec_poll", "skipped": True}],
         }
 
-    # 关键：不要 cache_clear！必须和 exec_run 用同一个 MockExecutor 实例
+    # 关键：这里不能 cache_clear！
+    # Mock 把 run 存在进程内的 Executor 实例上；清缓存会换新实例，旧 run_id 就丢了。
     ex = get_executor(scenario="all_pass")
     st = ex.status(run_id)
     poll_count = int(state.get("poll_count") or 0) + 1
@@ -149,14 +178,18 @@ def exec_poll(state: TestFlowState) -> dict:
 
 
 def route_after_poll(state: TestFlowState) -> str:
-    """返回 continue 继续轮询，done 结束。"""
+    """
+    条件边返回值：
+    - continue → 再进 exec_poll（自循环）
+    - done     → 去 collect_results
+    """
     if not (state.get("run_id") or ""):
         return "done"
 
     if state.get("run_status") in ("finished", "failed", "timeout"):
         return "done"
 
-    # 学习阶段先用小上限，避免死循环；以后可改读 profile.poll_max_attempts
+    # 刹车：防止 status 一直 running 时死循环（商用会读 profile.poll_max_attempts）
     max_attempts = 5
     if int(state.get("poll_count") or 0) >= max_attempts:
         return "done"

@@ -1,3 +1,12 @@
+"""
+配置加载：
+
+1. .env          → LLM、TOOL_BACKEND 等（密钥不入库）
+2. profile.yaml  → 个人默认版本、常用组网、轮询参数
+
+get_settings() 带缓存，进程内只读一次。
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -10,12 +19,17 @@ from dotenv import load_dotenv
 
 
 def project_root() -> Path:
-    """仓库根目录：.../work_agent（含 requirements.txt 的那一层）"""
+    """
+    仓库根目录（含 requirements.txt / .env 的那一层）。
+    本文件在 work_agent/core/config.py → parents[2] 就是仓库根。
+    """
     return Path(__file__).resolve().parents[2]
 
 
 @dataclass(frozen=True)
 class Profile:
+    """个人偏好；组网即便有默认值，执行前也应确认（架构约定）。"""
+
     default_version: str = "27B"
     frequent_topologies: list[str] = field(default_factory=lambda: ["topo_a", "topo_b"])
     poll_interval_seconds: int = 30
@@ -30,9 +44,9 @@ class Settings:
     llm_temperature: float
     llm_timeout: int
     llm_max_retries: int
-    tool_backend: str
+    tool_backend: str  # mock | real
     profile: Profile
-    workspace_dir: Path
+    workspace_dir: Path  # 报告落盘根目录
     profile_path: Path
 
 
@@ -51,9 +65,12 @@ def _load_profile(path: Path) -> Profile:
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
     root = project_root()
+    # override=False：已在环境里的变量优先，不被 .env 覆盖
     load_dotenv(root / ".env", override=False)
 
+    # 兼容：可以直接写 LLM_API_KEY，也可以继续用 GEMINI_API_KEY
     api_key = os.getenv("LLM_API_KEY") or os.getenv("GEMINI_API_KEY") or ""
+    # 注意：读的是仓库根下 config/profile.yaml，不是 work_agent/config/
     profile_path = root / "config" / "profile.yaml"
 
     return Settings(

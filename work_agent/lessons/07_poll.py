@@ -24,6 +24,9 @@ def empty_state(text: str) -> dict:
         "run_id": "",
         "run_status": "",
         "poll_count": 0,
+        "results": [],
+        "logs": "",
+        "report_path": "",
         "summary": {},
         "audit": [],
     }

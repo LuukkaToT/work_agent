@@ -1,3 +1,12 @@
+"""
+公司系统的「插座」定义。
+
+图和节点只依赖这里的 Protocol，不依赖 mock 或 real 的类名。
+接公司 tool 时：在 tools/real/ 写实现 → registry 切换 → 图不用改。
+
+@runtime_checkable：允许 isinstance(obj, CaseProvider) 做运行时检查（lesson 里用过）。
+"""
+
 from __future__ import annotations
 
 from typing import Protocol, runtime_checkable
@@ -16,7 +25,10 @@ class CaseProvider(Protocol):
 
 @runtime_checkable
 class Executor(Protocol):
-    """执行引擎：用例名列表 + 版本 + 逻辑组网。"""
+    """
+    执行引擎三要素：用例名列表 + 版本 + 逻辑组网。
+    单个执行 = 列表长度为 1，不必单独做单跑接口。
+    """
 
     def run(
         self,
