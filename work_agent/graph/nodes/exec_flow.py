@@ -15,6 +15,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from pydantic import BaseModel, Field
 
 from work_agent.core.config import get_settings
+from work_agent.core.ledger import get_ledger
 from work_agent.core.llm import get_chat_model
 from work_agent.graph.state import TestFlowState
 from work_agent.tools.registry import get_case_provider, get_executor
@@ -109,6 +110,16 @@ def exec_run(state: TestFlowState) -> dict:
         topology=topology,
     )
 
+    # 写入跨会话台账（checkpointer 管不了「上次执行」）
+    get_ledger().upsert(
+        run_id=handle.run_id,
+        task_id=state.get("task_id") or "",
+        case_names=case_names,
+        version=version,
+        topology=topology,
+        status="pending",
+    )
+
     return {
         "run_id": handle.run_id,
         "run_status": "pending",
@@ -161,6 +172,8 @@ def exec_poll(state: TestFlowState) -> dict:
             "poll_count": poll_count,
         }
     )
+
+    get_ledger().update_status(run_id, status=st.phase)
 
     return {
         "poll_count": poll_count,

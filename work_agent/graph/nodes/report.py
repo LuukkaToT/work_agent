@@ -15,6 +15,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from work_agent.core.config import get_settings
+from work_agent.core.ledger import get_ledger
 from work_agent.graph.state import TestFlowState
 from work_agent.tools.registry import get_executor
 
@@ -171,6 +172,14 @@ def write_report(state: TestFlowState) -> dict:
     report_path.write_text("\n".join(lines), encoding="utf-8")
 
     summary["report_path"] = str(report_path)
+
+    run_id = state.get("run_id") or ""
+    if run_id:
+        get_ledger().update_status(
+            run_id,
+            status=state.get("run_status") or summary.get("status") or "finished",
+            report_path=str(report_path),
+        )
 
     return {
         "report_path": str(report_path),
