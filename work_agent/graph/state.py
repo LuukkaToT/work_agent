@@ -8,8 +8,9 @@ class TestFlowState(TypedDict):
     intent: str
     requirement: str
     cases: list[dict]
-    exec_params: dict  # case_names / version / topology
+    exec_params: dict
     run_id: str
     run_status: str
+    poll_count: int
     summary: dict
     audit: Annotated[list[dict], operator.add]

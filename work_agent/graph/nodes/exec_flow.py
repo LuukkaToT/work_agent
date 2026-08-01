@@ -107,3 +107,58 @@ def exec_run(state: TestFlowState) -> dict:
             }
         ],
     }
+
+def exec_poll(state: TestFlowState) -> dict:
+    """查一次 status；没 run_id（例如缺组网）则跳过。"""
+    run_id = state.get("run_id") or ""
+    if not run_id:
+        return {
+            "audit": [{"step": "exec_poll", "skipped": True}],
+        }
+
+    # 关键：不要 cache_clear！必须和 exec_run 用同一个 MockExecutor 实例
+    ex = get_executor(scenario="all_pass")
+    st = ex.status(run_id)
+    poll_count = int(state.get("poll_count") or 0) + 1
+
+    summary = dict(state.get("summary") or {})
+    summary.update(
+        {
+            "status": st.phase,
+            "branch": "execute",
+            "run_id": run_id,
+            "progress": st.progress,
+            "message": st.message,
+            "poll_count": poll_count,
+        }
+    )
+
+    return {
+        "poll_count": poll_count,
+        "run_status": st.phase,
+        "summary": summary,
+        "audit": [
+            {
+                "step": "exec_poll",
+                "phase": st.phase,
+                "poll_count": poll_count,
+                "progress": st.progress,
+            }
+        ],
+    }
+
+
+def route_after_poll(state: TestFlowState) -> str:
+    """返回 continue 继续轮询，done 结束。"""
+    if not (state.get("run_id") or ""):
+        return "done"
+
+    if state.get("run_status") in ("finished", "failed", "timeout"):
+        return "done"
+
+    # 学习阶段先用小上限，避免死循环；以后可改读 profile.poll_max_attempts
+    max_attempts = 5
+    if int(state.get("poll_count") or 0) >= max_attempts:
+        return "done"
+
+    return "continue"
