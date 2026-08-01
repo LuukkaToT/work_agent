@@ -4,8 +4,9 @@
 当前执行分支完整路径：
   START → intake → router
                  ├─ analysis → END          （桩）
-                 ├─ execute → exec_params → exec_run → exec_poll ⟲
-                 │                              └→ collect → report → END
+                 ├─ execute → exec_params → ask_missing → confirm_exec
+                 │                ├─ proceed → exec_run → exec_poll ⟲ → collect → report
+                 │                └─ cancel  → write_report
                  ├─ query → END             （桩）
                  └─ chat → END              （桩）
 """
@@ -24,6 +25,11 @@ from work_agent.graph.nodes.exec_flow import (
     exec_poll,
     exec_run,
     route_after_poll,
+)
+from work_agent.graph.nodes.hitl import (
+    ask_missing,
+    confirm_exec,
+    route_after_confirm,
 )
 from work_agent.graph.nodes.report import collect_results, write_report
 from work_agent.graph.nodes.router import route_by_intent, router
@@ -55,11 +61,11 @@ def build_graph(
 
     checkpointer:
       传入后必须在 invoke 时带 config={"configurable": {"thread_id": "..."}}
-      状态会写入 SQLite，可跨调用 / 跨进程读取。
+      HITL（节点内 interrupt）也依赖它保存暂停点。
 
     interrupt_before:
-      在进入这些节点「之前」暂停（需要 checkpointer）。
-      M10 用它演示断点；M11 会用来做人机确认。
+      在进入这些节点「之前」固定暂停（M10 演示用）。
+      M11 主要用节点内 interrupt()，一般不必再设这个。
     """
     graph = StateGraph(TestFlowState)
 
@@ -67,6 +73,8 @@ def build_graph(
     graph.add_node("router", router)
     graph.add_node("analysis", do_analysis)
     graph.add_node("exec_params", exec_params)
+    graph.add_node("ask_missing", ask_missing)
+    graph.add_node("confirm_exec", confirm_exec)
     graph.add_node("exec_run", exec_run)
     graph.add_node("exec_poll", exec_poll)
     graph.add_node("collect_results", collect_results)
@@ -88,7 +96,18 @@ def build_graph(
     )
 
     graph.add_edge("analysis", END)
-    graph.add_edge("exec_params", "exec_run")
+
+    # 抽参 → 补缺(HITL) → 确认(HITL) → 通过才提交
+    graph.add_edge("exec_params", "ask_missing")
+    graph.add_edge("ask_missing", "confirm_exec")
+    graph.add_conditional_edges(
+        "confirm_exec",
+        route_after_confirm,
+        {
+            "proceed": "exec_run",
+            "cancel": "write_report",
+        },
+    )
     graph.add_edge("exec_run", "exec_poll")
     graph.add_conditional_edges(
         "exec_poll",
