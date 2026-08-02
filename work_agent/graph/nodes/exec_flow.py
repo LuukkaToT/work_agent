@@ -17,6 +17,7 @@ from pydantic import BaseModel, Field
 from work_agent.core.config import get_settings
 from work_agent.core.ledger import get_ledger
 from work_agent.core.llm import get_chat_model
+from work_agent.graph.nodes.context import dialogue_text
 from work_agent.graph.state import TestFlowState
 from work_agent.tools.registry import get_case_provider, get_executor
 
@@ -32,18 +33,33 @@ def exec_params(state: TestFlowState) -> dict:
     参数优先级（与架构约定一致）：
     - version：用户没说 → 用 profile.default_version
     - topology：用户没说 → 留空，后面不允许静默填（跑错组网代价高）
+
+    带最近对话：支持「换 topo_b 再跑」从历史补全用例名和版本。
     """
     llm = get_chat_model(temperature=0).with_structured_output(ExecParamsOut)
+
+    history = dialogue_text(state.get("messages"), n=8)
+    user_input = state.get("user_input") or ""
+    human_parts = []
+    if history:
+        human_parts.append("【最近对话】")
+        human_parts.append(history)
+        human_parts.append("")
+    human_parts.append("【本轮用户输入】")
+    human_parts.append(user_input)
+
     parsed: ExecParamsOut = llm.invoke(
         [
             SystemMessage(
                 content=(
                     "从用户输入提取执行参数。"
                     "用例名通常类似 case_xxx。"
-                    "没提到的字段返回 null，不要编造组网。"
+                    "本轮若是指代（如「再跑一遍」「换 topo_b」），"
+                    "结合【最近对话】补全用例名和版本；"
+                    "组网若本轮没明确说，返回 null，不要从历史猜、也不要编造。"
                 )
             ),
-            HumanMessage(content=state["user_input"]),
+            HumanMessage(content="\n".join(human_parts)),
         ]
     )
 
