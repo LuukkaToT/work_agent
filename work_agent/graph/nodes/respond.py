@@ -2,7 +2,7 @@
 respond：所有分支的统一收尾节点。
 
 在它之前，每个分支产出的是结构化 summary（给报告、台账、程序看）；
-在它之后才有一句给人看的话。
+在它之后才有一句给人看的话，并追加到 messages，供下一轮指代。
 
 两条设计约束：
 
@@ -11,6 +11,8 @@ respond：所有分支的统一收尾节点。
    把「只能引用给定事实」写成硬约束。
 2. 不能中断。它是所有分支的必经节点，LLM 抖一下不能让整轮任务失败，
    因此有 _fallback_reply 兜底。
+
+任务类型只读 state["intent"]，不看 summary["branch"]（单一事实来源）。
 """
 
 from __future__ import annotations
@@ -19,7 +21,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
 from work_agent.core.config import get_settings
 from work_agent.core.llm import invoke_text
@@ -39,7 +41,7 @@ _SYSTEM = """你是资深测试工程师的助手，负责把一次任务的执�
 
 
 def _facts(state: TestFlowState) -> dict:
-    """把 state 收敛成一张事实卡片，只放确定性字段。"""
+    """把 state 收敛成一张事实卡片。引用性字段读顶层，汇总量读 summary。"""
     summary = state.get("summary") or {}
     params = state.get("exec_params") or {}
     facts: dict[str, Any] = {}
@@ -54,7 +56,7 @@ def _facts(state: TestFlowState) -> dict:
         facts[key] = value
 
     put("用户问题", state.get("user_input"))
-    put("任务类型", summary.get("branch") or state.get("intent"))
+    put("任务类型", state.get("intent"))  # 单一来源：不读 summary.branch
     put("任务状态", summary.get("status"))
     put("用例", params.get("case_names"))
     put("版本", params.get("version"))
@@ -105,16 +107,16 @@ def _analysis_excerpt(path_str: str) -> str:
 def _fallback_reply(state: TestFlowState, facts: dict) -> str:
     """LLM 不可用时的确定性回复：信息量比模型版少，但绝不会错。"""
     summary = state.get("summary") or {}
-    branch = summary.get("branch") or state.get("intent") or ""
+    intent = state.get("intent") or ""
     status = summary.get("status") or ""
 
-    if branch == "analysis" and state.get("analysis_path"):
+    if intent == "analysis" and state.get("analysis_path"):
         return f"测试分析已生成，文档在 {state['analysis_path']}。"
 
     if status == "cancelled":
         return "已按你的意思取消，没有提交执行。"
 
-    if branch == "execute" and state.get("run_id"):
+    if intent == "execute" and state.get("run_id"):
         text = (
             f"执行任务 {state['run_id']} 当前状态 {state.get('run_status') or '未知'}，"
             f"共 {summary.get('total', 0)} 条用例，通过 {summary.get('passed', 0)} 条。"
@@ -123,7 +125,7 @@ def _fallback_reply(state: TestFlowState, facts: dict) -> str:
             text += f"报告在 {state['report_path']}。"
         return text
 
-    if branch == "query":
+    if intent == "query":
         return str(summary.get("message") or "没查到匹配的执行记录。")
 
     # 兜底的兜底：原样交出事实，也比抛异常好
@@ -148,27 +150,33 @@ def _persist_reply(task_id: str, reply: str) -> None:
         pass
 
 
+def _pack(reply: str, *, source: str, error: str = "") -> dict:
+    """统一出口：reply + 会话历史追加 AIMessage + audit。"""
+    record: dict[str, Any] = {"step": "respond", "source": source, "chars": len(reply)}
+    if error:
+        record["error"] = error
+    return {
+        "reply": reply,
+        "messages": [AIMessage(content=reply)],
+        "audit": [record],
+    }
+
+
 def respond(state: TestFlowState) -> dict:
-    summary = dict(state.get("summary") or {})
-    branch = summary.get("branch") or state.get("intent") or ""
+    summary = state.get("summary") or {}
+    intent = state.get("intent") or ""
     task_id = state.get("task_id") or ""
 
     # chat 分支的 answer 本来就是模型说的人话，再过一遍只会变味且多一次调用
-    if branch == "chat" and summary.get("answer"):
+    if intent == "chat" and summary.get("answer"):
         reply = str(summary["answer"]).strip()
-        summary["reply"] = reply
-        return {
-            "reply": reply,
-            "summary": summary,
-            "audit": [
-                {"step": "respond", "source": "passthrough", "chars": len(reply)}
-            ],
-        }
+        _persist_reply(task_id, reply)
+        return _pack(reply, source="passthrough")
 
     facts = _facts(state)
     user_parts = ["【事实】", json.dumps(facts, ensure_ascii=False, indent=2)]
 
-    if branch == "analysis":
+    if intent == "analysis":
         excerpt = _analysis_excerpt(state.get("analysis_path") or "")
         if excerpt:
             user_parts += [
@@ -199,10 +207,4 @@ def respond(state: TestFlowState) -> dict:
         source = "fallback"
 
     _persist_reply(task_id, reply)
-    summary["reply"] = reply
-
-    record: dict[str, Any] = {"step": "respond", "source": source, "chars": len(reply)}
-    if error:
-        record["error"] = error
-
-    return {"reply": reply, "summary": summary, "audit": [record]}
+    return _pack(reply, source=source, error=error)
