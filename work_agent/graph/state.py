@@ -3,7 +3,7 @@
 
 字段分两层：
 - 会话级：messages —— 跨轮累积，永不重置，靠 checkpointer 持久化
-- 任务级：其余字段 —— 每轮由 intake 归零（下一阶段实现）
+- 任务级：其余字段 —— 每轮由 intake 显式归零
 
 LangGraph 合并规则：
 - 普通字段：后写覆盖前写（如 intent、run_id）

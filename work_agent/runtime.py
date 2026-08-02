@@ -1,5 +1,8 @@
 """
-对外 CLI / lesson 调用图的薄封装：统一 empty_state、HITL 循环、结果展示数据。
+对外 CLI / 调用图的薄封装：HITL 循环、thread 管理。
+
+调用方只传本轮用户话；任务级字段的重置由 intake 负责，
+这里不再维护一份 empty_state 清单。
 """
 
 from __future__ import annotations
@@ -7,6 +10,7 @@ from __future__ import annotations
 import uuid
 from typing import Any, Callable
 
+from langchain_core.messages import HumanMessage
 from langgraph.types import Command
 
 from work_agent.core.checkpoint import get_checkpointer, make_thread_config
@@ -18,34 +22,6 @@ AskFn = Callable[[list[Any]], str]
 # HITL 轮次上限：用户一直回无效值时（比如组网始终为空）会反复 interrupt，
 # 没有上限就是死循环。命中说明要么用户在乱试，要么节点的校验有 bug。
 _MAX_HITL_ROUNDS = 20
-
-
-def empty_state(text: str) -> dict[str, Any]:
-    """
-    每轮的输入。这里刻意把「所有」字段都显式置空。
-
-    带 checkpointer 时，invoke 的入参会与上一轮快照合并，普通字段是后写覆盖，
-    所以只有在这里出现的字段才会被清掉。新增 state 字段时务必同步加进来，
-    否则上一轮的 run_id / results 会串到下一轮，答出上一轮的数据。
-    """
-    return {
-        "task_id": "",
-        "user_input": text,
-        "intent": "",
-        "requirement": "",
-        "analysis_path": "",
-        "cases": [],
-        "exec_params": {},
-        "run_id": "",
-        "run_status": "",
-        "poll_count": 0,
-        "results": [],
-        "logs": "",
-        "report_path": "",
-        "summary": {},
-        "reply": "",
-        "audit": [],
-    }
 
 
 def interrupt_payloads(result: dict[str, Any]) -> list[Any]:
@@ -72,7 +48,11 @@ def run_turn(
     )
     config = make_thread_config(tid) if with_checkpoint else None
 
-    result = app.invoke(empty_state(text), config=config)
+    # 只追加本轮用户消息；任务级字段由 intake 归零
+    result = app.invoke(
+        {"messages": [HumanMessage(content=text)]},
+        config=config,
+    )
 
     rounds = 0
     while result.get("__interrupt__"):

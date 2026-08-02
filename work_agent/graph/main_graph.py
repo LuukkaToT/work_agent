@@ -44,18 +44,60 @@ from work_agent.graph.nodes.router import route_by_intent, router
 from work_agent.graph.state import RESET_AUDIT, TestFlowState
 
 
+def _message_text(content: object) -> str:
+    """把消息 content（str 或分段 list）归一成纯文本。"""
+    if isinstance(content, str):
+        return content.strip()
+    if isinstance(content, list):
+        parts: list[str] = []
+        for block in content:
+            if isinstance(block, dict):
+                parts.append(str(block.get("text", "")))
+            else:
+                parts.append(str(block))
+        return "".join(parts).strip()
+    return str(content or "").strip()
+
+
 def intake(state: TestFlowState) -> dict:
-    """入口节点：生成 task_id，并开一轮新的审计轨迹。"""
-    task_id = state.get("task_id") or str(uuid.uuid4())[:8]
+    """
+    每轮入口：从 messages 提取本轮用户输入，并归零全部任务级字段。
+
+    调用方只需 invoke({"messages": [HumanMessage(...)]})。
+    会话级 messages 由 add_messages 累积，intake 绝不碰它。
+    """
+    messages = state.get("messages") or []
+    if not messages:
+        raise ValueError("intake 需要至少一条用户消息，请 invoke 时传入 messages")
+
+    user_input = _message_text(messages[-1].content)
+    if not user_input:
+        raise ValueError("本轮用户消息为空")
+
+    # 每轮新任务：不要复用上一轮 task_id（否则报告会盖到旧目录）
+    task_id = str(uuid.uuid4())[:8]
+
     return {
         "task_id": task_id,
+        "user_input": user_input,
+        # --- 以下全部任务级字段显式归零，防止跨轮串数据 ---
+        "intent": "",
+        "requirement": "",
+        "analysis_path": "",
+        "exec_params": {},
+        "run_id": "",
+        "run_status": "",
+        "results": [],
+        "logs": "",
+        "report_path": "",
+        "summary": {},
+        "reply": "",
         "audit": [
-            # 告诉 append_audit「新一轮开始了」，不要把上一轮的记录带进来
             {RESET_AUDIT: True},
             {
                 "step": "intake",
                 "task_id": task_id,
-                "user_input": state["user_input"],
+                "user_input": user_input,
             },
         ],
     }
