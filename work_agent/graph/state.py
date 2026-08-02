@@ -2,12 +2,12 @@
 图的「共享黑板」：每个节点读当前 state，只返回要改的字段。
 
 字段分两层：
-- 会话级：messages —— 跨轮累积，永不重置，靠 checkpointer 持久化
+- 会话级：messages / dialogue_summary —— 跨轮累积，永不重置，靠 checkpointer 持久化
 - 任务级：其余字段 —— 每轮由 intake 显式归零
 
 LangGraph 合并规则：
-- 普通字段：后写覆盖前写（如 intent、pipelines）
-- messages 用 add_messages：按消息 ID 追加 / 去重
+- 普通字段：后写覆盖前写（如 intent、pipelines、dialogue_summary）
+- messages 用 add_messages：按消息 ID 追加 / 去重 / RemoveMessage 删除
 - audit 用 append_audit：默认追加，遇到重置哨兵时只保留本轮
 
 执行流水线私有字段（exec_decision）在
@@ -50,6 +50,8 @@ def append_audit(
 class TestFlowState(TypedDict):
     # --- 会话级（跨轮累积，intake 不重置）---
     messages: Annotated[list[AnyMessage], add_messages]
+    # 滚动摘要：窗口外旧对话的压缩，供 router / exec_params 注入
+    dialogue_summary: str
 
     # --- 任务级：会话 / 路由 ---
     task_id: str  # 本次任务 id

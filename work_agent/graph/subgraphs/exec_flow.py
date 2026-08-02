@@ -32,6 +32,7 @@ class ExecFlowInput(TypedDict):
     task_id: str
     intent: str
     messages: Annotated[list[AnyMessage], add_messages]
+    dialogue_summary: str
 
 
 class ExecFlowOutput(TypedDict):

@@ -7,7 +7,7 @@
 注意：路由函数本身不是节点，不会写 state；它的返回值必须能在
 add_conditional_edges 的映射表里找到。
 
-分类时带上最近对话，否则「再跑一遍」「换个组网」会被误判成 chat。
+分类时带上历史摘要 + 最近对话，否则「再跑一遍」「换个组网」会被误判成 chat。
 """
 
 from typing import Literal
@@ -16,7 +16,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from pydantic import BaseModel, Field
 
 from work_agent.core.llm import get_chat_model
-from work_agent.graph.nodes.context import dialogue_text
+from work_agent.graph.nodes.context import conversation_context
 from work_agent.graph.state import TestFlowState
 
 
@@ -39,13 +39,12 @@ def router(state: TestFlowState) -> dict:
     # with_structured_output：强制模型吐出 RouteDecision，而不是一段散文
     llm = get_chat_model(temperature=0).with_structured_output(RouteDecision)
 
-    history = dialogue_text(state.get("messages"), n=8)
+    ctx = conversation_context(state, n=8)
     user_input = state.get("user_input") or ""
 
     human_parts = []
-    if history:
-        human_parts.append("【最近对话】")
-        human_parts.append(history)
+    if ctx:
+        human_parts.append(ctx)
         human_parts.append("")
     human_parts.append("【本轮用户输入】")
     human_parts.append(user_input)
@@ -56,7 +55,7 @@ def router(state: TestFlowState) -> dict:
                 content=(
                     "你是测试助手的意图分类器。"
                     "根据本轮用户输入判断意图；若本轮是指代（如「再跑一遍」「换 topo_b」"
-                    "「刚才那次怎么样」），结合【最近对话】消解后再分类。"
+                    "「刚才那次怎么样」），结合【历史摘要】和【最近对话】消解后再分类。"
                     "不要执行任何操作。"
                 )
             ),

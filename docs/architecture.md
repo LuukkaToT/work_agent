@@ -100,9 +100,10 @@ default_version: "27B"
 frequent_topologies: ["topo_a", "topo_b"]
 poll_interval_seconds: 30
 poll_max_attempts: 40
+create_retry_attempts: 1
 ```
 
-环境必须问，是因为跑错环境代价高。`poll_*` 配置保留但执行链路已不再轮询。
+环境必须问，是因为跑错环境代价高。`poll_*` 配置保留但执行链路已不再轮询；`create_retry_attempts` 控制 init/check 超时后的同 ID 重试次数。
 
 ## 五、主流程
 
@@ -120,7 +121,8 @@ flowchart TD
   QuickAnswer --> Respond
   ExecFlow --> Respond
 
-  Respond["respond 说成人话 + 追加 AIMessage"] --> Finish(["结束"])
+  Respond["respond 说成人话 + 追加 AIMessage"] --> Memory["memory 滚动摘要"]
+  Memory --> Finish(["结束"])
 ```
 
 执行子图 `exec_flow` 内部：
@@ -130,23 +132,29 @@ flowchart TD
   Params["exec_params 抽执行计划列表"] --> AskMissing["interrupt 逐计划补缺参"]
   AskMissing --> Confirm{"HITL 确认 N 条流水线"}
   Confirm -->|"cancel"| EndNode(["END"])
-  Confirm -->|"proceed"| Create["create_pipelines 循环 init+check"]
+  Confirm -->|"proceed"| Create["create_pipelines write-ahead + 对账"]
   Create --> EndNode
 ```
 
-子图用独立 schema：`ExecFlowInput` / `ExecFlowOutput` / 私有字段（`exec_decision`）。`audit` 只出不进，避免父图 reducer 重复计入。不再轮询、不收集结果、不写执行报告——提交后用户去流水线前端看，问进度走 `query_run`。
+`create_pipelines` 超时对账（`run_id` 是幂等键，超时不换新 ID）：
 
-### respond：所有分支的统一出口
+```mermaid
+flowchart TD
+  W["台账 write-ahead: status=creating"] --> I["init_pipline"]
+  I -->|"成功"| C["check_pipline 幂等"]
+  I -->|"超时/异常"| Q["query_result 对账"]
+  Q -->|"查得到"| C
+  Q -->|"查不到"| R["同 run_id 重试"]
+  R -->|"成功"| C
+  R -->|"重试用尽"| F["status=failed"]
+  C --> OK["status=running"]
+```
 
-分支节点产出的 `summary` 是给报告、台账和程序看的结构化数据，直接丢给用户就是一堆字段。`respond` 是唯一的汇聚点，把本轮的确定性事实组织成一段中文回答，写入 `state.reply`，并追加 `AIMessage` 到 `messages`，供下一轮指代。CLI 只展示 `reply`。
+子图用独立 schema：`ExecFlowInput`（含 `dialogue_summary`）/ `ExecFlowOutput` / 私有字段（`exec_decision`）。`audit` 只出不进。不再轮询、不收集结果、不写执行报告——提交后用户去流水线前端看，问进度走 `query_run`。
 
-两条约束：
+### respond + memory
 
-- **不许编造**。run_id、用例名、版本、组网、路径、数量以 JSON 原样交给模型，prompt 里禁止改写。
-- **不许中断**。它在所有分支的必经路径上，LLM 抖动不能让整轮任务失败，所以有确定性的兜底回复。
-
-chat 分支的 `answer` 本来就是人话，直接透传。回复同时落盘为 `reply.md`。
-
+分支节点产出的 `summary` 是给报告、台账和程序看的结构化数据。`respond` 把本轮事实组织成中文回答，写入 `state.reply`，并追加 `AIMessage`。随后 `memory`：消息超过 12 条时，把窗口外旧对话压进会话级 `dialogue_summary`，用 `RemoveMessage` 裁到最近 8 条；阈值以下直通。router / exec_params 注入的是「历史摘要 + 最近对话」。
 ## 六、运行台账：支撑「前面那次执行怎么样了」
 
 checkpointer 只按 `thread_id` 存图状态。用户换会话再问「上次执行怎么样了」时，需要能跨会话查到 run，所以额外建一张台账表 `workspace/index.db`：
@@ -190,13 +198,14 @@ Mock 行为可配置四场景：全通过、版本失败、用例报错、环境
 
 | 层级 | 字段 | 生命周期 |
 |------|------|----------|
-| 会话级 | `messages`（`add_messages`） | 跨轮累积，intake 不重置，靠 checkpointer 持久化 |
+| 会话级 | `messages`（`add_messages`）、`dialogue_summary` | 跨轮累积，intake 不重置 |
 | 任务级 | 其余字段 | 每轮由 `intake` 显式归零 |
 
 ```python
 class TestFlowState(TypedDict):
     # 会话级
     messages: Annotated[list[AnyMessage], add_messages]
+    dialogue_summary: str          # 滚动摘要；memory 节点维护
 
     # 任务级：路由与产出
     task_id: str

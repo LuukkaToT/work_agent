@@ -19,7 +19,7 @@ from pydantic import BaseModel, Field
 from work_agent.core.config import get_settings
 from work_agent.core.ledger import get_ledger
 from work_agent.core.llm import get_chat_model
-from work_agent.graph.nodes.context import dialogue_text
+from work_agent.graph.nodes.context import conversation_context
 from work_agent.tools.registry import get_pipeline_tool
 
 ALLOWED_VERSIONS = frozenset({"27B", "27A", "26B", "26A"})
@@ -105,12 +105,11 @@ def exec_params(state: Mapping[str, Any]) -> dict:
     """
     llm = get_chat_model(temperature=0).with_structured_output(ExecParamsOut)
 
-    history = dialogue_text(state.get("messages"), n=8)
+    ctx = conversation_context(state, n=8)
     user_input = state.get("user_input") or ""
     human_parts = []
-    if history:
-        human_parts.append("【最近对话】")
-        human_parts.append(history)
+    if ctx:
+        human_parts.append(ctx)
         human_parts.append("")
     human_parts.append("【本轮用户输入】")
     human_parts.append(user_input)
@@ -128,7 +127,8 @@ def exec_params(state: Mapping[str, Any]) -> dict:
                     "若用户说「A 环境执行 X，B 环境执行 Y」，拆成两条计划；"
                     "同一环境多个用例合并成一条，case_names 为列表。"
                     "本轮若是指代（如「再跑一遍」「换环境」），"
-                    "结合【最近对话】补全用例名和版本；组网仍须本轮明确说出。"
+                    "结合【历史摘要】和【最近对话】补全用例名和版本；"
+                    "组网仍须本轮明确说出。"
                 )
             ),
             HumanMessage(content="\n".join(human_parts)),
@@ -168,10 +168,140 @@ def exec_params(state: Mapping[str, Any]) -> dict:
     }
 
 
+def _ensure_pipeline_created(
+    tool: Any,
+    *,
+    run_id: str,
+    case_names: list[str],
+    version: str,
+    env: str,
+    retry_attempts: int,
+) -> tuple[bool, list[str], str]:
+    """
+    init_pipline + 超时对账 + 同 run_id 重试。
+
+    返回 (ok, notes, last_error)。
+    超时不等于失败：先 query_result 对账，查得到视为已创建。
+    """
+    notes: list[str] = []
+    last_error = ""
+    max_attempts = 1 + max(0, retry_attempts)
+
+    for attempt in range(1, max_attempts + 1):
+        try:
+            tool.init_pipline(run_id, case_names, version, env)
+            if attempt > 1:
+                notes.append(f"init 第 {attempt} 次成功")
+            return True, notes, ""
+        except Exception as exc:  # noqa: BLE001
+            last_error = str(exc)
+            notes.append(f"init 第 {attempt} 次失败: {exc}")
+
+        # 对账：可能服务端已创建，只是客户端超时
+        try:
+            tool.query_result(run_id)
+            notes.append("对账发现已创建")
+            return True, notes, ""
+        except KeyError:
+            notes.append("对账：run_id 尚不存在")
+        except Exception as qexc:  # noqa: BLE001
+            notes.append(f"对账异常: {qexc}")
+
+    return False, notes, last_error or "init_pipline 失败"
+
+
+def _ensure_pipeline_started(
+    tool: Any,
+    *,
+    run_id: str,
+    retry_attempts: int,
+) -> tuple[bool, list[str], str]:
+    """check_pipline 幂等重试。"""
+    notes: list[str] = []
+    last_error = ""
+    max_attempts = 1 + max(0, retry_attempts)
+
+    for attempt in range(1, max_attempts + 1):
+        try:
+            tool.check_pipline(run_id)
+            if attempt > 1:
+                notes.append(f"check 第 {attempt} 次成功")
+            return True, notes, ""
+        except Exception as exc:  # noqa: BLE001
+            last_error = str(exc)
+            notes.append(f"check 第 {attempt} 次失败: {exc}")
+
+    return False, notes, last_error or "check_pipline 失败"
+
+
+def _submit_one_pipeline(
+    tool: Any,
+    ledger: Any,
+    *,
+    run_id: str,
+    task_id: str,
+    case_names: list[str],
+    version: str,
+    env: str,
+    retry_attempts: int,
+) -> dict[str, Any]:
+    """
+    单条流水线提交：write-ahead → init（对账重试）→ check → 终态记账。
+    """
+    entry: dict[str, Any] = {
+        "run_id": run_id,
+        "case_names": case_names,
+        "version": version,
+        "env": env,
+        "status": "pending",
+        "error": "",
+        "notes": [],
+    }
+
+    # write-ahead：进程崩在调用中途，台账仍留悬案可对账
+    ledger.upsert(
+        run_id=run_id,
+        task_id=task_id,
+        case_names=case_names,
+        version=version,
+        env=env,
+        status="creating",
+    )
+
+    ok, notes, err = _ensure_pipeline_created(
+        tool,
+        run_id=run_id,
+        case_names=case_names,
+        version=version,
+        env=env,
+        retry_attempts=retry_attempts,
+    )
+    entry["notes"].extend(notes)
+    if not ok:
+        entry["status"] = "failed"
+        entry["error"] = err
+        ledger.update_status(run_id, status="failed")
+        return entry
+
+    ok, notes, err = _ensure_pipeline_started(
+        tool, run_id=run_id, retry_attempts=retry_attempts
+    )
+    entry["notes"].extend(notes)
+    if not ok:
+        entry["status"] = "failed"
+        entry["error"] = err
+        ledger.update_status(run_id, status="failed")
+        return entry
+
+    entry["status"] = "running"
+    ledger.update_status(run_id, status="running")
+    return entry
+
+
 def create_pipelines(state: Mapping[str, Any]) -> dict:
     """
     逐计划创建并启动流水线。单条失败不阻断其余。
-    run_id 由 agent 生成后传入 init_pipline。
+    run_id 由 agent 生成后传入 init_pipline（幂等键）。
     """
     params = state.get("exec_params") or {}
     plans = list(params.get("plans") or [])
@@ -191,6 +321,8 @@ def create_pipelines(state: Mapping[str, Any]) -> dict:
 
     get_pipeline_tool.cache_clear()
     tool = get_pipeline_tool(scenario="all_pass")
+    ledger = get_ledger()
+    retry_attempts = get_settings().profile.create_retry_attempts
 
     pipelines: list[dict] = []
     created = 0
@@ -201,47 +333,39 @@ def create_pipelines(state: Mapping[str, Any]) -> dict:
         version = str(plan.get("version") or "")
         env = str(plan.get("env") or "").strip()
         run_id = f"pipe-{uuid.uuid4().hex[:8]}"
-        entry: dict[str, Any] = {
-            "run_id": run_id,
-            "case_names": case_names,
-            "version": version,
-            "env": env,
-            "status": "pending",
-            "error": "",
-        }
-        try:
-            if not case_names or not env or version not in ALLOWED_VERSIONS:
-                raise ValueError(
-                    f"参数不完整: cases={bool(case_names)} "
-                    f"version={version!r} env={env!r}"
-                )
-            tool.init_pipline(run_id, case_names, version, env)
-            tool.check_pipline(run_id)
-            entry["status"] = "running"
-            get_ledger().upsert(
-                run_id=run_id,
-                task_id=task_id,
-                case_names=case_names,
-                version=version,
-                env=env,
-                status="running",
+
+        if not case_names or not env or version not in ALLOWED_VERSIONS:
+            pipelines.append(
+                {
+                    "run_id": run_id,
+                    "case_names": case_names,
+                    "version": version,
+                    "env": env,
+                    "status": "failed",
+                    "error": (
+                        f"参数不完整: cases={bool(case_names)} "
+                        f"version={version!r} env={env!r}"
+                    ),
+                    "notes": [],
+                }
             )
-            created += 1
-        except Exception as exc:  # noqa: BLE001 - 单条失败不阻断批量
-            entry["status"] = "failed"
-            entry["error"] = str(exc)
             failed_n += 1
-            try:
-                get_ledger().upsert(
-                    run_id=run_id,
-                    task_id=task_id,
-                    case_names=case_names,
-                    version=version,
-                    env=env,
-                    status="failed",
-                )
-            except Exception:  # noqa: BLE001
-                pass
+            continue
+
+        entry = _submit_one_pipeline(
+            tool,
+            ledger,
+            run_id=run_id,
+            task_id=task_id,
+            case_names=case_names,
+            version=version,
+            env=env,
+            retry_attempts=retry_attempts,
+        )
+        if entry["status"] == "running":
+            created += 1
+        else:
+            failed_n += 1
         pipelines.append(entry)
 
     if created and not failed_n:
@@ -271,6 +395,7 @@ def create_pipelines(state: Mapping[str, Any]) -> dict:
                 "created": created,
                 "failed": failed_n,
                 "run_ids": [p["run_id"] for p in pipelines],
+                "notes": {p["run_id"]: p.get("notes") or [] for p in pipelines},
             }
         ],
     }

@@ -86,4 +86,5 @@ def test_exec_flow_schemas_hide_private_fields():
     assert "audit" not in ExecFlowInput.__annotations__
     assert "audit" in ExecFlowOutput.__annotations__
     assert "pipelines" in ExecFlowOutput.__annotations__
+    assert "dialogue_summary" in ExecFlowInput.__annotations__
     assert "poll_count" not in ExecFlowState.__annotations__

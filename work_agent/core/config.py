@@ -34,6 +34,8 @@ class Profile:
     frequent_topologies: list[str] = field(default_factory=lambda: ["topo_a", "topo_b"])
     poll_interval_seconds: int = 30
     poll_max_attempts: int = 40
+    # init_pipline 超时/失败后，同 run_id 额外重试次数（不含首次）
+    create_retry_attempts: int = 1
 
 
 @dataclass(frozen=True)
@@ -60,6 +62,7 @@ def _load_profile(path: Path) -> Profile:
         frequent_topologies=list(data.get("frequent_topologies", ["topo_a", "topo_b"])),
         poll_interval_seconds=int(data.get("poll_interval_seconds", 30)),
         poll_max_attempts=int(data.get("poll_max_attempts", 40)),
+        create_retry_attempts=int(data.get("create_retry_attempts", 1)),
     )
 
 

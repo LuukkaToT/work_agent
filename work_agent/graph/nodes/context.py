@@ -1,12 +1,12 @@
 """
-把 messages 转成可读的对话文本，供 router / exec_params 等节点注入上下文。
+把 messages / dialogue_summary 转成可读上下文，供 router / exec_params 注入。
 
 不负责截断策略以外的业务逻辑；调用方决定 n 取多大。
 """
 
 from __future__ import annotations
 
-from typing import Any, Sequence
+from typing import Any, Mapping, Sequence
 
 
 def _content_text(content: object) -> str:
@@ -56,3 +56,31 @@ def dialogue_text(messages: Sequence[Any] | None, *, n: int = 8) -> str:
             continue
         lines.append(f"{_role_label(msg)}: {text}")
     return "\n".join(lines)
+
+
+def conversation_context(state: Mapping[str, Any] | None, *, n: int = 8) -> str:
+    """
+    拼装 LLM 上下文：历史摘要（若有）+ 最近 n 条对话。
+
+        【历史摘要】
+        ...
+
+        【最近对话】
+        用户: ...
+        助手: ...
+    """
+    state = state or {}
+    parts: list[str] = []
+
+    summary = str(state.get("dialogue_summary") or "").strip()
+    if summary:
+        parts.append("【历史摘要】")
+        parts.append(summary)
+        parts.append("")
+
+    history = dialogue_text(state.get("messages"), n=n)
+    if history:
+        parts.append("【最近对话】")
+        parts.append(history)
+
+    return "\n".join(parts).strip()

@@ -8,7 +8,7 @@
                  ├─ query → query_run ───────────────────────┤
                  └─ chat → quick_answer ─────────────────────┤
                                                              │
-                                          respond → END ◄────┘
+                                          respond → memory → END
 
 exec_flow 子图内部：
   exec_params → ask_missing → confirm_exec
@@ -26,6 +26,7 @@ from langgraph.types import Checkpointer
 
 from work_agent.graph.nodes.analysis import test_analysis
 from work_agent.graph.nodes.chat import quick_answer
+from work_agent.graph.nodes.memory import memory
 from work_agent.graph.nodes.query_run import query_run
 from work_agent.graph.nodes.respond import respond
 from work_agent.graph.nodes.router import route_by_intent, router
@@ -53,7 +54,7 @@ def intake(state: TestFlowState) -> dict:
     每轮入口：从 messages 提取本轮用户输入，并归零全部任务级字段。
 
     调用方只需 invoke({"messages": [HumanMessage(...)]})。
-    会话级 messages 由 add_messages 累积，intake 绝不碰它。
+    会话级 messages / dialogue_summary 由 checkpointer 累积，intake 绝不碰。
     """
     messages = state.get("messages") or []
     if not messages:
@@ -102,6 +103,7 @@ def build_graph(
     graph.add_node("query_run", query_run)
     graph.add_node("quick_answer", quick_answer)
     graph.add_node("respond", respond)
+    graph.add_node("memory", memory)
 
     graph.add_edge(START, "intake")
     graph.add_edge("intake", "router")
@@ -120,7 +122,8 @@ def build_graph(
     graph.add_edge("exec_flow", "respond")
     graph.add_edge("query_run", "respond")
     graph.add_edge("quick_answer", "respond")
-    graph.add_edge("respond", END)
+    graph.add_edge("respond", "memory")
+    graph.add_edge("memory", END)
 
     return graph.compile(
         checkpointer=checkpointer,
