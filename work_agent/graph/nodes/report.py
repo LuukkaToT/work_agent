@@ -64,8 +64,6 @@ def collect_results(state: TestFlowState) -> dict:
     summary.update(
         {
             "status": run_status or summary.get("status"),
-            "branch": "execute",
-            "run_id": run_id,
             "total": len(results_data),
             "passed": passed,
             "failed_count": len(failed),
@@ -170,8 +168,6 @@ def write_report(state: TestFlowState) -> dict:
 
     lines.extend(["", "## 日志摘录", "", "```", logs or "(无日志)", "```", ""])
     report_path.write_text("\n".join(lines), encoding="utf-8")
-
-    summary["report_path"] = str(report_path)
 
     run_id = state.get("run_id") or ""
     if run_id:

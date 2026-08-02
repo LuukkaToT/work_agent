@@ -87,6 +87,7 @@ def intake(state: TestFlowState) -> dict:
         "exec_params": {},
         "run_id": "",
         "run_status": "",
+        "exec_decision": "",
         "results": [],
         "logs": "",
         "report_path": "",

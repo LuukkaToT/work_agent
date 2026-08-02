@@ -58,7 +58,7 @@ def ask_missing(state: TestFlowState) -> dict:
 
 
 def confirm_exec(state: TestFlowState) -> dict:
-    """执行前最后确认。用户回 no 则取消，不调用 Executor.run。"""
+    """执行前最后确认。路由只看 exec_decision，不借道 summary。"""
     params = state.get("exec_params") or {}
     decision = interrupt(
         {
@@ -74,23 +74,22 @@ def confirm_exec(state: TestFlowState) -> dict:
 
     if not ok:
         return {
+            "exec_decision": "cancel",
             "summary": {
                 "status": "cancelled",
-                "branch": "execute",
-                "exec_params": params,
-                "reason": "user_rejected",
+                "message": "用户取消执行",
             },
-            "audit": [{"step": "confirm_exec", "decision": "no"}],
+            "audit": [{"step": "confirm_exec", "decision": "cancel"}],
         }
 
     return {
-        "audit": [{"step": "confirm_exec", "decision": "yes"}],
+        "exec_decision": "proceed",
+        "audit": [{"step": "confirm_exec", "decision": "proceed"}],
     }
 
 
 def route_after_confirm(state: TestFlowState) -> str:
-    """yes → 去 exec_run；no → 直接写报告结束。"""
-    summary = state.get("summary") or {}
-    if summary.get("status") == "cancelled":
+    """proceed → exec_run；cancel → write_report。"""
+    if state.get("exec_decision") == "cancel":
         return "cancel"
     return "proceed"

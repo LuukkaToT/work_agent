@@ -53,8 +53,8 @@ def _print_result(result: dict, *, verbose: bool = False) -> None:
         # respond 之前的旧数据或异常兜底
         reply = str(summary.get("message") or summary.get("answer") or "(无回复)")
 
-    branch = summary.get("branch") or result.get("intent") or "?"
-    console.print(Panel(reply, title=f"agent · {branch}", border_style="cyan"))
+    intent = result.get("intent") or "?"
+    console.print(Panel(reply, title=f"agent · {intent}", border_style="cyan"))
 
     refs: list[str] = []
     if result.get("run_id"):

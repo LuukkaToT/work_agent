@@ -48,12 +48,7 @@ def test_analysis(state: TestFlowState) -> dict:
 
     summary = {
         "status": "ok",
-        "branch": "analysis",
-        "task_id": task_id,
-        "analysis_path": str(analysis_path),
-        "skill": "test_analysis",
-        "refs_used": list(refs.keys()),
-        "chars": len(text),
+        "message": f"已生成测试分析（skill=test_analysis，{len(text)} 字）",
     }
 
     return {
@@ -66,6 +61,7 @@ def test_analysis(state: TestFlowState) -> dict:
                 "skill": "test_analysis",
                 "analysis_path": str(analysis_path),
                 "refs": list(refs.keys()),
+                "chars": len(text),
             }
         ],
     }

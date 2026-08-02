@@ -100,8 +100,6 @@ def exec_run(state: TestFlowState) -> dict:
     if not case_names or not topology:
         summary = {
             "status": "need_input",
-            "branch": "execute",
-            # missing：告诉上游/用户缺了啥（以后 interrupt 会用到）
             "missing": [
                 k
                 for k, ok in [
@@ -110,7 +108,7 @@ def exec_run(state: TestFlowState) -> dict:
                 ]
                 if not ok
             ],
-            "exec_params": params,
+            "message": "缺少执行参数，未提交任务",
         }
         return {
             "summary": summary,
@@ -139,13 +137,7 @@ def exec_run(state: TestFlowState) -> dict:
     return {
         "run_id": handle.run_id,
         "run_status": "pending",
-        "summary": {
-            "status": "submitted",
-            "branch": "execute",
-            "run_id": handle.run_id,
-            "exec_params": params,
-            "cases": state.get("cases") or [],
-        },
+        "summary": {"status": "submitted"},
         "audit": [
             {
                 "step": "exec_run",
@@ -181,11 +173,8 @@ def exec_poll(state: TestFlowState) -> dict:
     summary.update(
         {
             "status": st.phase,
-            "branch": "execute",
-            "run_id": run_id,
             "progress": st.progress,
             "message": st.message,
-            "poll_count": poll_count,
         }
     )
 

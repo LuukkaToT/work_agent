@@ -1,24 +1,16 @@
 """
-占位分支节点：证明 router 条件边能走到对应分支。
+占位分支节点（历史对照用，主图已不再注册）。
 
-- execute 已被 exec_flow 替换，do_execute 留着仅作对照，主图不再注册它
-- analysis / query / chat 以后会换成真正的 Role / Flow
+真正实现见 analysis / exec_flow / query_run / chat。
 """
 
 from work_agent.graph.state import TestFlowState
 
 
 def _branch(name: str, state: TestFlowState) -> dict:
-    """统一桩实现：只写 summary + audit，方便 lesson 里检查走了哪条支路。"""
     return {
-        "summary": {
-            "status": "ok",
-            "branch": name,
-            "task_id": state["task_id"],
-            "intent": state["intent"],
-            "user_input": state["user_input"],
-        },
-        "audit": [{"step": name, "task_id": state["task_id"]}],
+        "summary": {"status": "ok", "message": f"stub:{name}"},
+        "audit": [{"step": name, "task_id": state.get("task_id")}],
     }
 
 

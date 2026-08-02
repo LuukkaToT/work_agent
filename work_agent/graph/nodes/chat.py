@@ -22,7 +22,6 @@ def quick_answer(state: TestFlowState) -> dict:
     return {
         "summary": {
             "status": "ok",
-            "branch": "chat",
             "answer": answer,
         },
         "audit": [{"step": "quick_answer", "chars": len(answer)}],

@@ -68,13 +68,11 @@ def query_run(state: TestFlowState) -> dict:
     candidates = _resolve_candidates(user_input)
 
     if not candidates:
-        summary = {
-            "status": "not_found",
-            "branch": "query",
-            "message": "台账里没有找到可查询的执行记录",
-        }
         return {
-            "summary": summary,
+            "summary": {
+                "status": "not_found",
+                "message": "台账里没有找到可查询的执行记录",
+            },
             "audit": [{"step": "query_run", "status": "not_found"}],
         }
 
@@ -107,7 +105,6 @@ def query_run(state: TestFlowState) -> dict:
             return {
                 "summary": {
                     "status": "not_found",
-                    "branch": "query",
                     "message": f"无效 run_id: {run_id}",
                 },
                 "audit": [{"step": "query_run", "status": "bad_pick", "run_id": run_id}],
@@ -128,28 +125,25 @@ def query_run(state: TestFlowState) -> dict:
     except Exception:
         pass
 
+    exec_params = {
+        "case_names": record.case_names,
+        "version": record.version,
+        "topology": record.topology,
+    }
+    failed = [r for r in results if r.get("verdict") != "pass"]
     summary = {
         "status": "ok",
-        "branch": "query",
-        "run_id": record.run_id,
-        "task_id": record.task_id,
-        "run_status": live_status,
-        "exec_params": {
-            "case_names": record.case_names,
-            "version": record.version,
-            "topology": record.topology,
-        },
-        "report_path": record.report_path,
         "total": len(results),
         "passed": sum(1 for r in results if r.get("verdict") == "pass"),
-        "failed": [r for r in results if r.get("verdict") != "pass"],
+        "failed_count": len(failed),
+        "failed": failed,
         "message": f"查询到 {record.run_id}（task={record.task_id}）",
     }
 
     return {
         "run_id": record.run_id,
         "run_status": live_status,
-        "exec_params": summary["exec_params"],
+        "exec_params": exec_params,
         "results": results,
         "logs": logs,
         "report_path": record.report_path,
