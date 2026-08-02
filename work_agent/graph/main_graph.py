@@ -1,19 +1,19 @@
 """
-主图组装：只负责「有哪些节点、边怎么连」，业务逻辑在 nodes/ 里。
+主图组装：只负责「有哪些节点、边怎么连」，业务逻辑在 nodes/ 与子图里。
 
 当前完整路径：
   START → intake → router
-                 ├─ analysis → test_analysis ────────────────────────────────┐
-                 ├─ execute → exec_params → ask_missing → confirm_exec       │
-                 │                ├─ proceed → exec_run → exec_poll ⟲        │
-                 │                │              → collect → write_report ───┤
-                 │                └─ cancel  → write_report ─────────────────┤
-                 ├─ query → query_run ───────────────────────────────────────┤
-                 └─ chat → quick_answer ─────────────────────────────────────┤
-                                                                             │
-                                                        respond → END ◄──────┘
+                 ├─ analysis → test_analysis ────────────────┐
+                 ├─ execute → [子图 exec_flow] ──────────────┤
+                 ├─ query → query_run ───────────────────────┤
+                 └─ chat → quick_answer ─────────────────────┤
+                                                             │
+                                          respond → END ◄────┘
 
-respond 是所有分支的汇聚点：把结构化 summary 变成一句人话。
+exec_flow 子图内部：
+  exec_params → ask_missing → confirm_exec
+                    ├─ proceed → exec_run → exec_poll ⟲ → collect → write_report
+                    └─ cancel  → write_report
 """
 
 from __future__ import annotations
@@ -26,22 +26,11 @@ from langgraph.types import Checkpointer
 
 from work_agent.graph.nodes.analysis import test_analysis
 from work_agent.graph.nodes.chat import quick_answer
-from work_agent.graph.nodes.exec_flow import (
-    exec_params,
-    exec_poll,
-    exec_run,
-    route_after_poll,
-)
-from work_agent.graph.nodes.hitl import (
-    ask_missing,
-    confirm_exec,
-    route_after_confirm,
-)
 from work_agent.graph.nodes.query_run import query_run
-from work_agent.graph.nodes.report import collect_results, write_report
 from work_agent.graph.nodes.respond import respond
 from work_agent.graph.nodes.router import route_by_intent, router
 from work_agent.graph.state import RESET_AUDIT, TestFlowState
+from work_agent.graph.subgraphs.exec_flow import build_exec_flow
 
 
 def _message_text(content: object) -> str:
@@ -87,7 +76,6 @@ def intake(state: TestFlowState) -> dict:
         "exec_params": {},
         "run_id": "",
         "run_status": "",
-        "exec_decision": "",
         "results": [],
         "logs": "",
         "report_path": "",
@@ -114,13 +102,7 @@ def build_graph(
     graph.add_node("intake", intake)
     graph.add_node("router", router)
     graph.add_node("test_analysis", test_analysis)
-    graph.add_node("exec_params", exec_params)
-    graph.add_node("ask_missing", ask_missing)
-    graph.add_node("confirm_exec", confirm_exec)
-    graph.add_node("exec_run", exec_run)
-    graph.add_node("exec_poll", exec_poll)
-    graph.add_node("collect_results", collect_results)
-    graph.add_node("write_report", write_report)
+    graph.add_node("exec_flow", build_exec_flow())
     graph.add_node("query_run", query_run)
     graph.add_node("quick_answer", quick_answer)
     graph.add_node("respond", respond)
@@ -132,34 +114,14 @@ def build_graph(
         route_by_intent,
         {
             "analysis": "test_analysis",
-            "execute": "exec_params",
+            "execute": "exec_flow",
             "query": "query_run",
             "chat": "quick_answer",
         },
     )
 
     graph.add_edge("test_analysis", "respond")
-    graph.add_edge("exec_params", "ask_missing")
-    graph.add_edge("ask_missing", "confirm_exec")
-    graph.add_conditional_edges(
-        "confirm_exec",
-        route_after_confirm,
-        {
-            "proceed": "exec_run",
-            "cancel": "write_report",
-        },
-    )
-    graph.add_edge("exec_run", "exec_poll")
-    graph.add_conditional_edges(
-        "exec_poll",
-        route_after_poll,
-        {
-            "continue": "exec_poll",
-            "done": "collect_results",
-        },
-    )
-    graph.add_edge("collect_results", "write_report")
-    graph.add_edge("write_report", "respond")
+    graph.add_edge("exec_flow", "respond")
     graph.add_edge("query_run", "respond")
     graph.add_edge("quick_answer", "respond")
     graph.add_edge("respond", END)

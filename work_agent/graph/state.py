@@ -10,9 +10,8 @@ LangGraph 合并规则：
 - messages 用 add_messages：按消息 ID 追加 / 去重
 - audit 用 append_audit：默认追加，遇到重置哨兵时只保留本轮
 
-执行流水线私有字段（poll_count / cases）不在顶层，
-见 subgraphs/exec_flow.py 的 ExecFlowState（后续步骤拆入）。
-exec_decision 暂放顶层供 confirm 路由；拆子图后一并迁入。
+执行流水线私有字段（poll_count / cases / exec_decision）在
+subgraphs/exec_flow.py 的 ExecFlowState 里，不进顶层。
 """
 
 from typing import Annotated, TypedDict
@@ -59,12 +58,10 @@ class TestFlowState(TypedDict):
     requirement: str  # 预留：结构化需求（目前先等于 user_input）
     analysis_path: str  # 测试分析 markdown 落盘路径
 
-    # --- 任务级：执行产出（子图 output 写回；私有字段不在这里）---
+    # --- 任务级：执行子图 output 写回 ---
     exec_params: dict  # {case_names, version, topology}
     run_id: str  # Executor.run 返回的任务号；空表示还没提交
     run_status: str  # pending | running | finished | failed | ...
-    # confirm_exec 的路由决定：proceed | cancel；拆子图后迁入 ExecFlowState
-    exec_decision: str
 
     # --- 任务级：结果与报告 ---
     results: list[dict]  # 用例级结果列表

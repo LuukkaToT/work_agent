@@ -10,12 +10,12 @@ Human-in-the-loop 节点。
 但 interrupt 不会再停，而是直接返回 resume 值。
 """
 
+from typing import Any, Mapping
+
 from langgraph.types import interrupt
 
-from work_agent.graph.state import TestFlowState
 
-
-def ask_missing(state: TestFlowState) -> dict:
+def ask_missing(state: Mapping[str, Any]) -> dict:
     """缺 case_names / topology 时 interrupt 问人；齐了就直接放行。"""
     params = dict(state.get("exec_params") or {})
     case_names = list(params.get("case_names") or [])
@@ -57,7 +57,7 @@ def ask_missing(state: TestFlowState) -> dict:
     }
 
 
-def confirm_exec(state: TestFlowState) -> dict:
+def confirm_exec(state: Mapping[str, Any]) -> dict:
     """执行前最后确认。路由只看 exec_decision，不借道 summary。"""
     params = state.get("exec_params") or {}
     decision = interrupt(
@@ -88,7 +88,7 @@ def confirm_exec(state: TestFlowState) -> dict:
     }
 
 
-def route_after_confirm(state: TestFlowState) -> str:
+def route_after_confirm(state: Mapping[str, Any]) -> str:
     """proceed → exec_run；cancel → write_report。"""
     if state.get("exec_decision") == "cancel":
         return "cancel"

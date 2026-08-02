@@ -9,7 +9,7 @@
 还没有 interrupt：缺组网时只写 need_input 并跳过真正执行。
 """
 
-from typing import Optional
+from typing import Any, Mapping, Optional
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from pydantic import BaseModel, Field
@@ -18,7 +18,6 @@ from work_agent.core.config import get_settings
 from work_agent.core.ledger import get_ledger
 from work_agent.core.llm import get_chat_model
 from work_agent.graph.nodes.context import dialogue_text
-from work_agent.graph.state import TestFlowState
 from work_agent.tools.registry import get_case_provider, get_executor
 
 
@@ -28,7 +27,7 @@ class ExecParamsOut(BaseModel):
     topology: Optional[str] = Field(default=None, description="逻辑组网，如 topo_a")
 
 
-def exec_params(state: TestFlowState) -> dict:
+def exec_params(state: Mapping[str, Any]) -> dict:
     """
     参数优先级（与架构约定一致）：
     - version：用户没说 → 用 profile.default_version
@@ -87,7 +86,7 @@ def exec_params(state: TestFlowState) -> dict:
     }
 
 
-def exec_run(state: TestFlowState) -> dict:
+def exec_run(state: Mapping[str, Any]) -> dict:
     """
     提交执行。注意：这里不是「跑完」，只是拿到 run_id。
     缺 case_names 或 topology → need_input，不调用 tool。
@@ -149,7 +148,7 @@ def exec_run(state: TestFlowState) -> dict:
     }
 
 
-def exec_poll(state: TestFlowState) -> dict:
+def exec_poll(state: Mapping[str, Any]) -> dict:
     """
     查一次 status。
 
@@ -195,7 +194,7 @@ def exec_poll(state: TestFlowState) -> dict:
     }
 
 
-def route_after_poll(state: TestFlowState) -> str:
+def route_after_poll(state: Mapping[str, Any]) -> str:
     """
     条件边返回值：
     - continue → 再进 exec_poll（自循环）
@@ -207,8 +206,7 @@ def route_after_poll(state: TestFlowState) -> str:
     if state.get("run_status") in ("finished", "failed", "timeout"):
         return "done"
 
-    # 刹车：防止 status 一直 running 时死循环（商用会读 profile.poll_max_attempts）
-    max_attempts = 5
+    max_attempts = get_settings().profile.poll_max_attempts
     if int(state.get("poll_count") or 0) >= max_attempts:
         return "done"
 

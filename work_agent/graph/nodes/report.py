@@ -13,14 +13,14 @@ import json
 from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any, Mapping
 
 from work_agent.core.config import get_settings
 from work_agent.core.ledger import get_ledger
-from work_agent.graph.state import TestFlowState
 from work_agent.tools.registry import get_executor
 
 
-def collect_results(state: TestFlowState) -> dict:
+def collect_results(state: Mapping[str, Any]) -> dict:
     """拉取用例结果与日志；无 run_id（例如缺组网）时跳过。"""
     run_id = state.get("run_id") or ""
     run_status = state.get("run_status") or ""
@@ -88,7 +88,7 @@ def collect_results(state: TestFlowState) -> dict:
     }
 
 
-def write_report(state: TestFlowState) -> dict:
+def write_report(state: Mapping[str, Any]) -> dict:
     """
     落盘三份文件：
       task.json       任务元数据
