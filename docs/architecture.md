@@ -1,4 +1,4 @@
-# 测试专属 Agent 架构设计（讨论稿 v0.3）
+# 测试专属 Agent 架构设计（讨论稿 v0.4）
 
 命令行 Agent，给测试人员用。编排框架用 LangGraph。
 公司真实 tool 尚未接入，全部 mock，接口契约按真实系统设计，后续替换实现即可商用。
@@ -106,46 +106,47 @@ poll_max_attempts: 40
 
 ```mermaid
 flowchart TD
-  Start(["用户输入"]) --> Router["router 意图识别"]
-  Router -->|"分析一下 / 生成测试分析"| Analysis["Role test_analysis"]
-  Router -->|"执行某个用例"| ExecParams["exec_params 参数解析"]
-  Router -->|"上次执行怎么样了"| QueryRun["Flow query_run 指代消解"]
-  Router -->|"普通问答"| QuickAnswer["quick_answer"]
+  Start(["用户输入 messages"]) --> Intake["intake 提取本轮 + 归零任务级"]
+  Intake --> Router["router 意图识别 带对话历史"]
+  Router -->|"analysis"| Analysis["Role test_analysis"]
+  Router -->|"execute"| ExecFlow["子图 exec_flow"]
+  Router -->|"query"| QueryRun["Flow query_run"]
+  Router -->|"chat"| QuickAnswer["quick_answer"]
 
-  Analysis --> ReviewAnalysis{"HITL 确认或重写"}
-  ReviewAnalysis -->|"重写"| Analysis
-  ReviewAnalysis -->|"通过"| Respond
-  ReviewAnalysis -->|"顺手执行"| ExecParams
-
-  ExecParams --> AskMissing{"interrupt 补齐组网等缺失参数"}
-  AskMissing --> ExecConfirm{"HITL 执行前确认"}
-  ExecConfirm -->|"取消"| Respond
-  ExecConfirm -->|"确认"| ExecRun["exec_run 调执行tool"]
-  ExecRun --> Ledger["记入运行台账"]
-  Ledger --> ExecPoll["exec_poll 轮询状态"]
-  ExecPoll -->|"未完成且未超上限"| ExecPoll
-  ExecPoll -->|"完成"| Collect["collect_results 拉结果与日志"]
-  ExecPoll -->|"超上限 转后台"| Respond
-  Collect --> Summary["Role result_summary 汇总失败清单"]
-  Summary --> Report["report 落盘报告"]
-  Report --> Respond
-
-  QueryRun --> Collect
+  Analysis --> Respond
+  QueryRun --> Respond
   QuickAnswer --> Respond
+  ExecFlow --> Respond
 
-  Respond["respond 把结构化结果说成人话"] --> Finish(["结束"])
+  Respond["respond 说成人话 + 追加 AIMessage"] --> Finish(["结束"])
 ```
+
+执行子图 `exec_flow` 内部：
+
+```mermaid
+flowchart TD
+  Params["exec_params 抽参数"] --> AskMissing{"interrupt 补齐缺失参数"}
+  AskMissing --> Confirm{"HITL 确认"}
+  Confirm -->|"cancel"| Report["write_report"]
+  Confirm -->|"proceed"| Run["exec_run"]
+  Run --> Poll["exec_poll"]
+  Poll -->|"continue"| Poll
+  Poll -->|"done"| Collect["collect_results"]
+  Collect --> Report
+```
+
+子图用独立 schema：`ExecFlowInput` / `ExecFlowOutput` / 私有字段（`cases` / `exec_decision` / `poll_count`）。`audit` 只出不进，避免父图 reducer 重复计入。
 
 ### respond：所有分支的统一出口
 
-分支节点产出的 `summary` 是给报告、台账和程序看的结构化数据，直接丢给用户就是一堆字段。`respond` 是唯一的汇聚点，把本轮的确定性事实组织成一段中文回答，写入 `state.reply`，CLI 只展示它。
+分支节点产出的 `summary` 是给报告、台账和程序看的结构化数据，直接丢给用户就是一堆字段。`respond` 是唯一的汇聚点，把本轮的确定性事实组织成一段中文回答，写入 `state.reply`，并追加 `AIMessage` 到 `messages`，供下一轮指代。CLI 只展示 `reply`。
 
-两条约束决定了它的实现：
+两条约束：
 
-- **不许编造**。run_id、用例名、版本、组网、路径、数量以 JSON 原样交给模型，prompt 里禁止改写。用户会拿着这些去查问题，改一个字符就是误导。
+- **不许编造**。run_id、用例名、版本、组网、路径、数量以 JSON 原样交给模型，prompt 里禁止改写。
 - **不许中断**。它在所有分支的必经路径上，LLM 抖动不能让整轮任务失败，所以有确定性的兜底回复。
 
-chat 分支的 `answer` 本来就是人话，直接透传，不多花一次调用。回复同时落盘为 `reply.md`，用于事后复盘「当时告诉了用户什么」。
+chat 分支的 `answer` 本来就是人话，直接透传。回复同时落盘为 `reply.md`。
 
 ## 六、运行台账：支撑「前面那次执行怎么样了」
 
@@ -187,25 +188,45 @@ Mock 行为可配置，能造出四种结果：全通过、部分失败（版本
 
 ## 八、状态设计
 
+字段分两层：
+
+| 层级 | 字段 | 生命周期 |
+|------|------|----------|
+| 会话级 | `messages`（`add_messages`） | 跨轮累积，intake 不重置，靠 checkpointer 持久化 |
+| 任务级 | 其余字段 | 每轮由 `intake` 显式归零 |
+
 ```python
 class TestFlowState(TypedDict):
+    # 会话级
     messages: Annotated[list[AnyMessage], add_messages]
+
+    # 任务级：路由与产出
     task_id: str
-    intent: str                    # analysis | execute | query | chat
+    user_input: str                # intake 从 messages[-1] 提取
+    intent: str                    # analysis | execute | query | chat（单一事实来源）
     requirement: str
     analysis_path: str
-    cases: list[dict]
-    exec_params: dict              # version / topology / case_names
+    exec_params: dict              # 子图 output 写回
     run_id: str
-    run_status: str                # pending | running | finished | timeout
-    poll_count: int
+    run_status: str
     results: list[dict]
-    summary: dict
+    logs: str
     report_path: str
-    audit: Annotated[list[dict], operator.add]
+    summary: dict                  # 只放汇总量，见下
+    reply: str
+    audit: Annotated[list[dict], append_audit]
 ```
 
-`poll_count` 是轮询循环的刹车，`audit` 只追加用于可追溯。
+**单一事实来源约定：**
+
+- 路由读 `intent` / 子图内 `exec_decision`，不读 `summary`
+- 引用性字段（`run_id` / `report_path` / `analysis_path` / `exec_params`）只在顶层
+- `summary` 只放汇总量：`status` / `message` / `answer` / `total` / `passed` / `failed_count` / `failed` / `progress`（以及 `missing`）
+- 不写 `summary["branch"]`（与 `intent` 永远相等，属冗余）
+
+执行私有字段在子图 `ExecFlowState`：`cases` / `exec_decision` / `poll_count`。`poll_count` 是轮询刹车，上限读 `profile.poll_max_attempts`。
+
+调用方只传 `{"messages": [HumanMessage(...)]}`；任务级重置由 intake 负责，不再维护外部 `empty_state` 清单。
 
 ## 九、实施路线：小模块拆分
 
