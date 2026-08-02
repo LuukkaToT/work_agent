@@ -28,12 +28,9 @@ def test_intake_resets_task_fields():
         {
             "messages": [HumanMessage(content="你好")],
             "intent": "execute",
-            "run_id": "mock-old",
-            "run_status": "finished",
-            "exec_params": {"case_names": ["old"]},
+            "pipelines": [{"run_id": "pipe-old"}],
+            "exec_params": {"plans": [{"case_names": ["old"]}]},
             "results": [{"case_name": "old"}],
-            "logs": "old logs",
-            "report_path": "D:/old/report.md",
             "analysis_path": "D:/old/analysis.md",
             "summary": {"status": "ok", "total": 9},
             "reply": "上一轮回复",
@@ -44,15 +41,13 @@ def test_intake_resets_task_fields():
     assert out["requirement"] == ""
     assert out["analysis_path"] == ""
     assert out["exec_params"] == {}
-    assert out["run_id"] == ""
-    assert out["run_status"] == ""
+    assert out["pipelines"] == []
     assert out["results"] == []
-    assert out["logs"] == ""
-    assert out["report_path"] == ""
     assert out["summary"] == {}
     assert out["reply"] == ""
-    # messages 不在返回值里 —— 会话级由 add_messages 管，intake 绝不碰
     assert "messages" not in out
+    assert "run_id" not in out
+    assert "report_path" not in out
 
 
 def test_intake_audit_has_reset_sentinel():

@@ -12,8 +12,8 @@
 
 exec_flow 子图内部：
   exec_params → ask_missing → confirm_exec
-                    ├─ proceed → exec_run → exec_poll ⟲ → collect → write_report
-                    └─ cancel  → write_report
+                    ├─ proceed → create_pipelines → END
+                    └─ cancel  → END
 """
 
 from __future__ import annotations
@@ -63,7 +63,6 @@ def intake(state: TestFlowState) -> dict:
     if not user_input:
         raise ValueError("本轮用户消息为空")
 
-    # 每轮新任务：不要复用上一轮 task_id（否则报告会盖到旧目录）
     task_id = str(uuid.uuid4())[:8]
 
     return {
@@ -74,11 +73,8 @@ def intake(state: TestFlowState) -> dict:
         "requirement": "",
         "analysis_path": "",
         "exec_params": {},
-        "run_id": "",
-        "run_status": "",
+        "pipelines": [],
         "results": [],
-        "logs": "",
-        "report_path": "",
         "summary": {},
         "reply": "",
         "audit": [

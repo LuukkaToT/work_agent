@@ -23,7 +23,7 @@ class RunRecord:
     task_id: str
     case_names: list[str]
     version: str
-    topology: str
+    env: str
     status: str
     report_path: str
     created_at: str
@@ -47,6 +47,14 @@ class RunLedger:
 
     def _init_db(self) -> None:
         with self._connect() as conn:
+            # 开发期：旧表若仍是 topology 列，直接重建（无生产迁移）
+            cols = {
+                row[1]
+                for row in conn.execute("PRAGMA table_info(runs)").fetchall()
+            }
+            if cols and "env" not in cols:
+                conn.execute("DROP TABLE runs")
+
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS runs (
@@ -54,7 +62,7 @@ class RunLedger:
                     task_id TEXT NOT NULL,
                     case_names TEXT NOT NULL,
                     version TEXT NOT NULL,
-                    topology TEXT NOT NULL,
+                    env TEXT NOT NULL,
                     status TEXT NOT NULL,
                     report_path TEXT NOT NULL DEFAULT '',
                     created_at TEXT NOT NULL,
@@ -71,7 +79,7 @@ class RunLedger:
         task_id: str,
         case_names: list[str],
         version: str,
-        topology: str,
+        env: str,
         status: str,
         report_path: str = "",
     ) -> None:
@@ -80,14 +88,14 @@ class RunLedger:
             conn.execute(
                 """
                 INSERT INTO runs (
-                    run_id, task_id, case_names, version, topology,
+                    run_id, task_id, case_names, version, env,
                     status, report_path, created_at, updated_at
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(run_id) DO UPDATE SET
                     task_id=excluded.task_id,
                     case_names=excluded.case_names,
                     version=excluded.version,
-                    topology=excluded.topology,
+                    env=excluded.env,
                     status=excluded.status,
                     report_path=CASE
                         WHEN excluded.report_path != '' THEN excluded.report_path
@@ -100,7 +108,7 @@ class RunLedger:
                     task_id,
                     json.dumps(case_names, ensure_ascii=False),
                     version,
-                    topology,
+                    env,
                     status,
                     report_path,
                     now,
@@ -161,6 +169,14 @@ class RunLedger:
                 break
         return out
 
+    def find_by_task(self, task_id: str) -> list[RunRecord]:
+        with self._connect() as conn:
+            rows = conn.execute(
+                "SELECT * FROM runs WHERE task_id=? ORDER BY created_at ASC",
+                (task_id,),
+            ).fetchall()
+        return [self._row_to_record(r) for r in rows]
+
     def list_recent(self, limit: int = 10) -> list[RunRecord]:
         return self.latest(limit=limit)
 
@@ -171,7 +187,7 @@ class RunLedger:
             task_id=row["task_id"],
             case_names=json.loads(row["case_names"] or "[]"),
             version=row["version"],
-            topology=row["topology"],
+            env=row["env"],
             status=row["status"],
             report_path=row["report_path"] or "",
             created_at=row["created_at"],

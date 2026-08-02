@@ -6,11 +6,11 @@
 - 任务级：其余字段 —— 每轮由 intake 显式归零
 
 LangGraph 合并规则：
-- 普通字段：后写覆盖前写（如 intent、run_id）
+- 普通字段：后写覆盖前写（如 intent、pipelines）
 - messages 用 add_messages：按消息 ID 追加 / 去重
 - audit 用 append_audit：默认追加，遇到重置哨兵时只保留本轮
 
-执行流水线私有字段（poll_count / cases / exec_decision）在
+执行流水线私有字段（exec_decision）在
 subgraphs/exec_flow.py 的 ExecFlowState 里，不进顶层。
 """
 
@@ -52,23 +52,21 @@ class TestFlowState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
 
     # --- 任务级：会话 / 路由 ---
-    task_id: str  # 本次任务 id，落盘报告时用
+    task_id: str  # 本次任务 id
     user_input: str  # 本轮用户输入（从 messages[-1] 提取）
     intent: str  # router 分类：analysis | execute | query | chat
     requirement: str  # 预留：结构化需求（目前先等于 user_input）
     analysis_path: str  # 测试分析 markdown 落盘路径
 
     # --- 任务级：执行子图 output 写回 ---
-    exec_params: dict  # {case_names, version, topology}
-    run_id: str  # Executor.run 返回的任务号；空表示还没提交
-    run_status: str  # pending | running | finished | failed | ...
+    # {plans: [{case_names, version, env, env_kind, missing}, ...]}
+    exec_params: dict
+    # [{run_id, case_names, version, env, status, error}, ...]
+    pipelines: list[dict]
 
-    # --- 任务级：结果与报告 ---
-    results: list[dict]  # 用例级结果列表
-    logs: str  # 原始日志文本
-    report_path: str  # report.md 的绝对路径
-    # 只放汇总量：status / message / answer / total / passed / failed_count / failed / progress
-    # 不要塞 run_id / exec_params / report_path / branch 等与顶层重复的字段
+    # --- 任务级：查询结果 ---
+    results: list[dict]  # 用例级结果列表（query_run 聚合）
+    # 只放汇总量：status / message / answer / total / passed / failed_count / failed / created / failed_pipelines
     summary: dict
 
     # --- 任务级：对外回复 ---

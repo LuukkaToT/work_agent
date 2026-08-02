@@ -10,62 +10,139 @@ Human-in-the-loop 节点。
 但 interrupt 不会再停，而是直接返回 resume 值。
 """
 
+from __future__ import annotations
+
+import re
 from typing import Any, Mapping
 
 from langgraph.types import interrupt
 
+from work_agent.graph.nodes.exec_flow import ALLOWED_VERSIONS, _plan_dict
+
+
+def _parse_case_names(reply: Any) -> list[str]:
+    if isinstance(reply, str):
+        parts = re.split(r"[,，\s]+", reply.strip())
+        return [x for x in parts if x]
+    if isinstance(reply, dict):
+        return list(reply.get("case_names") or [])
+    if isinstance(reply, list):
+        return [str(x).strip() for x in reply if str(x).strip()]
+    return []
+
+
+def _parse_env(reply: Any) -> str:
+    if isinstance(reply, str):
+        return reply.strip()
+    if isinstance(reply, dict):
+        return str(reply.get("env") or reply.get("topology") or "").strip()
+    return str(reply or "").strip()
+
+
+def _parse_version(reply: Any) -> str:
+    if isinstance(reply, str):
+        return reply.strip().upper()
+    if isinstance(reply, dict):
+        return str(reply.get("version") or "").strip().upper()
+    return str(reply or "").strip().upper()
+
 
 def ask_missing(state: Mapping[str, Any]) -> dict:
-    """缺 case_names / topology 时 interrupt 问人；齐了就直接放行。"""
+    """按计划逐条补缺参；逻辑组网会提示暂只支持物理 IP。"""
     params = dict(state.get("exec_params") or {})
-    case_names = list(params.get("case_names") or [])
-    topology = (params.get("topology") or "").strip()
+    plans = [dict(p) for p in (params.get("plans") or [])]
+    if not plans:
+        plans = [_plan_dict(case_names=[], version="27B", env="")]
 
-    if not case_names:
-        reply = interrupt(
-            {
-                "type": "ask_case_names",
-                "message": "请输入要执行的用例名（逗号分隔），例如 case_downlink_001",
-                "current": params,
-            }
-        )
-        # 允许用户回字符串或 {"case_names": [...]}
-        if isinstance(reply, str):
-            case_names = [x.strip() for x in reply.split(",") if x.strip()]
-        elif isinstance(reply, dict):
-            case_names = list(reply.get("case_names") or [])
-        params["case_names"] = case_names
+    for idx, plan in enumerate(plans):
+        while True:
+            missing = list(plan.get("missing") or [])
+            if not missing:
+                break
 
-    if not (params.get("topology") or "").strip():
-        reply = interrupt(
-            {
-                "type": "ask_topology",
-                "message": "请输入逻辑组网，例如 topo_a / topo_b（不要猜，必须你确认）",
-                "current": params,
-                "frequent": ["topo_a", "topo_b"],
-            }
-        )
-        if isinstance(reply, str):
-            topology = reply.strip()
-        elif isinstance(reply, dict):
-            topology = str(reply.get("topology") or "").strip()
-        params["topology"] = topology
+            if "case_names" in missing:
+                reply = interrupt(
+                    {
+                        "type": "ask_case_names",
+                        "message": (
+                            f"第 {idx + 1}/{len(plans)} 条计划缺少用例名，"
+                            "请输入用例名（逗号分隔）"
+                        ),
+                        "plan_index": idx,
+                        "current": plan,
+                    }
+                )
+                plan["case_names"] = _parse_case_names(reply)
 
+            if "version" in missing:
+                reply = interrupt(
+                    {
+                        "type": "ask_version",
+                        "message": (
+                            f"第 {idx + 1}/{len(plans)} 条计划版本无效，"
+                            f"请输入 {', '.join(sorted(ALLOWED_VERSIONS))} 之一"
+                        ),
+                        "plan_index": idx,
+                        "current": plan,
+                    }
+                )
+                plan["version"] = _parse_version(reply)
+
+            if "env" in missing:
+                env_kind = plan.get("env_kind") or ""
+                if env_kind == "logical":
+                    msg = (
+                        f"第 {idx + 1}/{len(plans)} 条计划给的是逻辑组网 "
+                        f"`{plan.get('env')}`，现阶段只支持物理 IP。"
+                        "请输入物理环境 IP，例如 7.223.50.60"
+                        "（逻辑组网型号映射后续接入）"
+                    )
+                else:
+                    msg = (
+                        f"第 {idx + 1}/{len(plans)} 条计划缺少物理组网 IP，"
+                        "请输入如 7.223.50.60"
+                    )
+                reply = interrupt(
+                    {
+                        "type": "ask_env",
+                        "message": msg,
+                        "plan_index": idx,
+                        "current": plan,
+                    }
+                )
+                plan["env"] = _parse_env(reply)
+
+            # 重新计算 missing / env_kind
+            rebuilt = _plan_dict(
+                case_names=list(plan.get("case_names") or []),
+                version=str(plan.get("version") or ""),
+                env=str(plan.get("env") or ""),
+            )
+            plan.update(rebuilt)
+            # 若用户仍给逻辑组网，继续循环问
+            if plan.get("missing"):
+                continue
+            break
+
+        plans[idx] = plan
+
+    params["plans"] = plans
     return {
         "exec_params": params,
-        "audit": [{"step": "ask_missing", "params": params}],
+        "audit": [{"step": "ask_missing", "plan_count": len(plans), "params": params}],
     }
 
 
 def confirm_exec(state: Mapping[str, Any]) -> dict:
     """执行前最后确认。路由只看 exec_decision，不借道 summary。"""
     params = state.get("exec_params") or {}
+    plans = list(params.get("plans") or [])
     decision = interrupt(
         {
             "type": "confirm_exec",
-            "message": "确认执行？输入 yes 继续，no 取消",
+            "message": f"确认创建并启动 {len(plans)} 条流水线？输入 yes 继续，no 取消",
             "params": params,
-            "cases": state.get("cases") or [],
+            "plans": plans,
         }
     )
 
@@ -89,7 +166,7 @@ def confirm_exec(state: Mapping[str, Any]) -> dict:
 
 
 def route_after_confirm(state: Mapping[str, Any]) -> str:
-    """proceed → exec_run；cancel → write_report。"""
+    """proceed → create_pipelines；cancel → END。"""
     if state.get("exec_decision") == "cancel":
         return "cancel"
     return "proceed"

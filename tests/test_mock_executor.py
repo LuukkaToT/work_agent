@@ -1,80 +1,100 @@
-"""MockExecutor 四场景与轮询行为：这是执行分支的契约，real 实现也要满足。"""
+"""MockPipelineTool：三函数契约、用例名自校验、四场景。"""
 
 import pytest
 
-from work_agent.tools.mock.executor import MockExecutor
+from work_agent.tools.mock.executor import MockPipelineTool
+
+VALID_CASES = [
+    "HF_20B_PUSCH_1Cell_200M_hf_001",
+    "TDD_26a_85_5002_4T_1CC_KPI_TST",
+]
 
 
-def submit(ex, cases=None):
-    return ex.run(cases or ["case_a", "case_b"], version="27B", topology="topo_a")
+def create(ex, *, run_id="pipe-001", cases=None, version="27B", env="7.223.50.60"):
+    return ex.init_pipline(
+        run_id,
+        cases or VALID_CASES,
+        version,
+        env,
+    )
 
 
-def test_run_validates_params():
-    ex = MockExecutor()
+def test_init_validates_params():
+    ex = MockPipelineTool()
     with pytest.raises(ValueError):
-        ex.run([], "27B", "topo_a")
+        ex.init_pipline("", VALID_CASES, "27B", "7.223.50.60")
     with pytest.raises(ValueError):
-        ex.run(["case_a"], "", "topo_a")
+        ex.init_pipline("pipe-1", [], "27B", "7.223.50.60")
     with pytest.raises(ValueError):
-        ex.run(["case_a"], "27B", "")
+        ex.init_pipline("pipe-1", VALID_CASES, "", "7.223.50.60")
+    with pytest.raises(ValueError):
+        ex.init_pipline("pipe-1", VALID_CASES, "27B", "")
 
 
-def test_polling_ticks_to_finish():
-    """ticks_to_finish=2：第 1 次 running，第 2 次 finished，与 exec_poll 自循环对齐。"""
-    ex = MockExecutor(scenario="all_pass", ticks_to_finish=2)
-    handle = submit(ex)
+def test_init_rejects_short_case_names():
+    """流水线自己校验用例名；agent 不预检，但 mock 要能模拟拒绝。"""
+    ex = MockPipelineTool()
+    with pytest.raises(ValueError, match="非法用例名"):
+        ex.init_pipline("pipe-1", ["case_a", "ok"], "27B", "7.223.50.60")
 
-    first = ex.status(handle.run_id)
+
+def test_check_then_query_ticks():
+    ex = MockPipelineTool(scenario="all_pass", ticks_to_finish=2)
+    create(ex)
+    assert ex.check_pipline("pipe-001") is True
+
+    first = ex.query_result("pipe-001")
     assert first.phase == "running"
+    assert first.results == []
 
-    second = ex.status(handle.run_id)
+    second = ex.query_result("pipe-001")
     assert second.phase == "finished"
+    assert [r.verdict for r in second.results] == ["pass", "pass"]
 
 
-def test_results_before_finish_raises():
-    ex = MockExecutor(scenario="all_pass", ticks_to_finish=2)
-    handle = submit(ex)
-    with pytest.raises(RuntimeError):
-        ex.results(handle.run_id)
-
-
-def test_all_pass_results():
-    ex = MockExecutor(scenario="all_pass", ticks_to_finish=1)
-    handle = submit(ex)
-    ex.status(handle.run_id)
-    results = ex.results(handle.run_id)
-    assert [r.verdict for r in results] == ["pass", "pass"]
+def test_query_before_check_is_pending():
+    ex = MockPipelineTool()
+    create(ex)
+    pr = ex.query_result("pipe-001")
+    assert pr.phase == "pending"
 
 
 def test_version_fail_marks_first_case():
-    ex = MockExecutor(scenario="version_fail", ticks_to_finish=1)
-    handle = submit(ex)
-    ex.status(handle.run_id)
-    first, second = ex.results(handle.run_id)
+    ex = MockPipelineTool(scenario="version_fail", ticks_to_finish=1)
+    create(ex)
+    ex.check_pipline("pipe-001")
+    pr = ex.query_result("pipe-001")
+    first, second = pr.results
     assert (first.verdict, first.fail_kind) == ("fail", "version")
     assert second.verdict == "pass"
 
 
 def test_case_error_marks_first_case():
-    ex = MockExecutor(scenario="case_error", ticks_to_finish=1)
-    handle = submit(ex)
-    ex.status(handle.run_id)
-    first, second = ex.results(handle.run_id)
+    ex = MockPipelineTool(scenario="case_error", ticks_to_finish=1)
+    create(ex)
+    ex.check_pipline("pipe-001")
+    first, second = ex.query_result("pipe-001").results
     assert (first.verdict, first.fail_kind) == ("error", "case")
     assert second.verdict == "pass"
 
 
-def test_env_error_fails_immediately():
-    """环境错误不进入 running，第一次查状态就是 failed。"""
-    ex = MockExecutor(scenario="env_error", ticks_to_finish=5)
-    handle = submit(ex)
-    st = ex.status(handle.run_id)
-    assert st.phase == "failed"
-    results = ex.results(handle.run_id)
-    assert all(r.fail_kind == "env" for r in results)
+def test_env_error_fails_on_check():
+    ex = MockPipelineTool(scenario="env_error", ticks_to_finish=5)
+    create(ex)
+    ex.check_pipline("pipe-001")
+    pr = ex.query_result("pipe-001")
+    assert pr.phase == "failed"
+    assert all(r.fail_kind == "env" for r in pr.results)
 
 
 def test_unknown_run_id():
-    ex = MockExecutor()
+    ex = MockPipelineTool()
     with pytest.raises(KeyError):
-        ex.status("no-such-run")
+        ex.query_result("no-such-run")
+
+
+def test_duplicate_run_id_rejected():
+    ex = MockPipelineTool()
+    create(ex)
+    with pytest.raises(ValueError, match="已存在"):
+        create(ex)

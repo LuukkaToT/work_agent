@@ -13,11 +13,8 @@ def state_base(**overrides) -> dict:
         "requirement": "",
         "analysis_path": "",
         "exec_params": {},
-        "run_id": "",
-        "run_status": "",
+        "pipelines": [],
         "results": [],
-        "logs": "",
-        "report_path": "",
         "summary": {},
         "reply": "",
         "audit": [],
@@ -30,15 +27,13 @@ def state_base(**overrides) -> dict:
 def test_facts_drops_empty_values():
     state = state_base()
     facts = _facts(state)
-    # 空 run_id / 空参数不该出现，免得模型对着空值编故事
-    assert "run_id" not in facts
+    assert "流水线" not in facts
     assert "用例" not in facts
     assert facts["用户问题"] == "执行用例"
     assert facts["任务类型"] == "execute"
 
 
 def test_facts_reads_intent_not_summary_branch():
-    """任务类型只认 intent；summary 里就算还有 branch 也忽略。"""
     state = state_base(
         intent="query",
         summary={"branch": "execute", "status": "ok"},
@@ -47,10 +42,9 @@ def test_facts_reads_intent_not_summary_branch():
 
 
 def test_facts_keeps_zero_passed():
-    """passed=0 必须保留：剔掉后「跑了但全挂」会被误读成「还没跑」。"""
     state = state_base(
         summary={
-            "status": "finished",
+            "status": "ok",
             "total": 2,
             "passed": 0,
             "failed_count": 2,
@@ -67,6 +61,26 @@ def test_facts_keeps_zero_passed():
     assert [f["用例"] for f in facts["失败明细"]] == ["case_a", "case_b"]
 
 
+def test_facts_includes_pipelines():
+    state = state_base(
+        pipelines=[
+            {
+                "run_id": "pipe-aaa",
+                "env": "7.223.50.60",
+                "version": "27B",
+                "case_names": ["HF_20B_PUSCH_001"],
+                "status": "running",
+                "error": "",
+            }
+        ],
+        summary={"status": "submitted", "created": 1},
+    )
+    facts = _facts(state)
+    assert facts["run_id列表"] == ["pipe-aaa"]
+    assert facts["流水线"][0]["环境"] == "7.223.50.60"
+    assert facts["已创建流水线数"] == 1
+
+
 def test_fallback_cancelled():
     state = state_base(
         intent="execute",
@@ -76,17 +90,19 @@ def test_fallback_cancelled():
     assert "取消" in reply
 
 
-def test_fallback_execute_quotes_run_id_and_report():
+def test_fallback_execute_lists_pipelines():
     state = state_base(
         intent="execute",
-        run_id="mock-abc123",
-        run_status="finished",
-        report_path="D:/x/report.md",
-        summary={"status": "finished", "total": 1, "passed": 1},
+        pipelines=[
+            {"run_id": "pipe-abc123", "env": "7.223.50.60", "status": "running"},
+            {"run_id": "pipe-def456", "env": "7.223.60.11", "status": "running"},
+        ],
+        summary={"status": "submitted", "created": 2, "failed_pipelines": 0},
     )
     reply = _fallback_reply(state, _facts(state))
-    assert "mock-abc123" in reply
-    assert "D:/x/report.md" in reply
+    assert "pipe-abc123" in reply
+    assert "pipe-def456" in reply
+    assert "流水线前端" in reply
 
 
 def test_fallback_analysis_quotes_path():
@@ -109,7 +125,6 @@ def test_fallback_query_uses_message():
 
 
 def test_fallback_last_resort_is_valid_json():
-    """走到兜底的兜底时，输出的应是合法 JSON 的事实，而不是异常。"""
     state = state_base(intent="", summary={})
     facts = _facts(state)
     reply = _fallback_reply(state, facts)

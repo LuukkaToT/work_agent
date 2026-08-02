@@ -11,12 +11,12 @@ from __future__ import annotations
 
 from typing import Protocol, runtime_checkable
 
-from work_agent.tools.models import CaseInfo, CaseResult, RunHandle, RunStatus
+from work_agent.tools.models import CaseInfo, PipelineHandle, PipelineResult
 
 
 @runtime_checkable
 class CaseProvider(Protocol):
-    """用例库：列目录 / 按名拉取。"""
+    """用例库：列目录 / 按名拉取。执行链路暂不用；分析场景以后再用。"""
 
     def list_cases(self, query: str | None = None) -> list[CaseInfo]: ...
 
@@ -24,21 +24,25 @@ class CaseProvider(Protocol):
 
 
 @runtime_checkable
-class Executor(Protocol):
+class PipelineTool(Protocol):
     """
-    执行引擎三要素：用例名列表 + 版本 + 逻辑组网。
-    单个执行 = 列表长度为 1，不必单独做单跑接口。
+    公司流水线三件套（函数名刻意贴近真实拼写 init_pipline / check_pipline）：
+
+      init_pipline  创建流水线（用例名由流水线自己校验）
+      check_pipline 启动执行
+      query_result  查询执行数据（用户主动问进度时用）
+
+    env 现阶段只支持物理 IP；逻辑组网后续再加。
     """
 
-    def run(
+    def init_pipline(
         self,
+        run_id: str,
         case_names: list[str],
         version: str,
-        topology: str,
-    ) -> RunHandle: ...
+        env: str,
+    ) -> PipelineHandle: ...
 
-    def status(self, run_id: str) -> RunStatus: ...
+    def check_pipline(self, run_id: str) -> bool: ...
 
-    def results(self, run_id: str) -> list[CaseResult]: ...
-
-    def logs(self, run_id: str, case_name: str | None = None) -> str: ...
+    def query_result(self, run_id: str) -> PipelineResult: ...

@@ -1,9 +1,9 @@
-# 测试专属 Agent 架构设计（讨论稿 v0.4）
+# 测试专属 Agent 架构设计（讨论稿 v0.5）
 
 命令行 Agent，给测试人员用。编排框架用 LangGraph。
 公司真实 tool 尚未接入，全部 mock，接口契约按真实系统设计，后续替换实现即可商用。
 
-MVP 范围：**到「看到执行结果并生成报告」为止**。提单、环境自动修复、用例自动生成放 Phase 2。
+MVP 范围：**到「创建并启动流水线 + 可查询进度」为止**。最终结果用户去流水线前端看；归因、环境自动修复、用例自动生成放 Phase 2。
 
 ## 一、核心设计原则
 
@@ -72,9 +72,11 @@ workspace/
   index.db              # 运行台账（跨会话查询用）
 ```
 
-## 四、参数解析：逻辑组网与优先级链
+## 四、参数解析：物理环境与优先级链
 
-**逻辑组网** 是执行 tool 的入参，一个逻辑组网对应多套物理环境，物理环境由公司平台调度，本项目不管。
+执行 tool 现阶段入参是 **物理组网 IP**（如 `7.223.50.60`）。逻辑组网（如 `3BBL_86_1BBL86` / 「85+86 环境」）后续靠型号映射 markdown 解析，当前识别到会 interrupt 提示改传物理 IP。
+
+一次用户输入可拆成 **多条执行计划**：不同环境各一条流水线（两次 `init_pipline`）；同一环境多个用例合并为一条（批量 `case_names`）。
 
 参数来源优先级：
 
@@ -87,9 +89,9 @@ flowchart LR
 
 | 参数 | 缺失时行为 |
 |------|-----------|
-| `case_names` | 缺失则 interrupt 询问，或列出可选用例让用户挑 |
-| `version` | 可由个人配置默认值静默填充（如 `27B`），但必须在确认页展示 |
-| `topology` | **即使配置里有默认值也必须 interrupt 确认**，不允许静默填充 |
+| `case_names` | 缺失则 interrupt 询问；agent **不预校验**用例名，流水线自己验证 |
+| `version` | 枚举 `27B/27A/26B/26A`；可由个人配置默认值静默填充，确认页展示 |
+| `env` | 物理 IP；**不允许静默填充**；逻辑组网写法视为缺失并提示 |
 
 个人配置放 `config/profile.yaml`：
 
@@ -100,7 +102,7 @@ poll_interval_seconds: 30
 poll_max_attempts: 40
 ```
 
-组网必须问，是因为跑错组网的代价高，且逻辑组网到物理环境是一对多，agent 无从判断你要哪套。
+环境必须问，是因为跑错环境代价高。`poll_*` 配置保留但执行链路已不再轮询。
 
 ## 五、主流程
 
@@ -125,17 +127,14 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  Params["exec_params 抽参数"] --> AskMissing{"interrupt 补齐缺失参数"}
-  AskMissing --> Confirm{"HITL 确认"}
-  Confirm -->|"cancel"| Report["write_report"]
-  Confirm -->|"proceed"| Run["exec_run"]
-  Run --> Poll["exec_poll"]
-  Poll -->|"continue"| Poll
-  Poll -->|"done"| Collect["collect_results"]
-  Collect --> Report
+  Params["exec_params 抽执行计划列表"] --> AskMissing["interrupt 逐计划补缺参"]
+  AskMissing --> Confirm{"HITL 确认 N 条流水线"}
+  Confirm -->|"cancel"| EndNode(["END"])
+  Confirm -->|"proceed"| Create["create_pipelines 循环 init+check"]
+  Create --> EndNode
 ```
 
-子图用独立 schema：`ExecFlowInput` / `ExecFlowOutput` / 私有字段（`cases` / `exec_decision` / `poll_count`）。`audit` 只出不进，避免父图 reducer 重复计入。
+子图用独立 schema：`ExecFlowInput` / `ExecFlowOutput` / 私有字段（`exec_decision`）。`audit` 只出不进，避免父图 reducer 重复计入。不再轮询、不收集结果、不写执行报告——提交后用户去流水线前端看，问进度走 `query_run`。
 
 ### respond：所有分支的统一出口
 
@@ -154,17 +153,17 @@ checkpointer 只按 `thread_id` 存图状态。用户换会话再问「上次执
 
 | 字段 | 说明 |
 |------|------|
-| `run_id` | 执行 tool 返回的 id |
-| `task_id` | 本地任务 id |
-| `case_names` / `version` / `topology` | 执行参数 |
+| `run_id` | agent 生成并传入 `init_pipline` 的 id |
+| `task_id` | 本地任务 id（同一任务可对应多条流水线） |
+| `case_names` / `version` / `env` | 执行参数（env=物理 IP） |
 | `status` | 最后已知状态 |
 | `created_at` / `updated_at` | 时间戳 |
 
 `query_run` 这个 Flow 的指代消解规则，按顺序尝试：
 
 1. 用户明确给了 run_id 或用例名，直接匹配台账
-2. 说「上次 / 前面那次」，取台账中最近一条
-3. 台账为空或有歧义，interrupt 列出候选让用户选
+2. 说「上次 / 前面那次 / 那几条」，取最近一条所属 task 的全部流水线，逐条 `query_result`
+3. 台账为空或跨 task 有歧义，interrupt 列出候选让用户选
 
 这就是为什么查询类**不需要**子 agent：规则能穷举，用不着让模型自由探索。
 
@@ -175,16 +174,15 @@ class CaseProvider(Protocol):
     def list_cases(self, query: str | None = None) -> list[CaseInfo]: ...
     def fetch_cases(self, names: list[str]) -> list[CaseInfo]: ...
 
-class Executor(Protocol):
-    def run(self, case_names: list[str], version: str, topology: str) -> RunHandle: ...
-    def status(self, run_id: str) -> RunStatus: ...
-    def results(self, run_id: str) -> list[CaseResult]: ...
-    def logs(self, run_id: str, case_name: str | None = None) -> str: ...
+class PipelineTool(Protocol):
+    def init_pipline(self, run_id: str, case_names: list[str], version: str, env: str) -> PipelineHandle: ...
+    def check_pipline(self, run_id: str) -> bool: ...
+    def query_result(self, run_id: str) -> PipelineResult: ...
 ```
 
-单个与批量执行统一成用例名列表，长度 1 就是单个，实现不分叉。
+对齐公司真实函数：`init_pipline` 创建、`check_pipline` 启动、查询函数拿执行数据。单个与批量统一成用例名列表。`run_id` 由 agent 生成后传入。
 
-Mock 行为可配置，能造出四种结果：全通过、部分失败（版本问题特征）、用例本身报错、环境不可用。每条分支都能跑通。
+Mock 行为可配置四场景：全通过、版本失败、用例报错、环境不可用。`query_result` 用 tick 模拟分钟级执行进度。
 
 ## 八、状态设计
 
@@ -206,12 +204,9 @@ class TestFlowState(TypedDict):
     intent: str                    # analysis | execute | query | chat（单一事实来源）
     requirement: str
     analysis_path: str
-    exec_params: dict              # 子图 output 写回
-    run_id: str
-    run_status: str
-    results: list[dict]
-    logs: str
-    report_path: str
+    exec_params: dict              # {plans: [{case_names, version, env, ...}, ...]}
+    pipelines: list[dict]          # [{run_id, case_names, version, env, status, error}, ...]
+    results: list[dict]            # query_run 聚合的用例结果
     summary: dict                  # 只放汇总量，见下
     reply: str
     audit: Annotated[list[dict], append_audit]
@@ -220,11 +215,11 @@ class TestFlowState(TypedDict):
 **单一事实来源约定：**
 
 - 路由读 `intent` / 子图内 `exec_decision`，不读 `summary`
-- 引用性字段（`run_id` / `report_path` / `analysis_path` / `exec_params`）只在顶层
-- `summary` 只放汇总量：`status` / `message` / `answer` / `total` / `passed` / `failed_count` / `failed` / `progress`（以及 `missing`）
+- 引用性字段（`pipelines` / `analysis_path` / `exec_params`）只在顶层
+- `summary` 只放汇总量：`status` / `message` / `answer` / `total` / `passed` / `failed_count` / `failed` / `created` / `failed_pipelines`
 - 不写 `summary["branch"]`（与 `intent` 永远相等，属冗余）
 
-执行私有字段在子图 `ExecFlowState`：`cases` / `exec_decision` / `poll_count`。`poll_count` 是轮询刹车，上限读 `profile.poll_max_attempts`。
+执行私有字段在子图 `ExecFlowState`：仅 `exec_decision`。
 
 调用方只传 `{"messages": [HumanMessage(...)]}`；任务级重置由 intake 负责，不再维护外部 `empty_state` 清单。
 
@@ -240,9 +235,9 @@ class TestFlowState(TypedDict):
 | M4 | `router` 意图识别节点 | `add_conditional_edges` 条件路由 | 约 90 行 |
 | M5 | `tools/protocols.py` 契约与数据模型 | 无（契约设计） | 约 90 行 |
 | M6 | `tools/mock/` 可配置四场景 mock | 无（可测性） | 约 130 行 |
-| M7 | `exec_params` + `exec_run` 节点 | tool 调用与状态写回 | 约 100 行 |
-| M8 | `exec_poll` 轮询自循环 | 循环边与终止上限 | 约 70 行 |
-| M9 | `collect_results` + `report` 落盘 | 节点产物与文件副作用 | 约 100 行 |
+| M7 | `exec_params` + `create_pipelines` | 多计划抽取与批量 init/check | 约 150 行 |
+| M8 | （已移除轮询） | — | — |
+| M9 | （已移除执行报告落盘；结果看流水线前端） | — | — |
 | M10 | SQLite checkpointer + thread_id | 持久化与断点恢复 | 约 80 行 |
 | M11 | interrupt 补参数与执行前确认 | `interrupt` / `Command(resume)` | 约 110 行 |
 | M12 | `skills/` 目录 + `SkillLoader` | prompt 组装 | 约 90 行 |

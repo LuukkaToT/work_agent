@@ -30,7 +30,7 @@ console = Console()
 def _runs_table(rows: list[dict], *, title: str | None = None) -> Table:
     """台账表格。runs 命令和 pick_run 的候选列表共用同一种呈现。"""
     table = Table(title=title, show_header=True, header_style="bold")
-    for col in ("run_id", "task_id", "用例", "版本", "组网", "状态", "时间"):
+    for col in ("run_id", "task_id", "用例", "版本", "环境", "状态", "时间"):
         table.add_column(col)
     for r in rows:
         table.add_row(
@@ -38,7 +38,7 @@ def _runs_table(rows: list[dict], *, title: str | None = None) -> Table:
             str(r.get("task_id", "")),
             ",".join(r.get("cases") or []),
             str(r.get("version", "")),
-            str(r.get("topology", "")),
+            str(r.get("env", "") or r.get("topology", "")),
             str(r.get("status", "")),
             str(r.get("created_at", "")),
         )
@@ -50,19 +50,21 @@ def _print_result(result: dict, *, verbose: bool = False) -> None:
     summary = result.get("summary") or {}
     reply = (result.get("reply") or "").strip()
     if not reply:
-        # respond 之前的旧数据或异常兜底
         reply = str(summary.get("message") or summary.get("answer") or "(无回复)")
 
     intent = result.get("intent") or "?"
     console.print(Panel(reply, title=f"agent · {intent}", border_style="cyan"))
 
     refs: list[str] = []
-    if result.get("run_id"):
-        refs.append(f"run_id   : {result['run_id']}")
+    pipelines = result.get("pipelines") or []
+    if pipelines:
+        for p in pipelines:
+            refs.append(
+                f"pipeline : {p.get('run_id')}  env={p.get('env')}  "
+                f"status={p.get('status')}"
+            )
     if result.get("analysis_path"):
         refs.append(f"analysis : {result['analysis_path']}")
-    if result.get("report_path"):
-        refs.append(f"report   : {result['report_path']}")
     if refs:
         console.print("[dim]" + "\n".join(refs) + "[/dim]")
 
@@ -97,16 +99,25 @@ def _render_interrupt(payloads: list[Any]) -> str:
         if payload.get("message"):
             lines.append(str(payload["message"]))
 
-        if kind == "ask_topology":
-            frequent = payload.get("frequent") or []
-            if frequent:
-                lines.append("常用组网：" + " / ".join(str(x) for x in frequent))
+        if kind == "ask_env":
+            lines.append("示例：7.223.50.60")
         elif kind == "confirm_exec":
-            params = payload.get("params") or {}
+            plans = payload.get("plans") or []
+            if not plans:
+                params = payload.get("params") or {}
+                plans = params.get("plans") or []
             lines.append("")
-            lines.append("用例：" + ", ".join(params.get("case_names") or ["(未指定)"]))
-            lines.append("版本：" + (params.get("version") or "(用默认)"))
-            lines.append("组网：" + (params.get("topology") or "(未指定)"))
+            for i, plan in enumerate(plans, 1):
+                cases = plan.get("case_names") or []
+                lines.append(
+                    f"[{i}] env={plan.get('env') or '(未指定)'}  "
+                    f"version={plan.get('version') or '(默认)'}  "
+                    f"cases={len(cases)}"
+                )
+                for name in cases[:3]:
+                    lines.append(f"    - {name}")
+                if len(cases) > 3:
+                    lines.append(f"    ... 共 {len(cases)} 条")
         elif kind != "pick_run":
             current = payload.get("current") or {}
             if current:
@@ -133,7 +144,8 @@ def _repl(thread_id: str | None, *, verbose: bool = False) -> None:
     console.print(
         Panel(
             "测试 Agent REPL\n"
-            "示例：分析一下 256T 下行 / 执行用例 case_downlink_001 组网 topo_a\n"
+            "示例：分析一下 256T 下行\n"
+            "      在 7.223.50.60 上跑 HF_20B_PUSCH_1Cell_200M_hf_001 版本 27B\n"
             "      前面那次执行怎么样了？ / quit",
             title="work_agent",
             border_style="green",
@@ -200,7 +212,7 @@ def list_runs(
             "task_id": r.task_id,
             "cases": r.case_names,
             "version": r.version,
-            "topology": r.topology,
+            "env": r.env,
             "status": r.status,
             "created_at": r.created_at,
         }
@@ -216,8 +228,6 @@ def list_runs(
 def main(ctx: typer.Context) -> None:
     """不带子命令时直接进 chat。"""
     if ctx.invoked_subcommand is None:
-        # 不能直接调 chat()：那样 typer 的 OptionInfo 默认值对象会被当成实参传进去，
-        # thread_id 就成了 <OptionInfo ...>，等于每轮都新建 thread
         _repl(None)
 
 

@@ -1,42 +1,20 @@
-"""执行子图路由：confirm 读 exec_decision；poll 上限读 profile。"""
+"""执行参数校验与子图 schema；confirm 路由。"""
 
-from work_agent.core.config import Profile, Settings, get_settings
-from work_agent.graph.nodes import exec_flow as exec_flow_mod
-from work_agent.graph.nodes.exec_flow import route_after_poll
+from work_agent.graph.nodes.exec_flow import (
+    ALLOWED_VERSIONS,
+    _classify_env,
+    _plan_dict,
+)
 from work_agent.graph.nodes.hitl import route_after_confirm
-
-
-def _settings_with_poll_max(max_attempts: int) -> Settings:
-    base = get_settings()
-    return Settings(
-        llm_base_url=base.llm_base_url,
-        llm_api_key=base.llm_api_key or "test-key",
-        llm_model=base.llm_model,
-        llm_temperature=base.llm_temperature,
-        llm_timeout=base.llm_timeout,
-        llm_max_retries=base.llm_max_retries,
-        tool_backend=base.tool_backend,
-        profile=Profile(
-            default_version=base.profile.default_version,
-            frequent_topologies=list(base.profile.frequent_topologies),
-            poll_interval_seconds=base.profile.poll_interval_seconds,
-            poll_max_attempts=max_attempts,
-        ),
-        workspace_dir=base.workspace_dir,
-        profile_path=base.profile_path,
-        checkpoint_path=base.checkpoint_path,
-    )
 
 
 def test_route_after_confirm_reads_exec_decision():
     assert route_after_confirm({"exec_decision": "cancel"}) == "cancel"
     assert route_after_confirm({"exec_decision": "proceed"}) == "proceed"
-    # 未设置时默认继续（confirm 节点正常会写 proceed）
     assert route_after_confirm({}) == "proceed"
 
 
 def test_route_after_confirm_ignores_summary_cancelled():
-    """取消决定不再借道 summary.status。"""
     assert (
         route_after_confirm(
             {
@@ -48,47 +26,48 @@ def test_route_after_confirm_ignores_summary_cancelled():
     )
 
 
-def test_route_after_poll_done_when_no_run_id():
-    assert route_after_poll({}) == "done"
-    assert route_after_poll({"run_id": ""}) == "done"
+def test_classify_env_physical_ip():
+    assert _classify_env("7.223.50.60") == "physical"
+    assert _classify_env("192.168.1.1") == "physical"
 
 
-def test_route_after_poll_done_on_terminal_status():
-    for phase in ("finished", "failed", "timeout"):
-        assert (
-            route_after_poll({"run_id": "r1", "run_status": phase, "poll_count": 1})
-            == "done"
-        )
+def test_classify_env_logical():
+    assert _classify_env("3BBL_86_1BBL86") == "logical"
+    assert _classify_env("1BBL_85_1BBL_8021") == "logical"
 
 
-def test_route_after_poll_continue_while_running(monkeypatch):
-    monkeypatch.setattr(
-        exec_flow_mod, "get_settings", lambda: _settings_with_poll_max(5)
+def test_classify_env_empty():
+    assert _classify_env("") == ""
+    assert _classify_env("  ") == ""
+
+
+def test_plan_dict_marks_missing_env():
+    plan = _plan_dict(case_names=["HF_20B_PUSCH_001"], version="27B", env="")
+    assert plan["missing"] == ["env"]
+    assert plan["env_kind"] == ""
+
+
+def test_plan_dict_logical_env_is_missing():
+    plan = _plan_dict(
+        case_names=["HF_20B_PUSCH_001"],
+        version="27B",
+        env="3BBL_86_1BBL86",
     )
-    assert (
-        route_after_poll(
-            {"run_id": "r1", "run_status": "running", "poll_count": 2}
-        )
-        == "continue"
-    )
+    assert plan["env_kind"] == "logical"
+    assert "env" in plan["missing"]
 
 
-def test_route_after_poll_respects_profile_max(monkeypatch):
-    monkeypatch.setattr(
-        exec_flow_mod, "get_settings", lambda: _settings_with_poll_max(3)
+def test_plan_dict_invalid_version():
+    plan = _plan_dict(
+        case_names=["HF_20B_PUSCH_001"],
+        version="99Z",
+        env="7.223.50.60",
     )
-    assert (
-        route_after_poll(
-            {"run_id": "r1", "run_status": "running", "poll_count": 3}
-        )
-        == "done"
-    )
-    assert (
-        route_after_poll(
-            {"run_id": "r1", "run_status": "running", "poll_count": 2}
-        )
-        == "continue"
-    )
+    assert "version" in plan["missing"]
+
+
+def test_allowed_versions():
+    assert ALLOWED_VERSIONS == frozenset({"27B", "27A", "26B", "26A"})
 
 
 def test_exec_flow_schemas_hide_private_fields():
@@ -103,6 +82,8 @@ def test_exec_flow_schemas_hide_private_fields():
         - set(ExecFlowInput.__annotations__)
         - set(ExecFlowOutput.__annotations__)
     )
-    assert private == {"cases", "exec_decision", "poll_count"}
+    assert private == {"exec_decision"}
     assert "audit" not in ExecFlowInput.__annotations__
     assert "audit" in ExecFlowOutput.__annotations__
+    assert "pipelines" in ExecFlowOutput.__annotations__
+    assert "poll_count" not in ExecFlowState.__annotations__

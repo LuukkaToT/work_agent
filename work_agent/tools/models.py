@@ -24,19 +24,13 @@ class CaseInfo:
 
 
 @dataclass(frozen=True)
-class RunHandle:
+class PipelineHandle:
+    """init_pipline 成功后的句柄。"""
+
     run_id: str
     case_names: list[str]
     version: str
-    topology: str
-
-
-@dataclass(frozen=True)
-class RunStatus:
-    run_id: str
-    phase: RunPhase
-    progress: float  # 0.0 ~ 1.0
-    message: str = ""
+    env: str  # 物理组网 IP，如 7.223.50.60
 
 
 @dataclass(frozen=True)
@@ -45,3 +39,13 @@ class CaseResult:
     verdict: CaseVerdict
     fail_kind: FailKind = "none"
     detail: str = ""
+
+
+@dataclass(frozen=True)
+class PipelineResult:
+    """query_result 返回：状态 + 各用例结果。"""
+
+    run_id: str
+    phase: RunPhase
+    results: list[CaseResult] = field(default_factory=list)
+    message: str = ""

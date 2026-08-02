@@ -33,17 +33,19 @@ _MAX_ANALYSIS_LINES = 40
 _SYSTEM = """你是资深测试工程师的助手，负责把一次任务的执行事实，转述成同事之间说话的样子。
 
 硬性要求：
-1. 只能使用【事实】里出现的信息。用例名、版本号、组网名、run_id、文件路径、数量必须原样引用，一个字符都不要改。
+1. 只能使用【事实】里出现的信息。用例名、版本号、环境 IP、run_id、文件路径、数量必须原样引用，一个字符都不要改。
 2. 【事实】里没有的东西不要提，也不要推测。用户问到而事实里没有的，直接说没有记录到。
 3. 用中文，口语化，不要用 markdown 标题和加粗，罗列不要超过三条。
 4. 总长度控制在 5 行以内。
-5. 最后一句给一个具体的下一步建议（比如可以查什么、可以怎么继续），不要客套话。"""
+5. 最后一句给一个具体的下一步建议（比如可以查什么、可以怎么继续），不要客套话。
+6. 若是执行提交成功：提醒用户到流水线前端看最终结果，也可稍后问进度。"""
 
 
 def _facts(state: TestFlowState) -> dict:
     """把 state 收敛成一张事实卡片。引用性字段读顶层，汇总量读 summary。"""
     summary = state.get("summary") or {}
     params = state.get("exec_params") or {}
+    pipelines = state.get("pipelines") or []
     facts: dict[str, Any] = {}
 
     def put(key: str, value: Any) -> None:
@@ -56,13 +58,39 @@ def _facts(state: TestFlowState) -> dict:
         facts[key] = value
 
     put("用户问题", state.get("user_input"))
-    put("任务类型", state.get("intent"))  # 单一来源：不读 summary.branch
+    put("任务类型", state.get("intent"))
     put("任务状态", summary.get("status"))
-    put("用例", params.get("case_names"))
-    put("版本", params.get("version"))
-    put("组网", params.get("topology"))
-    put("run_id", state.get("run_id"))
-    put("执行阶段", state.get("run_status"))
+
+    plans = params.get("plans") or []
+    if plans:
+        put(
+            "执行计划",
+            [
+                {
+                    "用例": p.get("case_names"),
+                    "版本": p.get("version"),
+                    "环境": p.get("env"),
+                }
+                for p in plans
+            ],
+        )
+
+    if pipelines:
+        put(
+            "流水线",
+            [
+                {
+                    "run_id": p.get("run_id"),
+                    "环境": p.get("env"),
+                    "版本": p.get("version"),
+                    "用例": p.get("case_names"),
+                    "状态": p.get("status"),
+                    "错误": p.get("error") or None,
+                }
+                for p in pipelines
+            ],
+        )
+        put("run_id列表", [p.get("run_id") for p in pipelines if p.get("run_id")])
 
     total = summary.get("total")
     if isinstance(total, int):
@@ -85,7 +113,11 @@ def _facts(state: TestFlowState) -> dict:
             ],
         )
 
-    put("报告文件", state.get("report_path"))
+    if summary.get("created") is not None:
+        put("已创建流水线数", summary.get("created"))
+    if summary.get("failed_pipelines"):
+        put("创建失败数", summary.get("failed_pipelines"))
+
     put("分析文档", state.get("analysis_path"))
     put("系统备注", summary.get("message"))
     return facts
@@ -109,6 +141,7 @@ def _fallback_reply(state: TestFlowState, facts: dict) -> str:
     summary = state.get("summary") or {}
     intent = state.get("intent") or ""
     status = summary.get("status") or ""
+    pipelines = state.get("pipelines") or []
 
     if intent == "analysis" and state.get("analysis_path"):
         return f"测试分析已生成，文档在 {state['analysis_path']}。"
@@ -116,19 +149,21 @@ def _fallback_reply(state: TestFlowState, facts: dict) -> str:
     if status == "cancelled":
         return "已按你的意思取消，没有提交执行。"
 
-    if intent == "execute" and state.get("run_id"):
+    if intent == "execute" and pipelines:
+        run_ids = [p.get("run_id") for p in pipelines if p.get("run_id")]
+        n = summary.get("created", len(run_ids))
         text = (
-            f"执行任务 {state['run_id']} 当前状态 {state.get('run_status') or '未知'}，"
-            f"共 {summary.get('total', 0)} 条用例，通过 {summary.get('passed', 0)} 条。"
+            f"已创建并启动 {n} 条流水线（{', '.join(run_ids)}），"
+            "结果请到流水线前端查看，也可稍后问我进度。"
         )
-        if state.get("report_path"):
-            text += f"报告在 {state['report_path']}。"
+        failed_n = summary.get("failed_pipelines") or 0
+        if failed_n:
+            text += f"另有 {failed_n} 条创建失败。"
         return text
 
     if intent == "query":
         return str(summary.get("message") or "没查到匹配的执行记录。")
 
-    # 兜底的兜底：原样交出事实，也比抛异常好
     return json.dumps(facts, ensure_ascii=False, indent=2)
 
 
@@ -146,7 +181,6 @@ def _persist_reply(task_id: str, reply: str) -> None:
     try:
         (run_dir / "reply.md").write_text(reply + "\n", encoding="utf-8")
     except OSError:
-        # 留痕失败不影响主流程
         pass
 
 
@@ -167,7 +201,6 @@ def respond(state: TestFlowState) -> dict:
     intent = state.get("intent") or ""
     task_id = state.get("task_id") or ""
 
-    # chat 分支的 answer 本来就是模型说的人话，再过一遍只会变味且多一次调用
     if intent == "chat" and summary.get("answer"):
         reply = str(summary["answer"]).strip()
         _persist_reply(task_id, reply)

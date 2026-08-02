@@ -1,14 +1,16 @@
 """
-执行流三个节点 + 一个路由函数：
+执行流节点：
 
-  exec_params  从自然语言抽出 用例名/版本/组网
-  exec_run     调 Executor.run 提交任务（异步语义：只拿 run_id）
-  exec_poll    调 Executor.status 查一次进度
-  route_after_poll  决定是再 poll，还是去做 collect
+  exec_params       从自然语言抽出执行计划列表（可多环境拆多条）
+  create_pipelines  逐计划 init_pipline + check_pipline，写入台账
 
-还没有 interrupt：缺组网时只写 need_input 并跳过真正执行。
+真实 tool 不轮询：提交完本轮结束，用户问进度时走 query_run。
 """
 
+from __future__ import annotations
+
+import re
+import uuid
 from typing import Any, Mapping, Optional
 
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -18,22 +20,88 @@ from work_agent.core.config import get_settings
 from work_agent.core.ledger import get_ledger
 from work_agent.core.llm import get_chat_model
 from work_agent.graph.nodes.context import dialogue_text
-from work_agent.tools.registry import get_case_provider, get_executor
+from work_agent.tools.registry import get_pipeline_tool
+
+ALLOWED_VERSIONS = frozenset({"27B", "27A", "26B", "26A"})
+_IP_RE = re.compile(
+    r"^(?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}"
+    r"(?:25[0-5]|2[0-4]\d|[01]?\d?\d)$"
+)
+
+
+class ExecPlanOut(BaseModel):
+    case_names: list[str] = Field(description="本条流水线要执行的用例名列表")
+    version: Optional[str] = Field(
+        default=None, description="版本：27B / 27A / 26B / 26A"
+    )
+    env: Optional[str] = Field(
+        default=None,
+        description="物理组网 IP，如 7.223.50.60；没说则 null",
+    )
 
 
 class ExecParamsOut(BaseModel):
-    case_names: list[str] = Field(description="要执行的用例名列表")
-    version: Optional[str] = Field(default=None, description="版本，如 27B")
-    topology: Optional[str] = Field(default=None, description="逻辑组网，如 topo_a")
+    plans: list[ExecPlanOut] = Field(
+        description=(
+            "执行计划列表。同一环境批量用例合并为一条；"
+            "不同环境（如 A 环境跑 X、B 环境跑 Y）拆成多条。"
+        )
+    )
+
+
+def _classify_env(env: str) -> str:
+    """physical | logical | ''（空）。"""
+    text = (env or "").strip()
+    if not text:
+        return ""
+    if _IP_RE.match(text):
+        return "physical"
+    return "logical"
+
+
+def _normalize_version(raw: str | None, default: str) -> str:
+    text = (raw or "").strip().upper()
+    if text in ALLOWED_VERSIONS:
+        return text
+    # 兼容用户写 27b
+    if text and text.upper() in ALLOWED_VERSIONS:
+        return text.upper()
+    return default if default in ALLOWED_VERSIONS else default
+
+
+def _plan_dict(
+    *,
+    case_names: list[str],
+    version: str,
+    env: str,
+) -> dict[str, Any]:
+    env_kind = _classify_env(env)
+    missing: list[str] = []
+    if not case_names:
+        missing.append("case_names")
+    if not env:
+        missing.append("env")
+    elif env_kind == "logical":
+        # 现阶段只支持物理 IP；逻辑组网记为缺失，由 ask_missing 提示
+        missing.append("env")
+    if version not in ALLOWED_VERSIONS:
+        missing.append("version")
+    return {
+        "case_names": list(case_names),
+        "version": version,
+        "env": env,
+        "env_kind": env_kind,
+        "missing": missing,
+    }
 
 
 def exec_params(state: Mapping[str, Any]) -> dict:
     """
-    参数优先级（与架构约定一致）：
-    - version：用户没说 → 用 profile.default_version
-    - topology：用户没说 → 留空，后面不允许静默填（跑错组网代价高）
+    参数优先级：
+    - version：用户没说 → profile.default_version
+    - env：用户没说 → 留空，不允许静默填（跑错环境代价高）
 
-    带最近对话：支持「换 topo_b 再跑」从历史补全用例名和版本。
+    多环境拆多条计划；单环境多用例合并为一条。
     """
     llm = get_chat_model(temperature=0).with_structured_output(ExecParamsOut)
 
@@ -51,11 +119,16 @@ def exec_params(state: Mapping[str, Any]) -> dict:
         [
             SystemMessage(
                 content=(
-                    "从用户输入提取执行参数。"
-                    "用例名通常类似 case_xxx。"
-                    "本轮若是指代（如「再跑一遍」「换 topo_b」），"
-                    "结合【最近对话】补全用例名和版本；"
-                    "组网若本轮没明确说，返回 null，不要从历史猜、也不要编造。"
+                    "从用户输入提取执行计划列表。"
+                    "用例名通常很长，形如 HF_20B_PUSCH_..._MCS0_1_10_01 "
+                    "或 TDD_26a_85_5002_..._KPI_TST，按原文提取，不要截断。"
+                    "版本只能是 27B / 27A / 26B / 26A。"
+                    "env 是物理组网 IP（如 7.223.50.60）；本轮没明确说返回 null，"
+                    "不要从历史猜、也不要编造。"
+                    "若用户说「A 环境执行 X，B 环境执行 Y」，拆成两条计划；"
+                    "同一环境多个用例合并成一条，case_names 为列表。"
+                    "本轮若是指代（如「再跑一遍」「换环境」），"
+                    "结合【最近对话】补全用例名和版本；组网仍须本轮明确说出。"
                 )
             ),
             HumanMessage(content="\n".join(human_parts)),
@@ -63,151 +136,141 @@ def exec_params(state: Mapping[str, Any]) -> dict:
     )
 
     profile = get_settings().profile
-    version = parsed.version or profile.default_version
-    topology = parsed.topology or ""
+    default_version = profile.default_version
+    plans: list[dict] = []
+    for item in parsed.plans or []:
+        version = _normalize_version(item.version, default_version)
+        # 用户给了非法版本字面量时，不要 silently 换成默认——标缺失
+        if item.version and item.version.strip().upper() not in ALLOWED_VERSIONS:
+            version = item.version.strip()
+        env = (item.env or "").strip()
+        plans.append(
+            _plan_dict(
+                case_names=list(item.case_names or []),
+                version=version,
+                env=env,
+            )
+        )
 
-    params = {
-        "case_names": parsed.case_names,
-        "version": version,
-        "topology": topology,
-    }
+    if not plans:
+        plans = [
+            _plan_dict(
+                case_names=[],
+                version=default_version,
+                env="",
+            )
+        ]
 
-    # 顺便用 CaseProvider 校验/补全用例元信息（标题、标签）
-    cases: list[dict] = []
-    if parsed.case_names:
-        provider = get_case_provider()
-        infos = provider.fetch_cases(parsed.case_names)
-        cases = [{"name": c.name, "title": c.title, "tags": c.tags} for c in infos]
-
+    params = {"plans": plans}
     return {
         "exec_params": params,
-        "cases": cases,
-        "audit": [{"step": "exec_params", "params": params}],
+        "audit": [{"step": "exec_params", "plan_count": len(plans), "params": params}],
     }
 
 
-def exec_run(state: Mapping[str, Any]) -> dict:
+def create_pipelines(state: Mapping[str, Any]) -> dict:
     """
-    提交执行。注意：这里不是「跑完」，只是拿到 run_id。
-    缺 case_names 或 topology → need_input，不调用 tool。
+    逐计划创建并启动流水线。单条失败不阻断其余。
+    run_id 由 agent 生成后传入 init_pipline。
     """
     params = state.get("exec_params") or {}
-    case_names = params.get("case_names") or []
-    version = params.get("version") or ""
-    topology = params.get("topology") or ""
+    plans = list(params.get("plans") or [])
+    task_id = state.get("task_id") or ""
 
-    if not case_names or not topology:
-        summary = {
-            "status": "need_input",
-            "missing": [
-                k
-                for k, ok in [
-                    ("case_names", bool(case_names)),
-                    ("topology", bool(topology)),
-                ]
-                if not ok
-            ],
-            "message": "缺少执行参数，未提交任务",
-        }
+    if not plans:
         return {
-            "summary": summary,
-            "audit": [{"step": "exec_run", "status": "need_input"}],
+            "pipelines": [],
+            "summary": {
+                "status": "need_input",
+                "message": "没有可创建的执行计划",
+                "created": 0,
+                "failed_pipelines": 0,
+            },
+            "audit": [{"step": "create_pipelines", "status": "empty"}],
         }
 
-    # 新任务清一下缓存，拿到干净的 MockExecutor
-    get_executor.cache_clear()
-    ex = get_executor(scenario="all_pass")
-    handle = ex.run(
-        case_names=case_names,
-        version=version,
-        topology=topology,
-    )
+    get_pipeline_tool.cache_clear()
+    tool = get_pipeline_tool(scenario="all_pass")
 
-    # 写入跨会话台账（checkpointer 管不了「上次执行」）
-    get_ledger().upsert(
-        run_id=handle.run_id,
-        task_id=state.get("task_id") or "",
-        case_names=case_names,
-        version=version,
-        topology=topology,
-        status="pending",
-    )
+    pipelines: list[dict] = []
+    created = 0
+    failed_n = 0
+
+    for plan in plans:
+        case_names = list(plan.get("case_names") or [])
+        version = str(plan.get("version") or "")
+        env = str(plan.get("env") or "").strip()
+        run_id = f"pipe-{uuid.uuid4().hex[:8]}"
+        entry: dict[str, Any] = {
+            "run_id": run_id,
+            "case_names": case_names,
+            "version": version,
+            "env": env,
+            "status": "pending",
+            "error": "",
+        }
+        try:
+            if not case_names or not env or version not in ALLOWED_VERSIONS:
+                raise ValueError(
+                    f"参数不完整: cases={bool(case_names)} "
+                    f"version={version!r} env={env!r}"
+                )
+            tool.init_pipline(run_id, case_names, version, env)
+            tool.check_pipline(run_id)
+            entry["status"] = "running"
+            get_ledger().upsert(
+                run_id=run_id,
+                task_id=task_id,
+                case_names=case_names,
+                version=version,
+                env=env,
+                status="running",
+            )
+            created += 1
+        except Exception as exc:  # noqa: BLE001 - 单条失败不阻断批量
+            entry["status"] = "failed"
+            entry["error"] = str(exc)
+            failed_n += 1
+            try:
+                get_ledger().upsert(
+                    run_id=run_id,
+                    task_id=task_id,
+                    case_names=case_names,
+                    version=version,
+                    env=env,
+                    status="failed",
+                )
+            except Exception:  # noqa: BLE001
+                pass
+        pipelines.append(entry)
+
+    if created and not failed_n:
+        status = "submitted"
+        message = (
+            f"已创建并启动 {created} 条流水线，"
+            "结果请到流水线前端查看，也可稍后问我进度"
+        )
+    elif created and failed_n:
+        status = "partial"
+        message = f"成功 {created} 条，失败 {failed_n} 条"
+    else:
+        status = "failed"
+        message = f"全部 {failed_n} 条流水线创建失败"
 
     return {
-        "run_id": handle.run_id,
-        "run_status": "pending",
-        "summary": {"status": "submitted"},
+        "pipelines": pipelines,
+        "summary": {
+            "status": status,
+            "message": message,
+            "created": created,
+            "failed_pipelines": failed_n,
+        },
         "audit": [
             {
-                "step": "exec_run",
-                "run_id": handle.run_id,
-                "version": version,
-                "topology": topology,
+                "step": "create_pipelines",
+                "created": created,
+                "failed": failed_n,
+                "run_ids": [p["run_id"] for p in pipelines],
             }
         ],
     }
-
-
-def exec_poll(state: Mapping[str, Any]) -> dict:
-    """
-    查一次 status。
-
-    为什么要循环：真实执行是分钟级，run 只提交；
-    mock 用 ticks_to_finish=2 模拟「第 1 次还在跑，第 2 次才完成」。
-    """
-    run_id = state.get("run_id") or ""
-    if not run_id:
-        # 前面 need_input 没提交：跳过，让路由走 done → collect
-        return {
-            "audit": [{"step": "exec_poll", "skipped": True}],
-        }
-
-    # 关键：这里不能 cache_clear！
-    # Mock 把 run 存在进程内的 Executor 实例上；清缓存会换新实例，旧 run_id 就丢了。
-    ex = get_executor(scenario="all_pass")
-    st = ex.status(run_id)
-    poll_count = int(state.get("poll_count") or 0) + 1
-
-    summary = dict(state.get("summary") or {})
-    summary.update(
-        {
-            "status": st.phase,
-            "progress": st.progress,
-            "message": st.message,
-        }
-    )
-
-    get_ledger().update_status(run_id, status=st.phase)
-
-    return {
-        "poll_count": poll_count,
-        "run_status": st.phase,
-        "summary": summary,
-        "audit": [
-            {
-                "step": "exec_poll",
-                "phase": st.phase,
-                "poll_count": poll_count,
-                "progress": st.progress,
-            }
-        ],
-    }
-
-
-def route_after_poll(state: Mapping[str, Any]) -> str:
-    """
-    条件边返回值：
-    - continue → 再进 exec_poll（自循环）
-    - done     → 去 collect_results
-    """
-    if not (state.get("run_id") or ""):
-        return "done"
-
-    if state.get("run_status") in ("finished", "failed", "timeout"):
-        return "done"
-
-    max_attempts = get_settings().profile.poll_max_attempts
-    if int(state.get("poll_count") or 0) >= max_attempts:
-        return "done"
-
-    return "continue"
