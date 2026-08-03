@@ -10,7 +10,7 @@ from __future__ import annotations
 from langchain_core.messages import HumanMessage, RemoveMessage, SystemMessage
 
 from work_agent.core.llm import invoke_text
-from work_agent.graph.nodes.context import dialogue_text
+from work_agent.graph.helpers.context import dialogue_text
 from work_agent.graph.state import TestFlowState
 
 # 超过此条数才触发摘要（含本轮刚追加的 AIMessage）

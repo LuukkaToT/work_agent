@@ -12,7 +12,7 @@ from __future__ import annotations
 from dataclasses import asdict
 
 from work_agent.core.ledger import get_ledger
-from work_agent.graph.nodes.pipeline_resolve import pick_records_for_action
+from work_agent.graph.helpers.pipeline_resolve import pick_records_for_action
 from work_agent.graph.state import TestFlowState
 from work_agent.tools.registry import get_pipeline_tool
 

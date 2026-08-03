@@ -8,7 +8,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from pydantic import BaseModel, Field
 
 from work_agent.core.llm import get_chat_model
-from work_agent.graph.nodes.context import conversation_context
+from work_agent.graph.helpers.context import conversation_context
 from work_agent.graph.state import TestFlowState
 
 

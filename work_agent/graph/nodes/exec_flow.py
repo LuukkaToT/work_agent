@@ -17,7 +17,7 @@ from pydantic import BaseModel, Field
 from work_agent.core.config import get_settings
 from work_agent.core.ledger import get_ledger
 from work_agent.core.llm import get_chat_model
-from work_agent.graph.nodes.context import conversation_context
+from work_agent.graph.helpers.context import conversation_context
 from work_agent.tools.registry import get_pipeline_tool
 
 ALLOWED_VERSIONS = frozenset({"27B", "27A", "26B", "26A"})

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from work_agent.graph.nodes.pipeline_resolve import (
+from work_agent.graph.helpers.pipeline_resolve import (
     pick_records_for_action,
     records_to_pipeline_dicts,
 )

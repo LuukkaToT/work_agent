@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from work_agent.core.ledger import RunLedger
-from work_agent.graph.nodes import pipeline_resolve as mod
-from work_agent.graph.nodes.pipeline_resolve import (
+from work_agent.graph.helpers import pipeline_resolve as mod
+from work_agent.graph.helpers.pipeline_resolve import (
     _match_pick,
     _parse_ordinal,
     resolve_pipeline_records,

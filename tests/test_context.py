@@ -2,7 +2,7 @@
 
 from langchain_core.messages import AIMessage, HumanMessage
 
-from work_agent.graph.nodes.context import conversation_context, dialogue_text
+from work_agent.graph.helpers.context import conversation_context, dialogue_text
 
 
 def test_dialogue_text_recent_n():
