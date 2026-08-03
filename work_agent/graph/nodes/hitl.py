@@ -52,7 +52,7 @@ def ask_missing(state: Mapping[str, Any]) -> dict:
     params = dict(state.get("exec_params") or {})
     plans = [dict(p) for p in (params.get("plans") or [])]
     if not plans:
-        plans = [_plan_dict(case_names=[], version="27B", env="")]
+        plans = [_plan_dict(case_names=[], version="", env="")]
 
     for idx, plan in enumerate(plans):
         while True:
@@ -79,11 +79,12 @@ def ask_missing(state: Mapping[str, Any]) -> dict:
                     {
                         "type": "ask_version",
                         "message": (
-                            f"第 {idx + 1}/{len(plans)} 条计划版本无效，"
+                            f"第 {idx + 1}/{len(plans)} 条计划缺少或版本无效，"
                             f"请输入 {', '.join(sorted(ALLOWED_VERSIONS))} 之一"
                         ),
                         "plan_index": idx,
                         "current": plan,
+                        "allowed": sorted(ALLOWED_VERSIONS),
                     }
                 )
                 plan["version"] = _parse_version(reply)

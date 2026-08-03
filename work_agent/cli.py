@@ -99,7 +99,11 @@ def _render_interrupt(payloads: list[Any]) -> str:
         if payload.get("message"):
             lines.append(str(payload["message"]))
 
-        if kind == "ask_env":
+        if kind == "ask_version":
+            allowed = payload.get("allowed") or []
+            if allowed:
+                lines.append("可选版本：" + " / ".join(str(x) for x in allowed))
+        elif kind == "ask_env":
             lines.append("示例：7.223.50.60")
         elif kind == "confirm_exec":
             plans = payload.get("plans") or []
@@ -111,7 +115,7 @@ def _render_interrupt(payloads: list[Any]) -> str:
                 cases = plan.get("case_names") or []
                 lines.append(
                     f"[{i}] env={plan.get('env') or '(未指定)'}  "
-                    f"version={plan.get('version') or '(默认)'}  "
+                    f"version={plan.get('version') or '(未指定)'}  "
                     f"cases={len(cases)}"
                 )
                 for name in cases[:3]:

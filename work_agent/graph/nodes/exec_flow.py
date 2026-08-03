@@ -59,16 +59,6 @@ def _classify_env(env: str) -> str:
     return "logical"
 
 
-def _normalize_version(raw: str | None, default: str) -> str:
-    text = (raw or "").strip().upper()
-    if text in ALLOWED_VERSIONS:
-        return text
-    # 兼容用户写 27b
-    if text and text.upper() in ALLOWED_VERSIONS:
-        return text.upper()
-    return default if default in ALLOWED_VERSIONS else default
-
-
 def _plan_dict(
     *,
     case_names: list[str],
@@ -98,7 +88,7 @@ def _plan_dict(
 def exec_params(state: Mapping[str, Any]) -> dict:
     """
     参数优先级：
-    - version：用户没说 → profile.default_version
+    - version：用户没说 → 留空，ask_missing interrupt
     - env：用户没说 → 留空，不允许静默填（跑错环境代价高）
 
     多环境拆多条计划；单环境多用例合并为一条。
@@ -114,6 +104,7 @@ def exec_params(state: Mapping[str, Any]) -> dict:
     human_parts.append("【本轮用户输入】")
     human_parts.append(user_input)
 
+    # 调用llm从user_input解析出执行的参数
     parsed: ExecParamsOut = llm.invoke(
         [
             SystemMessage(
@@ -121,13 +112,15 @@ def exec_params(state: Mapping[str, Any]) -> dict:
                     "从用户输入提取执行计划列表。"
                     "用例名通常很长，形如 HF_20B_PUSCH_..._MCS0_1_10_01 "
                     "或 TDD_26a_85_5002_..._KPI_TST，按原文提取，不要截断。"
-                    "版本只能是 27B / 27A / 26B / 26A。"
+                    "版本只能是 27B / 27A / 26B / 26A；本轮没明确说返回 null，"
+                    "不要用默认值、不要从配置猜。"
                     "env 是物理组网 IP（如 7.223.50.60）；本轮没明确说返回 null，"
                     "不要从历史猜、也不要编造。"
                     "若用户说「A 环境执行 X，B 环境执行 Y」，拆成两条计划；"
                     "同一环境多个用例合并成一条，case_names 为列表。"
                     "本轮若是指代（如「再跑一遍」「换环境」），"
-                    "结合【历史摘要】和【最近对话】补全用例名和版本；"
+                    "结合【历史摘要】和【最近对话】补全用例名；"
+                    "版本仅当历史里明确出现过才补，否则返回 null；"
                     "组网仍须本轮明确说出。"
                 )
             ),
@@ -135,14 +128,18 @@ def exec_params(state: Mapping[str, Any]) -> dict:
         ]
     )
 
-    profile = get_settings().profile
-    default_version = profile.default_version
     plans: list[dict] = []
+    
     for item in parsed.plans or []:
-        version = _normalize_version(item.version, default_version)
-        # 用户给了非法版本字面量时，不要 silently 换成默认——标缺失
-        if item.version and item.version.strip().upper() not in ALLOWED_VERSIONS:
-            version = item.version.strip()
+        raw = (item.version or "").strip()
+        if not raw:
+            version = ""
+        elif raw.upper() in ALLOWED_VERSIONS:
+            version = raw.upper()
+        else:
+            # 非法字面量保留，交给ask_missing
+            version = raw
+        
         env = (item.env or "").strip()
         plans.append(
             _plan_dict(
@@ -156,7 +153,7 @@ def exec_params(state: Mapping[str, Any]) -> dict:
         plans = [
             _plan_dict(
                 case_names=[],
-                version=default_version,
+                version="",
                 env="",
             )
         ]
