@@ -29,6 +29,66 @@ def interrupt_payloads(result: dict[str, Any]) -> list[Any]:
     return [getattr(item, "value", item) for item in items]
 
 
+def _interrupt_values_from_snapshot(snap: Any) -> list[Any]:
+    """从 get_state 快照抽出 interrupt 载荷。"""
+    out: list[Any] = []
+    for task in getattr(snap, "tasks", ()) or ():
+        for item in getattr(task, "interrupts", ()) or ():
+            out.append(getattr(item, "value", item))
+    interrupts = getattr(snap, "interrupts", None) or ()
+    for item in interrupts:
+        val = getattr(item, "value", item)
+        if val not in out:
+            out.append(val)
+    return out
+
+
+def get_pending_interrupts(thread_id: str) -> list[Any]:
+    """若该 thread 停在 HITL，返回载荷列表；否则空列表。"""
+    if not thread_id:
+        return []
+    app = build_graph(checkpointer=get_checkpointer())
+    snap = app.get_state(make_thread_config(thread_id))
+    if not snap:
+        return []
+    if not (snap.next or _interrupt_values_from_snapshot(snap)):
+        return []
+    payloads = _interrupt_values_from_snapshot(snap)
+    return payloads
+
+
+def resume_pending(
+    thread_id: str,
+    *,
+    ask: AskFn,
+) -> dict[str, Any] | None:
+    """
+    若 thread 有未完成 interrupt，用 ask 续跑直到结束或再次需要输入。
+    无 pending 时返回 None。
+    """
+    payloads = get_pending_interrupts(thread_id)
+    if not payloads:
+        return None
+
+    app = build_graph(checkpointer=get_checkpointer())
+    config = make_thread_config(thread_id)
+    reply = ask(payloads).strip()
+    result = app.invoke(Command(resume=reply), config=config)
+
+    rounds = 0
+    while result.get("__interrupt__"):
+        rounds += 1
+        if rounds > _MAX_HITL_ROUNDS:
+            raise RuntimeError(
+                f"HITL 交互已超过 {_MAX_HITL_ROUNDS} 轮仍未完成，中止本轮"
+            )
+        reply = ask(interrupt_payloads(result)).strip()
+        result = app.invoke(Command(resume=reply), config=config)
+
+    result["_thread_id"] = thread_id
+    return result
+
+
 def run_turn(
     text: str,
     *,
@@ -68,3 +128,7 @@ def run_turn(
 
     result["_thread_id"] = tid
     return result
+
+
+def new_thread_id() -> str:
+    return f"cli-{uuid.uuid4().hex[:8]}"

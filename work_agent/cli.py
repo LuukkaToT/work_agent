@@ -5,6 +5,12 @@ PowerShell 可用的命令行入口。
     python -m work_agent.cli
     python -m work_agent.cli chat -t my-thread
 
+REPL 斜杠命令：
+    /session          列出并切换会话
+    /session <id>     直接切到指定 thread
+    /new              开新会话
+    quit / exit / q   退出
+
 单次：
     python -m work_agent.cli ask "分析一下 256T 下行"
     python -m work_agent.cli runs
@@ -21,7 +27,18 @@ from rich.panel import Panel
 from rich.table import Table
 
 from work_agent.core.ledger import get_ledger
-from work_agent.runtime import run_turn
+from work_agent.core.sessions import (
+    SessionInfo,
+    list_sessions,
+    resolve_session_pick,
+    session_exists,
+)
+from work_agent.runtime import (
+    get_pending_interrupts,
+    new_thread_id,
+    resume_pending,
+    run_turn,
+)
 
 app = typer.Typer(add_completion=False, help="测试专属 Agent CLI")
 console = Console()
@@ -42,6 +59,16 @@ def _runs_table(rows: list[dict], *, title: str | None = None) -> Table:
             str(r.get("status", "")),
             str(r.get("created_at", "")),
         )
+    return table
+
+
+def _sessions_table(sessions: list[SessionInfo], *, current: str | None) -> Table:
+    table = Table(title="历史会话", show_header=True, header_style="bold")
+    for col in ("#", "thread_id", "预览", "当前"):
+        table.add_column(col)
+    for i, s in enumerate(sessions, 1):
+        mark = "←" if current and s.thread_id == current else ""
+        table.add_row(str(i), s.thread_id, s.preview, mark)
     return table
 
 
@@ -144,29 +171,115 @@ def _ask(payloads: list[Any]) -> str:
     return console.input("[bold yellow]>[/] ").strip()
 
 
+def _switch_session(tid: str) -> str:
+    """切换 thread；若有未完成 HITL，先续跑。"""
+    console.print(f"[dim]已切换到会话 {tid}[/dim]")
+    if get_pending_interrupts(tid):
+        console.print("[yellow]该会话有未完成的确认，请先答完。[/yellow]")
+        try:
+            result = resume_pending(tid, ask=_ask)
+        except (EOFError, KeyboardInterrupt):
+            console.print("\n[dim]已取消续跑，仍停在该会话[/dim]")
+            return tid
+        except Exception as exc:  # noqa: BLE001
+            console.print(f"[red]续跑失败:[/] {exc}")
+            return tid
+        if result is not None:
+            _print_result(result)
+    return tid
+
+
+def _handle_slash(text: str, tid: str) -> tuple[str, bool]:
+    """
+    处理斜杠命令。
+    返回 (thread_id, handled)；handled=True 表示本行已消费，不再 run_turn。
+    """
+    raw = text.strip()
+    lower = raw.lower()
+
+    if lower in {"/new", "/new "}:
+        tid = new_thread_id()
+        console.print(f"[dim]新会话 {tid}[/dim]")
+        return tid, True
+
+    if lower == "/session" or lower.startswith("/session "):
+        arg = raw[8:].strip()  # 去掉 "/session"
+        sessions = list_sessions(limit=20)
+        if arg:
+            pick = resolve_session_pick(arg, sessions)
+            if pick is None:
+                console.print("[red]无效选择[/red]")
+                return tid, True
+            if not session_exists(pick):
+                # 允许切到尚未落库的 id（即将开聊）
+                console.print(
+                    f"[dim]会话 {pick} 尚无历史，将作为新 thread 使用[/dim]"
+                )
+                return pick, True
+            return _switch_session(pick), True
+
+        if not sessions:
+            console.print("[dim]还没有历史会话。可继续聊天，或 /new 显式开新会话。[/dim]")
+            return tid, True
+
+        console.print(_sessions_table(sessions, current=tid))
+        console.print("[dim]输入序号或 thread_id 切换；直接回车取消[/dim]")
+        try:
+            choice = console.input("[bold cyan]session>[/] ").strip()
+        except (EOFError, KeyboardInterrupt):
+            console.print("")
+            return tid, True
+        if not choice:
+            return tid, True
+        pick = resolve_session_pick(choice, sessions)
+        if pick is None:
+            console.print("[red]无效选择[/red]")
+            return tid, True
+        return _switch_session(pick), True
+
+    if lower.startswith("/"):
+        console.print("[dim]未知命令。可用：/session  /new  quit[/dim]")
+        return tid, True
+
+    return tid, False
+
+
 def _repl(thread_id: str | None, *, verbose: bool = False) -> None:
+    tid = thread_id or new_thread_id()
     console.print(
         Panel(
             "测试 Agent REPL\n"
+            f"当前会话：{tid}\n"
             "示例：分析一下 256T 下行\n"
             "      在 7.223.50.60 上跑 HF_20B_PUSCH_1Cell_200M_hf_001 版本 27B\n"
-            "      前面那次执行怎么样了？ / quit",
+            "斜杠：/session 切换会话  /new 新会话  quit 退出",
             title="work_agent",
             border_style="green",
         )
     )
-    tid = thread_id
+    # -t 指定已有会话且停在 HITL 时，先进续跑
+    if thread_id and get_pending_interrupts(tid):
+        tid = _switch_session(tid)
+
     while True:
         try:
             text = console.input("[bold green]you>[/] ").strip()
         except (EOFError, KeyboardInterrupt):
-            console.print("\nbye")
+            console.print(
+                f"\nbye\n[dim]下次续聊：python -m work_agent.cli chat -t {tid}[/dim]"
+            )
             break
         if not text:
             continue
         if text.lower() in {"quit", "exit", "q"}:
-            console.print("bye")
+            console.print(
+                f"bye\n[dim]下次续聊：python -m work_agent.cli chat -t {tid}[/dim]"
+            )
             break
+
+        tid, handled = _handle_slash(text, tid)
+        if handled:
+            continue
 
         try:
             result = run_turn(text, thread_id=tid, ask=_ask, with_checkpoint=True)

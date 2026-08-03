@@ -70,6 +70,7 @@ def _plan_dict(
     version: str,
     env: str,
 ) -> dict[str, Any]:
+    """将plan映射为dict，确认参数是否缺失，确实追加到missing里"""
     env_kind = _classify_env(env)
     missing: list[str] = []
     if not case_names:
