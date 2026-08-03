@@ -7,10 +7,19 @@ def make_ledger(tmp_path):
     return RunLedger(tmp_path / "index.db")
 
 
-def insert(ledger, run_id, *, case_names=None, status="running", report_path="", env="7.223.50.60"):
+def insert(
+    ledger,
+    pipeline_id,
+    *,
+    case_names=None,
+    status="running",
+    report_path="",
+    env="7.223.50.60",
+    task_id=None,
+):
     ledger.upsert(
-        run_id=run_id,
-        task_id=f"task-{run_id}",
+        pipeline_id=pipeline_id,
+        task_id=task_id or f"task-{pipeline_id}",
         case_names=case_names or ["HF_20B_PUSCH_001"],
         version="27B",
         env=env,
@@ -60,7 +69,7 @@ def test_latest_orders_by_created_at(tmp_path):
     insert(ledger, "r2")
     insert(ledger, "r3")
     latest = ledger.latest(limit=2)
-    assert [r.run_id for r in latest] == ["r3", "r2"]
+    assert [r.pipeline_id for r in latest] == ["r3", "r2"]
 
 
 def test_find_by_case_exact_match(tmp_path):
@@ -70,13 +79,13 @@ def test_find_by_case_exact_match(tmp_path):
     insert(ledger, "r3", case_names=["case_b_long", "case_a_long"])
 
     found = ledger.find_by_case("case_a_long")
-    assert {r.run_id for r in found} == {"r1", "r3"}
+    assert {r.pipeline_id for r in found} == {"r1", "r3"}
 
 
 def test_find_by_task(tmp_path):
     ledger = make_ledger(tmp_path)
     ledger.upsert(
-        run_id="p1",
+        pipeline_id="p1",
         task_id="task-x",
         case_names=["HF_A_001"],
         version="27B",
@@ -84,7 +93,7 @@ def test_find_by_task(tmp_path):
         status="running",
     )
     ledger.upsert(
-        run_id="p2",
+        pipeline_id="p2",
         task_id="task-x",
         case_names=["HF_B_001"],
         version="27B",
@@ -92,7 +101,7 @@ def test_find_by_task(tmp_path):
         status="running",
     )
     ledger.upsert(
-        run_id="p3",
+        pipeline_id="p3",
         task_id="task-y",
         case_names=["HF_C_001"],
         version="27A",
@@ -100,4 +109,26 @@ def test_find_by_task(tmp_path):
         status="running",
     )
     found = ledger.find_by_task("task-x")
-    assert [r.run_id for r in found] == ["p1", "p2"]
+    assert [r.pipeline_id for r in found] == ["p1", "p2"]
+
+
+def test_replace_id_swaps_primary_key(tmp_path):
+    ledger = make_ledger(tmp_path)
+    insert(
+        ledger,
+        "local-abc",
+        status="creating",
+        task_id="task-1",
+        env="7.223.50.60",
+    )
+    ledger.replace_id(
+        "local-abc",
+        "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+        status="created",
+    )
+    assert ledger.get("local-abc") is None
+    rec = ledger.get("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee")
+    assert rec is not None
+    assert rec.status == "created"
+    assert rec.task_id == "task-1"
+    assert rec.env == "7.223.50.60"

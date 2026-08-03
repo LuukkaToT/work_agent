@@ -63,7 +63,7 @@ class TestFlowState(TypedDict):
     # --- 任务级：执行子图 output 写回 ---
     # {plans: [{case_names, version, env, env_kind, missing}, ...]}
     exec_params: dict
-    # [{run_id, case_names, version, env, status, error}, ...]
+    # [{pipeline_id, case_names, version, env, status, error}, ...]
     pipelines: list[dict]
 
     # --- 任务级：查询结果 ---

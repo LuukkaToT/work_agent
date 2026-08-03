@@ -6,7 +6,7 @@ respond：所有分支的统一收尾节点。
 
 两条设计约束：
 
-1. 不能编造。run_id、用例名、版本、组网、路径、数量一旦被模型改写，
+1. 不能编造。pipeline_id、用例名、版本、组网、路径、数量一旦被模型改写，
    用户会拿着错信息去查问题。所以事实以 JSON 原样给出，prompt 里
    把「只能引用给定事实」写成硬约束。
 2. 不能中断。它是所有分支的必经节点，LLM 抖一下不能让整轮任务失败，
@@ -27,18 +27,17 @@ from work_agent.core.config import get_settings
 from work_agent.core.llm import invoke_text
 from work_agent.graph.state import TestFlowState
 
-# 分析文档只取开头若干行喂给模型：整篇塞回去既费 token，又容易被照抄一遍
 _MAX_ANALYSIS_LINES = 40
 
 _SYSTEM = """你是资深测试工程师的助手，负责把一次任务的执行事实，转述成同事之间说话的样子。
 
 硬性要求：
-1. 只能使用【事实】里出现的信息。用例名、版本号、环境 IP、run_id、文件路径、数量必须原样引用，一个字符都不要改。
+1. 只能使用【事实】里出现的信息。用例名、版本号、环境 IP、pipeline_id、文件路径、数量必须原样引用，一个字符都不要改。
 2. 【事实】里没有的东西不要提，也不要推测。用户问到而事实里没有的，直接说没有记录到。
 3. 用中文，口语化，不要用 markdown 标题和加粗，罗列不要超过三条。
 4. 总长度控制在 5 行以内。
 5. 最后一句给一个具体的下一步建议（比如可以查什么、可以怎么继续），不要客套话。
-6. 若是执行提交成功：提醒用户到流水线前端看最终结果，也可稍后问进度。"""
+6. 若是执行提交成功：提醒用户到流水线前端看最终结果，也可稍后问进度；若只创建未启动，提醒可以说启动。"""
 
 
 def _facts(state: TestFlowState) -> dict:
@@ -49,8 +48,6 @@ def _facts(state: TestFlowState) -> dict:
     facts: dict[str, Any] = {}
 
     def put(key: str, value: Any) -> None:
-        # 只剔 None 和空容器。数字 0 必须留 —— passed=0 被剔掉后
-        # 模型会把「跑了但全挂」误读成「还没跑」
         if value is None:
             return
         if isinstance(value, (str, list, dict, tuple)) and len(value) == 0:
@@ -60,6 +57,8 @@ def _facts(state: TestFlowState) -> dict:
     put("用户问题", state.get("user_input"))
     put("任务类型", state.get("intent"))
     put("任务状态", summary.get("status"))
+    if params.get("exec_mode"):
+        put("执行模式", params.get("exec_mode"))
 
     plans = params.get("plans") or []
     if plans:
@@ -80,7 +79,7 @@ def _facts(state: TestFlowState) -> dict:
             "流水线",
             [
                 {
-                    "run_id": p.get("run_id"),
+                    "pipeline_id": p.get("pipeline_id"),
                     "环境": p.get("env"),
                     "版本": p.get("version"),
                     "用例": p.get("case_names"),
@@ -90,7 +89,10 @@ def _facts(state: TestFlowState) -> dict:
                 for p in pipelines
             ],
         )
-        put("run_id列表", [p.get("run_id") for p in pipelines if p.get("run_id")])
+        put(
+            "pipeline_id列表",
+            [p.get("pipeline_id") for p in pipelines if p.get("pipeline_id")],
+        )
 
     total = summary.get("total")
     if isinstance(total, int):
@@ -114,9 +116,9 @@ def _facts(state: TestFlowState) -> dict:
         )
 
     if summary.get("created") is not None:
-        put("已创建流水线数", summary.get("created"))
+        put("已处理流水线数", summary.get("created"))
     if summary.get("failed_pipelines"):
-        put("创建失败数", summary.get("failed_pipelines"))
+        put("失败流水线数", summary.get("failed_pipelines"))
 
     put("分析文档", state.get("analysis_path"))
     put("系统备注", summary.get("message"))
@@ -150,16 +152,32 @@ def _fallback_reply(state: TestFlowState, facts: dict) -> str:
         return "已按你的意思取消，没有提交执行。"
 
     if intent == "execute" and pipelines:
-        run_ids = [p.get("run_id") for p in pipelines if p.get("run_id")]
-        n = summary.get("created", len(run_ids))
-        text = (
-            f"已创建并启动 {n} 条流水线（{', '.join(run_ids)}），"
-            "结果请到流水线前端查看，也可稍后问我进度。"
+        pids = [p.get("pipeline_id") for p in pipelines if p.get("pipeline_id")]
+        n = summary.get("created", len(pids))
+        mode = (state.get("exec_params") or {}).get("exec_mode") or summary.get(
+            "exec_mode"
         )
+        if status == "created" or mode == "create_only":
+            text = (
+                f"已创建 {n} 条流水线（{', '.join(pids)}），尚未启动。"
+                "需要时可让我按 pipeline_id 启动。"
+            )
+        else:
+            text = (
+                f"已创建并启动 {n} 条流水线（{', '.join(pids)}），"
+                "结果请到流水线前端查看，也可稍后问我进度。"
+            )
         failed_n = summary.get("failed_pipelines") or 0
         if failed_n:
-            text += f"另有 {failed_n} 条创建失败。"
+            text += f"另有 {failed_n} 条失败。"
         return text
+
+    if intent == "start" and pipelines:
+        pids = [p.get("pipeline_id") for p in pipelines if p.get("pipeline_id")]
+        return str(
+            summary.get("message")
+            or f"已处理启动：{', '.join(pids)}"
+        )
 
     if intent == "query":
         return str(summary.get("message") or "没查到匹配的执行记录。")

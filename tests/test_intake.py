@@ -28,7 +28,7 @@ def test_intake_resets_task_fields():
         {
             "messages": [HumanMessage(content="你好")],
             "intent": "execute",
-            "pipelines": [{"run_id": "pipe-old"}],
+            "pipelines": [{"pipeline_id": "pipe-old"}],
             "exec_params": {"plans": [{"case_names": ["old"]}]},
             "results": [{"case_name": "old"}],
             "analysis_path": "D:/old/analysis.md",
@@ -49,7 +49,7 @@ def test_intake_resets_task_fields():
     # messages / dialogue_summary 不在返回值里 —— 会话级，intake 绝不碰
     assert "messages" not in out
     assert "dialogue_summary" not in out
-    assert "run_id" not in out
+    assert "pipeline_id" not in out
     assert "report_path" not in out
 
 

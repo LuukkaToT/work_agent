@@ -62,6 +62,7 @@ def build_exec_flow():
     graph.add_node("ask_missing", ask_missing)
     graph.add_node("confirm_exec", confirm_exec)
     graph.add_node("create_pipelines", create_pipelines)
+    graph.add_node("start_pipelines", start_pipelines)
 
     graph.add_edge(START, "exec_params")
     graph.add_edge("exec_params", "ask_missing")
@@ -74,6 +75,7 @@ def build_exec_flow():
             "cancel": END,
         },
     )
-    graph.add_edge("create_pipelines", END)
+    graph.add_edge("create_pipelines", start_pipelines)
+    graph.add_edge("start_pipelines", END)
 
     return graph.compile()

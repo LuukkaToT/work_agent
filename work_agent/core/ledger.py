@@ -2,7 +2,7 @@
 运行台账（workspace/index.db）。
 
 checkpointer 按 thread_id 存图状态；换会话后问「上次执行怎么样了」
-需要能跨会话查找 run，所以单独建表。
+需要能跨会话查找 pipeline，所以单独建表。
 """
 
 from __future__ import annotations
@@ -18,8 +18,8 @@ from work_agent.core.config import get_settings
 
 
 @dataclass(frozen=True)
-class RunRecord:
-    run_id: str
+class PipelineRecord:
+    pipeline_id: str
     task_id: str
     case_names: list[str]
     version: str
@@ -47,18 +47,22 @@ class RunLedger:
 
     def _init_db(self) -> None:
         with self._connect() as conn:
-            # 开发期：旧表若仍是 topology 列，直接重建（无生产迁移）
             cols = {
                 row[1]
-                for row in conn.execute("PRAGMA table_info(runs)").fetchall()
+                for row in conn.execute("PRAGMA table_info(pipelines)").fetchall()
             }
-            if cols and "env" not in cols:
-                conn.execute("DROP TABLE runs")
+            # 旧表 runs / 无 pipeline_id：开发期直接重建
+            old_runs = conn.execute(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name='runs'"
+            ).fetchone()
+            if old_runs or (cols and "pipeline_id" not in cols):
+                conn.execute("DROP TABLE IF EXISTS runs")
+                conn.execute("DROP TABLE IF EXISTS pipelines")
 
             conn.execute(
                 """
-                CREATE TABLE IF NOT EXISTS runs (
-                    run_id TEXT PRIMARY KEY,
+                CREATE TABLE IF NOT EXISTS pipelines (
+                    pipeline_id TEXT PRIMARY KEY,
                     task_id TEXT NOT NULL,
                     case_names TEXT NOT NULL,
                     version TEXT NOT NULL,
@@ -75,7 +79,7 @@ class RunLedger:
     def upsert(
         self,
         *,
-        run_id: str,
+        pipeline_id: str,
         task_id: str,
         case_names: list[str],
         version: str,
@@ -87,11 +91,11 @@ class RunLedger:
         with self._connect() as conn:
             conn.execute(
                 """
-                INSERT INTO runs (
-                    run_id, task_id, case_names, version, env,
+                INSERT INTO pipelines (
+                    pipeline_id, task_id, case_names, version, env,
                     status, report_path, created_at, updated_at
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                ON CONFLICT(run_id) DO UPDATE SET
+                ON CONFLICT(pipeline_id) DO UPDATE SET
                     task_id=excluded.task_id,
                     case_names=excluded.case_names,
                     version=excluded.version,
@@ -99,12 +103,12 @@ class RunLedger:
                     status=excluded.status,
                     report_path=CASE
                         WHEN excluded.report_path != '' THEN excluded.report_path
-                        ELSE runs.report_path
+                        ELSE pipelines.report_path
                     END,
                     updated_at=excluded.updated_at
                 """,
                 (
-                    run_id,
+                    pipeline_id,
                     task_id,
                     json.dumps(case_names, ensure_ascii=False),
                     version,
@@ -119,7 +123,7 @@ class RunLedger:
 
     def update_status(
         self,
-        run_id: str,
+        pipeline_id: str,
         *,
         status: str | None = None,
         report_path: str | None = None,
@@ -132,35 +136,66 @@ class RunLedger:
         if report_path is not None:
             fields.append("report_path=?")
             values.append(report_path)
-        values.append(run_id)
+        values.append(pipeline_id)
         with self._connect() as conn:
             conn.execute(
-                f"UPDATE runs SET {', '.join(fields)} WHERE run_id=?",
+                f"UPDATE pipelines SET {', '.join(fields)} WHERE pipeline_id=?",
                 values,
             )
             conn.commit()
 
-    def get(self, run_id: str) -> RunRecord | None:
+    def replace_id(self, old_id: str, new_id: str, *, status: str) -> None:
+        """creating 临时键换成服务端 pipeline_id。"""
         with self._connect() as conn:
             row = conn.execute(
-                "SELECT * FROM runs WHERE run_id=?", (run_id,)
+                "SELECT * FROM pipelines WHERE pipeline_id=?", (old_id,)
+            ).fetchone()
+            if not row:
+                return
+            now = _now()
+            conn.execute("DELETE FROM pipelines WHERE pipeline_id=?", (old_id,))
+            conn.execute(
+                """
+                INSERT INTO pipelines (
+                    pipeline_id, task_id, case_names, version, env,
+                    status, report_path, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    new_id,
+                    row["task_id"],
+                    row["case_names"],
+                    row["version"],
+                    row["env"],
+                    status,
+                    row["report_path"] or "",
+                    row["created_at"],
+                    now,
+                ),
+            )
+            conn.commit()
+
+    def get(self, pipeline_id: str) -> PipelineRecord | None:
+        with self._connect() as conn:
+            row = conn.execute(
+                "SELECT * FROM pipelines WHERE pipeline_id=?", (pipeline_id,)
             ).fetchone()
         return self._row_to_record(row) if row else None
 
-    def latest(self, limit: int = 1) -> list[RunRecord]:
+    def latest(self, limit: int = 1) -> list[PipelineRecord]:
         with self._connect() as conn:
             rows = conn.execute(
-                "SELECT * FROM runs ORDER BY created_at DESC LIMIT ?",
+                "SELECT * FROM pipelines ORDER BY created_at DESC LIMIT ?",
                 (limit,),
             ).fetchall()
         return [self._row_to_record(r) for r in rows]
 
-    def find_by_case(self, case_name: str, limit: int = 10) -> list[RunRecord]:
+    def find_by_case(self, case_name: str, limit: int = 10) -> list[PipelineRecord]:
         with self._connect() as conn:
             rows = conn.execute(
-                "SELECT * FROM runs ORDER BY created_at DESC LIMIT 100"
+                "SELECT * FROM pipelines ORDER BY created_at DESC LIMIT 100"
             ).fetchall()
-        out: list[RunRecord] = []
+        out: list[PipelineRecord] = []
         for row in rows:
             rec = self._row_to_record(row)
             if case_name in rec.case_names:
@@ -169,21 +204,21 @@ class RunLedger:
                 break
         return out
 
-    def find_by_task(self, task_id: str) -> list[RunRecord]:
+    def find_by_task(self, task_id: str) -> list[PipelineRecord]:
         with self._connect() as conn:
             rows = conn.execute(
-                "SELECT * FROM runs WHERE task_id=? ORDER BY created_at ASC",
+                "SELECT * FROM pipelines WHERE task_id=? ORDER BY created_at ASC",
                 (task_id,),
             ).fetchall()
         return [self._row_to_record(r) for r in rows]
 
-    def list_recent(self, limit: int = 10) -> list[RunRecord]:
+    def list_recent(self, limit: int = 10) -> list[PipelineRecord]:
         return self.latest(limit=limit)
 
     @staticmethod
-    def _row_to_record(row: sqlite3.Row) -> RunRecord:
-        return RunRecord(
-            run_id=row["run_id"],
+    def _row_to_record(row: sqlite3.Row) -> PipelineRecord:
+        return PipelineRecord(
+            pipeline_id=row["pipeline_id"],
             task_id=row["task_id"],
             case_names=json.loads(row["case_names"] or "[]"),
             version=row["version"],

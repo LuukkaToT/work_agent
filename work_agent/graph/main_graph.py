@@ -1,19 +1,14 @@
 """
-主图组装：只负责「有哪些节点、边怎么连」，业务逻辑在 nodes/ 与子图里。
+主图组装。
 
-当前完整路径：
   START → intake → router
-                 ├─ analysis → test_analysis ────────────────┐
-                 ├─ execute → [子图 exec_flow] ──────────────┤
-                 ├─ query → query_run ───────────────────────┤
-                 └─ chat → quick_answer ─────────────────────┤
-                                                             │
-                                          respond → memory → END
-
-exec_flow 子图内部：
-  exec_params → ask_missing → confirm_exec
-                    ├─ proceed → create_pipelines → END
-                    └─ cancel  → END
+                 ├─ analysis → test_analysis ──┐
+                 ├─ execute → exec_flow ───────┤
+                 ├─ start → prepare_start → start_pipelines ─┤
+                 ├─ query → query_run ─────────┤
+                 └─ chat → quick_answer ───────┤
+                                               │
+                            respond → memory → END
 """
 
 from __future__ import annotations
@@ -26,7 +21,9 @@ from langgraph.types import Checkpointer
 
 from work_agent.graph.nodes.analysis import test_analysis
 from work_agent.graph.nodes.chat import quick_answer
+from work_agent.graph.nodes.exec_flow import start_pipelines
 from work_agent.graph.nodes.memory import memory
+from work_agent.graph.nodes.prepare_start import prepare_start
 from work_agent.graph.nodes.query_run import query_run
 from work_agent.graph.nodes.respond import respond
 from work_agent.graph.nodes.router import route_by_intent, router
@@ -35,7 +32,6 @@ from work_agent.graph.subgraphs.exec_flow import build_exec_flow
 
 
 def _message_text(content: object) -> str:
-    """把消息 content（str 或分段 list）归一成纯文本。"""
     if isinstance(content, str):
         return content.strip()
     if isinstance(content, list):
@@ -50,12 +46,6 @@ def _message_text(content: object) -> str:
 
 
 def intake(state: TestFlowState) -> dict:
-    """
-    每轮入口：从 messages 提取本轮用户输入，并归零全部任务级字段。
-
-    调用方只需 invoke({"messages": [HumanMessage(...)]})。
-    会话级 messages / dialogue_summary 由 checkpointer 累积，intake 绝不碰。
-    """
     messages = state.get("messages") or []
     if not messages:
         raise ValueError("intake 需要至少一条用户消息，请 invoke 时传入 messages")
@@ -69,7 +59,6 @@ def intake(state: TestFlowState) -> dict:
     return {
         "task_id": task_id,
         "user_input": user_input,
-        # --- 以下全部任务级字段显式归零，防止跨轮串数据 ---
         "intent": "",
         "requirement": "",
         "analysis_path": "",
@@ -100,6 +89,8 @@ def build_graph(
     graph.add_node("router", router)
     graph.add_node("test_analysis", test_analysis)
     graph.add_node("exec_flow", build_exec_flow())
+    graph.add_node("prepare_start", prepare_start)
+    graph.add_node("start_pipelines", start_pipelines)
     graph.add_node("query_run", query_run)
     graph.add_node("quick_answer", quick_answer)
     graph.add_node("respond", respond)
@@ -113,6 +104,7 @@ def build_graph(
         {
             "analysis": "test_analysis",
             "execute": "exec_flow",
+            "start": "prepare_start",
             "query": "query_run",
             "chat": "quick_answer",
         },
@@ -120,6 +112,12 @@ def build_graph(
 
     graph.add_edge("test_analysis", "respond")
     graph.add_edge("exec_flow", "respond")
+    graph.add_conditional_edges(
+        "prepare_start",
+        lambda s: "start" if (s.get("pipelines") or []) else "skip",
+        {"start": "start_pipelines", "skip": "respond"},
+    )
+    graph.add_edge("start_pipelines", "respond")
     graph.add_edge("query_run", "respond")
     graph.add_edge("quick_answer", "respond")
     graph.add_edge("respond", "memory")

@@ -1,25 +1,35 @@
-"""create_pipelines：批量创建、write-ahead、超时对账与同 ID 重试。"""
+"""create_pipelines / start_pipelines：批量 create、write-ahead、防双建。"""
 
 from __future__ import annotations
 
 from work_agent.core.config import Profile, Settings, get_settings
 from work_agent.graph.nodes import exec_flow as exec_flow_mod
-from work_agent.graph.nodes.exec_flow import create_pipelines
+from work_agent.graph.nodes.exec_flow import create_pipelines, start_pipelines
 from work_agent.tools.mock.executor import MockPipelineTool
-from work_agent.tools.models import PipelineHandle, PipelineResult
+from work_agent.tools.models import PipelineHandle
 
 
 class _FakeLedger:
     def __init__(self) -> None:
         self.rows: list[dict] = []
         self.updates: list[dict] = []
+        self.replacements: list[dict] = []
 
     def upsert(self, **kwargs) -> None:
         self.rows.append(kwargs)
 
-    def update_status(self, run_id: str, *, status=None, report_path=None) -> None:
+    def update_status(self, pipeline_id: str, *, status=None, report_path=None) -> None:
         self.updates.append(
-            {"run_id": run_id, "status": status, "report_path": report_path}
+            {
+                "pipeline_id": pipeline_id,
+                "status": status,
+                "report_path": report_path,
+            }
+        )
+
+    def replace_id(self, old_id: str, new_id: str, *, status: str) -> None:
+        self.replacements.append(
+            {"old_id": old_id, "new_id": new_id, "status": status}
         )
 
 
@@ -65,7 +75,10 @@ def _one_plan(**overrides):
         "env": "7.223.50.60",
     }
     plan.update(overrides)
-    return {"task_id": "t1", "exec_params": {"plans": [plan]}}
+    return {
+        "task_id": "t1",
+        "exec_params": {"plans": [plan], "exec_mode": "create_and_start"},
+    }
 
 
 def test_create_pipelines_two_envs(monkeypatch):
@@ -77,6 +90,7 @@ def test_create_pipelines_two_envs(monkeypatch):
         {
             "task_id": "t1",
             "exec_params": {
+                "exec_mode": "create_and_start",
                 "plans": [
                     {
                         "case_names": ["HF_20B_PUSCH_001"],
@@ -88,7 +102,7 @@ def test_create_pipelines_two_envs(monkeypatch):
                         "version": "26A",
                         "env": "7.223.60.11",
                     },
-                ]
+                ],
             },
         }
     )
@@ -98,10 +112,30 @@ def test_create_pipelines_two_envs(monkeypatch):
     assert len(out["pipelines"]) == 2
     assert {p["env"] for p in out["pipelines"]} == {"7.223.50.60", "7.223.60.11"}
     assert all(p["status"] == "running" for p in out["pipelines"])
-    # write-ahead：两条 creating
+    pids = [p["pipeline_id"] for p in out["pipelines"]]
+    assert len(set(pids)) == 2
+    assert all(not pid.startswith("local-") for pid in pids)
+    # write-ahead：两条 local creating
     assert len(ledger.rows) == 2
     assert all(r["status"] == "creating" for r in ledger.rows)
+    assert all(str(r["pipeline_id"]).startswith("local-") for r in ledger.rows)
+    assert len(ledger.replacements) == 2
     assert [u["status"] for u in ledger.updates] == ["running", "running"]
+
+
+def test_create_only_skips_start(monkeypatch):
+    tool = MockPipelineTool()
+    ledger = _FakeLedger()
+    _patch(monkeypatch, tool, ledger)
+
+    state = _one_plan()
+    state["exec_params"]["exec_mode"] = "create_only"
+    out = create_pipelines(state)
+
+    assert out["summary"]["status"] == "created"
+    assert out["pipelines"][0]["status"] == "created"
+    assert ledger.updates == []  # 未 start，无 running
+    assert len(ledger.replacements) == 1
 
 
 def test_create_pipelines_partial_failure(monkeypatch):
@@ -113,6 +147,7 @@ def test_create_pipelines_partial_failure(monkeypatch):
         {
             "task_id": "t1",
             "exec_params": {
+                "exec_mode": "create_and_start",
                 "plans": [
                     {
                         "case_names": ["bad"],  # 太短，流水线拒绝
@@ -124,7 +159,7 @@ def test_create_pipelines_partial_failure(monkeypatch):
                         "version": "27B",
                         "env": "7.223.60.11",
                     },
-                ]
+                ],
             },
         }
     )
@@ -137,119 +172,110 @@ def test_create_pipelines_partial_failure(monkeypatch):
     assert statuses["7.223.60.11"] == "running"
 
 
-def test_write_ahead_before_init(monkeypatch):
-    """台账在 init 之前就写入 creating。"""
+def test_write_ahead_before_create(monkeypatch):
+    """台账在 create 之前就写入 local creating。"""
     ledger = _FakeLedger()
-    seen_at_init: list[str] = []
+    seen_at_create: list[str] = []
 
     class Tool:
-        def init_pipline(self, run_id, case_names, version, env):
-            seen_at_init.extend(r["status"] for r in ledger.rows)
-            return PipelineHandle(run_id, case_names, version, env)
+        def create(self, case_names, version, env):
+            seen_at_create.extend(r["status"] for r in ledger.rows)
+            return PipelineHandle(
+                pipeline_id="11111111-1111-1111-1111-111111111111",
+                case_names=case_names,
+                version=version,
+                env=env,
+            )
 
-        def check_pipline(self, run_id):
+        def start(self, pipeline_id):
             return True
 
-        def query_result(self, run_id):
-            raise KeyError(run_id)
+        def query(self, pipeline_id):
+            raise KeyError(pipeline_id)
 
     _patch(monkeypatch, Tool(), ledger)
     out = create_pipelines(_one_plan())
     assert out["pipelines"][0]["status"] == "running"
-    assert seen_at_init == ["creating"]
-    assert ledger.rows[0]["status"] == "creating"
+    assert out["pipelines"][0]["pipeline_id"] == (
+        "11111111-1111-1111-1111-111111111111"
+    )
+    assert seen_at_create == ["creating"]
+    assert ledger.rows[0]["pipeline_id"].startswith("local-")
+    assert ledger.replacements[0]["new_id"] == (
+        "11111111-1111-1111-1111-111111111111"
+    )
     assert ledger.updates[-1]["status"] == "running"
 
 
-def test_timeout_but_already_created(monkeypatch):
-    """init 超时但服务端已建：对账成功，不重复 init。"""
+def test_create_fail_no_retry(monkeypatch):
+    """create 失败不盲目重试，防双建。"""
     ledger = _FakeLedger()
-    created: dict[str, PipelineHandle] = {}
 
     class Tool:
         def __init__(self) -> None:
-            self.init_calls = 0
+            self.create_calls = 0
 
-        def init_pipline(self, run_id, case_names, version, env):
-            self.init_calls += 1
-            created[run_id] = PipelineHandle(run_id, case_names, version, env)
+        def create(self, case_names, version, env):
+            self.create_calls += 1
             raise TimeoutError("http timeout")
 
-        def check_pipline(self, run_id):
-            assert run_id in created
-            return True
+        def start(self, pipeline_id):
+            raise AssertionError("不应 start")
 
-        def query_result(self, run_id):
-            if run_id not in created:
-                raise KeyError(run_id)
-            return PipelineResult(run_id=run_id, phase="pending", message="ok")
+        def query(self, pipeline_id):
+            raise AssertionError("不应 query")
 
     tool = Tool()
     _patch(monkeypatch, tool, ledger, retry_attempts=3)
     out = create_pipelines(_one_plan())
 
-    assert out["pipelines"][0]["status"] == "running"
-    assert tool.init_calls == 1  # 对账成功，不再重试 init
-    assert any("对账发现已创建" in n for n in out["pipelines"][0]["notes"])
-    assert ledger.updates[-1]["status"] == "running"
-
-
-def test_retry_same_run_id_when_not_created(monkeypatch):
-    """init 失败且未创建：同 run_id 重试成功。"""
-    ledger = _FakeLedger()
-    run_ids_seen: list[str] = []
-
-    class Tool:
-        def __init__(self) -> None:
-            self.init_calls = 0
-
-        def init_pipline(self, run_id, case_names, version, env):
-            self.init_calls += 1
-            run_ids_seen.append(run_id)
-            if self.init_calls == 1:
-                raise TimeoutError("timeout")
-            return PipelineHandle(run_id, case_names, version, env)
-
-        def check_pipline(self, run_id):
-            return True
-
-        def query_result(self, run_id):
-            raise KeyError(run_id)
-
-    tool = Tool()
-    _patch(monkeypatch, tool, ledger, retry_attempts=1)
-    out = create_pipelines(_one_plan())
-
-    assert out["pipelines"][0]["status"] == "running"
-    assert tool.init_calls == 2
-    assert len(set(run_ids_seen)) == 1  # 同一 run_id
-    assert ledger.updates[-1]["status"] == "running"
-
-
-def test_retries_exhausted_marks_failed(monkeypatch):
-    """重试用尽 → failed，台账经历 creating → failed。"""
-    ledger = _FakeLedger()
-
-    class Tool:
-        def __init__(self) -> None:
-            self.init_calls = 0
-
-        def init_pipline(self, run_id, case_names, version, env):
-            self.init_calls += 1
-            raise TimeoutError("always timeout")
-
-        def check_pipline(self, run_id):
-            raise AssertionError("不应走到 check")
-
-        def query_result(self, run_id):
-            raise KeyError(run_id)
-
-    tool = Tool()
-    _patch(monkeypatch, tool, ledger, retry_attempts=1)
-    out = create_pipelines(_one_plan())
-
     assert out["summary"]["status"] == "failed"
     assert out["pipelines"][0]["status"] == "failed"
-    assert tool.init_calls == 2  # 首次 + 1 次重试
+    assert tool.create_calls == 1
+    assert any("不重试" in n for n in out["pipelines"][0]["notes"])
     assert ledger.rows[0]["status"] == "creating"
     assert ledger.updates[-1]["status"] == "failed"
+    assert ledger.replacements == []
+
+
+def test_start_pipelines_retries(monkeypatch):
+    """start 可同 pipeline_id 重试。"""
+    ledger = _FakeLedger()
+
+    class Tool:
+        def __init__(self) -> None:
+            self.start_calls = 0
+
+        def create(self, case_names, version, env):
+            raise AssertionError("不应 create")
+
+        def start(self, pipeline_id):
+            self.start_calls += 1
+            if self.start_calls == 1:
+                raise TimeoutError("start timeout")
+            return True
+
+        def query(self, pipeline_id):
+            raise KeyError(pipeline_id)
+
+    tool = Tool()
+    _patch(monkeypatch, tool, ledger, retry_attempts=1)
+    out = start_pipelines(
+        {
+            "pipelines": [
+                {
+                    "pipeline_id": "22222222-2222-2222-2222-222222222222",
+                    "case_names": ["HF_20B_PUSCH_001"],
+                    "version": "27B",
+                    "env": "7.223.50.60",
+                    "status": "created",
+                    "error": "",
+                }
+            ]
+        }
+    )
+
+    assert out["summary"]["status"] == "submitted"
+    assert out["pipelines"][0]["status"] == "running"
+    assert tool.start_calls == 2
+    assert ledger.updates[-1]["status"] == "running"

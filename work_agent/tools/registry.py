@@ -23,8 +23,12 @@ def get_case_provider() -> CaseProvider:
     backend = get_settings().tool_backend
     if backend == "mock":
         return MockCaseProvider()
+    if backend == "real":
+        from work_agent.tools.real import RealCaseProvider
+
+        return RealCaseProvider()
     raise NotImplementedError(
-        f"TOOL_BACKEND={backend!r} 尚未实现，请先用 mock"
+        f"TOOL_BACKEND={backend!r} 尚未实现，请先用 mock 或 real"
     )
 
 
@@ -37,6 +41,10 @@ def get_pipeline_tool(scenario: MockScenario = "all_pass") -> PipelineTool:
     backend = get_settings().tool_backend
     if backend == "mock":
         return MockPipelineTool(scenario=scenario, ticks_to_finish=2)
+    if backend == "real":
+        from work_agent.tools.real import RealPipelineTool
+
+        return RealPipelineTool()
     raise NotImplementedError(
-        f"TOOL_BACKEND={backend!r} 尚未实现，请先用 mock"
+        f"TOOL_BACKEND={backend!r} 尚未实现，请先用 mock 或 real"
     )

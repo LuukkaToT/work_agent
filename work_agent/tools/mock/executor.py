@@ -1,10 +1,12 @@
 """
-Mock 流水线 tool：对齐公司 init_pipline / check_pipline / query_result。
+Mock 流水线 tool：create / start / query。
+pipeline_id 由 mock 生成 uuid，模拟服务端返回。
 """
 
 from __future__ import annotations
 
 import re
+import uuid
 from dataclasses import dataclass, field
 from typing import Literal
 
@@ -12,8 +14,6 @@ from work_agent.tools.models import CaseResult, PipelineHandle, PipelineResult
 
 MockScenario = Literal["all_pass", "version_fail", "case_error", "env_error"]
 
-# 真实用例名很长；mock 用宽松规则模拟「流水线自己校验」：
-# 至少 8 个字符，含下划线或连字符，不以纯数字开头。
 _CASE_NAME_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_-]{7,}$")
 
 
@@ -28,16 +28,8 @@ class _PipelineRecord:
 
 class MockPipelineTool:
     """
-    假流水线，用来把图的分支跑通。接公司系统后由 real 实现替换。
-
-    四场景：
-    - all_pass      全部通过
-    - version_fail  首条失败且 fail_kind=version
-    - case_error    首条 error 且 fail_kind=case
-    - env_error     query 直接 failed（环境不可用）
-
-    ticks_to_finish：
-    - query_result 被调用几次后才变 finished（模拟分钟级执行）
+    假流水线。四场景：all_pass / version_fail / case_error / env_error。
+    ticks_to_finish：query 被调用几次后才变 finished。
     """
 
     def __init__(
@@ -49,15 +41,12 @@ class MockPipelineTool:
         self.ticks_to_finish = max(1, ticks_to_finish)
         self._runs: dict[str, _PipelineRecord] = {}
 
-    def init_pipline(
+    def create(
         self,
-        run_id: str,
         case_names: list[str],
         version: str,
         env: str,
     ) -> PipelineHandle:
-        if not run_id:
-            raise ValueError("run_id 不能为空")
         if not case_names:
             raise ValueError("case_names 不能为空")
         if not version:
@@ -69,20 +58,18 @@ class MockPipelineTool:
         if bad:
             raise ValueError(f"流水线拒绝非法用例名: {bad}")
 
-        if run_id in self._runs:
-            raise ValueError(f"run_id 已存在: {run_id}")
-
+        pipeline_id = str(uuid.uuid4())
         handle = PipelineHandle(
-            run_id=run_id,
+            pipeline_id=pipeline_id,
             case_names=list(case_names),
             version=version,
             env=env,
         )
-        self._runs[run_id] = _PipelineRecord(handle=handle)
+        self._runs[pipeline_id] = _PipelineRecord(handle=handle)
         return handle
 
-    def check_pipline(self, run_id: str) -> bool:
-        rec = self._require(run_id)
+    def start(self, pipeline_id: str) -> bool:
+        rec = self._require(pipeline_id)
         if rec.started:
             return True
         if self.scenario == "env_error":
@@ -93,12 +80,12 @@ class MockPipelineTool:
         rec.started = True
         return True
 
-    def query_result(self, run_id: str) -> PipelineResult:
-        rec = self._require(run_id)
+    def query(self, pipeline_id: str) -> PipelineResult:
+        rec = self._require(pipeline_id)
         if not rec.started:
             return PipelineResult(
-                run_id=run_id,
-                phase="pending",
+                pipeline_id=pipeline_id,
+                phase="created",
                 message="流水线已创建，尚未启动",
             )
 
@@ -106,7 +93,7 @@ class MockPipelineTool:
             if not rec.results:
                 rec.results = self._build_results(rec.handle)
             return PipelineResult(
-                run_id=run_id,
+                pipeline_id=pipeline_id,
                 phase="failed",
                 results=list(rec.results),
                 message="环境不可用：物理节点无响应",
@@ -115,7 +102,7 @@ class MockPipelineTool:
         rec.ticks += 1
         if rec.ticks < self.ticks_to_finish:
             return PipelineResult(
-                run_id=run_id,
+                pipeline_id=pipeline_id,
                 phase="running",
                 message=f"执行中 {rec.ticks}/{self.ticks_to_finish}",
             )
@@ -124,16 +111,16 @@ class MockPipelineTool:
         if not rec.results:
             rec.results = self._build_results(rec.handle)
         return PipelineResult(
-            run_id=run_id,
+            pipeline_id=pipeline_id,
             phase="finished",
             results=list(rec.results),
             message="执行完成",
         )
 
-    def _require(self, run_id: str) -> _PipelineRecord:
-        if run_id not in self._runs:
-            raise KeyError(f"未知 run_id: {run_id}")
-        return self._runs[run_id]
+    def _require(self, pipeline_id: str) -> _PipelineRecord:
+        if pipeline_id not in self._runs:
+            raise KeyError(f"未知 pipeline_id: {pipeline_id}")
+        return self._runs[pipeline_id]
 
     def _build_results(self, handle: PipelineHandle) -> list[CaseResult]:
         names = handle.case_names

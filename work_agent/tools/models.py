@@ -10,9 +10,8 @@ from dataclasses import dataclass, field
 from typing import Literal
 
 
-RunPhase = Literal["pending", "running", "finished", "failed", "timeout"]
+RunPhase = Literal["pending", "created", "running", "finished", "failed", "timeout"]
 CaseVerdict = Literal["pass", "fail", "error", "skipped"]
-# 失败归因粗分类（MVP 只在 mock 结果里带上；自动归因是 Phase 2）
 FailKind = Literal["none", "version", "case", "env"]
 
 
@@ -25,9 +24,9 @@ class CaseInfo:
 
 @dataclass(frozen=True)
 class PipelineHandle:
-    """init_pipline 成功后的句柄。"""
+    """create 成功后的句柄；pipeline_id 由服务端返回。"""
 
-    run_id: str
+    pipeline_id: str
     case_names: list[str]
     version: str
     env: str  # 物理组网 IP，如 7.223.50.60
@@ -43,9 +42,9 @@ class CaseResult:
 
 @dataclass(frozen=True)
 class PipelineResult:
-    """query_result 返回：状态 + 各用例结果。"""
+    """query 返回：状态 + 各用例结果。"""
 
-    run_id: str
+    pipeline_id: str
     phase: RunPhase
     results: list[CaseResult] = field(default_factory=list)
     message: str = ""

@@ -30,11 +30,11 @@ console = Console()
 def _runs_table(rows: list[dict], *, title: str | None = None) -> Table:
     """台账表格。runs 命令和 pick_run 的候选列表共用同一种呈现。"""
     table = Table(title=title, show_header=True, header_style="bold")
-    for col in ("run_id", "task_id", "用例", "版本", "环境", "状态", "时间"):
+    for col in ("pipeline_id", "task_id", "用例", "版本", "环境", "状态", "时间"):
         table.add_column(col)
     for r in rows:
         table.add_row(
-            str(r.get("run_id", "")),
+            str(r.get("pipeline_id", "")),
             str(r.get("task_id", "")),
             ",".join(r.get("cases") or []),
             str(r.get("version", "")),
@@ -60,7 +60,7 @@ def _print_result(result: dict, *, verbose: bool = False) -> None:
     if pipelines:
         for p in pipelines:
             refs.append(
-                f"pipeline : {p.get('run_id')}  env={p.get('env')}  "
+                f"pipeline : {p.get('pipeline_id')}  env={p.get('env')}  "
                 f"status={p.get('status')}"
             )
     if result.get("analysis_path"):
@@ -212,7 +212,7 @@ def list_runs(
     """查看运行台账。"""
     rows = [
         {
-            "run_id": r.run_id,
+            "pipeline_id": r.pipeline_id,
             "task_id": r.task_id,
             "cases": r.case_names,
             "version": r.version,

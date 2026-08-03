@@ -1,4 +1,6 @@
-"""MockPipelineTool：三函数契约、用例名自校验、四场景。"""
+"""MockPipelineTool：create / start / query 契约、用例名自校验、四场景。"""
+
+import uuid
 
 import pytest
 
@@ -10,60 +12,60 @@ VALID_CASES = [
 ]
 
 
-def create(ex, *, run_id="pipe-001", cases=None, version="27B", env="7.223.50.60"):
-    return ex.init_pipline(
-        run_id,
-        cases or VALID_CASES,
-        version,
-        env,
-    )
+def create(ex, *, cases=None, version="27B", env="7.223.50.60"):
+    return ex.create(cases or VALID_CASES, version, env)
 
 
-def test_init_validates_params():
+def test_create_validates_params():
     ex = MockPipelineTool()
     with pytest.raises(ValueError):
-        ex.init_pipline("", VALID_CASES, "27B", "7.223.50.60")
+        ex.create([], "27B", "7.223.50.60")
     with pytest.raises(ValueError):
-        ex.init_pipline("pipe-1", [], "27B", "7.223.50.60")
+        ex.create(VALID_CASES, "", "7.223.50.60")
     with pytest.raises(ValueError):
-        ex.init_pipline("pipe-1", VALID_CASES, "", "7.223.50.60")
-    with pytest.raises(ValueError):
-        ex.init_pipline("pipe-1", VALID_CASES, "27B", "")
+        ex.create(VALID_CASES, "27B", "")
 
 
-def test_init_rejects_short_case_names():
+def test_create_rejects_short_case_names():
     """流水线自己校验用例名；agent 不预检，但 mock 要能模拟拒绝。"""
     ex = MockPipelineTool()
     with pytest.raises(ValueError, match="非法用例名"):
-        ex.init_pipline("pipe-1", ["case_a", "ok"], "27B", "7.223.50.60")
+        ex.create(["case_a", "ok"], "27B", "7.223.50.60")
 
 
-def test_check_then_query_ticks():
+def test_create_returns_server_pipeline_id():
+    ex = MockPipelineTool()
+    handle = create(ex)
+    assert handle.pipeline_id
+    uuid.UUID(handle.pipeline_id)  # 合法 uuid
+
+
+def test_start_then_query_ticks():
     ex = MockPipelineTool(scenario="all_pass", ticks_to_finish=2)
-    create(ex)
-    assert ex.check_pipline("pipe-001") is True
+    handle = create(ex)
+    assert ex.start(handle.pipeline_id) is True
 
-    first = ex.query_result("pipe-001")
+    first = ex.query(handle.pipeline_id)
     assert first.phase == "running"
     assert first.results == []
 
-    second = ex.query_result("pipe-001")
+    second = ex.query(handle.pipeline_id)
     assert second.phase == "finished"
     assert [r.verdict for r in second.results] == ["pass", "pass"]
 
 
-def test_query_before_check_is_pending():
+def test_query_before_start_is_created():
     ex = MockPipelineTool()
-    create(ex)
-    pr = ex.query_result("pipe-001")
-    assert pr.phase == "pending"
+    handle = create(ex)
+    pr = ex.query(handle.pipeline_id)
+    assert pr.phase == "created"
 
 
 def test_version_fail_marks_first_case():
     ex = MockPipelineTool(scenario="version_fail", ticks_to_finish=1)
-    create(ex)
-    ex.check_pipline("pipe-001")
-    pr = ex.query_result("pipe-001")
+    handle = create(ex)
+    ex.start(handle.pipeline_id)
+    pr = ex.query(handle.pipeline_id)
     first, second = pr.results
     assert (first.verdict, first.fail_kind) == ("fail", "version")
     assert second.verdict == "pass"
@@ -71,30 +73,31 @@ def test_version_fail_marks_first_case():
 
 def test_case_error_marks_first_case():
     ex = MockPipelineTool(scenario="case_error", ticks_to_finish=1)
-    create(ex)
-    ex.check_pipline("pipe-001")
-    first, second = ex.query_result("pipe-001").results
+    handle = create(ex)
+    ex.start(handle.pipeline_id)
+    first, second = ex.query(handle.pipeline_id).results
     assert (first.verdict, first.fail_kind) == ("error", "case")
     assert second.verdict == "pass"
 
 
-def test_env_error_fails_on_check():
+def test_env_error_fails_on_start():
     ex = MockPipelineTool(scenario="env_error", ticks_to_finish=5)
-    create(ex)
-    ex.check_pipline("pipe-001")
-    pr = ex.query_result("pipe-001")
+    handle = create(ex)
+    ex.start(handle.pipeline_id)
+    pr = ex.query(handle.pipeline_id)
     assert pr.phase == "failed"
     assert all(r.fail_kind == "env" for r in pr.results)
 
 
-def test_unknown_run_id():
+def test_unknown_pipeline_id():
     ex = MockPipelineTool()
     with pytest.raises(KeyError):
-        ex.query_result("no-such-run")
+        ex.query("no-such-pipeline")
 
 
-def test_duplicate_run_id_rejected():
+def test_multi_create_distinct_ids():
+    """多环境 = 多次 create = 多个 pipeline_id。"""
     ex = MockPipelineTool()
-    create(ex)
-    with pytest.raises(ValueError, match="已存在"):
-        create(ex)
+    a = create(ex, env="7.223.50.60")
+    b = create(ex, env="7.223.60.11")
+    assert a.pipeline_id != b.pipeline_id

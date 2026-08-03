@@ -34,7 +34,7 @@ class Profile:
     frequent_topologies: list[str] = field(default_factory=lambda: ["topo_a", "topo_b"])
     poll_interval_seconds: int = 30
     poll_max_attempts: int = 40
-    # init_pipline 超时/失败后，同 run_id 额外重试次数（不含首次）
+    # create 失败不盲目重试（防双建）；start 可同 pipeline_id 重试
     create_retry_attempts: int = 1
 
 

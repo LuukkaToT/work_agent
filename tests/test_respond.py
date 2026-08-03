@@ -49,8 +49,18 @@ def test_facts_keeps_zero_passed():
             "passed": 0,
             "failed_count": 2,
             "failed": [
-                {"case_name": "case_a", "verdict": "fail", "fail_kind": "version", "detail": "x"},
-                {"case_name": "case_b", "verdict": "error", "fail_kind": "case", "detail": "y"},
+                {
+                    "case_name": "case_a",
+                    "verdict": "fail",
+                    "fail_kind": "version",
+                    "detail": "x",
+                },
+                {
+                    "case_name": "case_b",
+                    "verdict": "error",
+                    "fail_kind": "case",
+                    "detail": "y",
+                },
             ],
         }
     )
@@ -65,7 +75,7 @@ def test_facts_includes_pipelines():
     state = state_base(
         pipelines=[
             {
-                "run_id": "pipe-aaa",
+                "pipeline_id": "pipe-aaa",
                 "env": "7.223.50.60",
                 "version": "27B",
                 "case_names": ["HF_20B_PUSCH_001"],
@@ -76,9 +86,9 @@ def test_facts_includes_pipelines():
         summary={"status": "submitted", "created": 1},
     )
     facts = _facts(state)
-    assert facts["run_id列表"] == ["pipe-aaa"]
+    assert facts["pipeline_id列表"] == ["pipe-aaa"]
     assert facts["流水线"][0]["环境"] == "7.223.50.60"
-    assert facts["已创建流水线数"] == 1
+    assert facts["已处理流水线数"] == 1
 
 
 def test_fallback_cancelled():
@@ -94,8 +104,16 @@ def test_fallback_execute_lists_pipelines():
     state = state_base(
         intent="execute",
         pipelines=[
-            {"run_id": "pipe-abc123", "env": "7.223.50.60", "status": "running"},
-            {"run_id": "pipe-def456", "env": "7.223.60.11", "status": "running"},
+            {
+                "pipeline_id": "pipe-abc123",
+                "env": "7.223.50.60",
+                "status": "running",
+            },
+            {
+                "pipeline_id": "pipe-def456",
+                "env": "7.223.60.11",
+                "status": "running",
+            },
         ],
         summary={"status": "submitted", "created": 2, "failed_pipelines": 0},
     )
@@ -103,6 +121,34 @@ def test_fallback_execute_lists_pipelines():
     assert "pipe-abc123" in reply
     assert "pipe-def456" in reply
     assert "流水线前端" in reply
+
+
+def test_fallback_create_only():
+    state = state_base(
+        intent="execute",
+        exec_params={"exec_mode": "create_only"},
+        pipelines=[
+            {
+                "pipeline_id": "pipe-only",
+                "env": "7.223.50.60",
+                "status": "created",
+            }
+        ],
+        summary={"status": "created", "created": 1, "exec_mode": "create_only"},
+    )
+    reply = _fallback_reply(state, _facts(state))
+    assert "尚未启动" in reply
+    assert "pipe-only" in reply
+
+
+def test_fallback_start_intent():
+    state = state_base(
+        intent="start",
+        pipelines=[{"pipeline_id": "pipe-s1", "status": "running"}],
+        summary={"status": "submitted", "message": "已启动 1 条流水线"},
+    )
+    reply = _fallback_reply(state, _facts(state))
+    assert "已启动" in reply
 
 
 def test_fallback_analysis_quotes_path():

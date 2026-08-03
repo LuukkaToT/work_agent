@@ -110,20 +110,20 @@ flowchart TD
 
 **3. 几个关键设计。**
 
-- **状态分层**：会话级（`messages`、`dialogue_summary`）跨轮累积，任务级每轮由 `intake` 显式归零，避免上一轮的 run_id 串到这一轮。
+- **状态分层**：会话级（`messages`、`dialogue_summary`）跨轮累积，任务级每轮由 `intake` 显式归零，避免上一轮的 `pipeline_id` 串到这一轮。
 - **子图隔离**：执行流做成独立子图，有自己的 Input / Output / 私有 schema，父图状态里看不到 `exec_decision` 这种内部字段。
 - **统一出口 respond**：所有分支产出的都是结构化 `summary`，最后由一个节点转成人话，并且用「事实卡片 + 禁止改写」的 prompt 约束防编造，LLM 挂了还有确定性兜底。
 - **人工确认**：用 `interrupt` 暂停图、`Command(resume)` 恢复，缺参数和执行前确认都走这条路。
 
-**4. 工程可靠性。** 这部分是我觉得最像后端的地方——`run_id` 由 Agent 生成后传给 `init_pipline`，相当于客户端幂等键；调用前先往台账写 `creating`（write-ahead），HTTP 超时时不换新 ID 盲重试，而是拿同一个 run_id 去查询接口对账，查得到说明服务端已建成，查不到才重试。这套逻辑和后端调下游服务的做法是一样的。
+**4. 工程可靠性。** 这部分是我觉得最像后端的地方——`pipeline_id` 由**服务端**返回；创建前先往台账写临时 `local-*`（write-ahead），成功后再 `replace_id`。因为 id 不是客户端生成的，**create 超时不能盲目重试**（防双建）；`start` 可以同 `pipeline_id` 重试。创建和启动拆开，支持「只建不跑」再单独 start。
 
 ### 5 分钟版（技术深聊）
 
 在 2 分钟版基础上补三块：
 
 - **演进过程**：最早所有节点直接返回 dict 给用户看，试用后发现「不像大模型，像在读日志」，于是引入 `respond` 统一出口；接着发现多轮对话没记忆，「再跑一遍」会失败，于是把 `messages` 提升为会话级状态并注入上下文；再往后发现执行流塞在主图里状态污染严重，才拆成子图。**每一步都是先跑起来遇到问题、再改架构**，不是一开始就设计好的。
-- **契约先行**：公司 tool 还没给到时，我按真实函数名（`init_pipline` / `check_pipline`）定义 Protocol，mock 实现连「用例名非法会被流水线拒绝」都模拟了。接入时只需在 `tools/real/` 写适配层 + registry 切换。
-- **测试策略**：LLM 节点不测输出内容（不稳定），只测确定性部分——reducer 合并规则、参数校验、路由函数、台账 CRUD、respond 的事实卡片与兜底、超时对账的三个分支。用 fake tool 注入 `TimeoutError` 来测对账，不依赖真实网络。
+- **契约先行**：公司 tool 还没给到时，我按纯净命名（`create` / `start` / `query`）定义 Protocol，mock 实现连「用例名非法会被流水线拒绝」都模拟了。公司 SDK 放 `external/`，怪异函数名只在 `tools/real/` 映射。
+- **测试策略**：LLM 节点不测输出内容（不稳定），只测确定性部分——reducer 合并规则、参数校验、路由函数、台账 CRUD、respond 的事实卡片与兜底、create 失败不重试 / start 可重试。用 fake tool 注入 `TimeoutError`，不依赖真实网络。
 
 ---
 
@@ -141,7 +141,7 @@ ReAct 式 Agent 让模型自己决定调哪个 tool、调几次，对「执行�
 
 **Q2：State 是怎么设计的？为什么要分两层？**
 
-`TestFlowState` 是 TypedDict。会话级只有两个字段——`messages` 和 `dialogue_summary`，跨轮累积、靠 checkpointer 持久化；其余都是任务级，每轮由 `intake` 显式赋空值。分层的直接原因是踩过坑：同一个 thread 连续对话时，上一轮的 `run_id`、`summary` 会残留，导致这一轮明明是闲聊，`respond` 却拿着上一轮的执行结果去编回复。现在 `intake` 是唯一的重置点，新增字段时在那里加一行就行，不用维护外部的 `empty_state` 清单。
+`TestFlowState` 是 TypedDict。会话级只有两个字段——`messages` 和 `dialogue_summary`，跨轮累积、靠 checkpointer 持久化；其余都是任务级，每轮由 `intake` 显式赋空值。分层的直接原因是踩过坑：同一个 thread 连续对话时，上一轮的 `pipeline_id`、`summary` 会残留，导致这一轮明明是闲聊，`respond` 却拿着上一轮的执行结果去编回复。现在 `intake` 是唯一的重置点，新增字段时在那里加一行就行，不用维护外部的 `empty_state` 清单。
 
 **Q3：**`audit` **那个自定义 reducer 是干什么的？**
 
@@ -170,11 +170,11 @@ def append_audit(old, new):
 
 **Q7：怎么保证 Agent 不胡说八道？**
 
-三层防线。第一，**结构化输出**：路由和参数抽取都用 `with_structured_output` 绑定 Pydantic schema，模型只能吐 schema 内的字段，不能自由发挥。第二，**代码校验**：抽出来的版本号必须在 `27B/27A/26B/26A` 枚举里、环境必须匹配 IP 正则，不合法就标记为缺失去反问用户，而不是让模型自圆其说。第三，**输出侧约束**：`respond` 把 run_id、用例名、路径这些引用性信息以 JSON「事实卡片」交给模型，prompt 里明确要求「只能引用给定事实，一个字符都不要改」，并且事实卡片里没有的东西不许提。另外 `respond` 是必经节点，LLM 抖动不能让整轮失败，所以有确定性的 `_fallback_reply` 兜底。
+三层防线。第一，**结构化输出**：路由和参数抽取都用 `with_structured_output` 绑定 Pydantic schema，模型只能吐 schema 内的字段，不能自由发挥。第二，**代码校验**：抽出来的版本号必须在 `27B/27A/26B/26A` 枚举里、环境必须匹配 IP 正则，不合法就标记为缺失去反问用户，而不是让模型自圆其说。第三，**输出侧约束**：`respond` 把 pipeline_id、用例名、路径这些引用性信息以 JSON「事实卡片」交给模型，prompt 里明确要求「只能引用给定事实，一个字符都不要改」，并且事实卡片里没有的东西不许提。另外 `respond` 是必经节点，LLM 抖动不能让整轮失败，所以有确定性的 `_fallback_reply` 兜底。
 
 **Q8：多轮对话的记忆怎么处理的？**
 
-分三层看。完整对话由 checkpointer 全量持久化，不丢；关键事实（run_id、用例、版本、环境、状态）落在 SQLite 台账里，跨会话可查——所以「上次那条怎么样了」走的是台账，跟对话窗口无关。喂给 LLM 的上下文才是有限的：默认注入最近 8 条，超过 12 条时 `memory` 节点会把窗口外的旧消息用 LLM 压成一段摘要存进会话级的 `dialogue_summary`，并用 `RemoveMessage` 把旧消息裁掉，之后注入的是「历史摘要 + 最近 8 条」。摘要 prompt 里要求用例名、run_id 这类引用性事实原文保留。
+分三层看。完整对话由 checkpointer 全量持久化，不丢；关键事实（pipeline_id、用例、版本、环境、状态）落在 SQLite 台账里，跨会话可查——所以「上次那条怎么样了」走的是台账，跟对话窗口无关。喂给 LLM 的上下文才是有限的：默认注入最近 8 条，超过 12 条时 `memory` 节点会把窗口外的旧消息用 LLM 压成一段摘要存进会话级的 `dialogue_summary`，并用 `RemoveMessage` 把旧消息裁掉，之后注入的是「历史摘要 + 最近 8 条」。摘要 prompt 里要求用例名、pipeline_id 这类引用性事实原文保留。
 
 **Q9：为什么把参数校验放在代码里，而不是让模型自己判断？**
 
@@ -184,41 +184,39 @@ def append_audit(old, new):
 
 **Q10（重点）：创建流水线的 HTTP 请求超时了，怎么办？**
 
-超时最麻烦的地方是**它不等于失败**——服务端可能已经创建成功，只是响应没回来。如果换个新 run_id 重试，就会建出两条重复流水线，占用真实设备。我的做法是把 `run_id` 变成客户端生成的幂等键，创建时传给 `init_pipline`，于是就能对账：
+超时最麻烦的地方是**它不等于失败**——服务端可能已经创建成功，只是响应没回来。但我们的 `pipeline_id` 是**服务端生成**的，客户端事先不知道 id，也就没法拿同一个 id 去对账后再盲目 `create`。若超时后再调一次 `create`，可能建出两条重复流水线。
+
+因此策略是：
 
 ```mermaid
 flowchart TD
-  W["台账 write-ahead: creating"] --> I["init_pipline(run_id, ...)"]
-  I -->|"成功"| C["check_pipline 幂等"]
-  I -->|"超时/异常"| Q["query_result(run_id) 对账"]
-  Q -->|"查得到"| C
-  Q -->|"查不到"| R["同 run_id 重试，次数读 profile"]
-  R -->|"成功"| C
-  R -->|"用尽"| F["台账 failed，如实告诉用户"]
-  C --> OK["台账 running"]
+  W["台账 write-ahead: local-* / creating"] --> C["create(...)"]
+  C -->|"成功"| R["replace_id → 服务端 pipeline_id"]
+  C -->|"超时/异常"| F["failed；不重试 create（防双建）"]
+  R -->|"create_only"| OK1["created"]
+  R -->|"create_and_start"| S["start(pipeline_id)，可同 id 重试"]
+  S --> OK2["running"]
 ```
 
-
-
-再加两条纪律：调用前先往台账写 `creating`（write-ahead），进程崩在中途也留有悬案可以事后对账，而不是凭空消失；批量创建时单条失败不阻断其余，最终按「全成功 / 部分成功 / 全失败」三态汇报。这套逻辑我用 fake tool 注入 `TimeoutError` 写了三个测试覆盖：超时但已创建、超时且未创建、重试用尽。
+再加两条纪律：调用前先写 `local-*` creating（进程崩了也有悬案）；批量时单条失败不阻断其余。`start` 因为已有确定 id，可以同 id 重试。这套逻辑用 fake tool 注入 `TimeoutError` 测了：create 失败不重试、start 可重试、多环境多个 id。
 
 **Q11：你说 Agent 和后端很像，具体像在哪？**
 
-执行链路本质就是一个编排服务：接收请求（用户自然语言）、参数校验、调下游、写状态、返回响应。幂等、重试、对账、write-ahead 这些后端常识在这里一条都不能少。区别只在于参数解析这一步从「解析 JSON」变成了「让 LLM 抽结构化字段」——而 LLM 是个**输出不可信的中间件**，所以它的输出必须当成外部输入来校验，不能当成可信数据直接用。想通这一点之后，很多设计就自然了：schema 约束是入参校验，事实卡片是防越权，兜底回复是降级策略。
+执行链路本质就是一个编排服务：接收请求（用户自然语言）、参数校验、调下游、写状态、返回响应。幂等、重试、write-ahead 这些后端常识在这里一条都不能少。区别只在于参数解析这一步从「解析 JSON」变成了「让 LLM 抽结构化字段」——而 LLM 是个**输出不可信的中间件**，所以它的输出必须当成外部输入来校验，不能当成可信数据直接用。想通这一点之后，很多设计就自然了：schema 约束是入参校验，事实卡片是防越权，兜底回复是降级策略。
 
 **Q12：怎么保证接入公司真实 tool 时不用改图？**
 
-所有外部调用走 `Protocol`。图和节点只 import `work_agent.tools.registry.get_pipeline_tool()`，拿到的是满足 `PipelineTool` 协议的对象，具体是 mock 还是 real 由 `.env` 里的 `TOOL_BACKEND` 决定。Protocol 的方法名我刻意贴着公司真实函数写（包括 `init_pipline` 这个拼写），接入时只需在 `tools/real/` 写一层薄适配。registry 用 `lru_cache` 保证进程内单例——mock 把流水线状态存在实例内存里，换实例就丢了。
+所有外部调用走 `Protocol`。图和节点只 import `work_agent.tools.registry.get_pipeline_tool()`，拿到的是满足 `PipelineTool` 协议的对象，具体是 mock 还是 real 由 `.env` 里的 `TOOL_BACKEND` 决定。Protocol 用纯净命名 `create` / `start` / `query`；公司 SDK 放 `external/`，怪异函数名只在 `tools/real/` 映射。registry 用 `lru_cache` 保证进程内单例——mock 把流水线状态存在实例内存里，换实例就丢了。
 
 **Q13：这个项目怎么测？LLM 的输出不稳定怎么办？**
 
-不测 LLM 输出内容，只测确定性部分，58 个测试全部不需要网络：reducer 的合并与重置、参数校验（IP 分类、版本枚举、缺失标记）、路由函数、mock tool 的契约行为、台账 CRUD 与边界（比如二次 upsert 传空 `report_path` 不能抹掉已有值）、`respond` 的事实卡片过滤规则和兜底文案、`memory` 的阈值与裁剪条数、超时对账的三个分支。LLM 节点在测试里 monkeypatch 掉。这样重构时有安全网——事实上这套测试在我把执行流从「轮询模式」重构成「流水线模式」时救了我好几次。
+不测 LLM 输出内容，只测确定性部分，全部不需要网络：reducer 的合并与重置、参数校验（IP 分类、版本枚举、缺失标记）、路由函数、mock tool 的契约行为、台账 CRUD 与 `replace_id`、`respond` 的事实卡片和兜底、`memory` 的阈值与裁剪、create 防双建 / start 重试。LLM 节点在测试里 monkeypatch 掉。
 
 ### D. 可能的追问 / 压力测试
 
 **Q14：如果用户一句话要在 5 个环境跑 100 个用例呢？**
 
-现在的设计是「不同环境拆成多条流水线，同环境多用例合并为一条」，所以是 5 次 `init_pipline`，每次带 20 个用例。确认页会展示每条计划的环境、版本和用例数（超过 3 条只列前 3 个 + 总数），避免刷屏。风险点是 LLM 抽 100 个长用例名容易漏或截断——现阶段靠 prompt 强调「按原文提取不要截断」，更稳的做法是支持从文件读用例列表，这是我列在后面要做的。
+现在的设计是「不同环境拆成多条流水线，同环境多用例合并为一条」，所以是 5 次 `create`（5 个 `pipeline_id`），每次带 20 个用例。确认页会展示每条计划的环境、版本和用例数（超过 3 条只列前 3 个 + 总数），避免刷屏。风险点是 LLM 抽 100 个长用例名容易漏或截断——现阶段靠 prompt 强调「按原文提取不要截断」，更稳的做法是支持从文件读用例列表，这是我列在后面要做的。
 
 **Q15：如果 LLM 把意图分错了会怎样？**
 
@@ -226,8 +224,7 @@ flowchart TD
 
 **Q16：并发怎么办？多个人同时用会不会打架？**
 
-现在是单用户 CLI，每个会话一个 `thread_id`，checkpointer 按 thread 隔离。台账是 SQLite，`run_id` 是主键，多进程写会有锁竞争但不会写坏。真要做多用户，我会把台账换成公司现有的数据库，checkpointer 换成 Postgres 版本，CLI 换成服务端 + 前端；图本身不用动，这是选 LangGraph 时就考虑到的。
-
+现在是单用户 CLI，每个会话一个 `thread_id`，checkpointer 按 thread 隔离。台账是 SQLite，`pipeline_id` 是主键，多进程写会有锁竞争但不会写坏。真要做多用户，我会把台账换成公司现有的数据库，checkpointer 换成 Postgres 版本，CLI 换成服务端 + 前端；图本身不用动，这是选 LangGraph 时就考虑到的。
 **Q17：成本怎么控制？**
 
 每轮固定两次 LLM 调用（router + respond），执行分支多一次参数抽取。`memory` 只在消息超过 12 条时才触发，正常对话完全不花钱。分类和抽参数都用 `temperature=0` 且输出很短。真正贵的是测试分析那种长文本生成，但那是按需触发的。如果要进一步降本，router 可以先用规则前置匹配明显意图，命中就不调模型。
