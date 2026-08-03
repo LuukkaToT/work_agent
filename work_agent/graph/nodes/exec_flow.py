@@ -70,7 +70,7 @@ def _plan_dict(
     version: str,
     env: str,
 ) -> dict[str, Any]:
-    """将plan映射为dict，确认参数是否缺失，确实追加到missing里"""
+    """将plan映射为dict，确认参数是否缺失，缺失追加到missing里"""
     env_kind = _classify_env(env)
     missing: list[str] = []
     if not case_names:
@@ -96,6 +96,7 @@ def exec_params(state: Mapping[str, Any]) -> dict:
     - version / env：用户没说 → 留空，ask_missing interrupt
     - exec_mode：默认 create_and_start
     """
+    # 约束llm输出类型
     llm = get_chat_model(temperature=0).with_structured_output(ExecParamsOut)
 
     ctx = conversation_context(state, n=8)
@@ -107,6 +108,7 @@ def exec_params(state: Mapping[str, Any]) -> dict:
     human_parts.append("【本轮用户输入】")
     human_parts.append(user_input)
 
+    # 调用llm，获取解析出来的执行参数
     parsed: ExecParamsOut = llm.invoke(
         [
             SystemMessage(
@@ -132,6 +134,7 @@ def exec_params(state: Mapping[str, Any]) -> dict:
         ]
     )
 
+    # 根据解析出来的参数去创建执行plans，创建规则上述system_prompt写明
     plans: list[dict] = []
     for item in parsed.plans or []:
         raw = (item.version or "").strip()
@@ -154,6 +157,7 @@ def exec_params(state: Mapping[str, Any]) -> dict:
     if not plans:
         plans = [_plan_dict(case_names=[], version="", env="")]
 
+    # 返回创建之后的params(包含plans,execmode)，写入到state返回
     exec_mode: ExecMode = parsed.exec_mode or "create_and_start"
     params = {"plans": plans, "exec_mode": exec_mode}
     return {
