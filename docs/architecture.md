@@ -1,17 +1,17 @@
 # 测试专属 Agent 架构设计（讨论稿 v0.5）
 
 命令行 Agent，给测试人员用。编排框架用 LangGraph。
-公司真实 tool 尚未接入，全部 mock，接口契约按真实系统设计，后续替换实现即可商用。
+真实 Tool 尚未接入，当前全部使用 Mock；接口契约按真实系统设计，后续替换实现即可。
 
 MVP 范围：**到「创建并启动流水线 + 可查询进度」为止**。最终结果用户去流水线前端看；归因、环境自动修复、用例自动生成放 Phase 2。
 
 ## 一、核心设计原则
 
-1. **主干是确定性状态机。** 流程阶段固定、每步有明确产物，用 `StateGraph` 显式编排。自由推理只发生在单个节点内部。可审计、可复现是商用前提。
+1. **主干是确定性状态机。** 流程阶段固定、每步有明确产物，用 `StateGraph` 显式编排。自由推理只发生在单个节点内部。可审计、可复现是真实运行的前提。
 
-2. **一个模型 + 多套 prompt = 多个角色。** 不为每个「agent」起独立模型。测试分析 agent 本质是「主模型 + 加载了测试分析 skill 的 system prompt」。
+2. **一个模型 + 多套 prompt = 多个角色。** 不为每个「agent」起独立模型。测试分析使用独立子图；领域研究节点按需绑定只读检索 Tool。
 
-3. **所有公司系统调用走 Protocol 抽象。** 图只依赖 Protocol，接真实 tool 时不改图。
+3. **所有真实系统调用走 Protocol 抽象。** 图只依赖 Protocol，Mock 切换为真实 Tool 时不改图。
 
 4. **触发执行这类写操作必须人工确认。**
 
@@ -51,13 +51,14 @@ skills/
   test_analysis/
     SKILL.md          # 角色定义 + 分析方法论 + 步骤要求
     template.md       # 输出结构模板
-    references/       # 规格与业务资料 markdown（先模拟公司资料）
+    references/       # 规格与业务资料 Markdown（当前为 Mock 资料）
       256T_downlink.md
 ```
 
-`load_skill("test_analysis")` 把 `SKILL.md` + `template.md` + `references/*.md` 全量拼进 system prompt。
-
-**现阶段不做 RAG**：资料量小，全量注入准确率更高、无检索误差。`SkillLoader` 预留 `select_references(query)` 钩子，将来资料变多换检索实现，调用方不改。
+测试分析资料按“基础测试点 + 信道目录”组织。目录名提供第一层硬过滤，
+领域研究子图通过 `search_basic_test_points` 和
+`search_channel_knowledge` 两个只读 Tool 定向检索，不再把 references 全量
+拼入 Prompt。真实资料库通过 `TEST_ANALYSIS_KNOWLEDGE_ROOT` 切换。
 
 产物落盘保证可追溯：
 
@@ -112,7 +113,7 @@ create_retry_attempts: 1
 flowchart TD
   Start(["用户输入 messages"]) --> Intake["intake 提取本轮 + 归零任务级"]
   Intake --> Router["router 意图识别 带对话历史"]
-  Router -->|"analysis"| Analysis["Role test_analysis"]
+  Router -->|"analysis"| Analysis["test_analysis 独立子图"]
   Router -->|"execute"| ExecFlow["子图 exec_flow"]
   Router -->|"start"| PrepareStart["prepare_start → start_pipelines"]
   Router -->|"query"| QueryRun["Flow query_run"]
@@ -127,6 +128,27 @@ flowchart TD
   Respond["respond 说成人话 + 追加 AIMessage"] --> Memory["memory 滚动摘要"]
   Memory --> Finish(["结束"])
 ```
+
+测试分析子图内部：
+
+```mermaid
+flowchart TD
+  R["需求结构化"] --> P["按信道规划 DomainTask"]
+  P --> D["DomainResearch 子图"]
+  D --> T{"需要检索？"}
+  T -->|"是"| TN["ToolNode：基础测试点 / 信道知识"]
+  TN --> D
+  T -->|"否"| E["证据充分性判断"]
+  E -->|"定向补检"| D
+  E --> S["结构化场景生成"]
+  S --> C["代码覆盖检查"]
+  C -->|"缺口且未修复"| G["定向检索与 Gap Repair"]
+  G --> C
+  C --> M["确定性 Markdown 渲染"]
+```
+
+领域研究 Tool 调用次数、检索轮数、信道白名单和 top-k 均由代码限制。
+研究消息是子图私有字段，父图只接收最终报告路径、汇总和审计记录。
 
 执行子图 `exec_flow` 内部：
 
@@ -190,7 +212,7 @@ class PipelineTool(Protocol):
     def query(self, pipeline_id: str) -> PipelineResult: ...
 ```
 
-Agent 侧命名纯净：`create` / `start` / `query`。`pipeline_id` **由服务端返回**。公司 SDK 放 `external/`，拼写怪异的公司函数名只在 `tools/real/` 做映射，不污染 Protocol。
+Agent 侧命名纯净：`create` / `start` / `query`。`pipeline_id` **由服务端返回**。真实 SDK 放 `external/`，非标准函数名只在 `tools/real/` 做映射，不污染 Protocol。
 
 Mock 行为可配置四场景：全通过、版本失败、用例报错、环境不可用。`query` 用 tick 模拟分钟级执行进度；未 `start` 时 phase=`created`。
 
@@ -252,7 +274,7 @@ class TestFlowState(TypedDict):
 | M10 | SQLite checkpointer + thread_id | 持久化与断点恢复 | 约 80 行 |
 | M11 | interrupt 补参数与执行前确认 | `interrupt` / `Command(resume)` | 约 110 行 |
 | M12 | `skills/` 目录 + `SkillLoader` | prompt 组装 | 约 90 行 |
-| M13 | `test_analysis` Role 节点 | Role 抽象与产物落盘 | 约 110 行 |
+| M13 | `test_analysis` 独立子图 | 分域 Tool 检索、覆盖修复与产物落盘 | 见 `docs/test-analysis.md` |
 | M14 | 运行台账 + `query_run` / `prepare_start` | 跨会话状态查询与启动 | 约 120 行 |
 | M15 | CLI REPL（typer + rich） | 与图的交互层 | 约 130 行 |
 | M16 | mock 场景切换 + 端到端测试 | 图的可测试性 | 约 120 行 |
@@ -266,11 +288,11 @@ class TestFlowState(TypedDict):
 - 环境异常自动换环境重试（`EnvPool` Protocol）
 - 用例自动生成（`case_build` Role）
 
-留位方式：Protocol 里定义好签名，`tools/real/` 放空实现抛 `NotImplementedError`，图里不接线。公司 SDK 放 `external/`。
+留位方式：Protocol 里定义好签名，`tools/real/` 放空实现抛 `NotImplementedError`，图里不接线。真实 SDK 放 `external/`。
 
 ## 十一、技术选型
 
-**模型接入统一走 OpenAI 兼容协议**，这样公司网关和 Gemini 用同一套代码，切换只改配置。
+**模型接入统一走 OpenAI 兼容协议**，这样 Mock/开发模型与真实模型服务使用同一套代码，切换只改配置。
 
 `core/llm.py` 只暴露一个工厂函数，全项目不允许别处直接构造模型客户端：
 
@@ -294,7 +316,7 @@ LLM_API_KEY=${GEMINI_API_KEY}
 LLM_MODEL=gemini-2.5-flash
 ```
 
-切公司环境只改这三行指向内部网关。注意该端点只支持 `/chat/completions`，不支持 `/responses`，`ChatOpenAI` 走的正是前者。M3 会带一个连通性自检命令，顺便拉一次 `/models` 列表确认当前可用模型 ID。
+切换真实环境只需修改这三行并指向真实模型端点。若端点只支持 `/chat/completions`、不支持 `/responses`，`ChatOpenAI` 使用的正是前者。M3 会带一个连通性自检命令，并拉取一次 `/models` 列表确认当前可用模型 ID。
 
 其他选型：
 
@@ -302,9 +324,9 @@ LLM_MODEL=gemini-2.5-flash
 - 持久化：`langgraph-checkpoint-sqlite`
 - 已装：langgraph 1.2.10、langchain 1.3.14、langchain-openai（无需再装 google 专用包）
 
-## 十二、从 MVP 到商用的加固清单
+## 十二、从 MVP 到真实运行的加固清单
 
-M1 到 M16 产出的是**端到端跑得通的最小闭环**，约 1500 到 1800 行。商用级的成本不在主干流程，而在下面这些边界与可靠性工作，这部分才是大头（含测试约 6000 到 10000 行）。
+M1 到 M16 产出的是**端到端跑得通的最小闭环**，约 1500 到 1800 行。真实运行所需的主要成本不在主干流程，而在下面这些边界与可靠性工作，这部分才是大头（含测试约 6000 到 10000 行）。
 
 | 加固项 | 具体内容 | 阶段 |
 |--------|----------|------|
@@ -322,4 +344,4 @@ M1 到 M16 产出的是**端到端跑得通的最小闭环**，约 1500 到 1800
 
 **为什么先窄后深**：过早抽象是最大的浪费。只有真实跑过一遍流程，才知道哪些边界情况真的会发生。所以先把最小闭环打通，再在调测中逐层加固。
 
-代码量本身不是质量指标。这套架构真正的价值是边界清晰：接公司真实 tool 时只需要写 `tools/real/` 下的实现（SDK 放 `external/`），图、Role、CLI 一行都不用改。
+代码量本身不是质量指标。这套架构真正的价值是边界清晰：从 Mock 切换到真实 Tool 时只需要写 `tools/real/` 下的实现（SDK 放 `external/`），图、Role、CLI 都不用改。

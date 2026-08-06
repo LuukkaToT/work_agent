@@ -19,7 +19,6 @@ from typing import Sequence
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import Checkpointer
 
-from work_agent.graph.nodes.analysis import test_analysis
 from work_agent.graph.nodes.chat import quick_answer
 from work_agent.graph.nodes.exec_flow import start_pipelines
 from work_agent.graph.nodes.memory import memory
@@ -29,6 +28,7 @@ from work_agent.graph.nodes.respond import respond
 from work_agent.graph.nodes.router import route_by_intent, router
 from work_agent.graph.state import RESET_AUDIT, TestFlowState
 from work_agent.graph.subgraphs.exec_flow import build_exec_flow
+from work_agent.graph.subgraphs.analysis_flow import build_test_analysis_graph
 
 
 def _message_text(content: object) -> str:
@@ -87,7 +87,7 @@ def build_graph(
 
     graph.add_node("intake", intake)
     graph.add_node("router", router)
-    graph.add_node("test_analysis", test_analysis)
+    graph.add_node("test_analysis", build_test_analysis_graph())
     graph.add_node("exec_flow", build_exec_flow())
     graph.add_node("prepare_start", prepare_start)
     graph.add_node("start_pipelines", start_pipelines)

@@ -8,7 +8,7 @@
 
 ### 1. 一句话定位
 
-> 给测试工程师用的命令行 AI Agent。用 LangGraph 把「测试分析 → 创建执行流水线 → 查执行结果」编排成一个可审计、带人工确认的确定性状态机，公司真实 tool 用 Protocol 抽象、mock 实现，接入时只换实现不改图。
+> 给测试工程师用的命令行 AI Agent。用 LangGraph 把「测试分析 → 创建执行流水线 → 查执行结果」编排成一个可审计、带人工确认的确定性状态机，真实 Tool 用 Protocol 抽象，当前由 Mock 实现，接入时只换实现不改图。
 
 ### 2. 按这个顺序读代码（重要度从高到低）
 
@@ -19,7 +19,7 @@
 | 2   | [work_agent/graph/main_graph.py](../work_agent/graph/main_graph.py)                   | 主图接线，102 行看懂整个流程                               |
 | 3   | [work_agent/graph/subgraphs/exec_flow.py](../work_agent/graph/subgraphs/exec_flow.py) | 子图三层 schema（Input / Output / 私有）               |
 | 4   | [work_agent/graph/nodes/exec_flow.py](../work_agent/graph/nodes/exec_flow.py)         | 核心业务：参数抽取 + 批量创建 + 超时对账                        |
-| 5   | [work_agent/tools/protocols.py](../work_agent/tools/protocols.py)                     | 与公司系统的边界契约                                     |
+| 5   | [work_agent/tools/protocols.py](../work_agent/tools/protocols.py)                     | 与真实外部系统的边界契约                                 |
 | 6   | [work_agent/graph/nodes/respond.py](../work_agent/graph/nodes/respond.py)             | 统一出口：事实卡片 + 防编造 + 兜底                           |
 | 7   | [work_agent/graph/nodes/hitl.py](../work_agent/graph/nodes/hitl.py)                   | `interrupt` / `Command(resume)` 的实际用法          |
 | 8   | [work_agent/core/ledger.py](../work_agent/core/ledger.py)                             | 跨会话台账，`query_run` 的数据来源                        |
@@ -51,7 +51,7 @@ REPL 里依次输入，能覆盖全部四条分支：
 flowchart TD
   Start(["用户输入"]) --> Intake["intake 提取本轮 + 归零任务级字段"]
   Intake --> Router["router LLM 意图分类"]
-  Router -->|"analysis"| Analysis["test_analysis 加载 skill 生成文档"]
+  Router -->|"analysis"| Analysis["test_analysis 分域检索子图"]
   Router -->|"execute"| ExecFlow["子图 exec_flow"]
   Router -->|"query"| QueryRun["query_run 查台账 + 调 tool"]
   Router -->|"chat"| Chat["quick_answer"]
@@ -96,7 +96,7 @@ flowchart TD
 
 ### 30 秒版（自我介绍环节）
 
-> 我做了一个给测试人员用的命令行 Agent。测试同事日常要做测试分析、在指定环境上创建流水线跑用例、再回来查结果，这三件事分散在不同系统里。我用 LangGraph 把它们编排成一个状态机，用户用自然语言说「在 7.223.50.60 上用 27B 版本跑这几个用例」，Agent 抽参数、跟你确认、批量创建流水线并落台账，之后还能问「刚才那次怎么样了」。重点不是模型有多聪明，而是**可审计、可确认、可对账**——因为这是要在公司内部真跑执行的。
+> 我做了一个给测试人员用的命令行 Agent。测试人员日常要做测试分析、在指定环境上创建流水线跑用例、再回来查结果，这三件事分散在不同系统里。我用 LangGraph 把它们编排成一个状态机，用户用自然语言说「在指定环境上用目标版本跑这些用例」，Agent 抽取参数、请求确认、批量创建流水线并落台账，之后还能查询刚才的执行结果。重点不是模型有多聪明，而是**可审计、可确认、可对账**，因为真实执行必须控制副作用。
 
 
 
@@ -106,7 +106,7 @@ flowchart TD
 
 **1. 问题与约束。** 测试执行是高代价写操作：跑错环境、跑错版本会占用真实设备、干扰别人。所以从第一天起的约束就是：不能让模型自由决定要不要执行；参数不全宁可反问也不能猜；每一步要留痕。
 
-**2. 架构选型。** 主干是确定性状态机而不是 ReAct 循环。我给自己定了一条判定标准——**能写成函数的是 tool，步骤能画死的是 flow，需要边想边试的才是 role**。对照下来：执行用例和查结果步骤固定，做成确定性 Flow，LLM 只负责一次结构化参数抽取；测试分析是开放文本、需要迭代，才做成 Role（同一个模型 + 加载 markdown 写的 skill 包当 system prompt）。这样 LLM 的不确定性被限制在单个节点内部，图的走向永远可预测。
+**2. 架构选型。** 主干是确定性状态机而不是无界 ReAct 循环。我给自己定了一条判定标准——**能写成函数的是 service，步骤能画死的是 flow，确实需要根据证据自主选择资料源时才使用 tool**。执行用例和查结果步骤固定，做成确定性 Flow；测试分析拆成独立子图，按信道规划 DomainTask。领域研究子图只暴露基础测试点和信道知识两个只读 Tool，并由代码限制白名单、调用次数、检索轮数和证据数量。
 
 **3. 几个关键设计。**
 
@@ -122,7 +122,7 @@ flowchart TD
 在 2 分钟版基础上补三块：
 
 - **演进过程**：最早所有节点直接返回 dict 给用户看，试用后发现「不像大模型，像在读日志」，于是引入 `respond` 统一出口；接着发现多轮对话没记忆，「再跑一遍」会失败，于是把 `messages` 提升为会话级状态并注入上下文；再往后发现执行流塞在主图里状态污染严重，才拆成子图。**每一步都是先跑起来遇到问题、再改架构**，不是一开始就设计好的。
-- **契约先行**：公司 tool 还没给到时，我按纯净命名（`create` / `start` / `query`）定义 Protocol，mock 实现连「用例名非法会被流水线拒绝」都模拟了。公司 SDK 放 `external/`，怪异函数名只在 `tools/real/` 映射。
+- **契约先行**：真实 Tool 尚未接入时，我按纯净命名（`create` / `start` / `query`）定义 Protocol，Mock 实现连“用例名非法会被流水线拒绝”也进行了模拟。真实 SDK 放 `external/`，非标准函数名只在 `tools/real/` 映射。
 - **测试策略**：LLM 节点不测输出内容（不稳定），只测确定性部分——reducer 合并规则、参数校验、路由函数、台账 CRUD、respond 的事实卡片与兜底、create 失败不重试 / start 可重试。用 fake tool 注入 `TimeoutError`，不依赖真实网络。
 
 ---
@@ -178,7 +178,7 @@ def append_audit(old, new):
 
 **Q9：为什么把参数校验放在代码里，而不是让模型自己判断？**
 
-模型判断不稳定，而且没法测试。放在代码里我可以写单元测试锁死行为：`_classify_env("7.223.50.60")` 必须是 physical、`_classify_env("3BBL_86_1BBL86")` 必须是 logical 并进入缺失列表。反过来说，用例名我**故意不校验**——公司流水线自己会验，Agent 多做一层校验只会造成「本地说非法但平台其实认」的不一致。边界划在哪，取决于谁是权威。
+模型判断不稳定，而且没法测试。放在代码里我可以写单元测试锁死行为：`_classify_env("7.223.50.60")` 必须是 physical、`_classify_env("3BBL_86_1BBL86")` 必须是 logical 并进入缺失列表。反过来说，用例名我**故意不校验**——真实流水线会自行校验，Agent 多做一层校验只会造成“本地说非法但真实平台认可”的不一致。边界划在哪里，取决于谁是权威。
 
 ### C. 工程可靠性层
 
@@ -204,9 +204,9 @@ flowchart TD
 
 执行链路本质就是一个编排服务：接收请求（用户自然语言）、参数校验、调下游、写状态、返回响应。幂等、重试、write-ahead 这些后端常识在这里一条都不能少。区别只在于参数解析这一步从「解析 JSON」变成了「让 LLM 抽结构化字段」——而 LLM 是个**输出不可信的中间件**，所以它的输出必须当成外部输入来校验，不能当成可信数据直接用。想通这一点之后，很多设计就自然了：schema 约束是入参校验，事实卡片是防越权，兜底回复是降级策略。
 
-**Q12：怎么保证接入公司真实 tool 时不用改图？**
+**Q12：怎么保证从 Mock 切换到真实 Tool 时不用改图？**
 
-所有外部调用走 `Protocol`。图和节点只 import `work_agent.tools.registry.get_pipeline_tool()`，拿到的是满足 `PipelineTool` 协议的对象，具体是 mock 还是 real 由 `.env` 里的 `TOOL_BACKEND` 决定。Protocol 用纯净命名 `create` / `start` / `query`；公司 SDK 放 `external/`，怪异函数名只在 `tools/real/` 映射。registry 用 `lru_cache` 保证进程内单例——mock 把流水线状态存在实例内存里，换实例就丢了。
+所有外部调用走 `Protocol`。图和节点只 import `work_agent.tools.registry.get_pipeline_tool()`，拿到的是满足 `PipelineTool` 协议的对象，具体是 Mock 还是真实实现由 `.env` 里的 `TOOL_BACKEND` 决定。Protocol 使用纯净命名 `create` / `start` / `query`；真实 SDK 放 `external/`，非标准函数名只在 `tools/real/` 映射。registry 用 `lru_cache` 保证进程内单例——Mock 把流水线状态存在实例内存里，换实例就丢了。
 
 **Q13：这个项目怎么测？LLM 的输出不稳定怎么办？**
 
@@ -224,10 +224,10 @@ flowchart TD
 
 **Q16：并发怎么办？多个人同时用会不会打架？**
 
-现在是单用户 CLI，每个会话一个 `thread_id`，checkpointer 按 thread 隔离。台账是 SQLite，`pipeline_id` 是主键，多进程写会有锁竞争但不会写坏。真要做多用户，我会把台账换成公司现有的数据库，checkpointer 换成 Postgres 版本，CLI 换成服务端 + 前端；图本身不用动，这是选 LangGraph 时就考虑到的。
+现在是单用户 CLI，每个会话一个 `thread_id`，checkpointer 按 thread 隔离。台账是 SQLite，`pipeline_id` 是主键，多进程写会有锁竞争但不会写坏。扩展到多用户时，可以把台账换成真实数据库，checkpointer 换成 Postgres 版本，CLI 换成服务端 + 前端；图本身不用动，这是选 LangGraph 时就考虑到的。
 **Q17：成本怎么控制？**
 
-每轮固定两次 LLM 调用（router + respond），执行分支多一次参数抽取。`memory` 只在消息超过 12 条时才触发，正常对话完全不花钱。分类和抽参数都用 `temperature=0` 且输出很短。真正贵的是测试分析那种长文本生成，但那是按需触发的。如果要进一步降本，router 可以先用规则前置匹配明显意图，命中就不调模型。
+普通对话通常是 router + respond，执行分支多一次参数抽取。`memory` 只在消息超过 12 条时触发。测试分析按“需求结构化、领域规划、受限检索、证据评估、场景生成”分阶段调用，成本更高但只按需触发；同一信道的场景类型会由代码合并为一个 DomainTask，避免重复检索。
 
 **Q18：这个项目最难的地方 / 你学到了什么？**
 
@@ -245,10 +245,10 @@ flowchart TD
 | 短板               | 现状与理由                          | 计划                                              |
 | ---------------- | ------------------------------ | ----------------------------------------------- |
 | 逻辑组网未支持          | 只支持物理 IP；型号映射表（86 是 BBH 等）还没拿到 | 拿到映射 markdown 后加解析层，识别「85+86 环境」这类说法            |
-| 用例分析 tool 是 mock | 公司侧接口未就绪                       | Protocol 已定义，接入只需写 real 实现                      |
+| 用例分析 Tool 是 Mock | 真实接口尚未接入                      | Protocol 已定义，接入只需写 real 实现                      |
 | 无失败归因            | MVP 边界划在「创建并启动流水线」，结果用户去流水线前端看 | Phase 2 做归因 Role（版本问题 / 用例异常 / 环境异常三分类）         |
 | 单用户 CLI          | 当前是个人效率工具                      | 图不用改，换 checkpointer 和台账存储即可服务化                  |
-| 无 RAG            | 资料量小，全量注入准确率更高、无检索误差           | `SkillLoader.select_references` 已留钩子，资料变多时换检索实现 |
+| 本地轻量检索      | 当前按资料目录、信道和关键词打分，不是向量 RAG      | `ChannelKnowledgeRetriever` 可替换为真实检索后端 |
 | 摘要质量依赖 LLM       | 压缩可能丢细节                        | 关键事实已落台账，摘要只影响指代消解；必要时改成结构化摘要                   |
 
 

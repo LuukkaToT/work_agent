@@ -1,8 +1,8 @@
 """
-公司系统的「插座」定义。
+真实外部系统的「插座」定义。
 
 图和节点只依赖这里的 Protocol，不依赖 mock 或 real 的类名。
-接公司 tool 时：在 tools/real/ 写适配器（映射 external SDK）→ registry 切换 → 图不用改。
+接真实 tool 时：在 tools/real/ 写适配器（映射 external SDK）→ registry 切换 → 图不用改。
 """
 
 from __future__ import annotations

@@ -7,14 +7,14 @@ from work_agent.tools.models import PipelineHandle, PipelineResult
 
 class RealPipelineTool:
     """
-    接公司流水线时在此实现。
+    接真实流水线时在此实现。
 
-    建议映射（示例，以公司真实 API 为准）：
-      company.create_job(...)  → create(...)  → 取返回的 pipeline_id
-      company.start_job(id)    → start(pipeline_id)
-      company.get_job(id)      → query(pipeline_id)
+    建议映射（示例，以真实 API 为准）：
+      client.create_job(...)  → create(...)  → 取返回的 pipeline_id
+      client.start_job(id)    → start(pipeline_id)
+      client.get_job(id)      → query(pipeline_id)
 
-    不要把公司 parse_* / 拼写错误的函数名挂到 Protocol 上；
+    不要把真实 SDK 的 parse_* / 拼写错误函数名挂到 Protocol 上；
     映射只发生在本文件。
     """
 

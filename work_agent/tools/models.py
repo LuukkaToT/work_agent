@@ -1,7 +1,7 @@
 """
 Tool 层的数据结构（与 Protocol 返回值对应）。
 
-用 dataclass 而不是随便 dict：字段有名字、有类型，接公司接口时也好对照。
+用 dataclass 而不是随便 dict：字段有名字、有类型，接真实接口时也好对照。
 """
 
 from __future__ import annotations

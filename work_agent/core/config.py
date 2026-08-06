@@ -51,6 +51,11 @@ class Settings:
     workspace_dir: Path  # 报告落盘根目录
     profile_path: Path
     checkpoint_path: Path  # LangGraph 状态库（SQLite）
+    # 测试分析资料库。真实环境只需通过环境变量切换根目录。
+    test_analysis_knowledge_root: Path | None = None
+    test_analysis_max_tool_calls: int = 4
+    test_analysis_max_retrieval_rounds: int = 2
+    test_analysis_top_k: int = 5
 
 
 def _load_profile(path: Path) -> Profile:
@@ -76,6 +81,12 @@ def get_settings() -> Settings:
     api_key = os.getenv("LLM_API_KEY") or os.getenv("GEMINI_API_KEY") or ""
     # 注意：读的是仓库根下 config/profile.yaml，不是 work_agent/config/
     profile_path = root / "config" / "profile.yaml"
+    knowledge_root_raw = os.getenv("TEST_ANALYSIS_KNOWLEDGE_ROOT", "").strip()
+    knowledge_root = (
+        Path(knowledge_root_raw).expanduser()
+        if knowledge_root_raw
+        else root / "skills" / "test_analysis" / "references"
+    )
 
     return Settings(
         llm_base_url=os.getenv(
@@ -92,4 +103,14 @@ def get_settings() -> Settings:
         workspace_dir=root / "workspace",
         profile_path=profile_path,
         checkpoint_path=root / "workspace" / "checkpoints.sqlite",
+        test_analysis_knowledge_root=knowledge_root,
+        test_analysis_max_tool_calls=max(
+            1, int(os.getenv("TEST_ANALYSIS_MAX_TOOL_CALLS", "4"))
+        ),
+        test_analysis_max_retrieval_rounds=max(
+            1, int(os.getenv("TEST_ANALYSIS_MAX_RETRIEVAL_ROUNDS", "2"))
+        ),
+        test_analysis_top_k=max(
+            1, min(8, int(os.getenv("TEST_ANALYSIS_TOP_K", "5")))
+        ),
     )

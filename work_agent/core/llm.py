@@ -3,7 +3,7 @@ LLM 唯一工厂。
 
 全项目只允许通过 get_chat_model() 拿模型，方便：
 - 学习阶段：base_url 指向 Gemini 的 OpenAI 兼容端点
-- 上公司后：只改 .env 三行（BASE_URL / API_KEY / MODEL），代码不动
+- 切换真实模型后：只改 .env 三行（BASE_URL / API_KEY / MODEL），代码不动
 """
 
 from __future__ import annotations

@@ -1,14 +1,15 @@
 """
-Skill = markdown 角色包（不是 tool，也不是子图）。
+Skill = markdown 角色包。
 
 目录约定（相对仓库根）：
   skills/<name>/
     SKILL.md          # 角色定义 + 方法论
     template.md       # 输出结构模板
-    references/*.md   # 业务/规格资料（现阶段全量注入，不做 RAG）
+    references/*.md   # 小型角色可选参考资料
 
-load_skill("test_analysis") → 拼成 system prompt，交给同一个大模型，
-相当于「加载了测试分析角色」。
+该 Loader 保留给简单角色使用。5G 测试分析已经升级为独立子图，通过
+work_agent.analysis.corpus 和受限检索 Tool 读取分目录资料库，不再调用
+select_references 全量注入。
 """
 
 from __future__ import annotations
@@ -79,7 +80,7 @@ class SkillLoader:
 
     def select_references(self, pack: SkillPack, query: str) -> dict[str, str]:
         """
-        资料筛选钩子。
+        简单角色的资料筛选钩子（测试分析子图不使用）。
 
         现阶段：全量返回（资料少，全量注入更稳）。
         以后资料变多：在这里改成检索 / RAG，调用方不用改。

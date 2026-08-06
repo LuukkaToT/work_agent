@@ -3,7 +3,7 @@
 
 节点里应写：
     from work_agent.tools.registry import get_pipeline_tool
-而不是直接 import MockPipelineTool——否则换公司实现时到处改。
+而不是直接 import MockPipelineTool——否则切换真实实现时需要到处修改。
 
 lru_cache：同参数复用同一实例。
 这对 mock 很重要：流水线存在实例内存里，create / query 必须拿到同一个对象。
