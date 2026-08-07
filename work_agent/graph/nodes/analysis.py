@@ -10,6 +10,8 @@ from work_agent.graph.subgraphs.analysis_flow import build_test_analysis_graph
 
 
 def test_analysis(state: TestFlowState) -> dict:
+    """把旧版顶层 State 映射到新的独立测试分析子图。"""
+
     return build_test_analysis_graph().invoke(
         {
             "task_id": state.get("task_id") or "unknown",

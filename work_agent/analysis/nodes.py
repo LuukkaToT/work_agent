@@ -36,10 +36,14 @@ def _json(value: object) -> str:
 
 
 def artifact_store_for_task(task_id: str) -> ArtifactStore:
+    """统一创建当前任务的分析产物存储，方便测试替换入口。"""
+
     return ArtifactStore.for_task(task_id)
 
 
 def initialize_analysis(state: dict) -> dict:
+    """校验最小输入，并重置一次测试分析运行的私有状态。"""
+
     user_input = str(state.get("user_input") or "").strip()
     if not user_input:
         raise ValueError("测试分析需要需求文本")
@@ -63,6 +67,8 @@ def initialize_analysis(state: dict) -> dict:
 
 
 def _fallback_requirement(user_input: str, available_channels: list[str]) -> RequirementFact:
+    """Structured Output 不可用时，用保守规则提取可继续执行的最低事实。"""
+
     channels = [
         channel
         for channel in available_channels
@@ -89,6 +95,8 @@ def _fallback_requirement(user_input: str, available_channels: list[str]) -> Req
 
 
 def extract_requirement(state: dict) -> dict:
+    """把原始需求结构化，并持久化为后续节点唯一读取的事实快照。"""
+
     user_input = str(state["user_input"]).strip()
     retriever = get_knowledge_retriever()
     available_channels = retriever.available_channels()
@@ -106,8 +114,10 @@ def extract_requirement(state: dict) -> dict:
             ],
         )
     except Exception:
+        # 模型或协议失败不应让整张图直接中断；兜底结果会显式保留待确认项。
         fact = _fallback_requirement(user_input, available_channels)
 
+    # 只保留资料库支持的标准信道，防止模型生成任意目录名。
     normalized_channels = []
     for raw in fact.channels:
         channel = normalize_channel(raw)
@@ -138,6 +148,8 @@ def _fallback_plan(
     fact: RequirementFact,
     available_channels: list[str],
 ) -> AnalysisPlan:
+    """规划模型不可用时，按已识别信道创建最小领域任务。"""
+
     def common_plan() -> AnalysisPlan:
         return AnalysisPlan(
             tasks=[
@@ -182,6 +194,12 @@ def _normalize_plan(
     fact: RequirementFact,
     available_channels: list[str],
 ) -> AnalysisPlan:
+    """校验、补全并合并模型规划，建立稳定的执行边界。
+
+    模型负责建议如何拆域；代码负责限制信道、任务 ID、任务数量和重复任务，
+    确保后续 Tool 权限与产物路径不受自由文本控制。
+    """
+
     normalized: list[DomainTask] = []
     seen_ids: set[str] = set()
     for index, task in enumerate(plan.tasks, 1):
@@ -251,11 +269,14 @@ def _normalize_plan(
             if len(current.channels) == 1
             else current.name
         )
+    # 限制领域数量，避免一次宽泛需求导致不受控的模型调用和资料读取。
     plan.tasks = list(merged.values())[:8]
     return plan
 
 
 def plan_domains(state: dict) -> dict:
+    """根据需求事实规划领域研究任务，并写入可审计计划文件。"""
+
     store = artifact_store_for_task(str(state["task_id"]))
     fact = RequirementFact.model_validate(store.read_json(state["requirement_ref"]))
     retriever = get_knowledge_retriever()
@@ -292,6 +313,8 @@ def plan_domains(state: dict) -> dict:
 
 
 def _failed_result(task: DomainTask, exc: Exception) -> DomainAnalysisResult:
+    """把单领域异常转换为结构化失败，允许其他领域继续完成。"""
+
     return DomainAnalysisResult(
         task_id=task.task_id,
         domain=task.domain,
@@ -303,6 +326,12 @@ def _failed_result(task: DomainTask, exc: Exception) -> DomainAnalysisResult:
 
 
 def analyze_domains(state: dict) -> dict:
+    """逐个执行隔离的 DomainResearch 子图并保存领域结果。
+
+    当前顺序执行便于控制模型限流和产物写入；每个领域单独捕获异常，因此一个
+    信道失败不会使其他信道的有效分析丢失。
+    """
+
     store = artifact_store_for_task(str(state["task_id"]))
     fact_data = store.read_json(state["requirement_ref"])
     plan = AnalysisPlan.model_validate(store.read_json(state["plan_ref"]))
@@ -313,6 +342,7 @@ def analyze_domains(state: dict) -> dict:
     summaries: dict[str, dict] = {}
     audit: list[dict] = []
     for task in plan.tasks:
+        # 白名单由代码根据任务和显式依赖生成，之后通过 State 注入检索 Tool。
         allowed_channels = retriever.expand_allowed_channels(task.channels)
         try:
             research_output = research_graph.invoke(
@@ -353,6 +383,8 @@ def analyze_domains(state: dict) -> dict:
 
 
 def _load_results(refs: dict[str, str]) -> list[DomainAnalysisResult]:
+    """从轻量 State 中的文件引用恢复领域结果。"""
+
     return [
         DomainAnalysisResult.model_validate(ArtifactStore.read_json(ref))
         for ref in refs.values()
@@ -360,6 +392,8 @@ def _load_results(refs: dict[str, str]) -> list[DomainAnalysisResult]:
 
 
 def review_analysis_coverage(state: dict) -> dict:
+    """执行确定性最低覆盖检查，并覆盖写入最新检查快照。"""
+
     store = artifact_store_for_task(str(state["task_id"]))
     plan = AnalysisPlan.model_validate(store.read_json(state["plan_ref"]))
     results = _load_results(state.get("domain_result_refs") or {})
@@ -385,12 +419,16 @@ def review_analysis_coverage(state: dict) -> dict:
 
 
 def route_after_coverage(state: dict) -> str:
+    """有缺口时最多修复一次，之后无论结果如何都进入报告。"""
+
     if state.get("coverage_gaps") and int(state.get("repair_count") or 0) < 1:
         return "repair"
     return "render"
 
 
 def _repair_task(task: DomainTask, gaps: list[CoverageGap]) -> DomainTask:
+    """把覆盖缺口转成聚焦目标，复用原领域研究子图定向补充。"""
+
     missing_types = []
     for gap in gaps:
         if gap.dimension != "scenario_type":
@@ -420,6 +458,8 @@ def _merge_results(
     original: DomainAnalysisResult,
     repair: DomainAnalysisResult,
 ) -> DomainAnalysisResult:
+    """按场景语义键和证据 chunk_id 幂等合并修复结果。"""
+
     scenarios = {
         (scenario.scenario_type.value, scenario.title.strip().lower()): scenario
         for scenario in original.scenarios
@@ -440,6 +480,11 @@ def _merge_results(
 
 
 def repair_coverage_gaps(state: dict) -> dict:
+    """按原任务分组补充覆盖缺口，并原位更新领域产物。
+
+    修复失败只写审计记录；路由计数仍会增加，防止相同缺口形成无限循环。
+    """
+
     store = artifact_store_for_task(str(state["task_id"]))
     fact_data = store.read_json(state["requirement_ref"])
     plan = AnalysisPlan.model_validate(store.read_json(state["plan_ref"]))
@@ -499,6 +544,8 @@ def repair_coverage_gaps(state: dict) -> dict:
 
 
 def render_analysis_report(state: dict) -> dict:
+    """聚合最终状态、确定性渲染报告并写入运行清单。"""
+
     store = artifact_store_for_task(str(state["task_id"]))
     fact = RequirementFact.model_validate(store.read_json(state["requirement_ref"]))
     results = _load_results(state.get("domain_result_refs") or {})
@@ -525,6 +572,7 @@ def render_analysis_report(state: dict) -> dict:
         )
     )
     scenario_count = sum(len(result.scenarios) for result in results)
+    # partial 表示已有可用场景但仍有明确风险，不能用 completed 掩盖资料缺口。
     if not results or scenario_count == 0:
         status = "failed"
     elif gaps or failed_domains or warnings:

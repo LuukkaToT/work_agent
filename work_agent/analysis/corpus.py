@@ -50,6 +50,7 @@ BASIC_FOLDER_MARKERS = {
     "公共",
 }
 
+# 这里只定义允许扩展检索的邻接信道，不代表完整协议依赖关系。
 CHANNEL_DEPENDENCIES = {
     "PUCCH": ["PUSCH", "SRS", "RRC", "MAC"],
     "PUSCH": ["PUCCH", "SRS", "RRC", "MAC"],
@@ -70,6 +71,8 @@ _CHANNEL_KEYS = {_key(alias): canonical for alias, canonical in CHANNEL_ALIASES.
 
 
 def normalize_channel(value: str) -> str | None:
+    """把大小写、连字符等不同写法归一为受支持的标准信道名。"""
+
     return _CHANNEL_KEYS.get(_key(value))
 
 
@@ -89,6 +92,8 @@ def _channel_from_folder(value: str) -> str | None:
 
 @dataclass(frozen=True)
 class DocumentChunk:
+    """检索内部使用的不可变资料分块。"""
+
     chunk_id: str
     doc_id: str
     source_kind: str
@@ -101,6 +106,8 @@ class DocumentChunk:
 
 @dataclass(frozen=True)
 class CorpusDocument:
+    """扫描阶段得到的资料文件及其信道范围元数据。"""
+
     path: Path
     relative_path: Path
     source_kind: str
@@ -116,6 +123,8 @@ def _document_title(path: Path, text: str) -> str:
 
 
 def _split_long_section(text: str, *, max_chars: int = 1800) -> list[str]:
+    """优先按段落切分长章节，超长单段再按字符窗口兜底。"""
+
     text = text.strip()
     if len(text) <= max_chars:
         return [text] if text else []
@@ -147,6 +156,8 @@ def _split_long_section(text: str, *, max_chars: int = 1800) -> list[str]:
 
 
 def _split_markdown(text: str) -> list[tuple[str, str]]:
+    """保留一至三级标题作为 section 元数据并切分正文。"""
+
     sections: list[tuple[str, list[str]]] = [("正文", [])]
     for line in text.splitlines():
         heading = re.match(r"^\s*#{1,3}\s+(.+?)\s*$", line)
@@ -163,6 +174,8 @@ def _split_markdown(text: str) -> list[tuple[str, str]]:
 
 
 def _infer_scope(relative_path: Path) -> tuple[str, str | None]:
+    """仅根据根目录内的相对路径判断资料属于基础库还是信道库。"""
+
     for part in relative_path.parts[:-1]:
         channel = _channel_from_folder(part)
         if channel:
@@ -178,12 +191,20 @@ def _infer_scope(relative_path: Path) -> tuple[str, str | None]:
 
 
 class CorpusCatalog:
+    """惰性扫描、按资料范围加载并缓存分块的本地目录索引。
+
+    目录发现只记录元数据；正文直到某个 basic/channel 范围第一次被检索时才
+    读取，避免单信道任务把整棵真实资料目录装入内存。
+    """
+
     def __init__(self, root: Path) -> None:
         self.root = root.resolve()
         self._documents: list[CorpusDocument] | None = None
         self._chunks_by_scope: dict[tuple[str, str | None], list[DocumentChunk]] = {}
 
     def _discover(self) -> list[CorpusDocument]:
+        """扫描受支持文件并缓存文件级元数据，不读取正文。"""
+
         if self._documents is not None:
             return list(self._documents)
         if not self.root.exists():
@@ -209,6 +230,8 @@ class CorpusCatalog:
 
     @staticmethod
     def _read_document(path: Path) -> str:
+        """优先读取 UTF-8，并兼容常见的 GB18030 文本资料。"""
+
         try:
             return path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
@@ -224,6 +247,8 @@ class CorpusCatalog:
         source_kind: str,
         channel: str | None = None,
     ) -> list[DocumentChunk]:
+        """按 scope 惰性构建分块；调用方不能跨 scope 获得其他信道正文。"""
+
         scope = (source_kind, channel)
         if scope in self._chunks_by_scope:
             return list(self._chunks_by_scope[scope])
@@ -240,6 +265,7 @@ class CorpusCatalog:
 
             relative = document.relative_path
             title = _document_title(document.path, text)
+            # ID 只依赖相对位置和章节序号，重复运行时可稳定追踪同一资料块。
             doc_id = hashlib.sha1(
                 str(relative).replace("\\", "/").encode("utf-8")
             ).hexdigest()[:12]
@@ -270,6 +296,8 @@ class CorpusCatalog:
         return chunks
 
     def available_channels(self) -> list[str]:
+        """返回资料目录中实际存在且能够识别的信道。"""
+
         return sorted(
             {
                 document.channel
@@ -280,6 +308,8 @@ class CorpusCatalog:
 
 
 def _query_terms(values: Iterable[str]) -> list[str]:
+    """从中英文查询中生成轻量关键词，并保持首次出现顺序。"""
+
     terms: list[str] = []
     for value in values:
         raw = value.strip().lower()
@@ -294,6 +324,8 @@ def _query_terms(values: Iterable[str]) -> list[str]:
 
 
 def _score(chunk: DocumentChunk, terms: list[str]) -> float:
+    """使用可解释的词项命中分数排序，不伪装成语义向量检索。"""
+
     haystack = " ".join(
         [
             chunk.title,
@@ -314,6 +346,8 @@ def _score(chunk: DocumentChunk, terms: list[str]) -> float:
 
 
 class ChannelKnowledgeRetriever:
+    """在目录硬过滤之后执行轻量关键词检索的统一入口。"""
+
     def __init__(self, root: Path) -> None:
         self.catalog = CorpusCatalog(root)
 
@@ -325,6 +359,8 @@ class ChannelKnowledgeRetriever:
         return self.catalog.available_channels()
 
     def expand_allowed_channels(self, channels: list[str]) -> list[str]:
+        """在实际存在的目录内扩展少量已声明依赖信道。"""
+
         available = set(self.available_channels())
         normalized = [
             channel
@@ -347,6 +383,8 @@ class ChannelKnowledgeRetriever:
         channel: str | None = None,
         dimensions: list[str] | None = None,
     ) -> list[EvidenceHit]:
+        """在一个已确定的资料范围中检索并返回可追踪证据。"""
+
         top_k = max(1, min(int(top_k), 8))
         terms = _query_terms([*queries, *(dimensions or [])])
         candidates = self.catalog.chunks(
@@ -380,6 +418,8 @@ class ChannelKnowledgeRetriever:
         dimensions: list[str],
         top_k: int = 5,
     ) -> list[EvidenceHit]:
+        """检索跨信道通用的基础测试点资料。"""
+
         return self._search(
             source_kind="basic",
             queries=queries,
@@ -394,6 +434,8 @@ class ChannelKnowledgeRetriever:
         queries: list[str],
         top_k: int = 5,
     ) -> list[EvidenceHit]:
+        """只检索指定标准信道的资料；未知信道不做宽泛回退。"""
+
         canonical = normalize_channel(channel)
         if not canonical:
             return []
@@ -407,10 +449,14 @@ class ChannelKnowledgeRetriever:
 
 @lru_cache(maxsize=4)
 def _retriever_for_root(root_text: str) -> ChannelKnowledgeRetriever:
+    """按资料根目录复用索引，同时允许测试切换不同临时语料。"""
+
     return ChannelKnowledgeRetriever(Path(root_text))
 
 
 def get_knowledge_retriever() -> ChannelKnowledgeRetriever:
+    """根据当前配置获得知识检索器；未配置时立即显式失败。"""
+
     configured = get_settings().test_analysis_knowledge_root
     if configured is None:
         raise RuntimeError("未配置测试分析资料库根目录")

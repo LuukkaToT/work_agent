@@ -18,6 +18,12 @@ def invoke_structured(
     *,
     temperature: float = 0.1,
 ) -> T:
+    """调用模型并把结果收敛为指定 Pydantic 契约。
+
+    业务节点只依赖该入口，后续真实模型若不兼容原生 Structured Output，可在
+    此处集中实现 JSON 提取、校验和有限重试。
+    """
+
     model = get_chat_model(temperature=temperature).with_structured_output(schema)
     result = model.invoke(messages)
     if isinstance(result, schema):

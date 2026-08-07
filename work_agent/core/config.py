@@ -53,6 +53,7 @@ class Settings:
     checkpoint_path: Path  # LangGraph 状态库（SQLite）
     # 测试分析资料库。真实环境只需通过环境变量切换根目录。
     test_analysis_knowledge_root: Path | None = None
+    # 以下三项共同限制单领域检索成本，并为 Tool 循环提供确定性终止条件。
     test_analysis_max_tool_calls: int = 4
     test_analysis_max_retrieval_rounds: int = 2
     test_analysis_top_k: int = 5

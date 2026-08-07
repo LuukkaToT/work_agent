@@ -23,6 +23,12 @@ def render_markdown(
     results: list[DomainAnalysisResult],
     gaps: list[CoverageGap],
 ) -> str:
+    """把已校验结构化结果渲染为稳定 Markdown，不再调用模型润色。
+
+    确定性渲染保证相同输入得到相同章节结构，也避免模型在最后一步丢失证据
+    引用、缺口或待确认信息。
+    """
+
     lines = [
         f"# 测试分析：{requirement.title}",
         "",

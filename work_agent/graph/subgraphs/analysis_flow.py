@@ -23,11 +23,15 @@ from work_agent.graph.state import append_audit
 
 
 class TestAnalysisInput(TypedDict):
+    """父图允许传入测试分析子图的最小输入。"""
+
     task_id: str
     user_input: str
 
 
 class TestAnalysisOutput(TypedDict):
+    """子图对父图公开的结果；大对象仅通过文件引用返回。"""
+
     requirement: str
     analysis_path: str
     summary: dict
@@ -35,6 +39,12 @@ class TestAnalysisOutput(TypedDict):
 
 
 class TestAnalysisState(TestAnalysisInput, TestAnalysisOutput):
+    """测试分析私有状态。
+
+    requirement/plan/domain result 的完整内容写入 ArtifactStore，State 只保存
+    引用和小型摘要，避免 Checkpoint 随资料和场景数量持续膨胀。
+    """
+
     requirement_ref: str
     plan_ref: str
     domain_result_refs: dict[str, str]
@@ -45,6 +55,12 @@ class TestAnalysisState(TestAnalysisInput, TestAnalysisOutput):
 
 
 def build_test_analysis_graph():
+    """编译完整测试分析子图。
+
+    覆盖修复通过条件边最多回流一次；终止约束由 ``repair_count`` 在路由节点
+    中执行，而不是交给模型自行判断。
+    """
+
     graph = StateGraph(
         TestAnalysisState,
         input_schema=TestAnalysisInput,

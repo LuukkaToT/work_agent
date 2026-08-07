@@ -12,6 +12,8 @@ from pydantic import BaseModel, Field
 
 
 class ScenarioType(str, Enum):
+    """覆盖检查和报告共同使用的标准场景分类。"""
+
     NORMAL = "normal"
     BOUNDARY = "boundary"
     ABNORMAL = "abnormal"
@@ -32,6 +34,8 @@ DEFAULT_SCENARIO_TYPES = [
 
 
 class RequirementFact(BaseModel):
+    """从原始需求中抽取的事实，不包含资料库补充或模型猜测。"""
+
     title: str = Field(description="简短、准确的需求标题")
     summary: str = Field(description="不添加外部事实的需求摘要")
     raw_requirement: str = Field(
@@ -57,6 +61,8 @@ class RequirementFact(BaseModel):
 
 
 class DomainTask(BaseModel):
+    """一次独立领域研究的输入，也是 Tool 检索权限的业务边界。"""
+
     task_id: str
     name: str
     domain: str
@@ -69,11 +75,15 @@ class DomainTask(BaseModel):
 
 
 class AnalysisPlan(BaseModel):
+    """测试分析规划结果；一个任务通常对应一个信道资料域。"""
+
     tasks: list[DomainTask] = Field(default_factory=list)
     cross_domain_concerns: list[str] = Field(default_factory=list)
 
 
 class EvidenceHit(BaseModel):
+    """可追溯到资料文件和分块位置的一条检索证据。"""
+
     chunk_id: str
     doc_id: str
     source_kind: Literal["basic", "channel"]
@@ -86,6 +96,8 @@ class EvidenceHit(BaseModel):
 
 
 class EvidenceAssessment(BaseModel):
+    """模型对当前证据充分性的结构化判断。"""
+
     status: Literal[
         "sufficient",
         "retry_search",
@@ -100,6 +112,8 @@ class EvidenceAssessment(BaseModel):
 
 
 class TestScenario(BaseModel):
+    """报告中的一条测试场景；evidence_refs 只能引用本轮证据。"""
+
     __test__: ClassVar[bool] = False
 
     scenario_id: str
@@ -117,6 +131,8 @@ class TestScenario(BaseModel):
 
 
 class DomainAnalysisResult(BaseModel):
+    """单个 DomainTask 的场景、证据和资料缺口汇总。"""
+
     task_id: str
     domain: str
     channels: list[str] = Field(default_factory=list)
@@ -129,6 +145,8 @@ class DomainAnalysisResult(BaseModel):
 
 
 class CoverageGap(BaseModel):
+    """确定性覆盖检查发现的一项最低完整性缺口。"""
+
     task_id: str
     domain: str
     dimension: Literal[
@@ -144,6 +162,8 @@ class CoverageGap(BaseModel):
 
 
 class AnalysisOutput(BaseModel):
+    """测试分析子图返回给主图的稳定输出契约。"""
+
     status: Literal["completed", "partial", "need_input", "failed"]
     summary: str
     report_ref: str | None = None

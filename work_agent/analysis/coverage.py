@@ -15,6 +15,12 @@ def review_coverage(
     tasks: list[DomainTask],
     results: list[DomainAnalysisResult],
 ) -> list[CoverageGap]:
+    """检查每个任务的场景类型和场景必填字段。
+
+    这里刻意使用代码规则而不是让模型自评“是否完整”，从而给不同模型提供
+    一致的最低质量下限。它不承诺发现开放世界中的所有业务遗漏。
+    """
+
     result_by_task = {result.task_id: result for result in results}
     gaps: list[CoverageGap] = []
 
@@ -33,6 +39,7 @@ def review_coverage(
                 )
             continue
 
+        # required_scenario_types 来自规划任务，允许以后按策略矩阵动态变化。
         actual_types = {scenario.scenario_type for scenario in result.scenarios}
         for scenario_type in task.required_scenario_types:
             if scenario_type not in actual_types:
@@ -69,6 +76,8 @@ def review_coverage(
 
 
 def gaps_by_task(gaps: list[CoverageGap]) -> dict[str, list[CoverageGap]]:
+    """按原始任务聚合缺口，供定向 Gap Repair 构造补充任务。"""
+
     grouped: dict[str, list[CoverageGap]] = defaultdict(list)
     for gap in gaps:
         grouped[gap.task_id].append(gap)

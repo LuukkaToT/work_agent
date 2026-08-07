@@ -36,17 +36,23 @@ from work_agent.graph.state import append_audit
 
 
 class DomainResearchInput(TypedDict):
+    """父分析图传入单领域研究子图的受控输入。"""
+
     requirement_fact: dict
     domain_task: dict
     allowed_channels: list[str]
 
 
 class DomainResearchOutput(TypedDict):
+    """研究子图只返回领域结果和审计，不泄露 Tool 消息历史。"""
+
     result: dict
     audit: Annotated[list[dict], append_audit]
 
 
 class DomainResearchState(DomainResearchInput, DomainResearchOutput):
+    """单领域私有状态；消息、轮数和证据不会进入父图 Checkpoint。"""
+
     research_messages: Annotated[list[AnyMessage], add_messages]
     tool_call_count: int
     retrieval_round: int
@@ -64,6 +70,8 @@ def _error_text(exc: Exception) -> str:
 
 
 def initialize_research(state: DomainResearchState) -> dict:
+    """初始化一次领域研究，清空可累加字段以避免跨任务污染。"""
+
     task = DomainTask.model_validate(state["domain_task"])
     return {
         "research_messages": [],
@@ -111,6 +119,12 @@ def _agent_input_messages(state: DomainResearchState) -> list[AnyMessage]:
 
 
 def research_agent(state: DomainResearchState) -> dict:
+    """让模型在受限 Tool 集合中决定下一次检索动作。
+
+    模型可以决定查什么，但实际可用 Tool、信道范围、调用次数和 top-k 都由
+    代码限制；模型调用失败时后续充分性节点仍会执行确定性兜底检索。
+    """
+
     max_calls = get_settings().test_analysis_max_tool_calls
     remaining = max(0, max_calls - int(state.get("tool_call_count") or 0))
     try:
@@ -129,6 +143,7 @@ def research_agent(state: DomainResearchState) -> dict:
         }
 
     calls = list(getattr(response, "tool_calls", []) or [])
+    # 部分模型会一次返回多个 Tool Call，统一截断到本任务剩余额度。
     if len(calls) > remaining:
         response = AIMessage(
             content=response.content or "",
@@ -148,6 +163,8 @@ def research_agent(state: DomainResearchState) -> dict:
 
 
 def route_after_research_agent(state: DomainResearchState) -> str:
+    """仅当消息包含合法 Tool Call 且仍有额度时进入 ToolNode。"""
+
     decision = tools_condition(state, messages_key="research_messages")
     if (
         decision == "tools"
@@ -159,6 +176,8 @@ def route_after_research_agent(state: DomainResearchState) -> str:
 
 
 def _tool_evidence(messages: list[AnyMessage]) -> list[EvidenceHit]:
+    """从所有 ToolMessage 中解析、校验并按 chunk_id 去重证据。"""
+
     hits: dict[str, EvidenceHit] = {}
     for message in messages:
         if not isinstance(message, ToolMessage):
@@ -177,6 +196,8 @@ def _tool_evidence(messages: list[AnyMessage]) -> list[EvidenceHit]:
 
 
 def _fallback_evidence(state: DomainResearchState) -> list[EvidenceHit]:
+    """Tool Calling 不可用或没有返回证据时执行受限确定性检索。"""
+
     task = DomainTask.model_validate(state["domain_task"])
     retriever = get_knowledge_retriever()
     queries = task.retrieval_queries or task.objectives or [task.name]
@@ -198,6 +219,8 @@ def _fallback_evidence(state: DomainResearchState) -> list[EvidenceHit]:
 
 
 def assess_evidence(state: DomainResearchState) -> dict:
+    """判断当前证据能否支持场景生成，或是否值得再做一次定向检索。"""
+
     fact = RequirementFact.model_validate(state["requirement_fact"])
     task = DomainTask.model_validate(state["domain_task"])
     evidence = _tool_evidence(state.get("research_messages") or [])
@@ -221,6 +244,7 @@ def assess_evidence(state: DomainResearchState) -> dict:
             ],
         )
     except Exception as exc:
+        # 保守降级：有受限证据即可继续生成，无证据则明确标记 corpus_gap。
         error = _error_text(exc)
         assessment = EvidenceAssessment(
             status="sufficient" if evidence else "corpus_gap",
@@ -245,6 +269,8 @@ def assess_evidence(state: DomainResearchState) -> dict:
 
 
 def route_after_assessment(state: DomainResearchState) -> str:
+    """同时检查语义需要、查询内容、轮数和调用额度后决定是否重检。"""
+
     assessment = EvidenceAssessment.model_validate(state["assessment"])
     can_retry = (
         assessment.status in {"retry_search", "expand_channels"}
@@ -258,6 +284,8 @@ def route_after_assessment(state: DomainResearchState) -> str:
 
 
 def request_more_research(state: DomainResearchState) -> dict:
+    """记录定向重检意图；下一轮输入会从 assessment 重建紧凑上下文。"""
+
     assessment = EvidenceAssessment.model_validate(state["assessment"])
     return {
         "research_messages": [
@@ -275,6 +303,8 @@ def request_more_research(state: DomainResearchState) -> dict:
 
 
 def generate_domain_result(state: DomainResearchState) -> dict:
+    """基于最终证据生成场景，并在代码侧收紧模型输出。"""
+
     fact = RequirementFact.model_validate(state["requirement_fact"])
     task = DomainTask.model_validate(state["domain_task"])
     assessment = EvidenceAssessment.model_validate(state["assessment"])
@@ -310,6 +340,7 @@ def generate_domain_result(state: DomainResearchState) -> dict:
             warnings=[error],
         )
 
+    # 下列字段以代码规划和真实检索结果为准，不能接受模型自行改写。
     result.task_id = task.task_id
     result.domain = task.domain
     result.channels = list(dict.fromkeys(task.channels))
@@ -321,6 +352,7 @@ def generate_domain_result(state: DomainResearchState) -> dict:
         scenario.channels = list(
             dict.fromkeys(scenario.channels or task.channels)
         )
+        # 删除模型编造或引用其他任务的 chunk_id；覆盖节点会报告空引用缺口。
         scenario.evidence_refs = [
             ref for ref in scenario.evidence_refs if ref in valid_refs
         ]
@@ -344,6 +376,8 @@ def generate_domain_result(state: DomainResearchState) -> dict:
 
 @lru_cache(maxsize=1)
 def build_domain_research_graph():
+    """编译并缓存单领域 Tool 子图，避免每个信道重复构图。"""
+
     graph = StateGraph(
         DomainResearchState,
         input_schema=DomainResearchInput,

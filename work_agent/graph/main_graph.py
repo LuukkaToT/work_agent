@@ -87,6 +87,7 @@ def build_graph(
 
     graph.add_node("intake", intake)
     graph.add_node("router", router)
+    # 测试分析以编译后的子图挂载，父图只能看到其 Input/Output 契约。
     graph.add_node("test_analysis", build_test_analysis_graph())
     graph.add_node("exec_flow", build_exec_flow())
     graph.add_node("prepare_start", prepare_start)
