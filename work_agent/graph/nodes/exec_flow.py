@@ -1,7 +1,7 @@
 """
 执行流节点：
 
-  exec_params       抽出计划列表 + exec_mode（create_only | create_and_start）
+  exec_params       抽出计划列表 + exec_mode；可从 Excel 读用例
   create_pipelines  逐计划 create；按需 start；写入台账
 """
 
@@ -12,13 +12,18 @@ import uuid
 from typing import Any, Literal, Mapping, Optional
 
 from langchain_core.messages import HumanMessage, SystemMessage
+from langgraph.types import interrupt
 from pydantic import BaseModel, Field
 
 from work_agent.core.config import get_settings
 from work_agent.core.ledger import get_ledger
 from work_agent.core.llm import get_chat_model
 from work_agent.graph.helpers.context import conversation_context
-from work_agent.tools.registry import get_pipeline_tool
+from work_agent.graph.helpers.sheet_plans import (
+    apply_column_mapping,
+    mapping_prompt_payload,
+)
+from work_agent.tools.registry import get_case_sheet_tool, get_pipeline_tool
 
 ALLOWED_VERSIONS = frozenset({"27B", "27A", "26B", "26A"})
 ExecMode = Literal["create_only", "create_and_start"]
@@ -29,7 +34,9 @@ _IP_RE = re.compile(
 
 
 class ExecPlanOut(BaseModel):
-    case_names: list[str] = Field(description="本条流水线要执行的用例名列表")
+    case_names: list[str] = Field(
+        default_factory=list, description="本条流水线要执行的用例名列表"
+    )
     version: Optional[str] = Field(
         default=None, description="版本：27B / 27A / 26B / 26A"
     )
@@ -41,10 +48,11 @@ class ExecPlanOut(BaseModel):
 
 class ExecParamsOut(BaseModel):
     plans: list[ExecPlanOut] = Field(
+        default_factory=list,
         description=(
             "执行计划列表。同一环境批量用例合并为一条；"
-            "不同环境（如 A 环境跑 X、B 环境跑 Y）拆成多条。"
-        )
+            "不同环境拆成多条。若用例来自表格，case_names 可留空。"
+        ),
     )
     exec_mode: Literal["create_only", "create_and_start"] = Field(
         default="create_and_start",
@@ -53,6 +61,25 @@ class ExecParamsOut(BaseModel):
             "create_and_start=创建并启动（默认）"
         ),
     )
+    sheet_path: Optional[str] = Field(
+        default=None, description="本地 Excel/CSV 路径；没有则 null"
+    )
+    row_limit: Optional[int] = Field(
+        default=None,
+        description="只要表里前 N 条非空用例；没说则 null=全表（有上限）",
+    )
+
+
+class ColumnMappingOut(BaseModel):
+    case_name_col: Optional[int] = Field(description="用例名列 0-based 下标")
+    version_col: Optional[int] = Field(
+        default=None, description="版本列下标；没有则 null"
+    )
+    env_col: Optional[int] = Field(
+        default=None, description="环境列下标；没有则 null"
+    )
+    confidence: Literal["high", "low"] = Field(description="映射把握")
+    reason: str = Field(description="一句话理由")
 
 
 def _classify_env(env: str) -> str:
@@ -90,13 +117,112 @@ def _plan_dict(
     }
 
 
+def _normalize_version(raw: str) -> str:
+    text = (raw or "").strip()
+    if not text:
+        return ""
+    if text.upper() in ALLOWED_VERSIONS:
+        return text.upper()
+    return text
+
+
+def _spoken_env_version(plans: list[dict]) -> tuple[str, str]:
+    env = ""
+    version = ""
+    for p in plans:
+        if not env and p.get("env"):
+            env = str(p.get("env") or "").strip()
+        if not version and p.get("version"):
+            version = _normalize_version(str(p.get("version") or ""))
+    return env, version
+
+
+def _resolve_sheet_plans(
+    *,
+    sheet_path: str,
+    row_limit: int | None,
+    spoken_env: str,
+    spoken_version: str,
+) -> tuple[list[dict], dict]:
+    """读表 → 列映射（可 HITL）→ 切片计划。返回 (raw_plans, audit_extra)。"""
+    tool = get_case_sheet_tool()
+    table = tool.read(sheet_path)
+    if not table.headers:
+        raise ValueError(f"表格无表头: {sheet_path}")
+
+    mapper = get_chat_model(temperature=0).with_structured_output(ColumnMappingOut)
+    mapping: ColumnMappingOut = mapper.invoke(
+        [
+            SystemMessage(
+                content=(
+                    "根据表头与样本行，判断哪一列是用例名、版本、环境 IP。"
+                    "用例名列通常含 case / 用例 / 脚本 等字样，或单元格像长标识符。"
+                    "版本列多为 27B/27A/26B/26A。环境列多为 IP。"
+                    "没有对应列就返回 null。把握不足时 confidence=low。"
+                )
+            ),
+            HumanMessage(content=mapping_prompt_payload(table)),
+        ]
+    )
+
+    case_col = mapping.case_name_col
+    version_col = mapping.version_col
+    env_col = mapping.env_col
+    confidence = mapping.confidence
+
+    if case_col is None or confidence == "low":
+        headers_show = ", ".join(f"[{i}]{h}" for i, h in enumerate(table.headers))
+        reply = interrupt(
+            {
+                "type": "pick_sheet_column",
+                "message": (
+                    "无法可靠识别用例名列，请输入用例名列的下标数字（从 0 开始）。\n"
+                    f"表头：{headers_show}"
+                ),
+                "headers": table.headers,
+                "suggested": {
+                    "case_name_col": case_col,
+                    "version_col": version_col,
+                    "env_col": env_col,
+                    "reason": mapping.reason,
+                },
+            }
+        )
+        try:
+            case_col = int(str(reply).strip())
+        except ValueError as exc:
+            raise ValueError(f"无效的列下标: {reply!r}") from exc
+
+    raw_plans = apply_column_mapping(
+        table,
+        case_name_col=int(case_col),
+        version_col=version_col,
+        env_col=env_col,
+        row_limit=row_limit,
+        spoken_env=spoken_env,
+        spoken_version=spoken_version,
+    )
+    audit = {
+        "sheet_path": table.path or sheet_path,
+        "row_limit": row_limit,
+        "case_name_col": case_col,
+        "version_col": version_col,
+        "env_col": env_col,
+        "confidence": confidence,
+        "mapping_reason": mapping.reason,
+        "plan_count": len(raw_plans),
+        "case_count": sum(len(p.get("case_names") or []) for p in raw_plans),
+    }
+    return raw_plans, audit
+
+
 def exec_params(state: Mapping[str, Any]) -> dict:
     """
     参数优先级：
     - version / env：用户没说 → 留空，ask_missing interrupt
     - exec_mode：默认 create_and_start
+    - sheet_path：有则读表组装 plans（用例名不经模型手抄）
     """
-    # 约束llm输出类型
     llm = get_chat_model(temperature=0).with_structured_output(ExecParamsOut)
 
     ctx = conversation_context(state, n=8)
@@ -108,68 +234,116 @@ def exec_params(state: Mapping[str, Any]) -> dict:
     human_parts.append("【本轮用户输入】")
     human_parts.append(user_input)
 
-    # 调用llm，获取解析出来的执行参数
     parsed: ExecParamsOut = llm.invoke(
         [
             SystemMessage(
                 content=(
-                    "从用户输入提取执行计划列表。"
-                    "用例名通常很长，形如 HF_20B_PUSCH_..._MCS0_1_10_01 "
-                    "或 TDD_26a_85_5002_..._KPI_TST，按原文提取，不要截断。"
-                    "版本只能是 27B / 27A / 26B / 26A；本轮没明确说返回 null，"
-                    "不要用默认值、不要从配置猜。"
-                    "env 是物理组网 IP（如 7.223.50.60）；本轮没明确说返回 null，"
-                    "不要从历史猜、也不要编造。"
+                    "从用户输入提取执行计划。"
+                    "用例名通常很长，形如 HF_20B_PUSCH_..._MCS0_1_10_01，"
+                    "按原文提取，不要截断；若用例来自表格则 case_names 可为空列表。"
+                    "版本只能是 27B / 27A / 26B / 26A；本轮没明确说返回 null。"
+                    "env 是物理组网 IP（如 7.223.50.60）；本轮没明确说返回 null。"
+                    "若用户给了 Excel/CSV 路径，填写 sheet_path（尽量保留原路径）。"
+                    "若说「前三个/只要前 N 条」，填写 row_limit=N；否则 null。"
                     "若用户说「A 环境执行 X，B 环境执行 Y」，拆成两条计划；"
-                    "同一环境多个用例合并成一条，case_names 为列表。"
-                    "本轮若是指代（如「再跑一遍」「换环境」），"
-                    "结合【历史摘要】和【最近对话】补全用例名；"
-                    "版本仅当历史里明确出现过才补，否则返回 null；"
-                    "组网仍须本轮明确说出。"
-                    "若用户说「只创建」「仅创建不用跑」「先建流水线别执行」，"
-                    "exec_mode=create_only；否则 create_and_start。"
+                    "同一环境多个用例合并成一条。"
+                    "若用户说「只创建」「仅创建不用跑」，exec_mode=create_only；"
+                    "否则 create_and_start。"
                 )
             ),
             HumanMessage(content="\n".join(human_parts)),
         ]
     )
 
-    # 根据解析出来的参数去创建执行plans，创建规则上述system_prompt写明
-    plans: list[dict] = []
+    spoken_plans: list[dict] = []
     for item in parsed.plans or []:
-        raw = (item.version or "").strip()
-        if not raw:
-            version = ""
-        elif raw.upper() in ALLOWED_VERSIONS:
-            version = raw.upper()
-        else:
-            version = raw
-
+        version = _normalize_version(item.version or "")
         env = (item.env or "").strip()
-        plans.append(
-            _plan_dict(
-                case_names=list(item.case_names or []),
-                version=version,
-                env=env,
-            )
+        spoken_plans.append(
+            {
+                "case_names": list(item.case_names or []),
+                "version": version,
+                "env": env,
+            }
         )
 
-    if not plans:
-        plans = [_plan_dict(case_names=[], version="", env="")]
+    sheet_path = (parsed.sheet_path or "").strip() or None
+    row_limit = parsed.row_limit
+    sheet_audit: dict | None = None
 
-    # 返回创建之后的params(包含plans,execmode)，写入到state返回
+    if sheet_path:
+        spoken_env, spoken_version = _spoken_env_version(spoken_plans)
+        try:
+            raw_plans, sheet_audit = _resolve_sheet_plans(
+                sheet_path=sheet_path,
+                row_limit=row_limit,
+                spoken_env=spoken_env,
+                spoken_version=spoken_version,
+            )
+        except Exception as exc:  # noqa: BLE001
+            params = {
+                "plans": [_plan_dict(case_names=[], version="", env=spoken_env)],
+                "exec_mode": parsed.exec_mode or "create_and_start",
+                "sheet_path": sheet_path,
+                "row_limit": row_limit,
+                "sheet_error": str(exc),
+            }
+            return {
+                "exec_params": params,
+                "summary": {
+                    "status": "need_input",
+                    "message": f"读取用例表失败: {exc}",
+                },
+                "audit": [
+                    {
+                        "step": "exec_params",
+                        "status": "sheet_error",
+                        "error": str(exc),
+                        "sheet_path": sheet_path,
+                    }
+                ],
+            }
+        plans = [
+            _plan_dict(
+                case_names=list(p.get("case_names") or []),
+                version=_normalize_version(str(p.get("version") or "")),
+                env=str(p.get("env") or "").strip(),
+            )
+            for p in raw_plans
+        ]
+        if not plans:
+            plans = [_plan_dict(case_names=[], version=spoken_version, env=spoken_env)]
+    else:
+        plans = [
+            _plan_dict(
+                case_names=list(p.get("case_names") or []),
+                version=str(p.get("version") or ""),
+                env=str(p.get("env") or ""),
+            )
+            for p in spoken_plans
+        ]
+        if not plans:
+            plans = [_plan_dict(case_names=[], version="", env="")]
+
     exec_mode: ExecMode = parsed.exec_mode or "create_and_start"
-    params = {"plans": plans, "exec_mode": exec_mode}
+    params: dict[str, Any] = {
+        "plans": plans,
+        "exec_mode": exec_mode,
+        "sheet_path": sheet_path,
+        "row_limit": row_limit,
+    }
+    audit_rec: dict[str, Any] = {
+        "step": "exec_params",
+        "plan_count": len(plans),
+        "exec_mode": exec_mode,
+        "params": params,
+    }
+    if sheet_audit:
+        audit_rec["sheet"] = sheet_audit
+
     return {
         "exec_params": params,
-        "audit": [
-            {
-                "step": "exec_params",
-                "plan_count": len(plans),
-                "exec_mode": exec_mode,
-                "params": params,
-            }
-        ],
+        "audit": [audit_rec],
     }
 
 

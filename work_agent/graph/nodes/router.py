@@ -13,12 +13,15 @@ from work_agent.graph.state import TestFlowState
 
 
 class RouteDecision(BaseModel):
-    intent: Literal["analysis", "execute", "query", "start", "chat"] = Field(
+    intent: Literal[
+        "analysis", "execute", "query", "start", "diagnose", "chat"
+    ] = Field(
         description=(
-            "analysis=做测试分析; "
-            "execute=创建/执行用例流水线; "
-            "start=启动已创建但未跑的流水线; "
-            "query=查某次流水线结果/进度; "
+            "analysis=做测试分析(需求/规格);"
+            "execute=创建/执行用例流水线(含按Excel表执行);"
+            "start=启动已创建但未跑的流水线;"
+            "query=查某次流水线结果/进度;"
+            "diagnose=拉日志并归因失败原因;"
             "chat=普通问答"
         )
     )
@@ -44,10 +47,13 @@ def router(state: TestFlowState) -> dict:
                 content=(
                     "你是测试助手的意图分类器。"
                     "根据本轮用户输入判断意图；若本轮是指代（如「再跑一遍」「换环境」"
-                    "「刚才那次怎么样」「把刚才那几条启动起来」），"
+                    "「刚才那次怎么样」「把刚才那几条启动起来」「看看为啥失败」），"
                     "结合【历史摘要】和【最近对话】消解后再分类。"
                     "「只创建流水线」仍属 execute；"
-                    "「启动刚才创建的」属 start。"
+                    "「用表格/excel 执行」属 execute；"
+                    "「启动刚才创建的」属 start；"
+                    "「查进度/怎么样了」属 query；"
+                    "「看日志/为什么失败/归因」属 diagnose。"
                     "不要执行任何操作。"
                 )
             ),

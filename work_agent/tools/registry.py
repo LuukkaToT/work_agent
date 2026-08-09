@@ -14,8 +14,14 @@ from __future__ import annotations
 from functools import lru_cache
 
 from work_agent.core.config import get_settings
-from work_agent.tools.mock import MockCaseProvider, MockPipelineTool, MockScenario
-from work_agent.tools.protocols import CaseProvider, PipelineTool
+from work_agent.tools.mock import (
+    LocalCaseSheetTool,
+    MockCaseProvider,
+    MockLogTool,
+    MockPipelineTool,
+    MockScenario,
+)
+from work_agent.tools.protocols import CaseProvider, CaseSheetTool, LogTool, PipelineTool
 
 
 @lru_cache(maxsize=1)
@@ -48,3 +54,23 @@ def get_pipeline_tool(scenario: MockScenario = "all_pass") -> PipelineTool:
     raise NotImplementedError(
         f"TOOL_BACKEND={backend!r} 尚未实现，请先用 mock 或 real"
     )
+
+
+@lru_cache(maxsize=1)
+def get_log_tool() -> LogTool:
+    backend = get_settings().tool_backend
+    if backend == "mock":
+        return MockLogTool()
+    if backend == "real":
+        from work_agent.tools.real.logs import RealLogTool
+
+        return RealLogTool()
+    raise NotImplementedError(
+        f"TOOL_BACKEND={backend!r} 尚未实现，请先用 mock 或 real"
+    )
+
+
+@lru_cache(maxsize=1)
+def get_case_sheet_tool() -> CaseSheetTool:
+    """读本地表：mock/real 共用 LocalCaseSheetTool（确定性 I/O）。"""
+    return LocalCaseSheetTool()

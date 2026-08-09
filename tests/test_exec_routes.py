@@ -70,21 +70,37 @@ def test_allowed_versions():
     assert ALLOWED_VERSIONS == frozenset({"27B", "27A", "26B", "26A"})
 
 
-def test_exec_flow_schemas_hide_private_fields():
-    from work_agent.graph.subgraphs.exec_flow import (
-        ExecFlowInput,
-        ExecFlowOutput,
-        ExecFlowState,
+def test_pipeline_ops_schemas_hide_private_fields():
+    from work_agent.graph.subgraphs.pipeline_ops import (
+        PipelineOpsInput,
+        PipelineOpsOutput,
+        PipelineOpsState,
     )
 
     private = (
-        set(ExecFlowState.__annotations__)
-        - set(ExecFlowInput.__annotations__)
-        - set(ExecFlowOutput.__annotations__)
+        set(PipelineOpsState.__annotations__)
+        - set(PipelineOpsInput.__annotations__)
+        - set(PipelineOpsOutput.__annotations__)
     )
-    assert private == {"exec_decision"}
-    assert "audit" not in ExecFlowInput.__annotations__
-    assert "audit" in ExecFlowOutput.__annotations__
-    assert "pipelines" in ExecFlowOutput.__annotations__
-    assert "dialogue_summary" in ExecFlowInput.__annotations__
-    assert "poll_count" not in ExecFlowState.__annotations__
+    assert private == {"ops_kind"}
+    assert "audit" not in PipelineOpsInput.__annotations__
+    assert "audit" in PipelineOpsOutput.__annotations__
+    assert "pipelines" in PipelineOpsOutput.__annotations__
+
+
+def test_route_after_resolve():
+    from work_agent.graph.nodes.pipeline_ops import route_after_resolve
+
+    assert route_after_resolve({"pipelines": [], "ops_kind": "query"}) == "skip"
+    assert (
+        route_after_resolve(
+            {"pipelines": [{"pipeline_id": "x"}], "ops_kind": "start"}
+        )
+        == "start"
+    )
+    assert (
+        route_after_resolve(
+            {"pipelines": [{"pipeline_id": "x"}], "ops_kind": "diagnose"}
+        )
+        == "diagnose"
+    )

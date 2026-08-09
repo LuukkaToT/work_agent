@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import Protocol, runtime_checkable
 
-from work_agent.tools.models import CaseInfo, PipelineHandle, PipelineResult
+from work_agent.tools.models import CaseInfo, PipelineHandle, PipelineResult, SheetTable
 
 
 @runtime_checkable
@@ -43,3 +43,17 @@ class PipelineTool(Protocol):
     def start(self, pipeline_id: str) -> bool: ...
 
     def query(self, pipeline_id: str) -> PipelineResult: ...
+
+
+@runtime_checkable
+class LogTool(Protocol):
+    """只读拉日志；供 error_analysis ReAct 使用。"""
+
+    def fetch_logs(self, pipeline_id: str) -> str: ...
+
+
+@runtime_checkable
+class CaseSheetTool(Protocol):
+    """读本地用例表（xlsx/csv）为表头+行。"""
+
+    def read(self, path: str) -> SheetTable: ...

@@ -48,3 +48,12 @@ class PipelineResult:
     phase: RunPhase
     results: list[CaseResult] = field(default_factory=list)
     message: str = ""
+
+
+@dataclass(frozen=True)
+class SheetTable:
+    """用例表原始内容：表头 + 行（全部字符串，不做类型猜测）。"""
+
+    headers: list[str]
+    rows: list[list[str]]
+    path: str = ""

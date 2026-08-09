@@ -4,8 +4,7 @@
   START → intake → router
                  ├─ analysis → test_analysis ──┐
                  ├─ execute → exec_flow ───────┤
-                 ├─ start → prepare_start → start_pipelines ─┤
-                 ├─ query → query_run ─────────┤
+                 ├─ start|query|diagnose → pipeline_ops ─┤
                  └─ chat → quick_answer ───────┤
                                                │
                             respond → memory → END
@@ -21,14 +20,12 @@ from langgraph.types import Checkpointer
 
 from work_agent.graph.nodes.analysis import test_analysis
 from work_agent.graph.nodes.chat import quick_answer
-from work_agent.graph.nodes.exec_flow import start_pipelines
 from work_agent.graph.nodes.memory import memory
-from work_agent.graph.nodes.prepare_start import prepare_start
-from work_agent.graph.nodes.query_run import query_run
 from work_agent.graph.nodes.respond import respond
 from work_agent.graph.nodes.router import route_by_intent, router
 from work_agent.graph.state import RESET_AUDIT, TestFlowState
 from work_agent.graph.subgraphs.exec_flow import build_exec_flow
+from work_agent.graph.subgraphs.pipeline_ops import build_pipeline_ops
 
 
 def _message_text(content: object) -> str:
@@ -89,9 +86,7 @@ def build_graph(
     graph.add_node("router", router)
     graph.add_node("test_analysis", test_analysis)
     graph.add_node("exec_flow", build_exec_flow())
-    graph.add_node("prepare_start", prepare_start)
-    graph.add_node("start_pipelines", start_pipelines)
-    graph.add_node("query_run", query_run)
+    graph.add_node("pipeline_ops", build_pipeline_ops())
     graph.add_node("quick_answer", quick_answer)
     graph.add_node("respond", respond)
     graph.add_node("memory", memory)
@@ -104,21 +99,16 @@ def build_graph(
         {
             "analysis": "test_analysis",
             "execute": "exec_flow",
-            "start": "prepare_start",
-            "query": "query_run",
+            "start": "pipeline_ops",
+            "query": "pipeline_ops",
+            "diagnose": "pipeline_ops",
             "chat": "quick_answer",
         },
     )
 
     graph.add_edge("test_analysis", "respond")
     graph.add_edge("exec_flow", "respond")
-    graph.add_conditional_edges(
-        "prepare_start",
-        lambda s: "start" if (s.get("pipelines") or []) else "skip",
-        {"start": "start_pipelines", "skip": "respond"},
-    )
-    graph.add_edge("start_pipelines", "respond")
-    graph.add_edge("query_run", "respond")
+    graph.add_edge("pipeline_ops", "respond")
     graph.add_edge("quick_answer", "respond")
     graph.add_edge("respond", "memory")
     graph.add_edge("memory", END)

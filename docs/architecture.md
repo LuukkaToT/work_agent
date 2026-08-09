@@ -114,15 +114,13 @@ flowchart TD
   Intake --> Router["router 意图识别 带对话历史"]
   Router -->|"analysis"| Analysis["Role test_analysis"]
   Router -->|"execute"| ExecFlow["子图 exec_flow"]
-  Router -->|"start"| PrepareStart["prepare_start → start_pipelines"]
-  Router -->|"query"| QueryRun["Flow query_run"]
+  Router -->|"start/query/diagnose"| PipelineOps["子图 pipeline_ops"]
   Router -->|"chat"| QuickAnswer["quick_answer"]
 
   Analysis --> Respond
-  QueryRun --> Respond
   QuickAnswer --> Respond
   ExecFlow --> Respond
-  PrepareStart --> Respond
+  PipelineOps --> Respond
 
   Respond["respond 说成人话 + 追加 AIMessage"] --> Memory["memory 滚动摘要"]
   Memory --> Finish(["结束"])
@@ -132,11 +130,25 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  Params["exec_params 抽计划列表 + exec_mode"] --> AskMissing["interrupt 逐计划补缺参"]
+  Params["exec_params 抽计划/Excel"] --> AskMissing["interrupt 逐计划补缺参"]
   AskMissing --> Confirm{"HITL 确认 N 条流水线"}
   Confirm -->|"cancel"| EndNode(["END"])
   Confirm -->|"proceed"| Create["create_pipelines"]
   Create --> EndNode
+```
+
+已有流水线子图 `pipeline_ops`：
+
+```mermaid
+flowchart TD
+  Init["init_ops_kind"] --> Resolve["resolve_pipelines"]
+  Resolve -->|"start"| StartN["start_pipelines"]
+  Resolve -->|"query"| QueryN["query_pipelines"]
+  Resolve -->|"diagnose"| Err["受限 ReAct error_analysis"]
+  Resolve -->|"skip"| EndOps(["END"])
+  StartN --> EndOps
+  QueryN --> EndOps
+  Err --> EndOps
 ```
 
 `create_pipelines`（`pipeline_id` 由服务端返回；create 失败不盲目重试）：
@@ -152,7 +164,7 @@ flowchart TD
   S -->|"用尽"| F2["status=failed"]
 ```
 
-子图用独立 schema：`ExecFlowInput`（含 `dialogue_summary`）/ `ExecFlowOutput` / 私有字段（`exec_decision`）。`audit` 只出不进。不再轮询、不收集结果、不写执行报告——提交后用户去流水线前端看，问进度走 `query_run`；「只创建」后再启动走 `start` 意图。
+子图用独立 schema：`ExecFlowInput` / `PipelineOpsInput` 等。`audit` 只出不进。问进度走 `pipeline_ops`/`query`；「只创建」后再启动走 `start`；失败归因走 `diagnose`（ReAct，知识库本期可空）。
 
 ### respond + memory
 
@@ -169,7 +181,7 @@ checkpointer 只按 `thread_id` 存图状态。用户换会话再问「上次执
 | `status` | 最后已知状态（creating / created / running / …） |
 | `created_at` / `updated_at` | 时间戳 |
 
-`query_run` / `prepare_start` 共用台账消解规则，按顺序尝试：
+`pipeline_ops` 内 resolve / query / start 共用台账消解规则，按顺序尝试：
 
 1. 用户明确给了 pipeline_id 或用例名，直接匹配台账
 2. 说「上次 / 前面那次 / 那几条」，取最近一条所属 task 的全部流水线，逐条 `query` 或 `start`
