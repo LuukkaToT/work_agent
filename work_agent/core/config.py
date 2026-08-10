@@ -36,6 +36,10 @@ class Profile:
     poll_max_attempts: int = 40
     # create 失败不盲目重试（防双建）；start 可同 pipeline_id 重试
     create_retry_attempts: int = 1
+    # 诊断 ReAct
+    react_max_steps: int = 8
+    tool_result_max_chars: int = 8000
+    react_total_chars_budget: int = 40000
 
 
 @dataclass(frozen=True)
@@ -63,6 +67,9 @@ def _load_profile(path: Path) -> Profile:
         poll_interval_seconds=int(data.get("poll_interval_seconds", 30)),
         poll_max_attempts=int(data.get("poll_max_attempts", 40)),
         create_retry_attempts=int(data.get("create_retry_attempts", 1)),
+        react_max_steps=int(data.get("react_max_steps", 8)),
+        tool_result_max_chars=int(data.get("tool_result_max_chars", 8000)),
+        react_total_chars_budget=int(data.get("react_total_chars_budget", 40000)),
     )
 
 

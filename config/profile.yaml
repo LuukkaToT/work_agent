@@ -5,3 +5,6 @@ frequent_topologies:
 poll_interval_seconds: 30
 poll_max_attempts: 40
 create_retry_attempts: 1
+react_max_steps: 8
+tool_result_max_chars: 8000
+react_total_chars_budget: 40000

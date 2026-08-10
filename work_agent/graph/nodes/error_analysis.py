@@ -1,7 +1,7 @@
 """
-error_analysis：受限 ReAct 归因框架。
+error_analysis：受限 ReAct 归因（只读多工具）。
 
-本期：mock fetch_logs + skill 骨架 + 步数上限；不填知识库。
+create/start 不在白名单；知识检索为旁证。
 """
 
 from __future__ import annotations
@@ -9,16 +9,15 @@ from __future__ import annotations
 import json
 from typing import Any, Mapping
 
-from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_core.tools import tool
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 from langgraph.prebuilt import create_react_agent
 from pydantic import BaseModel, Field
 
+from work_agent.core.config import get_settings
 from work_agent.core.llm import get_chat_model
 from work_agent.core.skills import load_skill
-from work_agent.tools.registry import get_log_tool
-
-_MAX_REACT_STEPS = 8
+from work_agent.graph.helpers.diagnose_tools import build_diagnose_tools
+from work_agent.graph.helpers.truncate import CharBudget
 
 
 class ErrorAnalysisOut(BaseModel):
@@ -28,22 +27,54 @@ class ErrorAnalysisOut(BaseModel):
     suggestion: str = Field(description="下一步建议")
 
 
-def _build_fetch_logs_tool():
-    log_tool = get_log_tool()
+def extract_tool_trace(messages: list) -> list[dict[str, Any]]:
+    """从 ReAct 消息里提取 tool 调用轨迹（纯函数，可单测）。"""
+    trace: list[dict[str, Any]] = []
+    for msg in messages or []:
+        if isinstance(msg, AIMessage):
+            for tc in getattr(msg, "tool_calls", None) or []:
+                if isinstance(tc, dict):
+                    name = tc.get("name") or ""
+                    args = tc.get("args") or {}
+                else:
+                    name = getattr(tc, "name", "") or ""
+                    args = getattr(tc, "args", {}) or {}
+                preview = json.dumps(args, ensure_ascii=False)
+                if len(preview) > 200:
+                    preview = preview[:200] + "..."
+                trace.append({"type": "call", "name": name, "args_preview": preview})
+        elif isinstance(msg, ToolMessage):
+            content = getattr(msg, "content", "") or ""
+            if not isinstance(content, str):
+                content = str(content)
+            trace.append(
+                {
+                    "type": "result",
+                    "name": getattr(msg, "name", "") or "",
+                    "content_chars": len(content),
+                }
+            )
+    return trace
 
-    @tool
-    def fetch_logs(pipeline_id: str) -> str:
-        """按 pipeline_id 拉取执行日志（只读）。"""
-        return log_tool.fetch_logs(pipeline_id)
 
-    return fetch_logs
+def _last_text(messages: list) -> str:
+    for msg in reversed(messages or []):
+        content = getattr(msg, "content", None)
+        if isinstance(content, str) and content.strip():
+            return content.strip()
+        if isinstance(content, list):
+            parts = [
+                str(b.get("text", "")) if isinstance(b, dict) else str(b)
+                for b in content
+            ]
+            text = "".join(parts).strip()
+            if text:
+                return text
+    return ""
 
 
 def error_analysis(state: Mapping[str, Any]) -> dict:
-    """
-    对已消解的 pipelines 做受限 ReAct 归因。
-    禁止 create/start；仅白名单 fetch_logs。
-    """
+    """对已消解的 pipelines 做受限 ReAct 归因。"""
     pipelines = list(state.get("pipelines") or [])
     pids = [str(p.get("pipeline_id") or "") for p in pipelines if p.get("pipeline_id")]
     if not pids:
@@ -55,18 +86,28 @@ def error_analysis(state: Mapping[str, Any]) -> dict:
             "audit": [{"step": "error_analysis", "status": "empty"}],
         }
 
+    profile = get_settings().profile
+    react_limit = profile.react_max_steps
+    budget = CharBudget(limit=profile.react_total_chars_budget)
+
     try:
         pack = load_skill("error_analysis")
-        system = pack.as_system_prompt(references={})  # 本期不注入知识库
+        # 知识走 search_knowledge tool，不把 kb 全量塞进 system
+        system = pack.as_system_prompt(references={})
     except FileNotFoundError:
         system = (
-            "你是测试失败归因助手。只能用 fetch_logs 工具读日志。"
-            "禁止编造未读到的日志。最后用中文给出 fail_kind、证据、结论、建议。"
+            "你是测试失败归因助手。只用只读工具取证。"
+            "禁止 create/start。不得编造未读到的日志。"
+            "最后用中文给出 fail_kind、证据、结论、建议。"
         )
 
-    fetch_logs = _build_fetch_logs_tool()
+    tools = build_diagnose_tools(
+        scenario="case_error",
+        budget=budget,
+        tool_result_max_chars=profile.tool_result_max_chars,
+    )
     model = get_chat_model(temperature=0)
-    agent = create_react_agent(model, [fetch_logs], prompt=system)
+    agent = create_react_agent(model, tools, prompt=system)
 
     user_input = state.get("user_input") or ""
     brief = {
@@ -84,37 +125,25 @@ def error_analysis(state: Mapping[str, Any]) -> dict:
         "user_request": user_input,
     }
     human = (
-        "请诊断下列流水线失败/异常原因。先 fetch_logs，再下结论。"
-        "不要调用其它写操作。\n"
+        "请诊断下列流水线失败/异常原因。"
+        "建议顺序：get_pipeline_status → fetch_logs / grep_logs → "
+        "必要时 find_case_history / search_knowledge → 下结论。"
+        "禁止任何写操作。\n"
         + json.dumps(brief, ensure_ascii=False, indent=2)
     )
 
+    tool_trace: list[dict[str, Any]] = []
     try:
         result = agent.invoke(
             {"messages": [HumanMessage(content=human)]},
-            config={"recursion_limit": _MAX_REACT_STEPS},
+            config={"recursion_limit": react_limit},
         )
         messages = result.get("messages") or []
-        last = ""
-        for msg in reversed(messages):
-            content = getattr(msg, "content", None)
-            if isinstance(content, str) and content.strip():
-                last = content.strip()
-                break
-            if isinstance(content, list):
-                parts = [
-                    str(b.get("text", "")) if isinstance(b, dict) else str(b)
-                    for b in content
-                ]
-                text = "".join(parts).strip()
-                if text:
-                    last = text
-                    break
-        analysis_text = last or "未能生成归因结论"
+        tool_trace = extract_tool_trace(messages)
+        analysis_text = _last_text(messages) or "未能生成归因结论"
     except Exception as exc:  # noqa: BLE001
         analysis_text = f"归因过程失败: {exc}"
 
-    # 再压成结构化摘要（失败则兜底）
     structured: dict[str, Any]
     try:
         structured_llm = get_chat_model(temperature=0).with_structured_output(
@@ -154,7 +183,9 @@ def error_analysis(state: Mapping[str, Any]) -> dict:
                 "step": "error_analysis",
                 "pipeline_ids": pids,
                 "fail_kind": structured.get("fail_kind"),
-                "react_limit": _MAX_REACT_STEPS,
+                "react_limit": react_limit,
+                "tool_trace": tool_trace,
+                "budget_used": budget.used,
             }
         ],
     }
