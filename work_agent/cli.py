@@ -73,6 +73,31 @@ def _sessions_table(sessions: list[SessionInfo], *, current: str | None) -> Tabl
     return table
 
 
+def _print_tool_trace(audit: list[dict]) -> None:
+    """-v 时打印 tool_trace（工具名 + 结果字符数）。"""
+    rows: list[tuple[str, str, str]] = []
+    for entry in audit or []:
+        for item in entry.get("tool_trace") or []:
+            kind = str(item.get("type") or "")
+            name = str(item.get("name") or "")
+            if kind == "call":
+                detail = str(item.get("args_preview") or "")
+            elif kind == "result":
+                detail = f"{item.get('content_chars', 0)} chars"
+            else:
+                detail = json.dumps(item, ensure_ascii=False)
+            rows.append((kind, name, detail))
+    if not rows:
+        return
+    table = Table(title="tool_trace", show_header=True, header_style="bold")
+    table.add_column("type")
+    table.add_column("name")
+    table.add_column("detail")
+    for kind, name, detail in rows:
+        table.add_row(kind, name, detail)
+    console.print(table)
+
+
 def _print_result(result: dict, *, verbose: bool = False) -> None:
     """主体是 reply；路径类信息作为附属行；调试信息只在 -v 下出现。"""
     summary = result.get("summary") or {}
@@ -97,7 +122,8 @@ def _print_result(result: dict, *, verbose: bool = False) -> None:
         console.print("[dim]" + "\n".join(refs) + "[/dim]")
 
     if verbose:
-        steps = [a.get("step") for a in (result.get("audit") or []) if a.get("step")]
+        audit = result.get("audit") or []
+        steps = [a.get("step") for a in audit if a.get("step")]
         console.print(
             Panel(
                 "\n".join(
@@ -113,6 +139,64 @@ def _print_result(result: dict, *, verbose: bool = False) -> None:
                 border_style="grey50",
             )
         )
+        _print_tool_trace(audit)
+
+
+class _RunStatus:
+    """Rich status 桥：节点/工具进度；HITL 前停 spinner。"""
+
+    def __init__(self) -> None:
+        self._status = None
+
+    def start(self, text: str = "执行中 · …") -> None:
+        if self._status is not None:
+            self._status.update(text)
+            return
+        self._status = console.status(text, spinner="dots")
+        self._status.start()
+
+    def stop(self) -> None:
+        if self._status is not None:
+            self._status.stop()
+            self._status = None
+
+    def on_event(self, message: str) -> None:
+        if message.startswith("node:"):
+            self.start(f"执行中 · {message[5:]}")
+        elif message.startswith("tool:"):
+            name = message[5:]
+            console.print(f"[dim]tool · {name}[/dim]")
+            self.start(f"执行中 · tool/{name}")
+        elif message == "status:waiting_input":
+            self.stop()
+        elif message.startswith("status:"):
+            self.start(f"执行中 · {message[7:]}")
+
+
+def _ask_with_status(bridge: _RunStatus, payloads: list[Any]) -> str:
+    """HITL：先停状态条，再提问。"""
+    bridge.stop()
+    return _ask(payloads)
+
+
+def _run_turn_with_status(
+    text: str,
+    *,
+    thread_id: str | None,
+) -> dict:
+    """包一层 status spinner，再调用 run_turn。"""
+    bridge = _RunStatus()
+    bridge.start("执行中 · …")
+    try:
+        return run_turn(
+            text,
+            thread_id=thread_id,
+            ask=lambda payloads: _ask_with_status(bridge, payloads),
+            with_checkpoint=True,
+            on_event=bridge.on_event,
+        )
+    finally:
+        bridge.stop()
 
 
 def _render_interrupt(payloads: list[Any]) -> str:
@@ -181,13 +265,27 @@ def _ask(payloads: list[Any]) -> str:
     return console.input("[bold yellow]>[/] ").strip()
 
 
-def _switch_session(tid: str) -> str:
+def _resume_with_status(tid: str) -> dict | None:
+    """续跑 pending HITL，带 status spinner。"""
+    bridge = _RunStatus()
+    bridge.start("执行中 · …")
+    try:
+        return resume_pending(
+            tid,
+            ask=lambda payloads: _ask_with_status(bridge, payloads),
+            on_event=bridge.on_event,
+        )
+    finally:
+        bridge.stop()
+
+
+def _switch_session(tid: str, *, verbose: bool = False) -> str:
     """切换 thread；若有未完成 HITL，先续跑。"""
     console.print(f"[dim]已切换到会话 {tid}[/dim]")
     if get_pending_interrupts(tid):
         console.print("[yellow]该会话有未完成的确认，请先答完。[/yellow]")
         try:
-            result = resume_pending(tid, ask=_ask)
+            result = _resume_with_status(tid)
         except (EOFError, KeyboardInterrupt):
             console.print("\n[dim]已取消续跑，仍停在该会话[/dim]")
             return tid
@@ -195,11 +293,13 @@ def _switch_session(tid: str) -> str:
             console.print(f"[red]续跑失败:[/] {exc}")
             return tid
         if result is not None:
-            _print_result(result)
+            _print_result(result, verbose=verbose)
     return tid
 
 
-def _handle_slash(text: str, tid: str) -> tuple[str, bool]:
+def _handle_slash(
+    text: str, tid: str, *, verbose: bool = False
+) -> tuple[str, bool]:
     """
     处理斜杠命令。
     返回 (thread_id, handled)；handled=True 表示本行已消费，不再 run_turn。
@@ -226,7 +326,7 @@ def _handle_slash(text: str, tid: str) -> tuple[str, bool]:
                     f"[dim]会话 {pick} 尚无历史，将作为新 thread 使用[/dim]"
                 )
                 return pick, True
-            return _switch_session(pick), True
+            return _switch_session(pick, verbose=verbose), True
 
         if not sessions:
             console.print("[dim]还没有历史会话。可继续聊天，或 /new 显式开新会话。[/dim]")
@@ -245,7 +345,7 @@ def _handle_slash(text: str, tid: str) -> tuple[str, bool]:
         if pick is None:
             console.print("[red]无效选择[/red]")
             return tid, True
-        return _switch_session(pick), True
+        return _switch_session(pick, verbose=verbose), True
 
     if lower.startswith("/"):
         console.print("[dim]未知命令。可用：/session  /new  quit[/dim]")
@@ -270,7 +370,7 @@ def _repl(thread_id: str | None, *, verbose: bool = False) -> None:
     )
     # -t 指定已有会话且停在 HITL 时，先进续跑
     if thread_id and get_pending_interrupts(tid):
-        tid = _switch_session(tid)
+        tid = _switch_session(tid, verbose=verbose)
 
     while True:
         try:
@@ -288,12 +388,12 @@ def _repl(thread_id: str | None, *, verbose: bool = False) -> None:
             )
             break
 
-        tid, handled = _handle_slash(text, tid)
+        tid, handled = _handle_slash(text, tid, verbose=verbose)
         if handled:
             continue
 
         try:
-            result = run_turn(text, thread_id=tid, ask=_ask, with_checkpoint=True)
+            result = _run_turn_with_status(text, thread_id=tid)
         except (EOFError, KeyboardInterrupt):
             console.print("\n[dim]已中断本轮[/dim]")
             continue
@@ -338,7 +438,7 @@ def ask(
         thread_id: 可选固定会话 id。
         verbose: True 时额外打印 debug 面板。
     """
-    result = run_turn(text, thread_id=thread_id, ask=_ask, with_checkpoint=True)
+    result = _run_turn_with_status(text, thread_id=thread_id)
     _print_result(result, verbose=verbose)
 
 

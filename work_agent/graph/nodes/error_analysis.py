@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 from typing import Any, Mapping
 
+from langchain_core.callbacks import BaseCallbackHandler
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 from langgraph.prebuilt import create_react_agent
 from pydantic import BaseModel, Field
@@ -27,7 +28,19 @@ from work_agent.graph.helpers.context_budget import (
     compress_observation,
 )
 from work_agent.graph.helpers.diagnose_tools import build_diagnose_tools
+from work_agent.graph.helpers.progress import report_progress
 from work_agent.graph.helpers.truncate import CharBudget
+
+
+class _DiagnoseProgressCallback(BaseCallbackHandler):
+    """ReAct 循环中上报 tool / thinking，供 CLI 状态条使用。"""
+
+    def on_tool_start(self, serialized, input_str, **kwargs):  # noqa: ANN001
+        name = (serialized or {}).get("name") or "tool"
+        report_progress(f"tool:{name}")
+
+    def on_chat_model_start(self, serialized, messages, **kwargs):  # noqa: ANN001
+        report_progress("status:thinking")
 
 
 class RuledOutItem(BaseModel):
@@ -181,7 +194,10 @@ def error_analysis(state: Mapping[str, Any]) -> dict:
     try:
         result = agent.invoke(
             {"messages": [HumanMessage(content=human)]},
-            config={"recursion_limit": react_limit},
+            config={
+                "recursion_limit": react_limit,
+                "callbacks": [_DiagnoseProgressCallback()],
+            },
         )
         messages = result.get("messages") or []
         tool_trace = extract_tool_trace(messages)
