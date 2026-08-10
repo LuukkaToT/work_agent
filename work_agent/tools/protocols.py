@@ -44,15 +44,15 @@ class PipelineTool(Protocol):
 
     def query(self, pipeline_id: str) -> PipelineResult: ...
 
-
 @runtime_checkable
 class LogTool(Protocol):
-    """只读拉日志；供 error_analysis ReAct 使用。"""
+    """只读拉日志 / 检索日志；供 error_analysis ReAct 使用。"""
 
-    def fetch_logs(self, 
-    pipeline_id: str,
-    *,
-    tail_lines:int|None = 200,
+    def fetch_logs(
+        self,
+        pipeline_id: str,
+        *,
+        tail_lines: int | None = 200,
     ) -> str:
         """
         拉取日志。
@@ -60,14 +60,17 @@ class LogTool(Protocol):
         返回文本第一行建议带 [log meta] ...
         """
         ...
+
     def grep_logs(
         self,
-        pipeline_id:str,
-        pattern:str,
+        pipeline_id: str,
+        pattern: str,
         *,
-        context_lines:int = 3
-        max_matches:int = 20
-    )
+        context_lines: int = 3,
+        max_matches: int = 20,
+    ) -> str:
+        """在全文上按正则/关键词检索，带上下文行。"""
+        ...
 
 
 @runtime_checkable
@@ -75,3 +78,14 @@ class CaseSheetTool(Protocol):
     """读本地用例表（xlsx/csv）为表头+行。"""
 
     def read(self, path: str) -> SheetTable: ...
+
+@runtime_checkable
+class KnowledgeSearchTool(Protocol):
+    """
+    只读知识检索；诊断时作旁证，不替代日志证据。
+    real 侧对接内网 w3_search_tool MCP；mock 读本地故障 kb。
+    """
+
+    def search(self, query: str, *, top_k: int = 3) -> str:
+        """返回可读检索摘要（供 LLM 用）。"""
+        ...

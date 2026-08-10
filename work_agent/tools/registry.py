@@ -20,6 +20,7 @@ from work_agent.tools.mock import (
     MockLogTool,
     MockPipelineTool,
     MockScenario,
+    MockKnowledgeSearchTool,
 )
 from work_agent.tools.protocols import CaseProvider, CaseSheetTool, LogTool, PipelineTool
 
@@ -73,3 +74,16 @@ def get_log_tool(scenario: MockScenario = "case_error") -> LogTool:
 def get_case_sheet_tool() -> CaseSheetTool:
     """读本地表：mock/real 共用 LocalCaseSheetTool（确定性 I/O）。"""
     return LocalCaseSheetTool()
+
+
+@lru_cache(maxsize=1)
+def get_knowledge_search_tool() -> KnowledgeSearchTool:
+    backend = get_settings().tool_backend
+    if backend == "mock":
+        return MockKnowledgeSearchTool()
+    if backend == "real":
+        from work_agent.tools.real.knowledge import RealKnowledgeSearchTool
+        return RealKnowledgeSearchTool()
+    raise NotImplementedError(
+        f"TOOL_BACKEND={backend!r} 尚未实现，请先用 mock 或 real"
+    )
