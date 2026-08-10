@@ -5,7 +5,7 @@ Skill = markdown 角色包（不是 tool，也不是子图）。
   skills/<name>/
     SKILL.md          # 角色定义 + 方法论
     template.md       # 输出结构模板
-    references/*.md   # 业务/规格资料（现阶段全量注入，不做 RAG）
+    references/*.md   # 业务/规格资料（select_references 按 query 检索注入）
 
 load_skill("test_analysis") → 拼成 system prompt，交给同一个大模型，
 相当于「加载了测试分析角色」。
@@ -17,6 +17,11 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from work_agent.core.config import project_root
+from work_agent.core.retrieval import (
+    HybridRetriever,
+    chunk_markdown,
+    hits_to_reference_dict,
+)
 
 
 @dataclass
@@ -102,19 +107,38 @@ class SkillLoader:
             references=refs,
         )
 
-    def select_references(self, pack: SkillPack, query: str) -> dict[str, str]:
+    def select_references(
+        self,
+        pack: SkillPack,
+        query: str,
+        *,
+        top_k: int = 3,
+        use_embeddings: bool = False,
+    ) -> dict[str, str]:
         """
-        资料筛选钩子（现阶段全量返回）。
-
-        参数:
-            pack: 已加载的 skill。
-            query: 用户问题（预留检索用）。
-
-        返回:
-            文件名 → 正文 的资料 dict。
+        按 query 混合检索 references（BM25∥Embedding→RRF）。
+        无资料或无命中时返回空 dict（不把全量灌进 prompt）。
         """
-        _ = query  # 预留：将来按 query 过滤
-        return dict(pack.references)
+        if not pack.references:
+            return {}
+        q = (query or "").strip()
+        if not q:
+            # 无 query 时保守：最多塞一篇最短的，避免全量
+            items = sorted(pack.references.items(), key=lambda x: len(x[1]))
+            name, body = items[0]
+            return {name: body}
+
+        chunks = []
+        for name, body in pack.references.items():
+            chunks.extend(chunk_markdown(body, source=name))
+        if not chunks:
+            return {}
+
+        retriever = HybridRetriever(chunks, use_embeddings=use_embeddings)
+        hits = retriever.search(q, top_k=top_k, pool_n=20, min_rrf_score=0.01)
+        if not hits:
+            return {}
+        return hits_to_reference_dict(hits)
 
 
 def load_skill(name: str) -> SkillPack:

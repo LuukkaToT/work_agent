@@ -172,9 +172,15 @@ def append_audit(old, new):
 
 三层防线。第一，**结构化输出**：路由和参数抽取都用 `with_structured_output` 绑定 Pydantic schema，模型只能吐 schema 内的字段，不能自由发挥。第二，**代码校验**：抽出来的版本号必须在 `27B/27A/26B/26A` 枚举里、环境必须匹配 IP 正则，不合法就标记为缺失去反问用户，而不是让模型自圆其说。第三，**输出侧约束**：`respond` 把 pipeline_id、用例名、路径这些引用性信息以 JSON「事实卡片」交给模型，prompt 里明确要求「只能引用给定事实，一个字符都不要改」，并且事实卡片里没有的东西不许提。另外 `respond` 是必经节点，LLM 抖动不能让整轮失败，所以有确定性的 `_fallback_reply` 兜底。
 
-**Q8：多轮对话的记忆怎么处理的？**
+**Q8：多轮对话的记忆 / 上下文工程怎么处理的？**
 
-分三层看。完整对话由 checkpointer 全量持久化，不丢；关键事实（pipeline_id、用例、版本、环境、状态）落在 SQLite 台账里，跨会话可查——所以「上次那条怎么样了」走的是台账，跟对话窗口无关。喂给 LLM 的上下文才是有限的：默认注入最近 8 条，超过 12 条时 `memory` 节点会把窗口外的旧消息用 LLM 压成一段摘要存进会话级的 `dialogue_summary`，并用 `RemoveMessage` 把旧消息裁掉，之后注入的是「历史摘要 + 最近 8 条」。摘要 prompt 里要求用例名、pipeline_id 这类引用性事实原文保留。
+分多层。完整对话由 checkpointer 全量持久化；关键事实落 SQLite 台账。喂给 LLM 的才做裁剪：
+
+1. 最近 N 条（`memory_keep_recent`，默认 8）+ 更早滚动 `dialogue_summary`
+2. 诊断路径：原始日志不进主图 `messages`，只回写 evidence / 结论 / `ruled_out`
+3. Tool observation 经 `compress_observation` 提炼后再进二次结构化抽取
+4. 本地混合 RAG（BM25∥Embedding→RRF→top_k，可降级纯 BM25）；低分不灌
+5. 超预算时 `assemble_blocks` 按优先级裁剪：结论 > evidence > ruled_out > RAG > 原始 tool 摘录
 
 **Q9：为什么把参数校验放在代码里，而不是让模型自己判断？**
 
@@ -246,9 +252,10 @@ flowchart TD
 | ---------------- | ------------------------------ | ----------------------------------------------- |
 | 逻辑组网未支持          | 只支持物理 IP；型号映射表（86 是 BBH 等）还没拿到 | 拿到映射 markdown 后加解析层，识别「85+86 环境」这类说法            |
 | 用例分析 tool 是 mock | 公司侧接口未就绪                       | Protocol 已定义，接入只需写 real 实现                      |
-| 无失败归因            | MVP 边界划在「创建并启动流水线」，结果用户去流水线前端看 | Phase 2 做归因 Role（版本问题 / 用例异常 / 环境异常三分类）         |
+| 无失败归因            | 已有受限 ReAct `error_analysis`（只读工具 + evidence/ruled_out） | 继续接真实日志 API / w3 MCP 检索 |
 | 单用户 CLI          | 当前是个人效率工具                      | 图不用改，换 checkpointer 和台账存储即可服务化                  |
-| 无 RAG            | 资料量小，全量注入准确率更高、无检索误差           | `SkillLoader.select_references` 已留钩子，资料变多时换检索实现 |
+| RAG 默认关 embedding | 离线/单测默认纯 BM25；`rag_use_embeddings` 可开 | 内网 embedding 端点稳定后再默认打开 |
+| MCP 仅 Client 规划   | 已实现 `RealKnowledgeSearchTool` + `work_agent/mcp/w3_client.py`；未配置时返回提示字符串 | 配置 `W3_MCP_*` 指向公司 w3_search |
 | 摘要质量依赖 LLM       | 压缩可能丢细节                        | 关键事实已落台账，摘要只影响指代消解；必要时改成结构化摘要                   |
 
 

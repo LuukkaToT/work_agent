@@ -55,9 +55,11 @@ skills/
       256T_downlink.md
 ```
 
-`load_skill("test_analysis")` 把 `SKILL.md` + `template.md` + `references/*.md` 全量拼进 system prompt。
+`load_skill("test_analysis")` 把 `SKILL.md` + `template.md` + `select_references` 检索到的资料拼进 system prompt。
 
-**现阶段不做 RAG**：资料量小，全量注入准确率更高、无检索误差。`SkillLoader` 预留 `select_references(query)` 钩子，将来资料变多换检索实现，调用方不改。
+**本地混合 RAG**：[`retrieval.py`](../work_agent/core/retrieval.py) 对 markdown 切块，BM25∥Embedding→RRF→top_k（可降级纯 BM25）；供 mock 知识检索与 skill references。
+
+**公司 w3 MCP Client**：`TOOL_BACKEND=real` 时 `RealKnowledgeSearchTool` 经 [`w3_client.py`](../work_agent/mcp/w3_client.py) 调用 `w3_search`（stdio 或 streamable HTTP）。未配置 `W3_MCP_*` 或调用失败时返回错误字符串，不打断诊断主路径。
 
 产物落盘保证可追溯：
 

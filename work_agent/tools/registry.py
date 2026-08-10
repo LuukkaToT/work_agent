@@ -118,7 +118,10 @@ def get_knowledge_search_tool() -> KnowledgeSearchTool:
     """
     backend = get_settings().tool_backend
     if backend == "mock":
-        return MockKnowledgeSearchTool()
+        profile = get_settings().profile
+        return MockKnowledgeSearchTool(
+            use_embeddings=bool(profile.rag_use_embeddings)
+        )
     if backend == "real":
         from work_agent.tools.real.knowledge import RealKnowledgeSearchTool
         return RealKnowledgeSearchTool()

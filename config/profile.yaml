@@ -8,3 +8,9 @@ create_retry_attempts: 1
 react_max_steps: 8
 tool_result_max_chars: 8000
 react_total_chars_budget: 40000
+memory_summary_threshold: 12
+memory_keep_recent: 8
+rag_top_k: 3
+rag_pool_n: 20
+rag_min_rrf_score: 0.01
+rag_use_embeddings: false

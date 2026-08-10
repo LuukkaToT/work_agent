@@ -9,14 +9,10 @@ from __future__ import annotations
 
 from langchain_core.messages import HumanMessage, RemoveMessage, SystemMessage
 
+from work_agent.core.config import get_settings
 from work_agent.core.llm import invoke_text
 from work_agent.graph.helpers.context import dialogue_text
 from work_agent.graph.state import TestFlowState
-
-# 超过此条数才触发摘要（含本轮刚追加的 AIMessage）
-_SUMMARY_THRESHOLD = 12
-# 摘要后 state.messages 只保留最近这么多条
-_KEEP_RECENT = 8
 
 _SYSTEM = """你是对话摘要器。把给定的旧对话压缩成不超过 10 行的中文摘要。
 
@@ -37,8 +33,12 @@ def memory(state: TestFlowState) -> dict:
     返回:
         未超阈值或失败时仅写 audit；成功时写 ``dialogue_summary`` 与删除旧消息。
     """
+    profile = get_settings().profile
+    summary_threshold = profile.memory_summary_threshold
+    keep_recent = profile.memory_keep_recent
+
     messages = list(state.get("messages") or [])
-    if len(messages) <= _SUMMARY_THRESHOLD:
+    if len(messages) <= summary_threshold:
         return {
             "audit": [
                 {
@@ -50,7 +50,7 @@ def memory(state: TestFlowState) -> dict:
             ]
         }
 
-    old = messages[:-_KEEP_RECENT]
+    old = messages[:-keep_recent]
     existing = str(state.get("dialogue_summary") or "").strip()
     old_text = dialogue_text(old, n=len(old))
 
@@ -60,7 +60,7 @@ def memory(state: TestFlowState) -> dict:
         human_parts.append(existing)
         human_parts.append("")
     human_parts.append("【需要并入摘要的旧对话】")
-    human_parts.append(old_text or "(无)")
+    human_parts.append(old_text or "(空)")
 
     try:
         summary = invoke_text(
@@ -107,7 +107,7 @@ def memory(state: TestFlowState) -> dict:
             {
                 "step": "memory",
                 "removed": len(removals),
-                "kept": _KEEP_RECENT,
+                "kept": keep_recent,
                 "summary_chars": len(summary.strip()),
             }
         ],

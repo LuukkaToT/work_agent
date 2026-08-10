@@ -40,6 +40,14 @@ class Profile:
     react_max_steps: int = 8
     tool_result_max_chars: int = 8000
     react_total_chars_budget: int = 40000
+    # 对话记忆
+    memory_summary_threshold: int = 12
+    memory_keep_recent: int = 8
+    # 检索
+    rag_top_k: int = 3
+    rag_pool_n: int = 20
+    rag_min_rrf_score: float = 0.01
+    rag_use_embeddings: bool = False
 
 
 @dataclass(frozen=True)
@@ -73,6 +81,12 @@ def _load_profile(path: Path) -> Profile:
         react_max_steps=int(data.get("react_max_steps", 8)),
         tool_result_max_chars=int(data.get("tool_result_max_chars", 8000)),
         react_total_chars_budget=int(data.get("react_total_chars_budget", 40000)),
+        memory_summary_threshold=int(data.get("memory_summary_threshold", 12)),
+        memory_keep_recent=int(data.get("memory_keep_recent", 8)),
+        rag_top_k=int(data.get("rag_top_k", 3)),
+        rag_pool_n=int(data.get("rag_pool_n", 20)),
+        rag_min_rrf_score=float(data.get("rag_min_rrf_score", 0.01)),
+        rag_use_embeddings=bool(data.get("rag_use_embeddings", False)),
     )
 
 
