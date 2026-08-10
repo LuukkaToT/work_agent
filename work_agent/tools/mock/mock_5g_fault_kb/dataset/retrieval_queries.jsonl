@@ -1,0 +1,6 @@
+{"query": "小区加载失败，前面出现 RAT_NOT_READY，应该继续查什么？", "expected_docs": ["kb/03_rat_load_faults.md", "kb/04_cell_load_faults.md"]}
+{"query": "COMM connection refused 后 RAT timeout，根因应该归哪一层？", "expected_docs": ["kb/02_comm_load_faults.md"]}
+{"query": "AW unresolved placeholder 会不会导致后续 RAT 配置失败？", "expected_docs": ["kb/01_aw_script_faults.md"]}
+{"query": "RAT 配置 bandwidth 不支持，CELL activation failed 怎么判断级联？", "expected_docs": ["kb/03_rat_load_faults.md", "kb/00_diagnosis_method.md"]}
+{"query": "RRCSetupComplete 一直没收到，能否直接判断物理层故障？", "expected_docs": ["kb/05_rach_rrc_faults.md"]}
+{"query": "TCP 已连接但 handshake rejected，应该查网络还是版本？", "expected_docs": ["kb/06_version_dependency_faults.md", "kb/02_comm_load_faults.md"]}

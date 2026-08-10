@@ -1,0 +1,9 @@
+2026-08-10 09:31:00.000 [CASE] [INFO] testcase=NR_DL_TPUT_003 start
+2026-08-10 09:31:00.018 [AW] [INFO] config generated band=n78 bandwidth=120 numerology=1
+2026-08-10 09:31:00.150 [COMM] [INFO] handshake success
+2026-08-10 09:31:00.151 [COMM] [INFO] state=READY
+2026-08-10 09:31:00.280 [RAT] [INFO] validating NR profile
+2026-08-10 09:31:00.282 [RAT] [ERROR] NR profile validation failed: band=n78 bandwidth=120MHz allowed=[20,40,50,60,80,100]
+2026-08-10 09:31:00.283 [RAT] [ERROR] RAT_CONFIG_REJECTED field=bandwidth value=120
+2026-08-10 09:31:00.290 [CELL] [ERROR] activate NR_CELL_0 failed: RAT_NOT_READY
+2026-08-10 09:31:00.292 [CASE] [ERROR] testcase aborted during setup

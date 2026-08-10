@@ -1,0 +1,10 @@
+{"case_id": "case001", "file": "logs/case001_aw_missing_band.log", "top_symptom": "CELL load failed", "fault_domain": "AW_CONFIG", "difficulty": "easy"}
+{"case_id": "case002", "file": "logs/case002_comm_connection_refused.log", "top_symptom": "RAT load timeout / CELL skipped", "fault_domain": "COMM_CONNECTIVITY", "difficulty": "easy"}
+{"case_id": "case003", "file": "logs/case003_rat_invalid_bandwidth.log", "top_symptom": "CELL activation failed", "fault_domain": "RAT_CONFIG", "difficulty": "easy"}
+{"case_id": "case004", "file": "logs/case004_cell_duplicate_pci.log", "top_symptom": "CELL batch activation aborted", "fault_domain": "CELL_CONFIG", "difficulty": "easy"}
+{"case_id": "case005", "file": "logs/case005_rat_process_not_ready.log", "top_symptom": "RAT ready timeout", "fault_domain": "RAT_RUNTIME", "difficulty": "medium"}
+{"case_id": "case006", "file": "logs/case006_rach_profile_mismatch.log", "top_symptom": "UE attach failed", "fault_domain": "UE_RACH_CONFIG", "difficulty": "medium"}
+{"case_id": "case007", "file": "logs/case007_rrc_setup_incomplete.log", "top_symptom": "UE connection failed", "fault_domain": "RRC", "difficulty": "medium"}
+{"case_id": "case008", "file": "logs/case008_version_mismatch.log", "top_symptom": "COMM handshake failed", "fault_domain": "VERSION_COMPATIBILITY", "difficulty": "easy"}
+{"case_id": "case009", "file": "logs/case009_aw_unknown_action.log", "top_symptom": "script validation failed", "fault_domain": "AW_SCRIPT", "difficulty": "easy"}
+{"case_id": "case010", "file": "logs/case010_cell_activation_timeout.log", "top_symptom": "CELL activation timeout", "fault_domain": "RADIO_SYNC", "difficulty": "medium"}

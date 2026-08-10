@@ -1,0 +1,11 @@
+2026-08-10 09:20:10.001 [CASE] [INFO] testcase=NR_ATTACH_002 start
+2026-08-10 09:20:10.013 [AW] [INFO] render config success
+2026-08-10 09:20:10.100 [COMM] [INFO] connect endpoint=10.10.7.21:19090
+2026-08-10 09:20:10.103 [COMM] [ERROR] connect 10.10.7.21:19090 failed: connection refused
+2026-08-10 09:20:11.105 [COMM] [WARN] retry connect attempt=2/3
+2026-08-10 09:20:11.108 [COMM] [ERROR] connect failed: connection refused
+2026-08-10 09:20:13.111 [COMM] [ERROR] state INIT -> FAILED
+2026-08-10 09:20:13.120 [RAT] [WARN] wait dependency COMM ready attempt=1/2
+2026-08-10 09:20:18.123 [RAT] [ERROR] RAT_LOAD_TIMEOUT dependency=COMM
+2026-08-10 09:20:18.125 [CELL] [ERROR] load skipped: RAT_NOT_READY
+2026-08-10 09:20:18.130 [CASE] [ERROR] setup failed

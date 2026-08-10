@@ -1,0 +1,9 @@
+2026-08-10 10:40:00.001 [CASE] [INFO] testcase=NR_CELL_BASIC_008 start
+2026-08-10 10:40:00.020 [AW] [INFO] runtime_version=4.8 config_schema=v12
+2026-08-10 10:40:00.100 [COMM] [INFO] TCP connected endpoint=10.10.8.30:19090
+2026-08-10 10:40:00.105 [COMM] [INFO] handshake begin client_protocol=4.8
+2026-08-10 10:40:00.110 [COMM] [ERROR] protocol version mismatch client=4.8 server=4.6
+2026-08-10 10:40:00.111 [COMM] [ERROR] handshake rejected
+2026-08-10 10:40:00.200 [RAT] [ERROR] RAT_LOAD_TIMEOUT dependency=COMM
+2026-08-10 10:40:00.205 [CELL] [ERROR] load failed: RAT_NOT_READY
+2026-08-10 10:40:00.210 [CASE] [ERROR] setup failed

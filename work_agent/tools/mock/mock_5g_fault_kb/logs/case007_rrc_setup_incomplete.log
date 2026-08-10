@@ -1,0 +1,10 @@
+2026-08-10 10:24:00.001 [CASE] [INFO] testcase=NR_RRC_007 start
+2026-08-10 10:24:00.200 [COMM] [INFO] state=READY
+2026-08-10 10:24:00.400 [RAT] [INFO] state=READY
+2026-08-10 10:24:00.700 [CELL] [INFO] NR_CELL_0 state=ACTIVE
+2026-08-10 10:24:01.100 [UE] [INFO] random access success temp_id=0x1a31
+2026-08-10 10:24:01.180 [RRC] [INFO] RRCSetup sent ue=0x1a31 transaction=1
+2026-08-10 10:24:02.500 [RRC] [WARN] waiting RRCSetupComplete ue=0x1a31
+2026-08-10 10:24:04.181 [RRC] [ERROR] RRCSetupComplete not received before timeout ue=0x1a31
+2026-08-10 10:24:04.185 [RRC] [ERROR] RRC establishment incomplete
+2026-08-10 10:24:04.190 [CASE] [ERROR] UE connection failed

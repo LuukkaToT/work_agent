@@ -13,5 +13,7 @@ build/
 .idea/
 .vscode/
 *.log
+!work_agent/tools/mock/mock_5g_fault_kb/logs/
+!work_agent/tools/mock/mock_5g_fault_kb/logs/**/*.log
 .DS_Store
 workspace/

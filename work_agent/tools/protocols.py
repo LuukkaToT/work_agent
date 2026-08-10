@@ -49,7 +49,25 @@ class PipelineTool(Protocol):
 class LogTool(Protocol):
     """只读拉日志；供 error_analysis ReAct 使用。"""
 
-    def fetch_logs(self, pipeline_id: str) -> str: ...
+    def fetch_logs(self, 
+    pipeline_id: str,
+    *,
+    tail_lines:int|None = 200,
+    ) -> str:
+        """
+        拉取日志。
+        tail_lines=None 返回全文；否则只返回尾部 N 行。
+        返回文本第一行建议带 [log meta] ...
+        """
+        ...
+    def grep_logs(
+        self,
+        pipeline_id:str,
+        pattern:str,
+        *,
+        context_lines:int = 3
+        max_matches:int = 20
+    )
 
 
 @runtime_checkable

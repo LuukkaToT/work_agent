@@ -56,11 +56,11 @@ def get_pipeline_tool(scenario: MockScenario = "all_pass") -> PipelineTool:
     )
 
 
-@lru_cache(maxsize=1)
-def get_log_tool() -> LogTool:
+@lru_cache(maxsize=8)
+def get_log_tool(scenario: MockScenario = "case_error") -> LogTool:
     backend = get_settings().tool_backend
     if backend == "mock":
-        return MockLogTool()
+        return MockLogTool(scenario=scenario)
     if backend == "real":
         from work_agent.tools.real.logs import RealLogTool
 
@@ -68,7 +68,6 @@ def get_log_tool() -> LogTool:
     raise NotImplementedError(
         f"TOOL_BACKEND={backend!r} 尚未实现，请先用 mock 或 real"
     )
-
 
 @lru_cache(maxsize=1)
 def get_case_sheet_tool() -> CaseSheetTool:

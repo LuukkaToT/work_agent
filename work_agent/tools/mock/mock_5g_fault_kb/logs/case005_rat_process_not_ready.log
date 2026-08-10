@@ -1,0 +1,11 @@
+2026-08-10 09:55:20.001 [CASE] [INFO] testcase=NR_BASIC_005 start
+2026-08-10 09:55:20.015 [AW] [INFO] config generated successfully
+2026-08-10 09:55:20.100 [COMM] [INFO] state=READY
+2026-08-10 09:55:20.210 [RAT] [INFO] config validation passed
+2026-08-10 09:55:20.212 [RAT] [INFO] state INIT -> STARTING
+2026-08-10 09:55:20.800 [RAT-MGR] [WARN] module=nr_scheduler state=STARTING
+2026-08-10 09:55:21.000 [SYS] [WARN] unrelated metric collector retry timeout
+2026-08-10 09:55:24.810 [RAT-MGR] [ERROR] module=nr_scheduler init failed reason="resource pool unavailable"
+2026-08-10 09:55:50.215 [RAT] [ERROR] wait state READY timeout after 30s
+2026-08-10 09:55:50.220 [CELL] [ERROR] load NR_CELL_0 failed: RAT_NOT_READY
+2026-08-10 09:55:50.225 [CASE] [ERROR] setup failed

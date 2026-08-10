@@ -1,0 +1,10 @@
+2026-08-10 11:05:00.001 [CASE] [INFO] testcase=NR_CELL_ACTIVE_010 start
+2026-08-10 11:05:00.100 [COMM] [INFO] state=READY
+2026-08-10 11:05:00.300 [RAT] [INFO] state=READY
+2026-08-10 11:05:00.500 [CELL] [INFO] create NR_CELL_0 success
+2026-08-10 11:05:00.510 [CELL] [INFO] activate NR_CELL_0 request_id=8721
+2026-08-10 11:05:01.011 [RADIO] [WARN] wait sync source state=ACQUIRING
+2026-08-10 11:05:03.014 [RADIO] [ERROR] sync source unavailable clock_state=UNLOCKED
+2026-08-10 11:05:15.515 [CELL] [ERROR] wait ACTIVE timeout cell=NR_CELL_0 after=15s
+2026-08-10 11:05:15.520 [CASE] [ERROR] setup failed
+2026-08-10 11:05:15.530 [CLEANUP] [WARN] deactivate ignored: cell already inactive

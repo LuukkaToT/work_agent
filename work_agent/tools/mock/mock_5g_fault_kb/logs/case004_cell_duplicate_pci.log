@@ -1,0 +1,9 @@
+2026-08-10 09:42:12.001 [CASE] [INFO] testcase=NR_TWO_CELL_004 start
+2026-08-10 09:42:12.020 [AW] [INFO] config generated cells=2
+2026-08-10 09:42:12.100 [COMM] [INFO] state=READY
+2026-08-10 09:42:12.300 [RAT] [INFO] state=READY
+2026-08-10 09:42:12.401 [CELL] [INFO] create NR_CELL_0 pci=101 success
+2026-08-10 09:42:12.404 [CELL] [INFO] create NR_CELL_1 pci=101
+2026-08-10 09:42:12.405 [CELL] [ERROR] duplicate PCI detected: pci=101 cells=[NR_CELL_0,NR_CELL_1]
+2026-08-10 09:42:12.407 [CELL] [ERROR] batch activation aborted
+2026-08-10 09:42:12.410 [CASE] [ERROR] setup failed

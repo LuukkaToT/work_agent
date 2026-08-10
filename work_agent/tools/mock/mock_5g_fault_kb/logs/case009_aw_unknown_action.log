@@ -1,0 +1,7 @@
+2026-08-10 10:52:00.001 [CASE] [INFO] testcase=NR_HO_009 start
+2026-08-10 10:52:00.010 [AW] [INFO] parse testcase steps count=7
+2026-08-10 10:52:00.012 [AW] [INFO] step[1]=load_env
+2026-08-10 10:52:00.013 [AW] [INFO] step[2]=load_rat
+2026-08-10 10:52:00.014 [AW] [ERROR] step[3] unknown action "activate_nr_cells_v2"
+2026-08-10 10:52:00.015 [AW] [ERROR] handler not found action=activate_nr_cells_v2
+2026-08-10 10:52:00.016 [CASE] [ERROR] testcase script validation failed

@@ -1,0 +1,9 @@
+2026-08-10 09:10:01.008 [CASE] [INFO] testcase=NR_CELL_BASIC_001 start
+2026-08-10 09:10:01.015 [AW] [INFO] parse testcase config success
+2026-08-10 09:10:01.018 [AW] [INFO] render template profile=nr_basic
+2026-08-10 09:10:01.020 [AW] [ERROR] unresolved placeholder: ${CELL_BAND}
+2026-08-10 09:10:01.021 [AW] [ERROR] required parameter "cell.band" is empty
+2026-08-10 09:10:01.110 [COMM] [INFO] state=READY
+2026-08-10 09:10:01.220 [RAT] [ERROR] RAT_CONFIG_REJECTED field=band reason="required field missing"
+2026-08-10 09:10:01.224 [CELL] [ERROR] load NR_CELL_0 failed: RAT_NOT_READY
+2026-08-10 09:10:01.225 [CASE] [ERROR] setup failed code=CASE_SETUP_FAILED

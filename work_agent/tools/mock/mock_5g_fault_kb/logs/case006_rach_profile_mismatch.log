@@ -1,0 +1,12 @@
+2026-08-10 10:10:00.001 [CASE] [INFO] testcase=NR_UE_ACCESS_006 start
+2026-08-10 10:10:00.100 [COMM] [INFO] state=READY
+2026-08-10 10:10:00.300 [RAT] [INFO] state=READY
+2026-08-10 10:10:00.600 [CELL] [INFO] NR_CELL_0 state=ACTIVE
+2026-08-10 10:10:01.010 [CELL] [INFO] broadcast prach_config_index=98
+2026-08-10 10:10:01.100 [UE] [INFO] loaded access_profile=lab_default prach_config_index=84
+2026-08-10 10:10:02.005 [UE] [INFO] PRACH preamble tx attempt=1
+2026-08-10 10:10:02.085 [UE] [WARN] no random access response before timer expiry
+2026-08-10 10:10:02.405 [UE] [INFO] PRACH preamble tx attempt=2
+2026-08-10 10:10:02.486 [UE] [WARN] no random access response before timer expiry
+2026-08-10 10:10:03.000 [UE] [ERROR] random access failed after max attempts
+2026-08-10 10:10:03.002 [CASE] [ERROR] UE attach failed
