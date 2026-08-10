@@ -63,6 +63,7 @@ def _runs_table(rows: list[dict], *, title: str | None = None) -> Table:
 
 
 def _sessions_table(sessions: list[SessionInfo], *, current: str | None) -> Table:
+    """把会话列表渲染成 Rich 表格，当前会话标 ←。"""
     table = Table(title="历史会话", show_header=True, header_style="bold")
     for col in ("#", "thread_id", "预览", "当前"):
         table.add_column(col)
@@ -254,6 +255,7 @@ def _handle_slash(text: str, tid: str) -> tuple[str, bool]:
 
 
 def _repl(thread_id: str | None, *, verbose: bool = False) -> None:
+    """交互式多轮 REPL：斜杠命令 + run_turn，直到 quit。"""
     tid = thread_id or new_thread_id()
     console.print(
         Panel(
@@ -312,7 +314,13 @@ def chat(
         False, "--verbose", "-v", help="额外打印 audit 与原始 summary"
     ),
 ) -> None:
-    """交互式 REPL。输入 quit / exit 退出。"""
+    """
+    进入交互式 REPL；输入 quit / exit 退出。
+
+    参数:
+        thread_id: 固定会话 id，便于续聊/续跑；默认新建。
+        verbose: True 时额外打印 audit 与原始 summary。
+    """
     _repl(thread_id, verbose=verbose)
 
 
@@ -322,7 +330,14 @@ def ask(
     thread_id: Optional[str] = typer.Option(None, "--thread", "-t"),
     verbose: bool = typer.Option(False, "--verbose", "-v"),
 ) -> None:
-    """跑单次任务（遇 HITL 会在终端询问）。"""
+    """
+    跑单次任务（遇 HITL 会在终端询问）。
+
+    参数:
+        text: 一句话用户任务。
+        thread_id: 可选固定会话 id。
+        verbose: True 时额外打印 debug 面板。
+    """
     result = run_turn(text, thread_id=thread_id, ask=_ask, with_checkpoint=True)
     _print_result(result, verbose=verbose)
 
@@ -331,7 +346,12 @@ def ask(
 def list_runs(
     limit: int = typer.Option(10, "--limit", "-n", help="最近 N 条"),
 ) -> None:
-    """查看运行台账。"""
+    """
+    查看运行台账（最近 N 条流水线记录）。
+
+    参数:
+        limit: 最多展示条数。
+    """
     rows = [
         {
             "pipeline_id": r.pipeline_id,
@@ -352,7 +372,12 @@ def list_runs(
 
 @app.callback(invoke_without_command=True)
 def main(ctx: typer.Context) -> None:
-    """不带子命令时直接进 chat。"""
+    """
+    CLI 入口回调：不带子命令时直接进入 chat REPL。
+
+    参数:
+        ctx: Typer 上下文（用于判断是否已进入子命令）。
+    """
     if ctx.invoked_subcommand is None:
         _repl(None)
 

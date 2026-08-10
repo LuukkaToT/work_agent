@@ -7,6 +7,15 @@ from work_agent.graph.state import TestFlowState
 
 
 def quick_answer(state: TestFlowState) -> dict:
+    """
+    chat 意图：轻量 LLM 直接回答，结果写入 summary.answer。
+
+    参数:
+        state: 读 ``user_input``。
+
+    返回:
+        ``summary``（status/answer）与 audit。
+    """
     answer = invoke_text(
         [
             SystemMessage(

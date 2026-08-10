@@ -10,12 +10,19 @@ MockScenario = Literal["all_pass", "version_fail", "case_error", "env_error"]
 
 
 class MockLogTool:
+    """实现 LogTool：按 scenario 生成可 grep 的假日志。"""
+
     def __init__(
         self,
         scenario: MockScenario = "case_error",
         *,
         total_lines: int = 480,
     ) -> None:
+        """
+        参数:
+            scenario: 决定尾部错误特征。
+            total_lines: 生成日志总行数下限约 50。
+        """
         self.scenario = scenario
         self.total_lines = max(50, total_lines)
 
@@ -25,6 +32,16 @@ class MockLogTool:
         *,
         tail_lines: int | None = 200,
     ) -> str:
+        """
+        拉取日志（可截尾）。
+
+        参数:
+            pipeline_id: 流水线 id（参与确定性随机种子）。
+            tail_lines: None 返回全文；否则尾部 N 行。
+
+        返回:
+            带 ``[log meta]`` 首行的日志文本。
+        """
         lines = self._full_lines(pipeline_id)
         total = len(lines)
         if tail_lines is None or tail_lines >= total:
@@ -48,6 +65,18 @@ class MockLogTool:
         context_lines: int = 3,
         max_matches: int = 20,
     ) -> str:
+        """
+        在全文上按正则检索，带上下文。
+
+        参数:
+            pipeline_id: 流水线 id。
+            pattern: 正则；非法时返回错误说明。
+            context_lines: 命中行前后保留行数。
+            max_matches: 最多命中数。
+
+        返回:
+            可读 grep 结果文本。
+        """
         lines = self._full_lines(pipeline_id)
         try:
             rx = re.compile(pattern, re.IGNORECASE)
@@ -79,6 +108,7 @@ class MockLogTool:
         return "\n".join(blocks)
 
     def _full_lines(self, pipeline_id: str) -> list[str]:
+        """按 pipeline_id+scenario 生成确定性假日志全文。"""
         pid = (pipeline_id or "").strip() or "(empty)"
         seed = hash(f"{pid}:{self.scenario}") % (2**32)
         rng = random.Random(seed)

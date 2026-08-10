@@ -25,6 +25,15 @@ _MAX_HITL_ROUNDS = 20
 
 
 def interrupt_payloads(result: dict[str, Any]) -> list[Any]:
+    """
+    从 invoke 结果中取出 HITL interrupt 的原始载荷。
+
+    参数:
+        result: 图 invoke 返回的 dict（可能含 ``__interrupt__``）。
+
+    返回:
+        载荷列表（已展开 ``.value``）；无 interrupt 时为空列表。
+    """
     items = result.get("__interrupt__") or []
     return [getattr(item, "value", item) for item in items]
 
@@ -44,7 +53,15 @@ def _interrupt_values_from_snapshot(snap: Any) -> list[Any]:
 
 
 def get_pending_interrupts(thread_id: str) -> list[Any]:
-    """若该 thread 停在 HITL，返回载荷列表；否则空列表。"""
+    """
+    查询某 thread 是否停在 HITL。
+
+    参数:
+        thread_id: 会话 thread id；空字符串视为无 pending。
+
+    返回:
+        有未完成 interrupt 时返回载荷列表，否则空列表。
+    """
     if not thread_id:
         return []
     app = build_graph(checkpointer=get_checkpointer())
@@ -64,7 +81,14 @@ def resume_pending(
 ) -> dict[str, Any] | None:
     """
     若 thread 有未完成 interrupt，用 ask 续跑直到结束或再次需要输入。
-    无 pending 时返回 None。
+
+    参数:
+        thread_id: 要续跑的会话 id。
+        ask: 收到 interrupt 载荷列表后返回用户回答的回调。
+
+    返回:
+        续跑完成后的图结果（含 ``_thread_id``）；无 pending 时返回 None。
+        HITL 超过上限时抛 RuntimeError。
     """
     payloads = get_pending_interrupts(thread_id)
     if not payloads:
@@ -101,6 +125,15 @@ def run_turn(
 
     ask 拿到的是原始载荷（dict 列表），CLI 渲染成面板，
     测试里按 type 判断该回什么。
+
+    参数:
+        text: 本轮用户自然语言输入。
+        thread_id: 会话 id；None 时自动生成 ``cli-xxxxxxxx``。
+        ask: HITL 回调；图触发 interrupt 且未提供时抛 RuntimeError。
+        with_checkpoint: False 时不挂 checkpointer（无持久化、无跨轮续跑）。
+
+    返回:
+        图最终 state（并写入 ``_thread_id``）。
     """
     tid = thread_id or f"cli-{uuid.uuid4().hex[:8]}"
     app = build_graph(
@@ -131,4 +164,10 @@ def run_turn(
 
 
 def new_thread_id() -> str:
+    """
+    生成新的 CLI 会话 thread id。
+
+    返回:
+        形如 ``cli-xxxxxxxx`` 的短 id。
+    """
     return f"cli-{uuid.uuid4().hex[:8]}"

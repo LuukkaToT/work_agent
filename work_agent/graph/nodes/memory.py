@@ -28,6 +28,15 @@ _SYSTEM = """你是对话摘要器。把给定的旧对话压缩成不超过 10 
 
 
 def memory(state: TestFlowState) -> dict:
+    """
+    对话过长时做滚动摘要，并用 RemoveMessage 裁掉窗口外旧消息。
+
+    参数:
+        state: 读 ``messages`` / ``dialogue_summary``。
+
+    返回:
+        未超阈值或失败时仅写 audit；成功时写 ``dialogue_summary`` 与删除旧消息。
+    """
     messages = list(state.get("messages") or [])
     if len(messages) <= _SUMMARY_THRESHOLD:
         return {

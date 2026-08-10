@@ -33,8 +33,17 @@ def build_diagnose_tools(
     tool_result_max_chars: int = _DEFAULT_MAX_CHARS,
 ) -> list[BaseTool]:
     """
-    构造诊断白名单工具。
+    构造诊断白名单工具（只读；禁止 create/start）。
+
     pipeline / log 使用同一 scenario，避免状态与日志对不上。
+
+    参数:
+        scenario: mock 故障场景，同时作用于 pipeline 与 log。
+        budget: 本轮工具返回累计字符预算；None 用默认。
+        tool_result_max_chars: 单次工具结果截断上限。
+
+    返回:
+        LangChain BaseTool 列表，供 ReAct agent 使用。
     """
     if budget is None:
         budget = CharBudget(limit=40_000)
@@ -47,6 +56,7 @@ def build_diagnose_tools(
     max_chars = tool_result_max_chars
 
     def _out(text: str) -> str:
+        """经预算截断后返回工具文本。"""
         return budget.take(text, max_chars=max_chars)
 
     @tool

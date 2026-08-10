@@ -1,3 +1,5 @@
+"""Mock 用例库：内存固定目录。"""
+
 from __future__ import annotations
 
 from work_agent.tools.models import CaseInfo
@@ -12,7 +14,18 @@ _CASES: list[CaseInfo] = [
 
 
 class MockCaseProvider:
+    """实现 CaseProvider：内存假用例库。"""
+
     def list_cases(self, query: str | None = None) -> list[CaseInfo]:
+        """
+        列出用例；可按关键词过滤。
+
+        参数:
+            query: 过滤关键词；None 返回全部。
+
+        返回:
+            CaseInfo 列表。
+        """
         if not query:
             return list(_CASES)
         q = query.lower()
@@ -25,6 +38,15 @@ class MockCaseProvider:
         ]
 
     def fetch_cases(self, names: list[str]) -> list[CaseInfo]:
+        """
+        按名拉取用例详情。
+
+        参数:
+            names: 用例名列表。
+
+        返回:
+            CaseInfo 列表；缺名抛 KeyError。
+        """
         by_name = {c.name: c for c in _CASES}
         missing = [n for n in names if n not in by_name]
         if missing:

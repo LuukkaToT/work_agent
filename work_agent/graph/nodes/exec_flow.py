@@ -83,6 +83,7 @@ class ColumnMappingOut(BaseModel):
 
 
 def _classify_env(env: str) -> str:
+    """按字符串判断环境是 physical（IP）还是 logical。"""
     text = (env or "").strip()
     if not text:
         return ""
@@ -97,7 +98,7 @@ def _plan_dict(
     version: str,
     env: str,
 ) -> dict[str, Any]:
-    """将plan映射为dict，确认参数是否缺失，缺失追加到missing里"""
+    """把计划字段归一成 dict，并计算 missing / env_kind。"""
     env_kind = _classify_env(env)
     missing: list[str] = []
     if not case_names:
@@ -118,6 +119,7 @@ def _plan_dict(
 
 
 def _normalize_version(raw: str) -> str:
+    """规范化版本字符串；合法则转大写，非法原样返回。"""
     text = (raw or "").strip()
     if not text:
         return ""
@@ -127,6 +129,7 @@ def _normalize_version(raw: str) -> str:
 
 
 def _spoken_env_version(plans: list[dict]) -> tuple[str, str]:
+    """从口头计划里抽出第一份非空 env / version。"""
     env = ""
     version = ""
     for p in plans:
@@ -218,10 +221,18 @@ def _resolve_sheet_plans(
 
 def exec_params(state: Mapping[str, Any]) -> dict:
     """
+    从用户话抽出执行计划列表与 exec_mode；可走 Excel 读用例。
+
     参数优先级：
-    - version / env：用户没说 → 留空，ask_missing interrupt
+    - version / env：用户没说 → 留空，后续 ask_missing interrupt
     - exec_mode：默认 create_and_start
     - sheet_path：有则读表组装 plans（用例名不经模型手抄）
+
+    参数:
+        state: 读 ``user_input`` 与对话上下文。
+
+    返回:
+        ``exec_params``（plans/exec_mode/sheet_*）与 audit；读表失败时附 need_input summary。
     """
     llm = get_chat_model(temperature=0).with_structured_output(ExecParamsOut)
 
@@ -353,6 +364,7 @@ def _start_one(
     pipeline_id: str,
     retry_attempts: int,
 ) -> tuple[bool, list[str], str]:
+    """对单条 pipeline 调用 start，失败按 retry_attempts 重试。"""
     notes: list[str] = []
     last_error = ""
     max_attempts = 1 + max(0, retry_attempts)
@@ -437,7 +449,15 @@ def _submit_one_pipeline(
 
 
 def create_pipelines(state: Mapping[str, Any]) -> dict:
-    """逐计划 create；exec_mode=create_and_start 时再 start。单条失败不阻断。"""
+    """
+    逐计划 create；exec_mode=create_and_start 时再 start。单条失败不阻断。
+
+    参数:
+        state: 读 ``exec_params`` / ``task_id``。
+
+    返回:
+        ``pipelines`` 列表与聚合 ``summary``（created/failed_pipelines 等）及 audit。
+    """
     params = state.get("exec_params") or {}
     plans = list(params.get("plans") or [])
     exec_mode: ExecMode = params.get("exec_mode") or "create_and_start"
@@ -551,7 +571,12 @@ def create_pipelines(state: Mapping[str, Any]) -> dict:
 def start_pipelines(state: Mapping[str, Any]) -> dict:
     """
     对台账/state 中已有的 pipeline_id 逐个 start。
-    期望 state.pipelines 已由上游填好，或从 ledger 消解后写入。
+
+    参数:
+        state: 读已消解的 ``pipelines``（须含有效 pipeline_id）。
+
+    返回:
+        更新后的 ``pipelines`` / ``summary`` 与 audit。
     """
     pipelines = list(state.get("pipelines") or [])
     if not pipelines:

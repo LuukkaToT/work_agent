@@ -20,7 +20,15 @@ _OPS_ACTIONS = {
 
 
 def init_ops_kind(state: Mapping[str, Any]) -> dict:
-    """主图 intent（start|query|diagnose）落入子图私有 ops_kind。"""
+    """
+    把主图 intent（start|query|diagnose）落入子图私有 ops_kind。
+
+    参数:
+        state: 可读 ``ops_kind`` 或 ``intent``。
+
+    返回:
+        规范化后的 ``ops_kind`` 与 audit。
+    """
     kind = str(state.get("ops_kind") or state.get("intent") or "query").strip()
     if kind not in _OPS_ACTIONS:
         kind = "query"
@@ -31,7 +39,15 @@ def init_ops_kind(state: Mapping[str, Any]) -> dict:
 
 
 def resolve_pipelines(state: Mapping[str, Any]) -> dict:
-    """按 ops_kind 消解台账，写入 pipelines。"""
+    """
+    按 ops_kind 从台账消解目标流水线，写入 pipelines。
+
+    参数:
+        state: 读 ``ops_kind`` / ``intent`` / ``user_input``。
+
+    返回:
+        ``pipelines``（可能为空）、必要时的 not_found ``summary``，以及 audit。
+    """
     kind = str(state.get("ops_kind") or state.get("intent") or "query")
     if kind not in _OPS_ACTIONS:
         kind = "query"
@@ -66,6 +82,15 @@ def resolve_pipelines(state: Mapping[str, Any]) -> dict:
 
 
 def route_after_resolve(state: Mapping[str, Any]) -> str:
+    """
+    消解后条件边：无 pipelines → skip；否则按 ops_kind 分支。
+
+    参数:
+        state: 读 ``pipelines`` / ``ops_kind``。
+
+    返回:
+        ``skip`` / ``start`` / ``query`` / ``diagnose``。
+    """
     if not (state.get("pipelines") or []):
         return "skip"
     kind = str(state.get("ops_kind") or "query")
@@ -75,7 +100,15 @@ def route_after_resolve(state: Mapping[str, Any]) -> str:
 
 
 def query_pipelines(state: Mapping[str, Any]) -> dict:
-    """对 state.pipelines 逐个 query（不再二次消解）。"""
+    """
+    对 state.pipelines 逐个 query（不再二次消解）。
+
+    参数:
+        state: 读已消解的 ``pipelines``。
+
+    返回:
+        更新后的 ``pipelines`` / ``results`` / 聚合 ``summary`` 与 audit。
+    """
     items = list(state.get("pipelines") or [])
     if not items:
         return {

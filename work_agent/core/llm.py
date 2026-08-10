@@ -20,6 +20,16 @@ def get_chat_model(
     temperature: float | None = None,
     model: str | None = None,
 ) -> BaseChatModel:
+    """
+    构造 ChatOpenAI 兼容客户端（全项目唯一入口）。
+
+    参数:
+        temperature: 覆盖 Settings 默认温度；None 用配置值。
+        model: 覆盖默认模型名；None 用配置值。
+
+    返回:
+        BaseChatModel 实例；缺 API Key 时抛 RuntimeError。
+    """
     s = get_settings()
     if not s.llm_api_key:
         raise RuntimeError(
@@ -47,7 +57,14 @@ def invoke_text(
     调模型并把回复归一成纯文本。
 
     OpenAI 兼容端点的 content 可能是 str，也可能是分段 list（多段文本 / 多模态）。
-    这个归一化每个节点各写一遍，换模型时必定漏改，所以统一收在工厂里。
+
+    参数:
+        messages: 发给模型的消息列表。
+        temperature: 可选覆盖温度。
+        model: 可选覆盖模型名。
+
+    返回:
+        归一后的纯文本（已 strip）。
     """
     resp = get_chat_model(temperature=temperature, model=model).invoke(messages)
     content = resp.content

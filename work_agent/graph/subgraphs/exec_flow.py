@@ -51,7 +51,12 @@ class ExecFlowState(ExecFlowInput, ExecFlowOutput):
 
 
 def build_exec_flow():
-    """编译执行子图（无独立 checkpointer；由父图编译时注入）。"""
+    """
+    编译执行子图（exec_params → ask_missing → confirm → create）。
+
+    返回:
+        已 compile 的子图（无独立 checkpointer；由父图编译时注入）。
+    """
     graph = StateGraph(
         ExecFlowState,
         input_schema=ExecFlowInput,

@@ -57,6 +57,15 @@ def _parse_ordinal(text: str) -> int | None:
 
 
 def resolve_pipeline_records(user_input: str) -> list[PipelineRecord]:
+    """
+    从用户话消解台账中的候选流水线（尚不 interrupt）。
+
+    参数:
+        user_input: 本轮用户输入（可含 pipeline_id / 用例名 /「上次」「全部」等）。
+
+    返回:
+        候选 PipelineRecord 列表；无法消解时可能返回最近若干条。
+    """
     ledger = get_ledger()
     text = user_input or ""
 
@@ -143,7 +152,15 @@ def pick_records_for_action(
 ) -> list[PipelineRecord]:
     """
     消解 + 必要时 interrupt 让用户选。
+
     「所有」不过滤；同 task 多环境一并返回；跨 task 才问。
+
+    参数:
+        user_input: 本轮用户输入。
+        action: 提示文案中的动作名（查询/启动/诊断）。
+
+    返回:
+        最终选定的 PipelineRecord 列表；用户未选中时可能为空。
     """
     candidates = resolve_pipeline_records(user_input)
     if not candidates:
@@ -201,6 +218,15 @@ def pick_records_for_action(
 
 
 def records_to_pipeline_dicts(records: list[PipelineRecord]) -> list[dict]:
+    """
+    把台账记录转成图状态里的 pipelines dict 列表。
+
+    参数:
+        records: 台账 PipelineRecord。
+
+    返回:
+        含 pipeline_id / case_names / version / env / status 的 dict 列表。
+    """
     return [
         {
             "pipeline_id": r.pipeline_id,

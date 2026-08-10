@@ -10,6 +10,7 @@ from typing import Any, Mapping, Sequence
 
 
 def _content_text(content: object) -> str:
+    """把消息 content（str / list 块）归一成纯文本。"""
     if isinstance(content, str):
         return content.strip()
     if isinstance(content, list):
@@ -39,12 +40,14 @@ def _role_label(msg: Any) -> str:
 
 def dialogue_text(messages: Sequence[Any] | None, *, n: int = 8) -> str:
     """
-    取最近 n 条消息，格式化为：
+    取最近 n 条消息，格式化为「用户: … / 助手: …」。
 
-        用户: ...
-        助手: ...
+    参数:
+        messages: 会话消息序列；空则返回空串。
+        n: 保留的最近条数。
 
-    messages 为空时返回空串；调用方应自行决定空上下文时怎么写 prompt。
+    返回:
+        多行文本；调用方自行决定空上下文时怎么写 prompt。
     """
     if not messages:
         return ""
@@ -62,12 +65,12 @@ def conversation_context(state: Mapping[str, Any] | None, *, n: int = 8) -> str:
     """
     拼装 LLM 上下文：历史摘要（若有）+ 最近 n 条对话。
 
-        【历史摘要】
-        ...
+    参数:
+        state: 图状态（读 dialogue_summary / messages）。
+        n: 最近对话条数。
 
-        【最近对话】
-        用户: ...
-        助手: ...
+    返回:
+        带【历史摘要】/【最近对话】小节的文本；皆空时为空串。
     """
     state = state or {}
     parts: list[str] = []

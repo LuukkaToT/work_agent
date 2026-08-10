@@ -28,13 +28,18 @@ def append_audit(
     new: list[dict] | None,
 ) -> list[dict]:
     """
-    审计轨迹的合并规则。
+    审计轨迹的合并规则（LangGraph reducer）。
 
     默认「只追加」，这样每个节点只需 return {"audit": [自己那一条]}。
+    同一个 thread 跨多轮复用时，纯追加会让 audit 越滚越长；
+    约定 intake 每轮发 RESET_AUDIT 哨兵，reducer 见到哨兵就丢掉历史。
 
-    但同一个 thread 会跨多轮对话复用（CLI 里 -t 固定 thread_id 就是这样），
-    纯追加会让 audit 越滚越长，第三轮就分不清哪几条属于本轮。
-    所以约定：intake 作为每轮入口额外发一条哨兵，reducer 见到哨兵就丢掉历史。
+    参数:
+        old: 已有 audit 列表。
+        new: 本节点新写入的 audit 条目（可含哨兵）。
+
+    返回:
+        合并后的 audit 列表（哨兵本身不会保留）。
     """
     old = old or []
     new = new or []

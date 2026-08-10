@@ -38,5 +38,13 @@ def get_checkpointer() -> SqliteSaver:
 
 
 def make_thread_config(thread_id: str) -> dict:
-    """invoke / get_state 时传入的 config。thread_id 就是「会话/任务」主键。"""
+    """
+    构造 invoke / get_state 用的 config。
+
+    参数:
+        thread_id: 会话主键。
+
+    返回:
+        ``{"configurable": {"thread_id": ...}}``。
+    """
     return {"configurable": {"thread_id": thread_id}}

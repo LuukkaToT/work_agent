@@ -33,6 +33,12 @@ from work_agent.tools.protocols import (
 
 @lru_cache(maxsize=1)
 def get_case_provider() -> CaseProvider:
+    """
+    按 TOOL_BACKEND 返回用例库实例（lru_cache 复用）。
+
+    返回:
+        实现 CaseProvider 的实例；backend 未知时抛 NotImplementedError。
+    """
     backend = get_settings().tool_backend
     if backend == "mock":
         return MockCaseProvider()
@@ -48,8 +54,14 @@ def get_case_provider() -> CaseProvider:
 @lru_cache(maxsize=1)
 def get_pipeline_tool(scenario: MockScenario = "all_pass") -> PipelineTool:
     """
-    scenario 仅 mock 有意义（all_pass / version_fail / ...）。
-    ticks_to_finish=2：第一次 query=running，第二次 finished。
+    按 TOOL_BACKEND 返回流水线工具（lru_cache 复用）。
+    mock 侧 ticks_to_finish=2：第一次 query=running，第二次 finished。
+
+    参数:
+        scenario: 仅 mock 有意义（all_pass / version_fail / ...）。
+
+    返回:
+        实现 PipelineTool 的实例；backend 未知时抛 NotImplementedError。
     """
     backend = get_settings().tool_backend
     if backend == "mock":
@@ -65,6 +77,15 @@ def get_pipeline_tool(scenario: MockScenario = "all_pass") -> PipelineTool:
 
 @lru_cache(maxsize=8)
 def get_log_tool(scenario: MockScenario = "case_error") -> LogTool:
+    """
+    按 TOOL_BACKEND 返回日志工具实例（lru_cache 复用）。
+
+    参数:
+        scenario: 仅 mock 有意义，决定预置故障场景（如 case_error）。
+
+    返回:
+        实现 LogTool 协议的实例；backend 未知时抛 NotImplementedError。
+    """
     backend = get_settings().tool_backend
     if backend == "mock":
         return MockLogTool(scenario=scenario)
@@ -78,12 +99,23 @@ def get_log_tool(scenario: MockScenario = "case_error") -> LogTool:
 
 @lru_cache(maxsize=1)
 def get_case_sheet_tool() -> CaseSheetTool:
-    """读本地表：mock/real 共用 LocalCaseSheetTool（确定性 I/O）。"""
+    """
+    返回本地用例表读取工具（mock/real 共用 LocalCaseSheetTool）。
+
+    返回:
+        实现 CaseSheetTool 的实例（确定性 I/O）。
+    """
     return LocalCaseSheetTool()
 
 
 @lru_cache(maxsize=1)
 def get_knowledge_search_tool() -> KnowledgeSearchTool:
+    """
+    按 TOOL_BACKEND 返回知识检索工具（lru_cache 复用）。
+
+    返回:
+        实现 KnowledgeSearchTool 的实例；backend 未知时抛 NotImplementedError。
+    """
     backend = get_settings().tool_backend
     if backend == "mock":
         return MockKnowledgeSearchTool()

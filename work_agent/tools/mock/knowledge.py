@@ -7,15 +7,32 @@ from pathlib import Path
 
 
 def _default_kb_dir() -> Path:
+    """默认本地故障知识库目录。"""
     # 本文件在 work_agent/tools/mock/knowledge.py
     return Path(__file__).resolve().parent / "mock_5g_fault_kb" / "kb"
 
 
 class MockKnowledgeSearchTool:
+    """实现 KnowledgeSearchTool：本地 markdown 关键词检索。"""
+
     def __init__(self, kb_dir: Path | None = None) -> None:
+        """
+        参数:
+            kb_dir: kb 目录；None 用默认 mock_5g_fault_kb/kb。
+        """
         self.kb_dir = kb_dir or _default_kb_dir()
 
     def search(self, query: str, *, top_k: int = 3) -> str:
+        """
+        按关键词打分检索 kb 文档。
+
+        参数:
+            query: 检索语句。
+            top_k: 返回条数上限。
+
+        返回:
+            可读检索摘要文本。
+        """
         q = (query or "").strip()
         if not q:
             return "[knowledge] empty query"
@@ -53,6 +70,7 @@ class MockKnowledgeSearchTool:
 
     @staticmethod
     def _snippet(text: str, tokens: list[str], *, max_chars: int) -> str:
+        """在正文中截取靠近首个命中词的片段。"""
         if not tokens:
             return text[:max_chars]
         low = text.lower()

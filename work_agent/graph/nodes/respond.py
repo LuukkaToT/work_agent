@@ -126,6 +126,7 @@ def _facts(state: TestFlowState) -> dict:
 
 
 def _analysis_excerpt(path_str: str) -> str:
+    """读取分析文档前若干行，供 respond 概括用。"""
     if not path_str:
         return ""
     path = Path(path_str)
@@ -215,6 +216,15 @@ def _pack(reply: str, *, source: str, error: str = "") -> dict:
 
 
 def respond(state: TestFlowState) -> dict:
+    """
+    全部分支收尾：把结构化事实转成口语回复，追加到 messages。
+
+    参数:
+        state: 读 intent / summary / pipelines / exec_params / analysis_path 等。
+
+    返回:
+        ``reply``、追加的 AIMessage、以及 audit（source=llm/fallback/passthrough）。
+    """
     summary = state.get("summary") or {}
     intent = state.get("intent") or ""
     task_id = state.get("task_id") or ""

@@ -21,6 +21,7 @@ from work_agent.graph.nodes.exec_flow import ALLOWED_VERSIONS, _plan_dict
 
 
 def _parse_case_names(reply: Any) -> list[str]:
+    """把 HITL 回答解析成用例名列表。"""
     if isinstance(reply, str):
         parts = re.split(r"[,，\s]+", reply.strip())
         return [x for x in parts if x]
@@ -32,6 +33,7 @@ def _parse_case_names(reply: Any) -> list[str]:
 
 
 def _parse_env(reply: Any) -> str:
+    """把 HITL 回答解析成环境 IP / 组网字符串。"""
     if isinstance(reply, str):
         return reply.strip()
     if isinstance(reply, dict):
@@ -40,6 +42,7 @@ def _parse_env(reply: Any) -> str:
 
 
 def _parse_version(reply: Any) -> str:
+    """把 HITL 回答解析成版本字符串（转大写）。"""
     if isinstance(reply, str):
         return reply.strip().upper()
     if isinstance(reply, dict):
@@ -48,7 +51,15 @@ def _parse_version(reply: Any) -> str:
 
 
 def ask_missing(state: Mapping[str, Any]) -> dict:
-    """按计划逐条补缺参；逻辑组网会提示暂只支持物理 IP。"""
+    """
+    按计划逐条补缺参（用例/版本/环境）；逻辑组网会提示改物理 IP。
+
+    参数:
+        state: 读 ``exec_params.plans``（可缺省为空计划）。
+
+    返回:
+        补全后的 ``exec_params`` 与 audit；过程中可能多次 interrupt。
+    """
     params = dict(state.get("exec_params") or {})
     plans = [dict(p) for p in (params.get("plans") or [])]
     if not plans:
@@ -135,7 +146,15 @@ def ask_missing(state: Mapping[str, Any]) -> dict:
 
 
 def confirm_exec(state: Mapping[str, Any]) -> dict:
-    """执行前最后确认。路由只看 exec_decision，不借道 summary。"""
+    """
+    执行前最后确认。路由只看 exec_decision，不借道 summary。
+
+    参数:
+        state: 读 ``exec_params`` / plans。
+
+    返回:
+        ``exec_decision`` 为 proceed 或 cancel；取消时附带 cancelled summary。
+    """
     params = state.get("exec_params") or {}
     plans = list(params.get("plans") or [])
     decision = interrupt(
@@ -167,7 +186,15 @@ def confirm_exec(state: Mapping[str, Any]) -> dict:
 
 
 def route_after_confirm(state: Mapping[str, Any]) -> str:
-    """proceed → create_pipelines；cancel → END。"""
+    """
+    确认后条件边：proceed → create_pipelines；cancel → END。
+
+    参数:
+        state: 读 ``exec_decision``。
+
+    返回:
+        ``cancel`` 或 ``proceed``。
+    """
     if state.get("exec_decision") == "cancel":
         return "cancel"
     return "proceed"

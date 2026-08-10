@@ -21,6 +21,8 @@ from work_agent.graph.helpers.truncate import CharBudget
 
 
 class ErrorAnalysisOut(BaseModel):
+    """结构化归因结果（由第二次 LLM 从正文抽取）。"""
+
     fail_kind: str = Field(description="version | case | env | unknown | none")
     evidence: str = Field(description="从日志摘录的关键证据，原文短摘")
     conclusion: str = Field(description="一句话结论")
@@ -28,7 +30,15 @@ class ErrorAnalysisOut(BaseModel):
 
 
 def extract_tool_trace(messages: list) -> list[dict[str, Any]]:
-    """从 ReAct 消息里提取 tool 调用轨迹（纯函数，可单测）。"""
+    """
+    从 ReAct 消息里提取 tool 调用轨迹（纯函数，可单测）。
+
+    参数:
+        messages: ReAct agent 返回的消息列表。
+
+    返回:
+        交替记录 call / result 的 dict 列表（含 name、预览或字符数）。
+    """
     trace: list[dict[str, Any]] = []
     for msg in messages or []:
         if isinstance(msg, AIMessage):
@@ -58,6 +68,7 @@ def extract_tool_trace(messages: list) -> list[dict[str, Any]]:
 
 
 def _last_text(messages: list) -> str:
+    """取消息列表中最后一条非空文本内容。"""
     for msg in reversed(messages or []):
         content = getattr(msg, "content", None)
         if isinstance(content, str) and content.strip():
@@ -74,7 +85,15 @@ def _last_text(messages: list) -> str:
 
 
 def error_analysis(state: Mapping[str, Any]) -> dict:
-    """对已消解的 pipelines 做受限 ReAct 归因。"""
+    """
+    对已消解的 pipelines 做受限 ReAct 归因（只读工具）。
+
+    参数:
+        state: 读 ``pipelines`` / ``user_input``。
+
+    返回:
+        ``summary``（含 error_analysis 结构化字段与 analysis_text）及 audit（含 tool_trace）。
+    """
     pipelines = list(state.get("pipelines") or [])
     pids = [str(p.get("pipeline_id") or "") for p in pipelines if p.get("pipeline_id")]
     if not pids:

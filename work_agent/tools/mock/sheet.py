@@ -12,6 +12,15 @@ class LocalCaseSheetTool:
     """确定性读表：不猜测列语义，全部当字符串。"""
 
     def read(self, path: str) -> SheetTable:
+        """
+        读取本地 xlsx/csv 用例表。
+
+        参数:
+            path: 文件路径。
+
+        返回:
+            SheetTable；文件不存在或不支持格式时抛错。
+        """
         p = Path(path).expanduser()
         if not p.is_file():
             raise FileNotFoundError(f"用例表不存在: {p}")
@@ -28,6 +37,7 @@ class LocalCaseSheetTool:
 
     @staticmethod
     def _read_csv(path: Path) -> tuple[list[str], list[list[str]]]:
+        """读 CSV 为表头 + 行。"""
         with path.open("r", encoding="utf-8-sig", newline="") as f:
             reader = csv.reader(f)
             all_rows = [[(c or "").strip() for c in row] for row in reader]
@@ -41,6 +51,7 @@ class LocalCaseSheetTool:
 
     @staticmethod
     def _read_xlsx(path: Path) -> tuple[list[str], list[list[str]]]:
+        """读 xlsx 活动表为表头 + 行（需 openpyxl）。"""
         try:
             from openpyxl import load_workbook
         except ImportError as exc:  # pragma: no cover

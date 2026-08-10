@@ -18,7 +18,15 @@ from work_agent.graph.state import TestFlowState
 
 
 def test_analysis(state: TestFlowState) -> dict:
-    """analysis 意图的真正实现，替换原来的 do_analysis 桩。"""
+    """
+    analysis 意图：加载 test_analysis skill，生成文档并落盘。
+
+    参数:
+        state: 读 ``user_input`` / ``requirement`` / ``task_id``。
+
+    返回:
+        ``requirement``、``analysis_path``、``summary`` 与 audit。
+    """
     user_input = state.get("user_input") or state.get("requirement") or ""
     task_id = state.get("task_id") or "unknown"
 

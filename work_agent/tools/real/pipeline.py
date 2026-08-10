@@ -24,16 +24,45 @@ class RealPipelineTool:
         version: str,
         env: str,
     ) -> PipelineHandle:
+        """
+        创建流水线。
+
+        参数:
+            case_names: 用例名列表。
+            version: 版本。
+            env: 组网 IP。
+
+        返回:
+            PipelineHandle（当前未实现）。
+        """
         raise NotImplementedError(
             "RealPipelineTool.create 未实现：请接入 external SDK 后在此映射"
         )
 
     def start(self, pipeline_id: str) -> bool:
+        """
+        启动流水线。
+
+        参数:
+            pipeline_id: 服务端 id。
+
+        返回:
+            是否成功（当前未实现）。
+        """
         raise NotImplementedError(
             "RealPipelineTool.start 未实现：请接入 external SDK 后在此映射"
         )
 
     def query(self, pipeline_id: str) -> PipelineResult:
+        """
+        查询流水线。
+
+        参数:
+            pipeline_id: 服务端 id。
+
+        返回:
+            PipelineResult（当前未实现）。
+        """
         raise NotImplementedError(
             "RealPipelineTool.query 未实现：请接入 external SDK 后在此映射"
         )

@@ -19,6 +19,8 @@ _CASE_NAME_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_-]{7,}$")
 
 @dataclass
 class _PipelineRecord:
+    """单条 mock 流水线的内存状态。"""
+
     handle: PipelineHandle
     started: bool = False
     ticks: int = 0
@@ -37,6 +39,11 @@ class MockPipelineTool:
         scenario: MockScenario = "all_pass",
         ticks_to_finish: int = 2,
     ) -> None:
+        """
+        参数:
+            scenario: 预置故障/通过场景。
+            ticks_to_finish: 启动后需几次 query 才 finished。
+        """
         self.scenario = scenario
         self.ticks_to_finish = max(1, ticks_to_finish)
         self._runs: dict[str, _PipelineRecord] = {}
@@ -47,6 +54,17 @@ class MockPipelineTool:
         version: str,
         env: str,
     ) -> PipelineHandle:
+        """
+        创建流水线并生成 uuid 作为 pipeline_id。
+
+        参数:
+            case_names: 用例名列表。
+            version: 版本。
+            env: 组网 IP。
+
+        返回:
+            PipelineHandle；参数非法时抛 ValueError。
+        """
         if not case_names:
             raise ValueError("case_names 不能为空")
         if not version:
@@ -69,6 +87,15 @@ class MockPipelineTool:
         return handle
 
     def start(self, pipeline_id: str) -> bool:
+        """
+        标记流水线已启动（env_error 场景会立即失败）。
+
+        参数:
+            pipeline_id: create 返回的 id。
+
+        返回:
+            是否成功受理。
+        """
         rec = self._require(pipeline_id)
         if rec.started:
             return True
@@ -81,6 +108,15 @@ class MockPipelineTool:
         return True
 
     def query(self, pipeline_id: str) -> PipelineResult:
+        """
+        查询流水线阶段与用例结果（按 ticks 推进）。
+
+        参数:
+            pipeline_id: 流水线 id。
+
+        返回:
+            PipelineResult。
+        """
         rec = self._require(pipeline_id)
         if not rec.started:
             return PipelineResult(
@@ -118,11 +154,13 @@ class MockPipelineTool:
         )
 
     def _require(self, pipeline_id: str) -> _PipelineRecord:
+        """按 id 取内存记录；未知 id 抛 KeyError。"""
         if pipeline_id not in self._runs:
             raise KeyError(f"未知 pipeline_id: {pipeline_id}")
         return self._runs[pipeline_id]
 
     def _build_results(self, handle: PipelineHandle) -> list[CaseResult]:
+        """按 scenario 生成各用例 verdict。"""
         names = handle.case_names
         if self.scenario == "all_pass":
             return [CaseResult(n, "pass", "none", "断言全部通过") for n in names]

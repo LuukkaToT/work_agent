@@ -26,6 +26,18 @@ def apply_column_mapping(
       env: spoken_env > 表内 env 列
       version: 表内 version 列（按行）> spoken_version
       条数: row_limit 非空行；上限 _SHEET_ROW_CAP
+
+    参数:
+        table: 已读入的用例表。
+        case_name_col: 用例名列 0-based 下标。
+        version_col: 版本列下标；无则 None。
+        env_col: 环境列下标；无则 None。
+        row_limit: 最多取多少条非空用例；None 用上限。
+        spoken_env: 用户口头环境，优先于表内。
+        spoken_version: 用户口头版本，作表内缺省。
+
+    返回:
+        粗计划列表（case_names / version / env）。
     """
     width = len(table.headers)
     if case_name_col < 0 or case_name_col >= width:
@@ -72,6 +84,16 @@ def apply_column_mapping(
 
 
 def mapping_prompt_payload(table: SheetTable, sample_rows: int = 8) -> str:
+    """
+    把表头与样本行拼成给列映射 LLM 的提示文本。
+
+    参数:
+        table: 用例表。
+        sample_rows: 样本行数上限。
+
+    返回:
+        多行纯文本。
+    """
     lines = ["表头（下标从 0 起）:"]
     for i, h in enumerate(table.headers):
         lines.append(f"  [{i}] {h}")

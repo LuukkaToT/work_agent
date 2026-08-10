@@ -24,6 +24,8 @@ from work_agent.graph.state import append_audit
 
 
 class PipelineOpsInput(TypedDict):
+    """父图 → pipeline_ops 子图：只读上下文。"""
+
     user_input: str
     task_id: str
     intent: str
@@ -32,6 +34,8 @@ class PipelineOpsInput(TypedDict):
 
 
 class PipelineOpsOutput(TypedDict):
+    """子图 → 父图：流水线操作产出。"""
+
     pipelines: list[dict]
     results: list[dict]
     summary: dict
@@ -41,10 +45,18 @@ class PipelineOpsOutput(TypedDict):
 
 
 class PipelineOpsState(PipelineOpsInput, PipelineOpsOutput):
+    """子图内部全量 = 输入 + 产出 + 私有 ops_kind。"""
+
     ops_kind: str  # start | query | diagnose
 
 
 def build_pipeline_ops():
+    """
+    编译已有流水线操作子图（resolve → start|query|diagnose）。
+
+    返回:
+        已 compile 的子图（无独立 checkpointer，由父图注入）。
+    """
     graph = StateGraph(
         PipelineOpsState,
         input_schema=PipelineOpsInput,

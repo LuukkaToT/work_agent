@@ -10,6 +10,8 @@ from work_agent.core.checkpoint import get_checkpointer, make_thread_config
 
 @dataclass(frozen=True)
 class SessionInfo:
+    """CLI 会话列表中的一条摘要。"""
+
     thread_id: str
     updated_at: str  # checkpoint_id（时间可排序）或可读时间
     preview: str
@@ -17,6 +19,7 @@ class SessionInfo:
 
 
 def _message_text(content: object) -> str:
+    """把消息 content 归一成纯文本。"""
     if isinstance(content, str):
         return content.strip()
     if isinstance(content, list):
@@ -31,6 +34,7 @@ def _message_text(content: object) -> str:
 
 
 def _preview_from_values(values: dict[str, Any], *, max_len: int = 48) -> str:
+    """从 checkpoint channel_values 抽出短预览文案。"""
     reply = (values.get("reply") or "").strip()
     if reply:
         text = reply
@@ -51,7 +55,15 @@ def _preview_from_values(values: dict[str, Any], *, max_len: int = 48) -> str:
 
 
 def list_sessions(limit: int = 20) -> list[SessionInfo]:
-    """最近更新的 thread 列表（checkpoint_ns 为空的主图）。"""
+    """
+    列出最近更新的 thread（checkpoint_ns 为空的主图）。
+
+    参数:
+        limit: 最多返回条数。
+
+    返回:
+        SessionInfo 列表（按最近 checkpoint 倒序）。
+    """
     saver = get_checkpointer()
     conn = saver.conn
     rows = conn.execute(
@@ -90,6 +102,15 @@ def list_sessions(limit: int = 20) -> list[SessionInfo]:
 
 
 def session_exists(thread_id: str) -> bool:
+    """
+    判断 thread 是否已在 checkpointer 中落过盘。
+
+    参数:
+        thread_id: 会话 id。
+
+    返回:
+        存在主图 checkpoint 则为 True。
+    """
     if not thread_id:
         return False
     saver = get_checkpointer()
@@ -109,10 +130,14 @@ def resolve_session_pick(
     sessions: list[SessionInfo],
 ) -> str | None:
     """
-    解析用户选择：
-      空 / 非法 → None
-      纯数字序号（1-based）→ 对应 thread_id
-      其它 → 当作 thread_id 原文
+    解析用户选择：空/非法 → None；纯数字序号 → 对应 thread_id；其它当原文。
+
+    参数:
+        choice: 用户输入（序号或 thread_id）。
+        sessions: 当前展示的会话列表（序号按此列表解）。
+
+    返回:
+        选中的 thread_id；无效选择返回 None。
     """
     text = (choice or "").strip()
     if not text:

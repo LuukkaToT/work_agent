@@ -13,8 +13,16 @@ def clip_text(
     tail_chars: int | None = None,
 ) -> str:
     """
-    超限：head + 省略标记 + tail；未超限原样返回。
-    省略标记本身占预算，先扣掉再切 head/tail。
+    超限时保留 head + 省略标记 + tail；未超限原样返回。
+
+    参数:
+        text: 原始文本。
+        max_chars: 总长度上限（含省略标记）。
+        head_chars: 可选保留头部字符数；默认与 tail 对半分预算。
+        tail_chars: 可选保留尾部字符数。
+
+    返回:
+        截断后的文本。
     """
     if max_chars <= 0:
         return ""
@@ -70,7 +78,16 @@ class CharBudget:
     used: int = 0
 
     def take(self, text: str, *, max_chars: int) -> str:
-        """先 clip 到 max_chars，再计入预算；超预算返回短提示。"""
+        """
+        先 clip 到 max_chars，再计入本轮预算；超预算返回短提示。
+
+        参数:
+            text: 工具原始返回。
+            max_chars: 单次结果字符上限。
+
+        返回:
+            截断后的文本，或预算耗尽提示。
+        """
         if self.used >= self.limit:
             return (
                 f"[budget exceeded] used={self.used} limit={self.limit}；"

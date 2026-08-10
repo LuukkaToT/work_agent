@@ -44,6 +44,8 @@ class Profile:
 
 @dataclass(frozen=True)
 class Settings:
+    """进程级配置：LLM、TOOL_BACKEND、路径与 profile。"""
+
     llm_base_url: str
     llm_api_key: str
     llm_model: str
@@ -58,6 +60,7 @@ class Settings:
 
 
 def _load_profile(path: Path) -> Profile:
+    """从 profile.yaml 加载个人偏好；文件不存在则用默认 Profile。"""
     if not path.exists():
         return Profile()
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
@@ -75,6 +78,12 @@ def _load_profile(path: Path) -> Profile:
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
+    """
+    加载并缓存全局 Settings（读 .env + config/profile.yaml）。
+
+    返回:
+        不可变 Settings；进程内只构建一次。
+    """
     root = project_root()
     # override=False：已在环境里的变量优先，不被 .env 覆盖
     load_dotenv(root / ".env", override=False)

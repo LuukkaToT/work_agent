@@ -13,6 +13,8 @@ from work_agent.graph.state import TestFlowState
 
 
 class RouteDecision(BaseModel):
+    """LLM 结构化输出：本轮意图 + 一句话理由。"""
+
     intent: Literal[
         "analysis", "execute", "query", "start", "diagnose", "chat"
     ] = Field(
@@ -29,6 +31,15 @@ class RouteDecision(BaseModel):
 
 
 def router(state: TestFlowState) -> dict:
+    """
+    用 LLM 对本轮输入做单意图分类，写入 intent / requirement。
+
+    参数:
+        state: 读 ``user_input`` 与对话上下文。
+
+    返回:
+        ``intent``、``requirement``（等于本轮输入）及 audit。
+    """
     llm = get_chat_model(temperature=0).with_structured_output(RouteDecision)
 
     ctx = conversation_context(state, n=8)
@@ -74,4 +85,13 @@ def router(state: TestFlowState) -> dict:
 
 
 def route_by_intent(state: TestFlowState) -> str:
+    """
+    条件边：按 state["intent"] 选择下游节点名。
+
+    参数:
+        state: 须已由 router 写入 intent。
+
+    返回:
+        边标签（analysis / execute / start / query / diagnose / chat）。
+    """
     return state["intent"]

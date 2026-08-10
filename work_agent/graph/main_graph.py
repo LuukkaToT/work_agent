@@ -29,6 +29,7 @@ from work_agent.graph.subgraphs.pipeline_ops import build_pipeline_ops
 
 
 def _message_text(content: object) -> str:
+    """把消息 content（str / list 块）归一成纯文本。"""
     if isinstance(content, str):
         return content.strip()
     if isinstance(content, list):
@@ -43,6 +44,16 @@ def _message_text(content: object) -> str:
 
 
 def intake(state: TestFlowState) -> dict:
+    """
+    每轮入口：从最新消息取用户输入，归零任务级字段并重置 audit。
+
+    参数:
+        state: 当前图状态；至少需要非空 ``messages``。
+
+    返回:
+        写入 ``task_id`` / ``user_input``，清空任务级字段，
+        并通过 audit 哨兵重置本轮审计轨迹。
+    """
     messages = state.get("messages") or []
     if not messages:
         raise ValueError("intake 需要至少一条用户消息，请 invoke 时传入 messages")
@@ -80,6 +91,16 @@ def build_graph(
     checkpointer: Checkpointer | None = None,
     interrupt_before: Sequence[str] | None = None,
 ):
+    """
+    组装并 compile 主图（intake → router → 各分支 → respond → memory）。
+
+    参数:
+        checkpointer: 可选持久化；None 则无跨轮 checkpoint。
+        interrupt_before: 在指定节点名前打断（调试用）；默认不打断。
+
+    返回:
+        已 compile 的 LangGraph 应用。
+    """
     graph = StateGraph(TestFlowState)
 
     graph.add_node("intake", intake)
