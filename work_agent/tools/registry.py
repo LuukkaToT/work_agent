@@ -22,8 +22,14 @@ from work_agent.tools.mock import (
     MockScenario,
     MockKnowledgeSearchTool,
 )
-from work_agent.tools.protocols import CaseProvider, CaseSheetTool, LogTool, PipelineTool
 
+from work_agent.tools.protocols import (
+    CaseProvider,
+    CaseSheetTool,
+    KnowledgeSearchTool,
+    LogTool,
+    PipelineTool,
+)
 
 @lru_cache(maxsize=1)
 def get_case_provider() -> CaseProvider:
