@@ -30,6 +30,13 @@ def assemble_blocks(
     """
     按 priority 升序尽量装入；超限时从 priority 大的块开始丢弃整块，
     若仍超则对最低优先级块做尾部截断。
+
+    参数:
+        blocks: 待组装的上下文块。
+        limit: 总字符预算。
+
+    返回:
+        带【块名】小节的拼接文本；limit<=0 或无可选块时为空串。
     """
     if limit <= 0:
         return ""
@@ -61,6 +68,13 @@ def compress_observation(text: str, *, max_chars: int = 400) -> str:
     """
     把长 tool observation 压成短 evidence 摘录：
     优先保留含 ERROR/FAIL/Exception/Traceback 的行，否则 head+tail。
+
+    参数:
+        text: 工具原始返回。
+        max_chars: 压缩后上限。
+
+    返回:
+        压缩后的摘录文本。
     """
     raw = (text or "").strip()
     if len(raw) <= max_chars:

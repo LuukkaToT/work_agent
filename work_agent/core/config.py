@@ -41,13 +41,13 @@ class Profile:
     tool_result_max_chars: int = 8000
     react_total_chars_budget: int = 40000
     # 对话记忆
-    memory_summary_threshold: int = 12
-    memory_keep_recent: int = 8
-    # 检索
-    rag_top_k: int = 3
-    rag_pool_n: int = 20
-    rag_min_rrf_score: float = 0.01
-    rag_use_embeddings: bool = False
+    memory_summary_threshold: int = 12  # 超过此消息数才触发摘要
+    memory_keep_recent: int = 8  # 摘要后保留的最近消息数
+    # 检索（本地混合 RAG）
+    rag_top_k: int = 3  # 最终返回条数
+    rag_pool_n: int = 20  # 每路召回池大小
+    rag_min_rrf_score: float = 0.01  # RRF 分低于此丢弃
+    rag_use_embeddings: bool = False  # 是否启用 embedding 路（失败则降级 BM25）
 
 
 @dataclass(frozen=True)

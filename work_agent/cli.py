@@ -146,9 +146,11 @@ class _RunStatus:
     """Rich status 桥：节点/工具进度；HITL 前停 spinner。"""
 
     def __init__(self) -> None:
+        """初始化时不启动 spinner。"""
         self._status = None
 
     def start(self, text: str = "执行中 · …") -> None:
+        """启动或更新状态条文案。"""
         if self._status is not None:
             self._status.update(text)
             return
@@ -156,11 +158,13 @@ class _RunStatus:
         self._status.start()
 
     def stop(self) -> None:
+        """停止并清空状态条。"""
         if self._status is not None:
             self._status.stop()
             self._status = None
 
     def on_event(self, message: str) -> None:
+        """消费 runtime 进度事件（node:/tool:/status:）。"""
         if message.startswith("node:"):
             self.start(f"执行中 · {message[5:]}")
         elif message.startswith("tool:"):

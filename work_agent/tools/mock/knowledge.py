@@ -12,6 +12,7 @@ from work_agent.core.retrieval import (
 
 
 def _default_kb_dir() -> Path:
+    """默认本地故障知识库目录。"""
     return Path(__file__).resolve().parent / "mock_5g_fault_kb" / "kb"
 
 
@@ -26,7 +27,12 @@ class MockKnowledgeSearchTool:
         retriever: HybridRetriever | None = None,
     ) -> None:
         """
-        默认关闭 embedding（单测/离线稳）；联调可 use_embeddings=True。
+        构造本地混合检索工具。
+
+        参数:
+            kb_dir: kb 目录；None 用默认 mock_5g_fault_kb/kb。
+            use_embeddings: 默认 False（单测/离线稳）；联调可 True。
+            retriever: 可注入已建好的 HybridRetriever（单测用）。
         """
         self.kb_dir = kb_dir or _default_kb_dir()
         if retriever is not None:
@@ -39,6 +45,16 @@ class MockKnowledgeSearchTool:
             )
 
     def search(self, query: str, *, top_k: int = 3) -> str:
+        """
+        检索本地故障 kb。
+
+        参数:
+            query: 检索语句。
+            top_k: 返回条数上限。
+
+        返回:
+            可读检索摘要；空查询或目录缺失时返回提示字符串。
+        """
         q = (query or "").strip()
         if not q:
             return "[knowledge] empty query"

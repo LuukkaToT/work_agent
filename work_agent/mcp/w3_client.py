@@ -32,6 +32,12 @@ class W3McpConfig:
     timeout_seconds: float = 60.0
 
     def is_configured(self) -> bool:
+        """
+        判断当前配置是否足以发起连接。
+
+        返回:
+            stdio 需有 command；http 需有 url；否则 False。
+        """
         t = (self.transport or "").strip().lower()
         if t == "stdio":
             return bool(self.command.strip())
@@ -41,7 +47,12 @@ class W3McpConfig:
 
 
 def load_w3_mcp_config_from_env() -> W3McpConfig:
-    """读 os.environ（调用方应已 load_dotenv）。"""
+    """
+    从环境变量构造 W3McpConfig（调用方应已 load_dotenv）。
+
+    返回:
+        解析后的配置；缺省项用类字段默认值。
+    """
     import os
 
     raw_args = os.getenv("W3_MCP_ARGS", "").strip()
@@ -72,7 +83,18 @@ def load_w3_mcp_config_from_env() -> W3McpConfig:
 class W3SearchClient(Protocol):
     """可注入的检索客户端（单测用 fake）。"""
 
-    def search(self, query: str, *, top_k: int = 3) -> str: ...
+    def search(self, query: str, *, top_k: int = 3) -> str:
+        """
+        执行检索并返回可读文本。
+
+        参数:
+            query: 检索语句。
+            top_k: 条数上限。
+
+        返回:
+            摘要字符串（失败时也返回错误说明，不抛异常为佳）。
+        """
+        ...
 
 
 def _content_to_text(result: Any) -> str:
@@ -99,6 +121,7 @@ def _content_to_text(result: Any) -> str:
 
 
 def _pick_tool_name(listed: list[str], preferred: str) -> str:
+    """从 list_tools 结果里挑出最合适的检索 tool 名。"""
     if preferred in listed:
         return preferred
     for name in listed:
@@ -112,11 +135,13 @@ def _pick_tool_name(listed: list[str], preferred: str) -> str:
 
 
 async def _search_async(cfg: W3McpConfig, query: str, top_k: int) -> str:
+    """在异步 MCP 会话中执行一次 search。"""
     from mcp import ClientSession
 
     transport = (cfg.transport or "stdio").strip().lower()
 
     async def _run_session(read: Any, write: Any) -> str:
+        """初始化会话、选 tool、call_tool 并格式化结果。"""
         async with ClientSession(read, write) as session:
             await session.initialize()
             tools_resp = await session.list_tools()
@@ -160,7 +185,17 @@ async def _search_async(cfg: W3McpConfig, query: str, top_k: int) -> str:
 
 
 def search_via_w3_mcp(cfg: W3McpConfig, query: str, *, top_k: int = 3) -> str:
-    """同步入口：在独立事件循环中跑 MCP 调用。"""
+    """
+    同步入口：在独立事件循环中跑 MCP 调用。
+
+    参数:
+        cfg: MCP 连接配置。
+        query: 检索语句。
+        top_k: 条数上限。
+
+    返回:
+        可读检索文本；未配置或异常时返回错误说明字符串。
+    """
     if not cfg.is_configured():
         return (
             "[knowledge/w3] not configured: set W3_MCP_TRANSPORT and "
@@ -168,6 +203,7 @@ def search_via_w3_mcp(cfg: W3McpConfig, query: str, *, top_k: int = 3) -> str:
         )
 
     def _run() -> str:
+        """在新事件循环中执行 _search_async。"""
         return asyncio.run(_search_async(cfg, query, top_k))
 
     try:
@@ -192,4 +228,14 @@ class McpW3SearchClient:
     config: W3McpConfig = field(default_factory=load_w3_mcp_config_from_env)
 
     def search(self, query: str, *, top_k: int = 3) -> str:
+        """
+        按配置调用 w3_search。
+
+        参数:
+            query: 检索语句。
+            top_k: 条数上限。
+
+        返回:
+            可读文本（含失败时的错误说明）。
+        """
         return search_via_w3_mcp(self.config, query, top_k=top_k)

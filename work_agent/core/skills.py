@@ -118,6 +118,15 @@ class SkillLoader:
         """
         按 query 混合检索 references（BM25∥Embedding→RRF）。
         无资料或无命中时返回空 dict（不把全量灌进 prompt）。
+
+        参数:
+            pack: 已加载的 skill。
+            query: 用户问题；空串时保守只塞最短一篇。
+            top_k: 检索返回条数。
+            use_embeddings: 是否启用向量路。
+
+        返回:
+            ``source::title`` → 正文 的资料 dict。
         """
         if not pack.references:
             return {}

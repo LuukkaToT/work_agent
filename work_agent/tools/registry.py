@@ -113,6 +113,8 @@ def get_knowledge_search_tool() -> KnowledgeSearchTool:
     """
     按 TOOL_BACKEND 返回知识检索工具（lru_cache 复用）。
 
+    mock 侧是否启用 embedding 读自 profile.rag_use_embeddings。
+
     返回:
         实现 KnowledgeSearchTool 的实例；backend 未知时抛 NotImplementedError。
     """

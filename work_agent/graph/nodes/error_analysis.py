@@ -36,14 +36,18 @@ class _DiagnoseProgressCallback(BaseCallbackHandler):
     """ReAct 循环中上报 tool / thinking，供 CLI 状态条使用。"""
 
     def on_tool_start(self, serialized, input_str, **kwargs):  # noqa: ANN001
+        """工具开始时上报 tool:<name>。"""
         name = (serialized or {}).get("name") or "tool"
         report_progress(f"tool:{name}")
 
     def on_chat_model_start(self, serialized, messages, **kwargs):  # noqa: ANN001
+        """模型开始思考时上报 status:thinking。"""
         report_progress("status:thinking")
 
 
 class RuledOutItem(BaseModel):
+    """已排除假设的一条记录。"""
+
     hypothesis: str = Field(description="已排除的假设")
     reason: str = Field(description="排除理由（一句话）")
 
@@ -96,7 +100,16 @@ def collect_compressed_observations(
     *,
     max_chars_each: int = 400,
 ) -> list[str]:
-    """把 ToolMessage 压成短 evidence 摘录列表。"""
+    """
+    把 ToolMessage 压成短 evidence 摘录列表。
+
+    参数:
+        messages: ReAct 消息列表。
+        max_chars_each: 每条 observation 压缩后的字符上限。
+
+    返回:
+        ``工具名: 压缩摘录`` 字符串列表。
+    """
     out: list[str] = []
     for msg in messages or []:
         if not isinstance(msg, ToolMessage):
@@ -131,7 +144,14 @@ def _last_text(messages: list) -> str:
 def error_analysis(state: Mapping[str, Any]) -> dict:
     """
     对已消解的 pipelines 做受限 ReAct 归因（只读工具）。
+
     回写主图：summary（含 evidence / ruled_out），不含原始日志全文。
+
+    参数:
+        state: 读 ``pipelines`` / ``user_input``。
+
+    返回:
+        ``summary``（error_analysis 结构化字段、裁剪后的 analysis_text）及 audit。
     """
     pipelines = list(state.get("pipelines") or [])
     pids = [str(p.get("pipeline_id") or "") for p in pipelines if p.get("pipeline_id")]

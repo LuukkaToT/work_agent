@@ -44,7 +44,15 @@ class RetrievalHit:
 
 
 def tokenize(text: str) -> list[str]:
-    """简单中英混合分词。"""
+    """
+    简单中英混合分词（小写英数词 + 连续汉字）。
+
+    参数:
+        text: 原始文本。
+
+    返回:
+        token 列表。
+    """
     return [m.group(0).lower() for m in _TOKEN_RE.finditer(text or "")]
 
 
@@ -52,6 +60,13 @@ def chunk_markdown(text: str, *, source: str = "") -> list[Chunk]:
     """
     按 ## / ### 切块；无标题则整篇一块。
     每块带 title_path（如 H2 > H3）。
+
+    参数:
+        text: markdown 正文。
+        source: 来源名（通常为文件名），写入 chunk_id / source。
+
+    返回:
+        Chunk 列表（可含 preamble）。
     """
     text = (text or "").strip()
     if not text:
@@ -107,7 +122,15 @@ def chunk_markdown(text: str, *, source: str = "") -> list[Chunk]:
 
 
 def load_markdown_dir(dir_path: Path) -> list[Chunk]:
-    """加载目录下全部 .md 并切块。"""
+    """
+    加载目录下全部 .md 并切块。
+
+    参数:
+        dir_path: 含 markdown 的目录；不存在则返回空列表。
+
+    返回:
+        所有文件切出的 Chunk 列表。
+    """
     if not dir_path.is_dir():
         return []
     out: list[Chunk] = []
@@ -120,7 +143,15 @@ def load_markdown_dir(dir_path: Path) -> list[Chunk]:
 class BM25Index:
     """Okapi BM25（无第三方依赖）。"""
 
-    def __init__(self, corpus: Sequence[list[str]], *, k1: float = 1.5, b: float = 0.75) -> None:
+    def __init__(
+        self, corpus: Sequence[list[str]], *, k1: float = 1.5, b: float = 0.75
+    ) -> None:
+        """
+        参数:
+            corpus: 已分词的文档列表。
+            k1: TF 饱和参数。
+            b: 文档长度归一化参数。
+        """
         self.k1 = k1
         self.b = b
         self.corpus = [list(doc) for doc in corpus]
@@ -133,11 +164,21 @@ class BM25Index:
                 self.df[t] = self.df.get(t, 0) + 1
 
     def _idf(self, term: str) -> float:
+        """计算 term 的平滑 IDF。"""
         df = self.df.get(term, 0)
         # 平滑 IDF
         return math.log(1 + (self.n - df + 0.5) / (df + 0.5))
 
     def scores(self, query_tokens: Sequence[str]) -> list[float]:
+        """
+        对语料每篇文档打 BM25 分。
+
+        参数:
+            query_tokens: 已分词的查询。
+
+        返回:
+            与语料等长的分数列表；空语料返回空列表。
+        """
         if not self.n:
             return []
         scores = [0.0] * self.n
@@ -167,9 +208,14 @@ def rrf_fuse(
     k: int = 60,
 ) -> list[tuple[str, float]]:
     """
-    Reciprocal Rank Fusion。
-    ranked_lists: 每路按名次排列的 chunk_id 列表（已是 topN）。
-    返回 (chunk_id, rrf_score) 降序。
+    Reciprocal Rank Fusion，合并多路排序。
+
+    参数:
+        ranked_lists: 每路按名次排列的 chunk_id 列表（已是 topN）。
+        k: RRF 常数（越大单路名次影响越平缓）。
+
+    返回:
+        ``(chunk_id, rrf_score)`` 降序列表。
     """
     scores: dict[str, float] = {}
     for ranked in ranked_lists:
@@ -179,6 +225,7 @@ def rrf_fuse(
 
 
 def _cosine(a: list[float], b: list[float]) -> float:
+    """两向量余弦相似度；维数不合或零向量返回 0。"""
     if not a or not b or len(a) != len(b):
         return 0.0
     dot = sum(x * y for x, y in zip(a, b))
@@ -195,6 +242,12 @@ EmbedFn = Callable[[list[str]], list[list[float]]]
 def default_embed_fn(texts: list[str]) -> list[list[float]]:
     """
     尝试走 OpenAI 兼容 embeddings；失败则抛异常由调用方降级。
+
+    参数:
+        texts: 待向量化文本列表。
+
+    返回:
+        与 texts 等长的向量列表。
     """
     from work_agent.core.config import get_settings
 
@@ -226,6 +279,13 @@ class HybridRetriever:
         use_embeddings: bool = True,
         rrf_k: int = 60,
     ) -> None:
+        """
+        参数:
+            chunks: 已切好的检索单元。
+            embed_fn: 自定义向量化；None 用 default_embed_fn。
+            use_embeddings: False 时只用 BM25；True 但失败则自动降级。
+            rrf_k: 传给 rrf_fuse 的常数。
+        """
         self.chunks = list(chunks)
         self.by_id = {c.chunk_id: c for c in self.chunks}
         self.rrf_k = rrf_k
@@ -247,9 +307,11 @@ class HybridRetriever:
 
     @property
     def embeddings_enabled(self) -> bool:
+        """本实例是否成功启用了向量检索。"""
         return self._embeddings_ok
 
     def _bm25_top(self, query: str, n: int) -> list[str]:
+        """取 BM25 分数最高的前 n 个 chunk_id。"""
         toks = tokenize(query)
         scores = self._bm25.scores(toks)
         order = sorted(range(len(scores)), key=lambda i: (-scores[i], i))
@@ -263,6 +325,7 @@ class HybridRetriever:
         return out
 
     def _emb_top(self, query: str, n: int) -> list[str]:
+        """取与查询向量余弦相似度最高的前 n 个 chunk_id。"""
         if not self._embeddings_ok or not self._vectors:
             return []
         try:
@@ -291,6 +354,18 @@ class HybridRetriever:
         pool_n: int = 20,
         min_rrf_score: float = 0.01,
     ) -> list[RetrievalHit]:
+        """
+        混合检索：BM25（及可选 Embedding）经 RRF 融合后取 top_k。
+
+        参数:
+            query: 检索语句。
+            top_k: 最终返回条数。
+            pool_n: 每路召回池大小。
+            min_rrf_score: 低于此 RRF 分的命中丢弃。
+
+        返回:
+            RetrievalHit 列表（按融合分降序）；空查询或空语料返回 []。
+        """
         q = (query or "").strip()
         if not q or not self.chunks:
             return []
@@ -317,7 +392,16 @@ class HybridRetriever:
 
 
 def format_hits(hits: Sequence[RetrievalHit], *, query: str) -> str:
-    """把命中格式化成给 LLM 读的文本。"""
+    """
+    把命中格式化成给 LLM 读的文本。
+
+    参数:
+        hits: 检索命中。
+        query: 原查询（写入头部说明）。
+
+    返回:
+        可读摘要；无命中时返回 no hits 提示。
+    """
     if not hits:
         return f"[knowledge] no hits for query={query!r}"
     parts = [f"[knowledge] query={query!r} showing={len(hits)} mode=rrf"]
@@ -333,7 +417,12 @@ def format_hits(hits: Sequence[RetrievalHit], *, query: str) -> str:
 def hits_to_reference_dict(hits: Sequence[RetrievalHit]) -> dict[str, str]:
     """
     供 SkillLoader.select_references：按 source 聚合块。
-    key 用 source::title_path 避免互相覆盖。
+
+    参数:
+        hits: 检索命中。
+
+    返回:
+        ``source::title_path`` → 正文；避免互相覆盖。
     """
     out: dict[str, str] = {}
     for h in hits:

@@ -56,6 +56,7 @@ def _interrupt_values_from_snapshot(snap: Any) -> list[Any]:
 
 
 def _emit(on_event: EventFn | None, message: str) -> None:
+    """若提供了 on_event 回调则转发一条进度消息。"""
     if on_event is not None:
         on_event(message)
 
