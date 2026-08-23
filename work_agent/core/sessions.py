@@ -1,11 +1,16 @@
-"""会话列表：从 checkpointer SQLite 读 thread，供 CLI /session 使用。"""
+"""会话列表：从 checkpointer（SQLite 或 Postgres）读 thread，供 CLI /session 使用。"""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any
 
-from work_agent.core.checkpoint import get_checkpointer, make_thread_config
+from work_agent.core.checkpoint import (
+    get_checkpointer,
+    make_thread_config,
+    query_recent_threads,
+    thread_checkpoint_exists,
+)
 
 
 @dataclass(frozen=True)
@@ -65,18 +70,7 @@ def list_sessions(limit: int = 20) -> list[SessionInfo]:
         SessionInfo 列表（按最近 checkpoint 倒序）。
     """
     saver = get_checkpointer()
-    conn = saver.conn
-    rows = conn.execute(
-        """
-        SELECT thread_id, MAX(checkpoint_id) AS last_id
-        FROM checkpoints
-        WHERE checkpoint_ns = ''
-        GROUP BY thread_id
-        ORDER BY last_id DESC
-        LIMIT ?
-        """,
-        (limit,),
-    ).fetchall()
+    rows = query_recent_threads(saver, limit)
 
     out: list[SessionInfo] = []
     for thread_id, last_id in rows:
@@ -114,15 +108,7 @@ def session_exists(thread_id: str) -> bool:
     if not thread_id:
         return False
     saver = get_checkpointer()
-    row = saver.conn.execute(
-        """
-        SELECT 1 FROM checkpoints
-        WHERE thread_id = ? AND checkpoint_ns = ''
-        LIMIT 1
-        """,
-        (thread_id,),
-    ).fetchone()
-    return row is not None
+    return thread_checkpoint_exists(saver, thread_id)
 
 
 def resolve_session_pick(

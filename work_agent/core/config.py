@@ -64,7 +64,8 @@ class Settings:
     profile: Profile
     workspace_dir: Path  # 报告落盘根目录
     profile_path: Path
-    checkpoint_path: Path  # LangGraph 状态库（SQLite）
+    checkpoint_path: Path  # LangGraph 状态库（SQLite，迁移期兼容，见 postgres_dsn）
+    postgres_dsn: str  # 上线用：checkpointer / ledger / user_config 共用；空串表示未配置
 
 
 def _load_profile(path: Path) -> Profile:
@@ -122,4 +123,5 @@ def get_settings() -> Settings:
         workspace_dir=root / "workspace",
         profile_path=profile_path,
         checkpoint_path=root / "workspace" / "checkpoints.sqlite",
+        postgres_dsn=os.getenv("POSTGRES_DSN", ""),
     )

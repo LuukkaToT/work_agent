@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: work_agent-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: work_agent
+      POSTGRES_PASSWORD: work_agent
+      POSTGRES_DB: work_agent
+    ports:
+      - "5432:5432"
+    volumes:
+      - work_agent_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U work_agent -d work_agent"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  work_agent_pg_data:

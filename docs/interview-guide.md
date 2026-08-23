@@ -137,7 +137,11 @@ flowchart TD
 
 **Q1：为什么用 LangGraph，不用 LangChain Agent 或者自己写循环？**
 
-ReAct 式 Agent 让模型自己决定调哪个 tool、调几次，对「执行用例」这种写操作风险太高，而且出问题无法复现。LangGraph 的价值是把流程显式画成图：节点、边、条件边都是代码里写死的，模型只在节点内部做一次结构化输出。加上它原生支持 checkpointer 和 interrupt，人工确认和断点续跑不用自己造轮子。如果将来做「失败自动归因」那种需要边想边试的能力，我会在图里挂一个 ReAct 子图，而不是把主干改成自由循环。
+ReAct 式 Agent 让模型自己决定调哪个 tool、调几次，对「执行用例」这种写操作风险太高，而且出问题无法复现。LangGraph 的价值是把流程显式画成图：节点、边、条件边都是代码里写死的，模型只在节点内部做一次结构化输出。加上它原生支持 checkpointer 和 interrupt，人工确认和断点续跑不用自己造轮子。真正需要「边想边试」的只有失败归因（`error_analysis`），我在这一个节点内部做了个显式的 Agent Loop（见下面追问），主图的确定性状态机完全不受影响。
+
+**追问：`error_analysis` 具体怎么做 ReAct 的？为什么不直接用 `langgraph.prebuilt.create_react_agent`？**
+
+一开始确实是用 `create_react_agent` 快速搭起来的，能跑，但它是个黑盒：内部循环、消息怎么拼、什么时候停都是库代码决定，出问题只能加日志猜，而且没法直接单测——要么起真图，要么大段 mock 库内部实现。后来我换成了一个显式函数 `run_agent_loop`（`work_agent/graph/helpers/agent_loop.py`）：`for step in range(max_steps)` 里手写「`model.invoke` 决策 → 取 `tool_calls` → 按白名单执行 → `compress_observation` 压缩观察 → 塞回 `ToolMessage`」，触顶时强插一条「禁止再调工具，直接给结论」的提示再问最后一次。好处三点：一，工具白名单和「未知工具直接拒绝」是我自己代码控制的，不依赖库的隐藏行为；二，每一步都能显式挂 `report_progress` 上报到 CLI 状态条，不用再装 `BaseCallbackHandler`；三，单测直接 mock 一个只有 `bind_tools`/`invoke` 两个方法的假 model，7 个用例把「无工具直接返回」「工具报错」「未知工具拒绝」「触顶强制收尾」「观察压缩生效」这些分支全覆盖，不用起真 LLM 或真图。
 
 **Q2：State 是怎么设计的？为什么要分两层？**
 

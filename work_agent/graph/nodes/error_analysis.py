@@ -10,14 +10,13 @@ from __future__ import annotations
 import json
 from typing import Any, Mapping
 
-from langchain_core.callbacks import BaseCallbackHandler
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
-from langgraph.prebuilt import create_react_agent
 from pydantic import BaseModel, Field
 
 from work_agent.core.config import get_settings
 from work_agent.core.llm import get_chat_model
 from work_agent.core.skills import load_skill
+from work_agent.graph.helpers.agent_loop import run_agent_loop
 from work_agent.graph.helpers.context_budget import (
     PRIORITY_CONCLUSION,
     PRIORITY_EVIDENCE,
@@ -28,21 +27,7 @@ from work_agent.graph.helpers.context_budget import (
     compress_observation,
 )
 from work_agent.graph.helpers.diagnose_tools import build_diagnose_tools
-from work_agent.graph.helpers.progress import report_progress
 from work_agent.graph.helpers.truncate import CharBudget
-
-
-class _DiagnoseProgressCallback(BaseCallbackHandler):
-    """ReAct 循环中上报 tool / thinking，供 CLI 状态条使用。"""
-
-    def on_tool_start(self, serialized, input_str, **kwargs):  # noqa: ANN001
-        """工具开始时上报 tool:<name>。"""
-        name = (serialized or {}).get("name") or "tool"
-        report_progress(f"tool:{name}")
-
-    def on_chat_model_start(self, serialized, messages, **kwargs):  # noqa: ANN001
-        """模型开始思考时上报 status:thinking。"""
-        report_progress("status:thinking")
 
 
 class RuledOutItem(BaseModel):
@@ -184,7 +169,6 @@ def error_analysis(state: Mapping[str, Any]) -> dict:
         tool_result_max_chars=profile.tool_result_max_chars,
     )
     model = get_chat_model(temperature=0)
-    agent = create_react_agent(model, tools, prompt=system)
 
     user_input = state.get("user_input") or ""
     brief = {
@@ -212,14 +196,13 @@ def error_analysis(state: Mapping[str, Any]) -> dict:
     tool_trace: list[dict[str, Any]] = []
     obs_compressed: list[str] = []
     try:
-        result = agent.invoke(
-            {"messages": [HumanMessage(content=human)]},
-            config={
-                "recursion_limit": react_limit,
-                "callbacks": [_DiagnoseProgressCallback()],
-            },
+        messages = run_agent_loop(
+            model=model,
+            tools=tools,
+            system=system,
+            user=human,
+            max_steps=react_limit,
         )
-        messages = result.get("messages") or []
         tool_trace = extract_tool_trace(messages)
         obs_compressed = collect_compressed_observations(messages)
         analysis_text = _last_text(messages) or "未能生成归因结论"

@@ -168,6 +168,28 @@ flowchart TD
 
 子图用独立 schema：`ExecFlowInput` / `PipelineOpsInput` 等。`audit` 只出不进。问进度走 `pipeline_ops`/`query`；「只创建」后再启动走 `start`；失败归因走 `diagnose`（ReAct，知识库本期可空）。
 
+### error_analysis 内部：显式 Agent Loop
+
+`error_analysis` 需要「边想边试」（先查状态、再抓日志、必要时查知识库），是全图唯一的 Role 节点。早期用 `langgraph.prebuilt.create_react_agent` 搭起来，能跑但是个黑盒：内部循环、消息拼接、停止时机全在库代码里，不好单测、也不好挂进度上报。现在改成了显式函数 `run_agent_loop`（`work_agent/graph/helpers/agent_loop.py`）：
+
+```python
+for step in range(max_steps):
+    report_progress("status:thinking")
+    ai_msg = bound_model.invoke(messages)
+    ...  # 按白名单执行 tool_calls，compress_observation 压缩后塞回 ToolMessage
+    if step == max_steps - 1:
+        messages.append(HumanMessage(content=_STOP_HINT))  # 强制收尾，逼模型收敛
+        ...
+```
+
+要点：
+
+- 工具白名单在函数内部按 `tools_by_name` 匹配，未注册工具直接返回拒绝文案，不抛异常，不影响循环继续；
+- 每步显式调用 `report_progress`，CLI 状态条不用再挂 `BaseCallbackHandler`；
+- 单测只需 mock 一个只有 `bind_tools` / `invoke` 两个方法的假 model，不用起真图、真 LLM（见 `tests/test_agent_loop.py`）。
+
+`error_analysis` 节点只负责组装 `system` / `tools` / `human` 交给循环，循环本身与具体业务无关，理论上可复用给其他「受限 ReAct」场景。
+
 ### respond + memory
 
 分支节点产出的 `summary` 是给报告、台账和程序看的结构化数据。`respond` 把本轮事实组织成中文回答，写入 `state.reply`，并追加 `AIMessage`。随后 `memory`：消息超过 12 条时，把窗口外旧对话压进会话级 `dialogue_summary`，用 `RemoveMessage` 裁到最近 8 条；阈值以下直通。router / exec_params 注入的是「历史摘要 + 最近对话」。
