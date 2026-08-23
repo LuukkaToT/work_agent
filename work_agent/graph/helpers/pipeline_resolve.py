@@ -56,12 +56,16 @@ def _parse_ordinal(text: str) -> int | None:
     return None
 
 
-def resolve_pipeline_records(user_input: str) -> list[PipelineRecord]:
+def resolve_pipeline_records(
+    user_input: str, *, user_id: str | None = None
+) -> list[PipelineRecord]:
     """
     从用户话消解台账中的候选流水线（尚不 interrupt）。
 
     参数:
         user_input: 本轮用户输入（可含 pipeline_id / 用例名 /「上次」「全部」等）。
+        user_id: 不为 None 时只在该用户名下的记录里消解；None 表示不过滤
+            （当前无生产调用点这么用，只留给管理/调试场景）。
 
     返回:
         候选 PipelineRecord 列表；无法消解时可能返回最近若干条。
@@ -71,14 +75,14 @@ def resolve_pipeline_records(user_input: str) -> list[PipelineRecord]:
 
     m = _PIPELINE_ID_RE.search(text)
     if m:
-        rec = ledger.get(m.group(1))
+        rec = ledger.get(m.group(1), user_id=user_id)
         return [rec] if rec else []
 
     cases = [c for c in _CASE_RE.findall(text) if "_" in c or "-" in c]
     if cases:
         found: list[PipelineRecord] = []
         for name in cases:
-            found.extend(ledger.find_by_case(name))
+            found.extend(ledger.find_by_case(name, user_id=user_id))
         seen: set[str] = set()
         uniq: list[PipelineRecord] = []
         for r in found:
@@ -89,29 +93,31 @@ def resolve_pipeline_records(user_input: str) -> list[PipelineRecord]:
 
     # 「所有 / 全部」：直接最近若干条，交给查询聚合，不要再 interrupt
     if _ALL_RE.search(text):
-        return ledger.list_recent(limit=10)
+        return ledger.list_recent(limit=10, user_id=user_id)
 
     if _LAST_RE.search(text):
-        latest = ledger.latest(limit=1)
+        latest = ledger.latest(limit=1, user_id=user_id)
         if not latest:
             return []
-        siblings = ledger.find_by_task(latest[0].task_id)
+        siblings = ledger.find_by_task(latest[0].task_id, user_id=user_id)
         return siblings or latest
 
     # 「第一条流水线」：按最近列表取第 N 条（list_recent 已按时间倒序）
     idx = _parse_ordinal(text)
     if idx is not None:
-        recent = ledger.list_recent(limit=max(idx, 8))
+        recent = ledger.list_recent(limit=max(idx, 8), user_id=user_id)
         if 1 <= idx <= len(recent):
             return [recent[idx - 1]]
         return []
 
-    return ledger.list_recent(limit=5)
+    return ledger.list_recent(limit=5, user_id=user_id)
 
 
 def _match_pick(
     reply: str,
     candidates: list[PipelineRecord],
+    *,
+    user_id: str | None = None,
 ) -> PipelineRecord | None:
     """interrupt 回复：完整 id / 前缀 / 序号 / 唯一环境 IP。"""
     text = (reply or "").strip()
@@ -139,7 +145,7 @@ def _match_pick(
     if len(env_hits) == 1:
         return env_hits[0]
 
-    from_ledger = get_ledger().get(text)
+    from_ledger = get_ledger().get(text, user_id=user_id)
     if from_ledger:
         return from_ledger
     return None
@@ -149,6 +155,7 @@ def pick_records_for_action(
     user_input: str,
     *,
     action: str = "查询",
+    user_id: str | None = None,
 ) -> list[PipelineRecord]:
     """
     消解 + 必要时 interrupt 让用户选。
@@ -158,11 +165,12 @@ def pick_records_for_action(
     参数:
         user_input: 本轮用户输入。
         action: 提示文案中的动作名（查询/启动/诊断）。
+        user_id: 不为 None 时只在该用户名下的记录里消解/挑选。
 
     返回:
         最终选定的 PipelineRecord 列表；用户未选中时可能为空。
     """
-    candidates = resolve_pipeline_records(user_input)
+    candidates = resolve_pipeline_records(user_input, user_id=user_id)
     if not candidates:
         return []
 
@@ -208,7 +216,7 @@ def pick_records_for_action(
         if _ALL_RE.search(reply_text) or reply_text in {"全部", "所有", "all"}:
             return candidates
 
-        chosen = _match_pick(reply_text, candidates)
+        chosen = _match_pick(reply_text, candidates, user_id=user_id)
         if chosen is None:
             return []
         # 选中一条时：默认只查这一条（用户已明确点名）

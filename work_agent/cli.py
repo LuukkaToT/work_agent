@@ -26,6 +26,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
+from work_agent.core.identity import EnvIdentityProvider
 from work_agent.core.ledger import get_ledger
 from work_agent.core.sessions import (
     SessionInfo,
@@ -42,6 +43,8 @@ from work_agent.runtime import (
 
 app = typer.Typer(add_completion=False, help="测试专属 Agent CLI")
 console = Console()
+# CLI 是单进程单用户，进程启动时读一次即可；未配 WORK_AGENT_USER_ID 时退回 local-dev。
+_USER_ID = EnvIdentityProvider().get_user_id()
 
 
 def _runs_table(rows: list[dict], *, title: str | None = None) -> Table:
@@ -195,6 +198,7 @@ def _run_turn_with_status(
         return run_turn(
             text,
             thread_id=thread_id,
+            user_id=_USER_ID,
             ask=lambda payloads: _ask_with_status(bridge, payloads),
             with_checkpoint=True,
             on_event=bridge.on_event,
@@ -312,7 +316,7 @@ def _handle_slash(
     lower = raw.lower()
 
     if lower in {"/new", "/new "}:
-        tid = new_thread_id()
+        tid = new_thread_id(_USER_ID)
         console.print(f"[dim]新会话 {tid}[/dim]")
         return tid, True
 
@@ -360,7 +364,7 @@ def _handle_slash(
 
 def _repl(thread_id: str | None, *, verbose: bool = False) -> None:
     """交互式多轮 REPL：斜杠命令 + run_turn，直到 quit。"""
-    tid = thread_id or new_thread_id()
+    tid = thread_id or new_thread_id(_USER_ID)
     console.print(
         Panel(
             "测试 Agent REPL\n"
@@ -466,7 +470,7 @@ def list_runs(
             "status": r.status,
             "created_at": r.created_at,
         }
-        for r in get_ledger().list_recent(limit=limit)
+        for r in get_ledger().list_recent(limit=limit, user_id=_USER_ID)
     ]
     if not rows:
         console.print("[dim]台账里还没有执行记录[/dim]")

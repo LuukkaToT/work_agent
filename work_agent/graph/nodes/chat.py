@@ -2,7 +2,7 @@
 
 from langchain_core.messages import HumanMessage, SystemMessage
 
-from work_agent.core.llm import invoke_text
+from work_agent.core.llm import invoke_text_fast
 from work_agent.graph.state import TestFlowState
 
 
@@ -16,7 +16,7 @@ def quick_answer(state: TestFlowState) -> dict:
     返回:
         ``summary``（status/answer）与 audit。
     """
-    answer = invoke_text(
+    answer = invoke_text_fast(
         [
             SystemMessage(
                 content=(

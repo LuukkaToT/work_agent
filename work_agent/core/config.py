@@ -57,6 +57,10 @@ class Settings:
     llm_base_url: str
     llm_api_key: str
     llm_model: str
+    # 按 Flow/Role 分工的快/慢模型；未配对应环境变量时退回 llm_model（现有单模型
+    # 部署零改动）。同一个 OpenAI 兼容网关，只是 model 参数不同。
+    llm_fast_model: str
+    llm_reasoning_model: str
     llm_temperature: float
     llm_timeout: int
     llm_max_retries: int
@@ -107,6 +111,7 @@ def get_settings() -> Settings:
     api_key = os.getenv("LLM_API_KEY") or os.getenv("GEMINI_API_KEY") or ""
     # 注意：读的是仓库根下 config/profile.yaml，不是 work_agent/config/
     profile_path = root / "config" / "profile.yaml"
+    llm_model = os.getenv("LLM_MODEL", "gemini-2.5-flash")
 
     return Settings(
         llm_base_url=os.getenv(
@@ -114,7 +119,9 @@ def get_settings() -> Settings:
             "https://generativelanguage.googleapis.com/v1beta/openai/",
         ),
         llm_api_key=api_key,
-        llm_model=os.getenv("LLM_MODEL", "gemini-2.5-flash"),
+        llm_model=llm_model,
+        llm_fast_model=os.getenv("LLM_FAST_MODEL") or llm_model,
+        llm_reasoning_model=os.getenv("LLM_REASONING_MODEL") or llm_model,
         llm_temperature=float(os.getenv("LLM_TEMPERATURE", "0.2")),
         llm_timeout=int(os.getenv("LLM_TIMEOUT", "60")),
         llm_max_retries=int(os.getenv("LLM_MAX_RETRIES", "2")),

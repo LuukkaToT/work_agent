@@ -12,7 +12,7 @@ from pathlib import Path
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from work_agent.core.config import get_settings
-from work_agent.core.llm import invoke_text
+from work_agent.core.llm import invoke_text_reasoning
 from work_agent.core.skills import SkillLoader
 from work_agent.graph.state import TestFlowState
 
@@ -36,7 +36,7 @@ def test_analysis(state: TestFlowState) -> dict:
     refs = loader.select_references(pack, user_input)
     system_prompt = pack.as_system_prompt(refs)
 
-    text = invoke_text(
+    text = invoke_text_reasoning(
         [
             SystemMessage(content=system_prompt),
             HumanMessage(

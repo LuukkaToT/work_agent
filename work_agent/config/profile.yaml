@@ -1,7 +1,0 @@
-default_version: "27B"
-frequent_topologies:
-  - "topo_a"
-  - "topo_b"
-poll_interval_seconds: 30
-poll_max_attempts: 40
-create_retry_attempts: 1

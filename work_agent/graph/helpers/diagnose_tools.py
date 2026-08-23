@@ -14,6 +14,7 @@ from typing import Any
 from langchain_core.tools import BaseTool, tool
 
 from work_agent.core.ledger import get_ledger
+from work_agent.core.policy import assert_read_only_whitelist
 from work_agent.graph.helpers.truncate import CharBudget
 from work_agent.tools.mock.executor import MockScenario
 from work_agent.tools.registry import (
@@ -31,6 +32,7 @@ def build_diagnose_tools(
     scenario: MockScenario = "case_error",
     budget: CharBudget | None = None,
     tool_result_max_chars: int = _DEFAULT_MAX_CHARS,
+    user_id: str = "",
 ) -> list[BaseTool]:
     """
     构造诊断白名单工具（只读；禁止 create/start）。
@@ -41,6 +43,8 @@ def build_diagnose_tools(
         scenario: mock 故障场景，同时作用于 pipeline 与 log。
         budget: 本轮工具返回累计字符预算；None 用默认。
         tool_result_max_chars: 单次工具结果截断上限。
+        user_id: 当前操作者工号；``find_case_history`` 只在其名下记录里查，
+            空串表示未接身份（此时按台账回填后的语义查不到任何记录）。
 
     返回:
         LangChain BaseTool 列表，供 ReAct agent 使用。
@@ -106,7 +110,9 @@ def build_diagnose_tools(
     def find_case_history(case_name: str, limit: int = 5) -> str:
         """查该用例近期流水线台账（只读），用于区分偶发失败 vs 持续失败。"""
         try:
-            rows = ledger.find_by_case(case_name, limit=limit)
+            # 空串按台账回填后的语义走：过滤到"这个身份"，回填后没有行会匹配，
+            # 不是退回不过滤——跟 pipeline_resolve.py 的处理方式保持一致。
+            rows = ledger.find_by_case(case_name, limit=limit, user_id=user_id)
             payload: list[dict[str, Any]] = [
                 {
                     "pipeline_id": r.pipeline_id,
@@ -143,7 +149,7 @@ def build_diagnose_tools(
         except Exception as exc:  # noqa: BLE001
             return _out(f"[search_knowledge error] {exc}")
 
-    return [
+    tools = [
         get_pipeline_status,
         fetch_logs,
         grep_logs,
@@ -151,3 +157,6 @@ def build_diagnose_tools(
         get_case_spec,
         search_knowledge,
     ]
+    # 构造期自检：误把写操作工具混进这份只读白名单时直接拦住，不用等运行时才发现。
+    assert_read_only_whitelist([t.name for t in tools])
+    return tools

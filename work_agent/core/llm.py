@@ -8,6 +8,8 @@ LLM 唯一工厂。
 
 from __future__ import annotations
 
+from typing import Any
+
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import BaseMessage
 from langchain_openai import ChatOpenAI
@@ -67,8 +69,55 @@ def invoke_text(
         归一后的纯文本（已 strip）。
     """
     resp = get_chat_model(temperature=temperature, model=model).invoke(messages)
-    content = resp.content
+    return _normalize_content(resp.content)
 
+
+def get_fast_model(*, temperature: float | None = None) -> BaseChatModel:
+    """
+    Flow 节点用：单次结构化抽取/分类，没有多步推理，选便宜快模型。
+
+    参数:
+        temperature: 覆盖默认温度；None 用配置值。
+
+    返回:
+        指向 ``Settings.llm_fast_model`` 的 ChatOpenAI 兼容客户端。
+    """
+    return get_chat_model(temperature=temperature, model=get_settings().llm_fast_model)
+
+
+def get_reasoning_model(*, temperature: float | None = None) -> BaseChatModel:
+    """
+    Role 节点用：开放式多步推理（ReAct/长文本生成），选强模型。
+
+    参数:
+        temperature: 覆盖默认温度；None 用配置值。
+
+    返回:
+        指向 ``Settings.llm_reasoning_model`` 的 ChatOpenAI 兼容客户端。
+    """
+    return get_chat_model(
+        temperature=temperature, model=get_settings().llm_reasoning_model
+    )
+
+
+def invoke_text_fast(
+    messages: list[BaseMessage], *, temperature: float | None = None
+) -> str:
+    """Flow 用途的 ``invoke_text``：内部转调 ``get_fast_model``。"""
+    resp = get_fast_model(temperature=temperature).invoke(messages)
+    return _normalize_content(resp.content)
+
+
+def invoke_text_reasoning(
+    messages: list[BaseMessage], *, temperature: float | None = None
+) -> str:
+    """Role 用途的 ``invoke_text``：内部转调 ``get_reasoning_model``。"""
+    resp = get_reasoning_model(temperature=temperature).invoke(messages)
+    return _normalize_content(resp.content)
+
+
+def _normalize_content(content: Any) -> str:
+    """把 OpenAI 兼容端点返回的 content（str 或分段 list）归一成纯文本。"""
     if isinstance(content, str):
         return content.strip()
     if isinstance(content, list):

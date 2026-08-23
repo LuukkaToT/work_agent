@@ -1,5 +1,6 @@
 """RunLedger：用临时目录建库，不碰 workspace/index.db。"""
 
+from work_agent.core.identity import DEFAULT_USER_ID
 from work_agent.core.ledger import RunLedger
 
 
@@ -110,6 +111,41 @@ def test_find_by_task(tmp_path):
     )
     found = ledger.find_by_task("task-x")
     assert [r.pipeline_id for r in found] == ["p1", "p2"]
+
+
+def test_legacy_empty_user_id_backfilled_on_next_startup(tmp_path):
+    """历史空 user_id 记录：下次启动（重新构造 RunLedger）时应被回填成默认身份。"""
+    db_path = tmp_path / "index.db"
+    ledger = RunLedger(db_path)
+    insert(ledger, "r1")  # 默认 user_id=""，模拟身份接线前留下的老记录
+    assert ledger.get("r1").user_id == ""
+
+    # 重新构造指向同一个库：_init_db 里的回填该跑一次
+    ledger2 = RunLedger(db_path)
+    rec = ledger2.get("r1")
+    assert rec is not None
+    assert rec.user_id == DEFAULT_USER_ID
+
+
+def test_backfill_is_idempotent_and_does_not_touch_real_user_ids(tmp_path):
+    db_path = tmp_path / "index.db"
+    ledger = RunLedger(db_path)
+    insert(ledger, "legacy")
+    ledger.upsert(
+        pipeline_id="owned",
+        task_id="task-owned",
+        case_names=["HF_A_001"],
+        version="27B",
+        env="7.223.50.60",
+        status="running",
+        user_id="z00888363",
+    )
+
+    # 连续两次重新构造：回填只影响空串，不影响已有真实身份，且重复跑不出错
+    for _ in range(2):
+        fresh = RunLedger(db_path)
+        assert fresh.get("legacy").user_id == DEFAULT_USER_ID
+        assert fresh.get("owned").user_id == "z00888363"
 
 
 def test_replace_id_swaps_primary_key(tmp_path):

@@ -14,7 +14,7 @@ from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, Tool
 from pydantic import BaseModel, Field
 
 from work_agent.core.config import get_settings
-from work_agent.core.llm import get_chat_model
+from work_agent.core.llm import get_fast_model, get_reasoning_model
 from work_agent.core.skills import load_skill
 from work_agent.graph.helpers.agent_loop import run_agent_loop
 from work_agent.graph.helpers.context_budget import (
@@ -167,8 +167,9 @@ def error_analysis(state: Mapping[str, Any]) -> dict:
         scenario="case_error",
         budget=budget,
         tool_result_max_chars=profile.tool_result_max_chars,
+        user_id=state.get("user_id") or "",
     )
-    model = get_chat_model(temperature=0)
+    model = get_reasoning_model(temperature=0)  # Role：开放式多步推理
 
     user_input = state.get("user_input") or ""
     brief = {
@@ -229,7 +230,8 @@ def error_analysis(state: Mapping[str, Any]) -> dict:
 
     structured: dict[str, Any]
     try:
-        structured_llm = get_chat_model(temperature=0).with_structured_output(
+        # Flow：纯字段抽取，非推理，用快模型
+        structured_llm = get_fast_model(temperature=0).with_structured_output(
             ErrorAnalysisOut
         )
         parsed: ErrorAnalysisOut = structured_llm.invoke(

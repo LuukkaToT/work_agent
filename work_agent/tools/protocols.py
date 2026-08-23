@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-from typing import Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
 
 from work_agent.tools.models import CaseInfo, PipelineHandle, PipelineResult, SheetTable
 
@@ -58,6 +58,7 @@ class PipelineTool(Protocol):
         case_names: list[str],
         version: str,
         env: str,
+        options: dict[str, Any] | None = None,
     ) -> PipelineHandle:
         """
         创建流水线，不启动。
@@ -66,6 +67,8 @@ class PipelineTool(Protocol):
             case_names: 要跑的用例名列表。
             version: 软件版本（如 27B）。
             env: 物理组网 IP。
+            options: 可选开关收纳参数（目前只有 ``debug_mode``）；新增开关都进
+                这个 dict 内部字段，本 Protocol 签名不再变。
 
         返回:
             含服务端 ``pipeline_id`` 的句柄。

@@ -11,9 +11,17 @@ pipeline_ops / diagnose_tools / pipeline_resolve）只认协议，不关心具�
 
 多用户隔离：``pipelines.user_id`` 存创建者工号（如 z00888363），不是未来
 用户表的 int 主键——工号是从鉴权拿到的稳定业务身份，台账没必要为了一个代理键去
-反查一张（本期还不存在的）用户表。``user_id`` 目前是可选参数（默认空串），等
-identity.py 把真实身份接进 state 后（阶段3），调用方再传真实值；查询方法已经
-支持按 user_id 过滤，接线时只需传参，不需要再改这个文件。
+反查一张（本期还不存在的）用户表。全部调用点（``exec_flow.py`` 写入、
+``pipeline_resolve.py``/``diagnose_tools.py``/``cli.py`` 读取）现在都真实传了
+``user_id``，按用户隔离已经生效。
+
+历史回填：早期没有身份接线时创建的记录 ``user_id`` 全是空串。直接打开过滤会让
+这些老记录“查不到”，所以两个后端的建表函数都会在启动时顺手把 ``user_id=''``
+的行统一改成 ``core/identity.py`` 的 ``DEFAULT_USER_ID``（当前是
+``local-dev``，即未配 ``WORK_AGENT_USER_ID`` 时的默认身份）——语义上等价于
+“以前没人配工号时的数据，就属于这个默认身份”，跟现在没配工号的 CLI 查询用的
+身份完全对齐。这条 ``UPDATE ... WHERE user_id=''`` 和建表语句一样是幂等操作，
+回填完之后每次启动都是 0 行受影响的空操作，不需要单独的迁移脚本或版本号表。
 """
 
 from __future__ import annotations
@@ -28,6 +36,7 @@ from typing import Protocol
 
 from work_agent.core.config import get_settings
 from work_agent.core.db import get_pool
+from work_agent.core.identity import DEFAULT_USER_ID
 
 
 @dataclass(frozen=True)
@@ -148,6 +157,11 @@ class RunLedger:
                     user_id TEXT NOT NULL DEFAULT ''
                 )
                 """
+            )
+            # 历史回填：早期没有身份接线时留下的空 user_id 记录，统一归到默认身份，
+            # 见模块 docstring「历史回填」一节。幂等：回填完之后每次都是空操作。
+            conn.execute(
+                "UPDATE pipelines SET user_id=? WHERE user_id=''", (DEFAULT_USER_ID,)
             )
             conn.commit()
 
@@ -441,6 +455,10 @@ class PostgresLedger:
                     user_id TEXT NOT NULL DEFAULT ''
                 )
                 """
+            )
+            # 历史回填：语义同 RunLedger._init_db，见模块 docstring「历史回填」一节。
+            conn.execute(
+                "UPDATE pipelines SET user_id=%s WHERE user_id=''", (DEFAULT_USER_ID,)
             )
 
     def upsert(

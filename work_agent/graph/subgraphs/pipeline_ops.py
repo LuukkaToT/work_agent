@@ -31,6 +31,7 @@ class PipelineOpsInput(TypedDict):
     intent: str
     messages: Annotated[list[AnyMessage], add_messages]
     dialogue_summary: str
+    user_id: str
 
 
 class PipelineOpsOutput(TypedDict):

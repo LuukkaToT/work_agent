@@ -23,7 +23,7 @@ def test_memory_skips_under_threshold():
 
 def test_memory_summarizes_and_removes_old(monkeypatch):
     monkeypatch.setattr(
-        memory_mod, "invoke_text", lambda *a, **k: "摘要：跑过 HF_A_001"
+        memory_mod, "invoke_text_fast", lambda *a, **k: "摘要：跑过 HF_A_001"
     )
     msgs = _msgs(14)  # > 12
     out = memory({"messages": msgs, "dialogue_summary": "旧摘要"})
@@ -42,7 +42,7 @@ def test_memory_llm_failure_passthrough(monkeypatch):
     def boom(*a, **k):
         raise RuntimeError("llm down")
 
-    monkeypatch.setattr(memory_mod, "invoke_text", boom)
+    monkeypatch.setattr(memory_mod, "invoke_text_fast", boom)
     out = memory({"messages": _msgs(14), "dialogue_summary": ""})
     assert out["audit"][0]["skipped"] is True
     assert "llm down" in out["audit"][0]["error"]
@@ -51,7 +51,7 @@ def test_memory_llm_failure_passthrough(monkeypatch):
 
 
 def test_memory_empty_summary_skips(monkeypatch):
-    monkeypatch.setattr(memory_mod, "invoke_text", lambda *a, **k: "   ")
+    monkeypatch.setattr(memory_mod, "invoke_text_fast", lambda *a, **k: "   ")
     out = memory({"messages": _msgs(14), "dialogue_summary": ""})
     assert out["audit"][0]["skipped"] is True
     assert out["audit"][0]["reason"] == "empty_summary"

@@ -11,7 +11,9 @@ from work_agent.graph.helpers.pipeline_resolve import (
 )
 
 
-def _insert(ledger: RunLedger, pid: str, *, task_id: str, env: str) -> None:
+def _insert(
+    ledger: RunLedger, pid: str, *, task_id: str, env: str, user_id: str = ""
+) -> None:
     ledger.upsert(
         pipeline_id=pid,
         task_id=task_id,
@@ -19,6 +21,7 @@ def _insert(ledger: RunLedger, pid: str, *, task_id: str, env: str) -> None:
         version="27B",
         env=env,
         status="running",
+        user_id=user_id,
     )
 
 
@@ -72,3 +75,17 @@ def test_match_pick_ordinal_and_prefix(tmp_path, monkeypatch):
     assert _match_pick("1", cands).pipeline_id == cands[0].pipeline_id
     assert _match_pick("77942b18", cands).pipeline_id.startswith("77942b18")
     assert _match_pick("7.223.10.11", cands).env == "7.223.10.11"
+
+
+def test_resolve_pipeline_records_filters_by_user_id(tmp_path, monkeypatch):
+    """两个不同 user_id 的记录：传自己的 user_id 只看得到自己的。"""
+    ledger = RunLedger(tmp_path / "index.db")
+    _insert(ledger, "p-alice", task_id="t1", env="7.223.1.9", user_id="alice")
+    _insert(ledger, "p-bob", task_id="t2", env="7.223.10.11", user_id="bob")
+    monkeypatch.setattr(mod, "get_ledger", lambda: ledger)
+
+    found = resolve_pipeline_records("当前所有流水线的执行状态是什么？", user_id="alice")
+    assert [r.pipeline_id for r in found] == ["p-alice"]
+
+    found_bob = resolve_pipeline_records("当前所有流水线的执行状态是什么？", user_id="bob")
+    assert [r.pipeline_id for r in found_bob] == ["p-bob"]

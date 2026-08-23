@@ -1,5 +1,5 @@
 """
-Postgres 连接池：checkpointer / ledger / 未来的 user_config 共用一个进程内连接池。
+Postgres 连接池：checkpointer / ledger / user_config 共用一个进程内连接池。
 
 不用 SQLAlchemy：这里只需要「一个可复用连接池 + 少量原生 SQL」，
 LangGraph 的 PostgresSaver 本身也直接吃 psycopg 的 Connection / ConnectionPool，

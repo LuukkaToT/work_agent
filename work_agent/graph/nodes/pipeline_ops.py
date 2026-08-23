@@ -43,7 +43,7 @@ def resolve_pipelines(state: Mapping[str, Any]) -> dict:
     按 ops_kind 从台账消解目标流水线，写入 pipelines。
 
     参数:
-        state: 读 ``ops_kind`` / ``intent`` / ``user_input``。
+        state: 读 ``ops_kind`` / ``intent`` / ``user_input`` / ``user_id``。
 
     返回:
         ``pipelines``（可能为空）、必要时的 not_found ``summary``，以及 audit。
@@ -53,7 +53,8 @@ def resolve_pipelines(state: Mapping[str, Any]) -> dict:
         kind = "query"
     action = _OPS_ACTIONS[kind]
     user_input = state.get("user_input") or ""
-    records = pick_records_for_action(user_input, action=action)
+    user_id = state.get("user_id") or ""
+    records = pick_records_for_action(user_input, action=action, user_id=user_id)
 
     if not records:
         return {

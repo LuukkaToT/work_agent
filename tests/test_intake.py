@@ -7,6 +7,13 @@ from work_agent.graph.main_graph import intake
 from work_agent.graph.state import RESET_AUDIT
 
 
+@pytest.fixture(autouse=True)
+def _no_real_user_config(monkeypatch):
+    """默认不读真实 user_config（不依赖是否配了 Postgres）；
+    需要验证读取行为的测试自己覆盖这个 patch。"""
+    monkeypatch.setattr("work_agent.graph.main_graph.get_debug_mode", lambda uid: None)
+
+
 def test_intake_extracts_user_input_from_last_message():
     out = intake(
         {
@@ -46,11 +53,45 @@ def test_intake_resets_task_fields():
     assert out["results"] == []
     assert out["summary"] == {}
     assert out["reply"] == ""
-    # messages / dialogue_summary 不在返回值里 —— 会话级，intake 绝不碰
+    assert out["debug_mode"] is False
+    # messages / dialogue_summary / user_id 不在返回值里 —— 会话级，intake 绝不碰
     assert "messages" not in out
     assert "dialogue_summary" not in out
+    assert "user_id" not in out
     assert "pipeline_id" not in out
     assert "report_path" not in out
+
+
+def test_intake_reads_debug_mode_from_user_config(monkeypatch):
+    seen_user_ids = []
+
+    def fake_get_debug_mode(uid):
+        seen_user_ids.append(uid)
+        return True
+
+    monkeypatch.setattr(
+        "work_agent.graph.main_graph.get_debug_mode", fake_get_debug_mode
+    )
+
+    out = intake(
+        {
+            "messages": [HumanMessage(content="hi")],
+            "user_id": "z00888363",
+        }
+    )
+
+    assert out["debug_mode"] is True
+    assert seen_user_ids == ["z00888363"]
+
+
+def test_intake_defaults_debug_mode_false_when_unset(monkeypatch):
+    monkeypatch.setattr(
+        "work_agent.graph.main_graph.get_debug_mode", lambda uid: None
+    )
+
+    out = intake({"messages": [HumanMessage(content="hi")]})
+
+    assert out["debug_mode"] is False
 
 
 def test_intake_audit_has_reset_sentinel():

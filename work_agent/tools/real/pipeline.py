@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from work_agent.tools.models import PipelineHandle, PipelineResult
 
 
@@ -23,6 +25,7 @@ class RealPipelineTool:
         case_names: list[str],
         version: str,
         env: str,
+        options: dict[str, Any] | None = None,
     ) -> PipelineHandle:
         """
         创建流水线。
@@ -31,6 +34,7 @@ class RealPipelineTool:
             case_names: 用例名列表。
             version: 版本。
             env: 组网 IP。
+            options: 可选开关（如 ``debug_mode``）；接入公司 API 时摊平进请求体。
 
         返回:
             PipelineHandle（当前未实现）。

@@ -40,6 +40,19 @@ def test_create_returns_server_pipeline_id():
     uuid.UUID(handle.pipeline_id)  # 合法 uuid
 
 
+def test_create_records_options_without_changing_behavior():
+    """options 只记录进内部记录，不影响 create/start/query 的行为。"""
+    ex = MockPipelineTool()
+    handle = ex.create(VALID_CASES, "27B", "7.223.50.60", options={"debug_mode": True})
+    assert ex._runs[handle.pipeline_id].options == {"debug_mode": True}
+
+
+def test_create_defaults_options_to_empty_dict_when_omitted():
+    ex = MockPipelineTool()
+    handle = create(ex)
+    assert ex._runs[handle.pipeline_id].options == {}
+
+
 def test_start_then_query_ticks():
     ex = MockPipelineTool(scenario="all_pass", ticks_to_finish=2)
     handle = create(ex)

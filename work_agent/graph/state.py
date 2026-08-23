@@ -57,13 +57,22 @@ class TestFlowState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
     # 滚动摘要：窗口外旧对话的压缩，供 router / exec_params 注入
     dialogue_summary: str
+    # 当前操作者工号（CLI 走 core/identity.py 的 EnvIdentityProvider，HTTP 走
+    # api/identity.py 的 HeaderIdentityProvider；两者调用形状不同，但落到 state
+    # 里统一是这一个字符串）。由 runtime.py 在每次 invoke 时随消息一并写入；
+    # intake 不重置——同一个 thread 换轮不该换身份。
+    user_id: str
 
     # --- 任务级：会话 / 路由 ---
     task_id: str  # 本次任务 id
     user_input: str  # 本轮用户输入（从 messages[-1] 提取）
-    intent: str  # analysis | execute | query | start | diagnose | chat
+    intent: str  # analysis | execute | query | start | diagnose | chat | set_mode
     requirement: str  # 预留：结构化需求（目前先等于 user_input）
     analysis_path: str  # 测试分析 markdown 落盘路径
+    # 个人偏好：调测模式。intake 每轮从 core/user_config.py 重新读取（不是简单
+    # 归零），保证换会话/换设备改了配置后，下一轮就能看到新值；intent=set_mode
+    # 时由 router 直接改写成目标值，本轮下游立刻生效，见 nodes/set_mode.py。
+    debug_mode: bool
 
     # --- 任务级：执行子图 output 写回 ---
     # {plans: [{case_names, version, env, env_kind, missing}, ...]}
@@ -72,7 +81,7 @@ class TestFlowState(TypedDict):
     pipelines: list[dict]
 
     # --- 任务级：查询结果 ---
-    results: list[dict]  # 用例级结果列表（query_run 聚合）
+    results: list[dict]  # 用例级结果列表（query_pipelines 聚合）
     # 只放汇总量：status / message / answer / total / passed / failed_count / failed / created / failed_pipelines
     summary: dict
 

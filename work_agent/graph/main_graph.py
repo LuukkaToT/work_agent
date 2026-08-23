@@ -5,7 +5,8 @@
                  ├─ analysis → test_analysis ──┐
                  ├─ execute → exec_flow ───────┤
                  ├─ start|query|diagnose → pipeline_ops ─┤
-                 └─ chat → quick_answer ───────┤
+                 ├─ chat → quick_answer ───────┤
+                 └─ set_mode → set_mode ───────┤
                                                │
                             respond → memory → END
 """
@@ -18,11 +19,13 @@ from typing import Sequence
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import Checkpointer
 
+from work_agent.core.user_config import get_debug_mode
 from work_agent.graph.nodes.analysis import test_analysis
 from work_agent.graph.nodes.chat import quick_answer
 from work_agent.graph.nodes.memory import memory
 from work_agent.graph.nodes.respond import respond
 from work_agent.graph.nodes.router import route_by_intent, router
+from work_agent.graph.nodes.set_mode import set_mode
 from work_agent.graph.state import RESET_AUDIT, TestFlowState
 from work_agent.graph.subgraphs.exec_flow import build_exec_flow
 from work_agent.graph.subgraphs.pipeline_ops import build_pipeline_ops
@@ -63,6 +66,7 @@ def intake(state: TestFlowState) -> dict:
         raise ValueError("本轮用户消息为空")
 
     task_id = str(uuid.uuid4())[:8]
+    user_id = state.get("user_id") or ""
 
     return {
         "task_id": task_id,
@@ -75,6 +79,9 @@ def intake(state: TestFlowState) -> dict:
         "results": [],
         "summary": {},
         "reply": "",
+        # 每轮重新读，不是简单归零：换会话/换设备改了配置，下一轮就要看到新值。
+        # 未设置过时 get_debug_mode 返回 None，这里落成确定性的 False。
+        "debug_mode": bool(get_debug_mode(user_id)),
         "audit": [
             {RESET_AUDIT: True},
             {
@@ -109,6 +116,7 @@ def build_graph(
     graph.add_node("exec_flow", build_exec_flow())
     graph.add_node("pipeline_ops", build_pipeline_ops())
     graph.add_node("quick_answer", quick_answer)
+    graph.add_node("set_mode", set_mode)
     graph.add_node("respond", respond)
     graph.add_node("memory", memory)
 
@@ -124,6 +132,7 @@ def build_graph(
             "query": "pipeline_ops",
             "diagnose": "pipeline_ops",
             "chat": "quick_answer",
+            "set_mode": "set_mode",
         },
     )
 
@@ -131,6 +140,7 @@ def build_graph(
     graph.add_edge("exec_flow", "respond")
     graph.add_edge("pipeline_ops", "respond")
     graph.add_edge("quick_answer", "respond")
+    graph.add_edge("set_mode", "respond")
     graph.add_edge("respond", "memory")
     graph.add_edge("memory", END)
 

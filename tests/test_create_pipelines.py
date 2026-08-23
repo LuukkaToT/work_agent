@@ -39,6 +39,8 @@ def _settings_with_retry(attempts: int) -> Settings:
         llm_base_url=base.llm_base_url,
         llm_api_key=base.llm_api_key or "test-key",
         llm_model=base.llm_model,
+        llm_fast_model=base.llm_fast_model,
+        llm_reasoning_model=base.llm_reasoning_model,
         llm_temperature=base.llm_temperature,
         llm_timeout=base.llm_timeout,
         llm_max_retries=base.llm_max_retries,
@@ -124,6 +126,100 @@ def test_create_pipelines_two_envs(monkeypatch):
     assert [u["status"] for u in ledger.updates] == ["running", "running"]
 
 
+def test_create_pipelines_writes_user_id_into_ledger(monkeypatch):
+    """state["user_id"] 应原样落进台账 upsert，而不是继续用空串写入。"""
+    tool = MockPipelineTool()
+    ledger = _FakeLedger()
+    _patch(monkeypatch, tool, ledger)
+
+    state = _one_plan()
+    state["user_id"] = "z001"
+    create_pipelines(state)
+
+    assert ledger.rows[0]["user_id"] == "z001"
+
+
+class _RecordingTool:
+    """记录每次 create 收到的 options，供断言 debug_mode 解析逻辑。"""
+
+    def __init__(self) -> None:
+        self.create_options: list[dict] = []
+
+    def create(self, case_names, version, env, options=None):
+        self.create_options.append(dict(options or {}))
+        return PipelineHandle(
+            pipeline_id="33333333-3333-3333-3333-333333333333",
+            case_names=case_names,
+            version=version,
+            env=env,
+        )
+
+    def start(self, pipeline_id):
+        return True
+
+    def query(self, pipeline_id):
+        raise KeyError(pipeline_id)
+
+
+def test_create_pipelines_falls_back_to_state_debug_mode_when_not_mentioned(
+    monkeypatch,
+):
+    """本轮未提及 debug_mode（options.debug_mode=None）→ 兜底 state["debug_mode"]。"""
+    tool = _RecordingTool()
+    ledger = _FakeLedger()
+    _patch(monkeypatch, tool, ledger)
+
+    state = _one_plan()
+    state["debug_mode"] = True
+    create_pipelines(state)
+
+    assert tool.create_options[0]["debug_mode"] is True
+
+
+def test_create_pipelines_prefers_explicit_turn_override_over_state(monkeypatch):
+    """本轮显式提到 debug_mode → 用本轮值，覆盖 state 里的持久偏好。"""
+    tool = _RecordingTool()
+    ledger = _FakeLedger()
+    _patch(monkeypatch, tool, ledger)
+
+    plan = {
+        "case_names": ["HF_20B_PUSCH_001"],
+        "version": "27B",
+        "env": "7.223.50.60",
+        "options": {"debug_mode": False},
+    }
+    state = {
+        "task_id": "t1",
+        "debug_mode": True,
+        "exec_params": {"plans": [plan], "exec_mode": "create_and_start"},
+    }
+    create_pipelines(state)
+
+    assert tool.create_options[0]["debug_mode"] is False
+
+
+def test_create_pipelines_defaults_debug_mode_false_without_state(monkeypatch):
+    """state 里完全没有 debug_mode 字段时兜底 False，不抛错。"""
+    tool = _RecordingTool()
+    ledger = _FakeLedger()
+    _patch(monkeypatch, tool, ledger)
+
+    create_pipelines(_one_plan())  # 不带 debug_mode
+
+    assert tool.create_options[0]["debug_mode"] is False
+
+
+def test_create_pipelines_defaults_user_id_empty_when_missing(monkeypatch):
+    """没有身份信息时兜底空串，而不是抛错——语义是"过滤不到"而非"看到别人的"。"""
+    tool = MockPipelineTool()
+    ledger = _FakeLedger()
+    _patch(monkeypatch, tool, ledger)
+
+    create_pipelines(_one_plan())  # 不带 user_id
+
+    assert ledger.rows[0]["user_id"] == ""
+
+
 def test_create_only_skips_start(monkeypatch):
     tool = MockPipelineTool()
     ledger = _FakeLedger()
@@ -179,7 +275,7 @@ def test_write_ahead_before_create(monkeypatch):
     seen_at_create: list[str] = []
 
     class Tool:
-        def create(self, case_names, version, env):
+        def create(self, case_names, version, env, options=None):
             seen_at_create.extend(r["status"] for r in ledger.rows)
             return PipelineHandle(
                 pipeline_id="11111111-1111-1111-1111-111111111111",
@@ -216,7 +312,7 @@ def test_create_fail_no_retry(monkeypatch):
         def __init__(self) -> None:
             self.create_calls = 0
 
-        def create(self, case_names, version, env):
+        def create(self, case_names, version, env, options=None):
             self.create_calls += 1
             raise TimeoutError("http timeout")
 
@@ -247,7 +343,7 @@ def test_start_pipelines_retries(monkeypatch):
         def __init__(self) -> None:
             self.start_calls = 0
 
-        def create(self, case_names, version, env):
+        def create(self, case_names, version, env, options=None):
             raise AssertionError("不应 create")
 
         def start(self, pipeline_id):

@@ -8,7 +8,7 @@ from __future__ import annotations
 import re
 import uuid
 from dataclasses import dataclass, field
-from typing import Literal
+from typing import Any, Literal
 
 from work_agent.tools.models import CaseResult, PipelineHandle, PipelineResult
 
@@ -26,6 +26,9 @@ class _PipelineRecord:
     ticks: int = 0
     finished: bool = False
     results: list[CaseResult] = field(default_factory=list)
+    # 创建时传入的 options（如 debug_mode）；mock 不模拟公司 API 对它的实际
+    # 行为差异，只保证透传路径可测。
+    options: dict[str, Any] = field(default_factory=dict)
 
 
 class MockPipelineTool:
@@ -53,6 +56,7 @@ class MockPipelineTool:
         case_names: list[str],
         version: str,
         env: str,
+        options: dict[str, Any] | None = None,
     ) -> PipelineHandle:
         """
         创建流水线并生成 uuid 作为 pipeline_id。
@@ -61,6 +65,8 @@ class MockPipelineTool:
             case_names: 用例名列表。
             version: 版本。
             env: 组网 IP。
+            options: 可选开关（目前只有 ``debug_mode``）；只记录进内部记录，
+                不改变 mock 的执行行为（mock 不模拟公司 API 差异）。
 
         返回:
             PipelineHandle；参数非法时抛 ValueError。
@@ -83,7 +89,9 @@ class MockPipelineTool:
             version=version,
             env=env,
         )
-        self._runs[pipeline_id] = _PipelineRecord(handle=handle)
+        self._runs[pipeline_id] = _PipelineRecord(
+            handle=handle, options=dict(options or {})
+        )
         return handle
 
     def start(self, pipeline_id: str) -> bool:

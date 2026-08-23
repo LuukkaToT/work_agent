@@ -24,7 +24,7 @@ from typing import Any
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
 from work_agent.core.config import get_settings
-from work_agent.core.llm import invoke_text
+from work_agent.core.llm import invoke_text_fast
 from work_agent.graph.state import TestFlowState
 
 _MAX_ANALYSIS_LINES = 40
@@ -234,6 +234,14 @@ def respond(state: TestFlowState) -> dict:
         _persist_reply(task_id, reply)
         return _pack(reply, source="passthrough")
 
+    if intent == "set_mode":
+        # 简单的确认性回复，不用为这个走一次 LLM——事实只有一个布尔值，
+        # 没什么好让模型"转述"的，直通反而更快也不会说错。
+        debug_mode = bool(summary.get("debug_mode"))
+        reply = f"已{'开启' if debug_mode else '关闭'}调试模式。"
+        _persist_reply(task_id, reply)
+        return _pack(reply, source="passthrough")
+
     facts = _facts(state)
     user_parts = ["【事实】", json.dumps(facts, ensure_ascii=False, indent=2)]
 
@@ -250,7 +258,7 @@ def respond(state: TestFlowState) -> dict:
 
     error = ""
     try:
-        reply = invoke_text(
+        reply = invoke_text_fast(
             [
                 SystemMessage(content=_SYSTEM),
                 HumanMessage(content="\n".join(user_parts)),

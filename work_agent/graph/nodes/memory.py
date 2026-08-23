@@ -10,7 +10,7 @@ from __future__ import annotations
 from langchain_core.messages import HumanMessage, RemoveMessage, SystemMessage
 
 from work_agent.core.config import get_settings
-from work_agent.core.llm import invoke_text
+from work_agent.core.llm import invoke_text_fast
 from work_agent.graph.helpers.context import dialogue_text
 from work_agent.graph.state import TestFlowState
 
@@ -63,7 +63,7 @@ def memory(state: TestFlowState) -> dict:
     human_parts.append(old_text or "(空)")
 
     try:
-        summary = invoke_text(
+        summary = invoke_text_fast(
             [
                 SystemMessage(content=_SYSTEM),
                 HumanMessage(content="\n".join(human_parts)),

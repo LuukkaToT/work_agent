@@ -13,7 +13,11 @@ from typing import Any, Callable
 from langchain_core.messages import HumanMessage
 from langgraph.types import Command
 
-from work_agent.core.checkpoint import get_checkpointer, make_thread_config
+from work_agent.core.checkpoint import (
+    get_checkpointer,
+    make_thread_config,
+    thread_checkpoint_exists,
+)
 from work_agent.graph.helpers.progress import reset_progress_hook, set_progress_hook
 from work_agent.graph.main_graph import build_graph
 
@@ -136,6 +140,37 @@ def get_pending_interrupts(thread_id: str) -> list[Any]:
     return payloads
 
 
+def get_turn_status(thread_id: str) -> dict[str, Any] | None:
+    """
+    查询某 thread 当前状态，纯读、不触发任何执行——安全重复调用（轮询/刷新页面/换设备）。
+
+    专给 HTTP 网关的 ``GET /turns/{thread_id}`` 用：客户端拿到 interrupt 后如果
+    刷新了页面或换了设备，原来那次 POST 响应里的载荷就丢了，得能重新问一遍
+    「这个会话现在是什么状态」，而不是只能靠客户端自己缓存。
+
+    参数:
+        thread_id: 会话 id。
+
+    返回:
+        图当前状态 dict（同 ``run_turn_step`` 的返回形状，含 ``_thread_id``，
+        pending 时含 ``__interrupt__``）；thread 从未落过 checkpoint 时返回 None。
+    """
+    if not thread_id:
+        return None
+    saver = get_checkpointer()
+    if not thread_checkpoint_exists(saver, thread_id):
+        return None
+
+    app = build_graph(checkpointer=saver)
+    snap = app.get_state(make_thread_config(thread_id))
+    result = dict(snap.values or {})
+    payloads = _interrupt_values_from_snapshot(snap)
+    if payloads:
+        result["__interrupt__"] = payloads
+    result["_thread_id"] = thread_id
+    return result
+
+
 def resume_pending(
     thread_id: str,
     *,
@@ -189,6 +224,7 @@ def run_turn(
     text: str,
     *,
     thread_id: str | None = None,
+    user_id: str = "",
     ask: AskFn | None = None,
     with_checkpoint: bool = True,
     on_event: EventFn | None = None,
@@ -201,7 +237,9 @@ def run_turn(
 
     参数:
         text: 本轮用户自然语言输入。
-        thread_id: 会话 id；None 时自动生成 ``cli-xxxxxxxx``。
+        thread_id: 会话 id；None 时按 ``user_id``（或 ``cli``）自动生成。
+        user_id: 当前操作者工号；随消息一起写进图 state（见 ``state.py``
+            的 ``user_id`` 字段），每轮都传、幂等，不依赖"只在第一轮写"。
         ask: HITL 回调；图触发 interrupt 且未提供时抛 RuntimeError。
         with_checkpoint: False 时不挂 checkpointer（无持久化、无跨轮续跑）。
         on_event: 可选进度回调，事件形如 ``node:router`` / ``tool:fetch_logs``。
@@ -209,7 +247,7 @@ def run_turn(
     返回:
         图最终 state（并写入 ``_thread_id``）。
     """
-    tid = thread_id or f"cli-{uuid.uuid4().hex[:8]}"
+    tid = thread_id or new_thread_id(user_id or "cli")
     app = build_graph(
         checkpointer=get_checkpointer() if with_checkpoint else None
     )
@@ -219,7 +257,7 @@ def run_turn(
     try:
         result = _stream_graph(
             app,
-            {"messages": [HumanMessage(content=text)]},
+            {"messages": [HumanMessage(content=text)], "user_id": user_id},
             config=config,
             on_event=on_event,
         )
@@ -247,11 +285,97 @@ def run_turn(
     return result
 
 
-def new_thread_id() -> str:
+def new_thread_id(prefix: str = "cli") -> str:
     """
-    生成新的 CLI 会话 thread id。
+    生成新的会话 thread id。
+
+    参数:
+        prefix: id 前缀；CLI 默认 ``cli``，HTTP 网关传工号当前缀
+            （形如 ``z00888363-a1b2c3d4``），这样 ``GET /sessions``
+            按前缀过滤就能天然做到「只看自己的会话」，不用额外建映射表。
 
     返回:
-        形如 ``cli-xxxxxxxx`` 的短 id。
+        形如 ``{prefix}-xxxxxxxx`` 的短 id。
     """
-    return f"cli-{uuid.uuid4().hex[:8]}"
+    return f"{prefix}-{uuid.uuid4().hex[:8]}"
+
+
+def run_turn_step(
+    text: str,
+    *,
+    thread_id: str | None = None,
+    user_id: str = "",
+    on_event: EventFn | None = None,
+) -> dict[str, Any]:
+    """
+    非阻塞版 ``run_turn``：只跑一步，遇到 interrupt 立刻返回，不在这里循环等答案。
+
+    专给 HTTP 网关用——一次 HTTP 请求对应「跑到底，或者跑到第一个 interrupt 为止」，
+    要不要继续问下一轮交给客户端决定（自己决定何时调 ``resume_step``）。
+    CLI 继续用阻塞版 ``run_turn``（本地终端里 ``ask()`` 直接问人更省事，
+    不用客户端自己维护「上次问到哪」的状态）。
+
+    参数:
+        text: 本轮用户自然语言输入。
+        thread_id: 会话 id；None 时按 ``user_id``（或 ``cli``）自动生成
+            （见 ``new_thread_id``）。
+        user_id: 当前操作者工号；随消息一起写进图 state，每轮都传、幂等。
+        on_event: 可选进度回调。
+
+    返回:
+        图 invoke 的结果 dict，额外带 ``_thread_id``；
+        触发 interrupt 时含 ``__interrupt__``（原始载荷列表，未展开 ``.value``）。
+    """
+    tid = thread_id or new_thread_id(user_id or "cli")
+    app = build_graph(checkpointer=get_checkpointer())
+    config = make_thread_config(tid)
+
+    token = set_progress_hook(on_event)
+    try:
+        result = _stream_graph(
+            app,
+            {"messages": [HumanMessage(content=text)], "user_id": user_id},
+            config=config,
+            on_event=on_event,
+        )
+    finally:
+        reset_progress_hook(token)
+
+    result["_thread_id"] = tid
+    return result
+
+
+def resume_step(
+    thread_id: str,
+    answer: str,
+    *,
+    on_event: EventFn | None = None,
+) -> dict[str, Any] | None:
+    """
+    非阻塞版 ``resume_pending``：只用给定答案续跑一步，遇到下一个 interrupt 立刻返回。
+
+    参数:
+        thread_id: 要续跑的会话 id。
+        answer: 用户对上一个 interrupt 的回答。
+        on_event: 可选进度回调。
+
+    返回:
+        图结果 dict（同 ``run_turn_step``）；该 thread 当前没有 pending interrupt
+        时返回 None（调用方应回 404，而不是当成正常结果处理）。
+    """
+    payloads = get_pending_interrupts(thread_id)
+    if not payloads:
+        return None
+
+    app = build_graph(checkpointer=get_checkpointer())
+    config = make_thread_config(thread_id)
+    token = set_progress_hook(on_event)
+    try:
+        result = _stream_graph(
+            app, Command(resume=answer.strip()), config=config, on_event=on_event
+        )
+    finally:
+        reset_progress_hook(token)
+
+    result["_thread_id"] = thread_id
+    return result
