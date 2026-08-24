@@ -511,6 +511,88 @@ def init_db(
     console.print(f"[green]已初始化 {which}[/green]")
 
 
+@app.command("eval-diagnose")
+def eval_diagnose(
+    case: Optional[str] = typer.Option(
+        None, "--case", "-c", help="只跑指定 case_id（默认跑整套 golden set）"
+    ),
+    strategy: Optional[str] = typer.Option(
+        None,
+        "--strategy",
+        "-s",
+        help="只跑一种上下文策略（legacy / managed）；默认两种都跑做对比",
+    ),
+    no_store: bool = typer.Option(
+        False, "--no-store", help="不写 workspace/eval_results.jsonl，只打印"
+    ),
+) -> None:
+    """
+    在 golden set 上对比 legacy / managed 两种上下文策略（离线，会真调 LLM）。
+
+    参数:
+        case: 只跑某条 case_id。
+        strategy: 只跑某一种策略。
+        no_store: 只打印不落盘。
+    """
+    from work_agent.eval.runner import (
+        DEFAULT_STRATEGIES,
+        format_report,
+        load_cases,
+        results_path,
+        run_suite,
+        summarize,
+    )
+
+    try:
+        suite, cases = load_cases()
+    except (FileNotFoundError, ValueError) as exc:
+        console.print(f"[red]golden set 读取失败:[/] {exc}")
+        raise typer.Exit(code=1) from exc
+
+    if case:
+        cases = [c for c in cases if c.case_id == case]
+        if not cases:
+            console.print(f"[red]未找到 case_id={case!r}[/red]")
+            raise typer.Exit(code=1)
+
+    strategies = (strategy,) if strategy else DEFAULT_STRATEGIES
+    unknown = [s for s in strategies if s not in DEFAULT_STRATEGIES]
+    if unknown:
+        console.print(f"[red]未知策略 {unknown}，可选 {list(DEFAULT_STRATEGIES)}[/red]")
+        raise typer.Exit(code=1)
+
+    total = len(cases) * len(strategies)
+    bridge = _RunStatus()
+    bridge.start(f"评测中 · 0/{total}")
+    done = 0
+
+    def on_event(label: str) -> None:
+        nonlocal done
+        done += 1
+        bridge.start(f"评测中 · {done}/{total} · {label}")
+
+    try:
+        rows = run_suite(
+            cases=cases,
+            suite=suite,
+            strategies=strategies,  # type: ignore[arg-type]
+            store=not no_store,
+            on_event=on_event,
+        )
+    finally:
+        bridge.stop()
+
+    console.print(Panel(format_report(summarize(rows)), title=f"eval · {suite}", border_style="cyan"))
+
+    failures = [r for r in rows if r.get("error")]
+    if failures:
+        console.print(f"[yellow]{len(failures)} 行执行出错：[/yellow]")
+        for r in failures:
+            console.print(f"[dim]  {r['case_id']}/{r['strategy']}: {r['error']}[/dim]")
+    if not no_store:
+        console.print(f"[dim]已追加写入 {results_path()}[/dim]")
+
+
 @app.callback(invoke_without_command=True)
 def main(ctx: typer.Context) -> None:
     """

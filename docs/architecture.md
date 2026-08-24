@@ -1,7 +1,7 @@
 # 测试专属 Agent 架构设计（讨论稿 v0.5）
 
 命令行 Agent，给测试人员用。编排框架用 LangGraph。
-公司真实 tool 尚未接入，全部 mock，接口契约按真实系统设计，后续替换实现即可商用。
+默认仍走 mock。流水线真实执行流已在 `tools/real/` 搭好骨架（鉴权、加载参数、模拟 create 大 JSON、HTTP 占位）；明天换公司 API 只改带 `COMPANY_REPLACE` 的函数，图和 Protocol 不用动。
 
 MVP 范围：**到「创建并启动流水线 + 可查询进度」为止**。最终结果用户去流水线前端看；归因、环境自动修复、用例自动生成放 Phase 2。
 
@@ -180,6 +180,45 @@ for step in range(max_steps):
 
 `error_analysis` 节点只负责组装 `system` / `tools` / `human` 交给循环，循环本身与具体业务无关，理论上可复用给其他「受限 ReAct」场景。
 
+#### 历史裁剪为什么必须按 ReActStep 而不是按 Message
+
+循环内部不再维护一个扁平的 `messages` 列表，而是维护 `list[ReActStep]`，每个 step 是「一条 AIMessage + 它触发的全部 ToolMessage」。这不是风格偏好，是端点的硬约束：OpenAI 兼容接口要求每个 `tool_calls[].id` 都有配对的 `tool` 消息。如果按单条 Message 裁剪，很容易留下带 `tool_calls` 的 AIMessage 却删掉对应的 ToolMessage（或反过来留下孤儿 ToolMessage），下一次 `invoke` 直接 400。
+
+`trim_steps` 因此只在 step 粒度上操作：新的 step 留全文，旧的 step 用 `compact()` 整对替换成一条**不带 `tool_calls`** 的摘要消息，连摘要都装不下就整步丢弃。三种处理方式都保持配对不变量。`tests/test_agent_loop.py` 里的 `assert_tool_pairing` 会对每一次真正发给模型的消息序列做校验。
+
+裁剪只做确定性压缩（`compress_observation`），不调 LLM、不写盘——这是每轮都会走的热路径，在这里插一次摘要调用会让每步 ReAct 都多一次 LLM 往返。
+
+#### ContextManager：Selector / Compressor / Archive 三段拆分
+
+抽取阶段的上下文组装收拢进 `ContextManager`（`work_agent/graph/helpers/context_manager.py`）。之所以拆成三个模块而不是一个类，是因为三者的副作用性质完全不同，混在一起就没法说「这是纯函数」：
+
+| 模块 | 职责 | 副作用 |
+|------|------|--------|
+| `context_selector.py` | normalize / dedup / 相关性打分 / 预算选择 | 无（纯函数，单测直接断言） |
+| `context_compressor.py` | 超预算时调 fast model 摘要 | 只有 LLM 调用 |
+| `context_archive.py` | 原文落 workspace 并返回 artifact 引用 | 只有文件 IO |
+| `context_manager.py` | 编排上面三段 | 取决于是否超预算 |
+
+处理链让摘要**后置**，装得下就是零 LLM、零 IO：
+
+```
+Normalize → Dedup → Rank → Budget
+    ├─ 装得下 → Render
+    └─ 装不下 → Compress → Re-budget → Archive discarded → Render
+```
+
+后置的理由是成本：为省 3000 字符去花一次摘要调用，收益很薄，跟 `nodes/memory.py` 阈值以下直通是同一个判断。摘要自身的 token 会记进 `RenderResult.usage` 并汇总进 `DiagnosisResult.token_usage`——不这么做的话 managed 策略在 A/B 里会显得又省又快，成本其实藏在摘要里。
+
+pin 分三级，关键是 **pinned 不等于绕过预算**：
+
+- `immutable`：真正不可改（当前是用户诉求）。如果 immutable 自己就超预算，直接抛 `ImmutableBudgetExceeded`，不静默降级——那说明 prompt 或预算配置写错了，静默吞掉只会让后续排查极难定位。
+- `protected`：不允许删除，但允许压缩成摘要 + archive 引用（当前是结论草稿）。
+- `normal`：按分数正常参与裁剪。
+
+打分是 `-priority*10 + goal_relevance*4 + evidence_bonus*2 + recency*0.5`。`priority` 的权重刻意远大于其它三项，因为它编码了 conclusion > evidence > ruled_out > rag > raw 这个既有次序；`recency` 只当弱信号，一旦让它成为主裁剪依据，最早出现的证据会被系统性丢掉，而根因往往就在那儿。
+
+Archive 实现的是 working context 与 external context 分离：被裁掉的不是删掉，而是原文写进 `workspace/diagnose_archive/<run_id>/`，working context 里只留一句摘要加 `[原文 N 字符已归档，详见 artifact xxx]`。信息没丢，只是不再常驻上下文。
+
 ### respond + memory
 
 分支节点产出的 `summary` 是给报告、台账和程序看的结构化数据。`respond` 把本轮事实组织成中文回答，写入 `state.reply`，并追加 `AIMessage`。随后 `memory`：消息超过 12 条时，把窗口外旧对话压进会话级 `dialogue_summary`，用 `RemoveMessage` 裁到最近 8 条；阈值以下直通。router / exec_params 注入的是「历史摘要 + 最近对话」。
@@ -238,7 +277,9 @@ class PipelineTool(Protocol):
 
 Agent 侧命名纯净：`create` / `start` / `query`。`pipeline_id` **由服务端返回**。公司 SDK 放 `external/`，拼写怪异的公司函数名只在 `tools/real/` 做映射，不污染 Protocol。
 
-`create` 的环境参数二选一：`physical_env`（物理 IP），或 `logic_env` + `logic_constraint`（逻辑组网，由平台分配物理机）。两种都给或都缺则 `ValueError`。`options` 仍只收开关（目前 `debug_mode`）。`debug_mode` 不进图状态：前端 `GET/PATCH /users/me/config` 改偏好，`create_pipelines` 提交时按 `user_id` 点查 `get_debug_mode`（未设置过当 `False`）再塞进 `options`。计划上的 `env_kind` 决定走哪条模式；台账 `env` 列仍存展示字符串（IP 或 logic_env），不为此改表。Mock 把模式记在 `PipelineHandle.env_kind` / `logic_constraint`，不模拟公司 API 对两种模式的行为差异；`RealPipelineTool` 接入时把对应字段摊平进公司请求体即可。
+`create` 的环境参数二选一：`physical_env`（物理 IP），或 `logic_env` + `logic_constraint`（逻辑组网，由平台分配物理机）。两种都给或都缺则 `ValueError`。`options` 仍只收开关（目前 `debug_mode`）。`debug_mode` 不进图状态：前端 `GET/PATCH /users/me/config` 改偏好，`create_pipelines` 提交时按 `user_id` 点查 `get_debug_mode`（未设置过当 `False`）再塞进 `options`。计划上的 `env_kind` 决定走哪条模式；台账 `env` 列仍存展示字符串（IP 或 logic_env），不为此改表。Mock 把模式记在 `PipelineHandle.env_kind` / `logic_constraint`，不模拟公司 API 对两种模式的行为差异。
+
+`RealPipelineTool` 已接好真实执行流骨架：校验环境 → 加载平台默认参数 → 拼 create 大 JSON → 鉴权拿 token → HTTP create/start/query → 把响应映射回 `PipelineHandle` / `PipelineResult`。请求体是模拟 schema（对照 `external/pipeline_create.sample.json`）；明天换真实 API 时改 `pipeline_payload.py` / `pipeline_client.py` 里带 `COMPANY_REPLACE` 的函数，以及 `.env` 的 `PIPELINE_API_*`，图和 Protocol 不用动。
 
 Mock 行为可配置四场景：全通过、版本失败、用例报错、环境不可用。`query` 用 tick 模拟分钟级执行进度；未 `start` 时 phase=`created`。
 
@@ -461,3 +502,31 @@ CLI 的 `run_turn`/`resume_pending` 是阻塞的：遇到 `interrupt` 就在进�
 
 - `tests/test_runtime_step.py`：mock 假 app（不调 LLM），验证 `run_turn_step`/`resume_step` 遇 interrupt 立刻返回、能正确串联多轮 resume。
 - `tests/test_api_gateway.py`：用 `TestClient` + mock `runtime.run_turn_step`/`resume_step`，只测网关自己的逻辑（鉴权 401、跨用户 403、无 pending 404、并发 409、响应结构转换），图的正确性交给上面那层单测和各节点自己的测试。
+
+## 十四、离线 A/B 评测：怎么证明上下文管理真的有用
+
+改上下文策略最容易犯的错是「感觉变好了」。所以 `error_analysis` 的核心逻辑抽成了 `run_diagnosis(context_strategy=...)`，同一个 case 可以分别按 `legacy`（改造前行为：历史不裁剪、抽取上下文按整块丢弃）和 `managed`（ReAct 历史按 step 裁剪 + ContextManager）跑一遍，直接比数。节点自己走 `managed`，`summary` / `audit` 的形状不变。
+
+golden set 在 `config/eval_cases.json`（6 条，覆盖 case / version / env / none 四类归因）。每条除了 `expected_fail_kind` 还有 `expected_evidence_keys`——那些**必须活到最终 working context** 的关键词，取自 `tools/mock/logs.py` 各 scenario 的尾部特征行。期望值只存在 golden 文件里，不复制进结果行，避免同一份期望在两处漂移。
+
+`python -m work_agent.cli eval-diagnose` 跑整套（`--case` / `--strategy` / `--no-store`）。
+
+### 为什么落 jsonl 而不是 Postgres
+
+`pipelines` / `user_config` / checkpoint 进 Postgres 是因为它们是**运行时多租户状态**：跨进程、跨会话、要求重启存活。评测结果不是——它是离线开发产物，没有并发写、没有租户隔离需求，要的是「随手 diff 两次跑分」。为它建表加 repository 属于过度设计，`workspace/eval_results.jsonl` 追加写就够，真要看趋势直接读进 pandas。
+
+表结构用**长表**（一行 = 一个 `case × strategy`，带 `strategy` 列）而不是宽表（`baseline_result` / `new_result` 两列）：加第三种策略时长表不用改 schema。
+
+### 指标怎么读
+
+| 指标 | 含义 | 可信度 |
+|------|------|--------|
+| `context_chars` | 最终 working context 字符数 | 硬指标 |
+| `token_total` | 本次诊断全部 LLM 调用的 token（**含摘要自身开销**） | 硬指标 |
+| `evidence_recall` | `expected_evidence_keys` 有多少活到最终上下文 | 硬指标 |
+| `accuracy` | `fail_kind` 是否等于期望 | 6 条样本的趋势参考，不是统计结论 |
+| `latency_ms` / `tool_calls` | 耗时与工具调用次数 | 受网络抖动影响，看趋势 |
+
+`evidence_recall` 是这里最该被盯住的指标：省字符很容易，把根因证据一起省掉就是净损失。反过来 `context_chars` 单独变小也不一定是好事——`legacy` 把每条观察无脑压到 400 字符，字符数很低但那正是「还没判断有没有余量就先丢证据」这个问题本身。两个指标必须一起看。
+
+要诚实的一点：在当前 mock 日志上，`compress_observation` 的关键词过滤已经把观察压得很短，两种策略的差距主要来自去重（同一份日志被取两次时 managed 只留一份）和 ReAct 历史裁剪，抽取阶段的差异不大。真实日志里 ERROR 行成百上千时差距才会显著。评测框架先接好，是为了到那时对比已经是现成的。

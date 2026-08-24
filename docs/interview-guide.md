@@ -165,7 +165,37 @@ ReAct 式 Agent 让模型自己决定调哪个 tool、调几次，对「执行�
 
 **追问：`error_analysis` 具体怎么做 ReAct 的？为什么不直接用 `langgraph.prebuilt.create_react_agent`？**
 
-一开始确实是用 `create_react_agent` 快速搭起来的，能跑，但它是个黑盒：内部循环、消息怎么拼、什么时候停都是库代码决定，出问题只能加日志猜，而且没法直接单测——要么起真图，要么大段 mock 库内部实现。后来我换成了一个显式函数 `run_agent_loop`（`work_agent/graph/helpers/agent_loop.py`）：`for step in range(max_steps)` 里手写「`model.invoke` 决策 → 取 `tool_calls` → 按白名单执行 → `compress_observation` 压缩观察 → 塞回 `ToolMessage`」，触顶时强插一条「禁止再调工具，直接给结论」的提示再问最后一次。好处三点：一，工具白名单和「未知工具直接拒绝」是我自己代码控制的，不依赖库的隐藏行为；二，每一步都能显式挂 `report_progress` 上报到 CLI 状态条，不用再装 `BaseCallbackHandler`；三，单测直接 mock 一个只有 `bind_tools`/`invoke` 两个方法的假 model，7 个用例把「无工具直接返回」「工具报错」「未知工具拒绝」「触顶强制收尾」「观察压缩生效」这些分支全覆盖，不用起真 LLM 或真图。
+一开始确实是用 `create_react_agent` 快速搭起来的，能跑，但它是个黑盒：内部循环、消息怎么拼、什么时候停都是库代码决定，出问题只能加日志猜，而且没法直接单测——要么起真图，要么大段 mock 库内部实现。后来我换成了一个显式函数 `run_agent_loop`（`work_agent/graph/helpers/agent_loop.py`）：`for step in range(max_steps)` 里手写「`model.invoke` 决策 → 取 `tool_calls` → 按白名单执行 → `compress_observation` 压缩观察 → 塞回 `ToolMessage`」，触顶时强插一条「禁止再调工具，直接给结论」的提示再问最后一次。好处三点：一，工具白名单和「未知工具直接拒绝」是我自己代码控制的，不依赖库的隐藏行为；二，每一步都能显式挂 `report_progress` 上报到 CLI 状态条，不用再装 `BaseCallbackHandler`；三，单测直接 mock 一个只有 `bind_tools`/`invoke` 两个方法的假 model，用例把「无工具直接返回」「工具报错」「未知工具拒绝」「触顶强制收尾」「观察压缩生效」这些分支全覆盖，不用起真 LLM 或真图。
+
+**追问：ReAct 跑八步，历史会越滚越长，你怎么裁？**
+
+关键不是「怎么裁」而是「按什么粒度裁」。循环内部维护的不是扁平的 `messages` 列表，而是 `list[ReActStep]`，一个 step 就是「一条 AIMessage + 它触发的全部 ToolMessage」。这是硬约束不是洁癖：OpenAI 兼容端点要求每个 `tool_calls[].id` 都有配对的 `tool` 消息，按单条 Message 裁很容易留下带 `tool_calls` 的 AIMessage 却删掉对应 ToolMessage，或者反过来留个孤儿 ToolMessage，下一次 `invoke` 直接 400。`trim_steps` 只在 step 粒度操作：新的留全文，旧的用 `compact()` 整对替换成一条**不带 `tool_calls`** 的摘要消息，连摘要都装不下就整步丢掉——三种处理都保持配对不变量。测试里有个 `assert_tool_pairing`，对每一次真正发给模型的消息序列都校验一遍。
+
+另外这条热路径上刻意不调 LLM：裁剪只用确定性的 `compress_observation`。每步 ReAct 都插一次摘要往返，延迟和成本都不划算。
+
+**追问：那 ContextManager 是干什么的？为什么要拆成三个模块？**
+
+它管的是抽取阶段的上下文组装（`context_manager.py`）。拆成三个是因为副作用性质不同，混在一个类里就没法声称任何一部分是纯函数：`context_selector.py` 只做 normalize / 去重 / 相关性打分 / 预算选择，无 LLM 无 IO，单测直接断言；`context_compressor.py` 只负责调 fast model 摘要；`context_archive.py` 只负责把原文写进 `workspace/diagnose_archive/`；`context_manager.py` 只编排。
+
+三个设计上的取舍值得说：
+
+一，**摘要后置**。处理链是 `Normalize → Dedup → Rank → Budget`，装得下就直接渲染，零 LLM 零 IO；只有确定性选择装不下才进 `Compress → Re-budget → Archive`。为省几千字符去花一次摘要调用收益很薄，这跟 `memory` 节点阈值以下直通是同一个判断。而且摘要自己烧的 token 会记进 `usage` 汇总——不记的话新策略在 A/B 里会显得又省又快，成本其实藏在摘要里，那是自欺。
+
+二，**pinned 不等于绕过预算**。分三级：`immutable`（用户诉求，不可改；如果它自己就超预算直接抛 `ImmutableBudgetExceeded`，不静默降级，那说明配置写错了）、`protected`（结论草稿，不允许删除但允许压成摘要 + archive 引用）、`normal`（正常参与裁剪）。如果 pinned 直接绕过预算，pinned 自己超限时整个预算机制就失效了。
+
+三，**recency 只当弱信号**。打分是 `-priority*10 + goal_relevance*4 + evidence_bonus*2 + recency*0.5`，priority 的权重刻意压倒性大。让 recency 主导裁剪的话，最早出现的证据会被系统性丢掉，而根因往往就在最早那几行。
+
+还有个思路是 working context 与 external context 分离：被裁掉的内容不是删掉，而是原文落盘，上下文里只留一句摘要加 `[原文 N 字符已归档，详见 artifact xxx]`。信息没丢，只是不再常驻。
+
+**追问：你怎么证明这套改造真的有用，而不是自我感觉良好？**
+
+这是我特意补的一块。`error_analysis` 的核心抽成了 `run_diagnosis(context_strategy="legacy"|"managed")`，同一个 case 能按改造前和改造后各跑一遍，`python -m work_agent.cli eval-diagnose` 在 `config/eval_cases.json`（6 条，覆盖 case/version/env/none）上对比，每个 `case × strategy` 落一行长表 jsonl。
+
+指标要分清可信度：`context_chars`、`token_total`（含摘要开销）、`evidence_recall` 是确定性计算的硬指标；`accuracy` 只有 6 条样本，只能当趋势参考，我不会拿它说「准确率提升了 X%」。`evidence_recall` 是最该盯的一个——golden set 里每条声明了 `expected_evidence_keys`，即必须活到最终 working context 的关键词，省字符很容易，把根因证据一起省掉就是净损失，所以它必须和 `context_chars` 一起看。反过来 `context_chars` 单独变小也不一定好：`legacy` 把每条观察无脑压到 400 字符，字符数很低，但那正是「还没判断有没有余量就先丢证据」这个问题本身。
+
+评测结果落 jsonl 而不是 Postgres 也是个有意识的选择：台账和 checkpoint 进库是因为它们是运行时多租户状态，评测结果是离线开发产物，没有并发写也没有租户隔离需求，为它建表加 repository 属于过度设计。长表而不是 `baseline_result`/`new_result` 宽表，是为了加第三种策略时不用改 schema。
+
+要诚实的一点：在当前 mock 日志上两种策略差距不大，因为 `compress_observation` 的关键词过滤已经把观察压得很短，差异主要来自去重和历史裁剪。真实日志里 ERROR 行成百上千时差距才会显著——框架先接好，到时候对比是现成的。
 
 **Q2：State 是怎么设计的？为什么要分两层？**
 
@@ -323,7 +353,8 @@ checkpoint 不是缓存，是断点续跑的**唯一权威数据源**——`inte
 | RAG 默认关 embedding | 离线/单测默认纯 BM25；`rag_use_embeddings` 可开 | 内网 embedding 端点稳定后再默认打开 |
 | MCP 仅 Client 规划   | 已实现 `RealKnowledgeSearchTool` + `work_agent/mcp/w3_client.py`；未配置时返回提示字符串 | 配置 `W3_MCP_*` 指向公司 w3_search |
 | 摘要质量依赖 LLM       | 压缩可能丢细节                        | 关键事实已落台账，摘要只影响指代消解；必要时改成结构化摘要                   |
-| 可观测性缺失（见 Q21） | 没接 Prometheus/Grafana，没有异常告警和分布式 tracing，只能靠日志 + `-v` 打出来的 `audit`/`summary` 人工排查 | `audit` 已经是结构化事件流，加个 sink 写 Kafka/落一张 events 表即可抽取失败率、重试次数、耗时等指标，不需要重新埋点 |
+| 可观测性缺失（见 Q21） | 线上侧仍没接 Prometheus/Grafana、没有告警和分布式 tracing。但诊断链路已经有了自己的度量：`audit` 里带 `context_chars` / `token_usage` / `latency_ms` / `trimmed_steps` / `selected_context_ids`，另有离线 A/B（`eval-diagnose`）在固定 golden set 上对比两种上下文策略 | `audit` 已经是结构化事件流，加个 sink 写 Kafka/落一张 events 表即可抽取失败率、重试次数、耗时等指标，不需要重新埋点 |
+| 评测样本量小 | golden set 只有 6 条，`accuracy` 只能当趋势参考，不是统计结论 | `context_chars` / `token_total` / `evidence_recall` 是确定性计算的硬指标，不受样本量影响；接真实日志后再扩 golden set |
 
 
 ---

@@ -1,0 +1,103 @@
+{
+  "_comment": "模拟的公司 create 请求体。字段名/层级明天用真实 schema 替换 work_agent/tools/real/pipeline_payload.py 的 build_create_payload。本文件仅供对照，Agent 运行时不读取。",
+  "apiVersion": "ci.pipeline.company/v1",
+  "kind": "TestJob",
+  "metadata": {
+    "name": "wa-case_downlink_001-27B",
+    "labels": {
+      "source": "work_agent",
+      "version": "27B",
+      "envKind": "physical"
+    },
+    "annotations": {
+      "work_agent.debug_mode": "true"
+    }
+  },
+  "spec": {
+    "project": {
+      "id": "P-001",
+      "tenant": "wireless",
+      "operator": "z00888363"
+    },
+    "version": "27B",
+    "debugMode": true,
+    "cases": {
+      "selectMode": "explicit",
+      "items": [
+        {
+          "path": "case_downlink_001",
+          "enabled": true,
+          "timeoutSeconds": 0,
+          "tags": [],
+          "extraParams": {}
+        },
+        {
+          "path": "case_uplink_002",
+          "enabled": true,
+          "timeoutSeconds": 0,
+          "tags": [],
+          "extraParams": {}
+        }
+      ],
+      "execution": {
+        "strategy": "serial",
+        "parallelism": 1,
+        "failFast": false,
+        "retryOnError": 0,
+        "timeoutSeconds": 7200,
+        "collectCoverage": false
+      }
+    },
+    "environment": {
+      "mode": "physical",
+      "physical": {
+        "neIp": "7.223.50.60",
+        "sshPort": 22,
+        "protocol": "ip",
+        "site": "SZ-LAB",
+        "rack": "R12"
+      },
+      "logical": null
+    },
+    "resources": {
+      "pool": "lab-a",
+      "priority": "normal",
+      "exclusive": true,
+      "quota": {
+        "cpu": "4",
+        "memoryGi": 8,
+        "diskGi": 40
+      }
+    },
+    "runtime": {
+      "workdir": "/data/pipeline",
+      "image": "ci-runner:latest",
+      "envVars": [],
+      "preHooks": [],
+      "postHooks": [],
+      "artifacts": {
+        "enabled": true,
+        "paths": ["logs/", "reports/"],
+        "ttlDays": 14
+      }
+    },
+    "reporting": {
+      "uploadLogs": true,
+      "keepJunit": true,
+      "callbackUrl": "https://agent.internal/hooks/pipeline"
+    },
+    "notifications": {
+      "onSuccess": [],
+      "onFailure": [],
+      "channels": []
+    },
+    "security": {
+      "needPrivilege": false,
+      "allowRoot": false
+    },
+    "schedule": {
+      "type": "immediate",
+      "cron": ""
+    }
+  }
+}

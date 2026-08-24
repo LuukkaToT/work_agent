@@ -40,6 +40,11 @@ class Profile:
     react_max_steps: int = 8
     tool_result_max_chars: int = 8000
     react_total_chars_budget: int = 40000
+    # 单次工具结果写进 ToolMessage 前的压缩上限（比 tool_result_max_chars 更紧：
+    # 前者是工具出口的截断，这里是进 ReAct 上下文时的再压缩）
+    react_observation_max_chars: int = 4000
+    # ReAct 历史 step 的字符预算；0 表示不裁剪历史
+    react_history_max_chars: int = 20000
     # 对话记忆
     memory_summary_threshold: int = 12  # 超过此消息数才触发摘要
     memory_keep_recent: int = 8  # 摘要后保留的最近消息数
@@ -86,6 +91,8 @@ def _load_profile(path: Path) -> Profile:
         react_max_steps=int(data.get("react_max_steps", 8)),
         tool_result_max_chars=int(data.get("tool_result_max_chars", 8000)),
         react_total_chars_budget=int(data.get("react_total_chars_budget", 40000)),
+        react_observation_max_chars=int(data.get("react_observation_max_chars", 4000)),
+        react_history_max_chars=int(data.get("react_history_max_chars", 20000)),
         memory_summary_threshold=int(data.get("memory_summary_threshold", 12)),
         memory_keep_recent=int(data.get("memory_keep_recent", 8)),
         rag_top_k=int(data.get("rag_top_k", 3)),

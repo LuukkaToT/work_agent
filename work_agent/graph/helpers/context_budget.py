@@ -21,6 +21,20 @@ PRIORITY_RULED_OUT = 2
 PRIORITY_RAG = 3
 PRIORITY_RAW_TOOL = 4
 
+# 「这行像是故障证据」的关键词。compress_observation 用它挑保留行，
+# context_selector 用它算 evidence_bonus，两处必须是同一份。
+EVIDENCE_KEYWORDS = (
+    "ERROR",
+    "FAIL",
+    "Exception",
+    "Traceback",
+    "rejected",
+    "timeout",
+    "refused",
+    "KeyError",
+    "mismatch",
+)
+
 
 def assemble_blocks(
     blocks: list[ContextBlock],
@@ -81,21 +95,10 @@ def compress_observation(text: str, *, max_chars: int = 400) -> str:
         return raw
 
     lines = raw.splitlines()
-    key_re_parts = (
-        "ERROR",
-        "FAIL",
-        "Exception",
-        "Traceback",
-        "rejected",
-        "timeout",
-        "refused",
-        "KeyError",
-        "mismatch",
-    )
     keyed = [
         ln
         for ln in lines
-        if any(k.lower() in ln.lower() for k in key_re_parts)
+        if any(k.lower() in ln.lower() for k in EVIDENCE_KEYWORDS)
     ]
     if keyed:
         out = "\n".join(keyed)

@@ -1,0 +1,83 @@
+{
+  "suite": "diagnose_v1",
+  "note": "离线 A/B 用的 golden set。期望值只放在这里，不复制进 eval_results.jsonl，避免同一份期望在两处漂移。expected_evidence_keys 是「必须活到最终 working context 的关键词」，取自 tools/mock/logs.py 各 scenario 的尾部特征行。",
+  "cases": [
+    {
+      "case_id": "case_error_keyerror",
+      "scenario": "case_error",
+      "user_input": "CaseA_235T_nmimo 这条用例为什么报错了，是用例本身的问题还是环境问题？",
+      "pipeline": {
+        "case_names": ["CaseA_235T_nmimo", "CaseB_128T_mmimo"],
+        "version": "27B",
+        "physical_env": "7.223.50.60"
+      },
+      "expected_fail_kind": "case",
+      "expected_evidence_keys": ["KeyError", "antenna_map", "Traceback"]
+    },
+    {
+      "case_id": "version_fail_protocol_mismatch",
+      "scenario": "version_fail",
+      "user_input": "27B 版本这条流水线失败了，帮我看下是不是版本不兼容",
+      "pipeline": {
+        "case_names": ["HF_20B_PUSCH_1Cell_200M_hf_001", "CaseB_128T_mmimo"],
+        "version": "27B",
+        "physical_env": "7.223.50.61"
+      },
+      "expected_fail_kind": "version",
+      "expected_evidence_keys": ["protocol mismatch", "incompatible", "27B"]
+    },
+    {
+      "case_id": "env_error_connection_refused",
+      "scenario": "env_error",
+      "user_input": "这条流水线一启动就失败，环境是不是挂了？",
+      "pipeline": {
+        "case_names": ["CaseC_64T_smimo"],
+        "version": "27B",
+        "physical_env": "7.223.50.60"
+      },
+      "expected_fail_kind": "env",
+      "expected_evidence_keys": ["Connection refused", "7.223.50.60", "unreachable"]
+    },
+    {
+      "case_id": "env_error_logic_topology",
+      "scenario": "env_error",
+      "user_input": "逻辑组网上跑的这条为什么全是 error？",
+      "pipeline": {
+        "case_names": ["CaseD_32T_beamform", "CaseE_16T_baseline"],
+        "version": "26A",
+        "logic_env": "3BBL_86_1BBL86",
+        "logic_constraint": "85+86"
+      },
+      "expected_fail_kind": "env",
+      "expected_evidence_keys": ["Connection refused", "retries"]
+    },
+    {
+      "case_id": "all_pass_no_failure",
+      "scenario": "all_pass",
+      "user_input": "这条流水线有没有失败的用例？",
+      "pipeline": {
+        "case_names": ["CaseF_8T_sanity"],
+        "version": "27B",
+        "physical_env": "7.223.50.62"
+      },
+      "expected_fail_kind": "none",
+      "expected_evidence_keys": ["verdict=pass"]
+    },
+    {
+      "case_id": "case_error_multi_case",
+      "scenario": "case_error",
+      "user_input": "这批用例里只有第一条挂了，帮我定位根因并给建议",
+      "pipeline": {
+        "case_names": [
+          "CaseG_256T_downlink",
+          "CaseH_128T_uplink",
+          "CaseI_64T_mixed"
+        ],
+        "version": "28A",
+        "physical_env": "7.223.50.63"
+      },
+      "expected_fail_kind": "case",
+      "expected_evidence_keys": ["KeyError", "AssertionError"]
+    }
+  ]
+}
