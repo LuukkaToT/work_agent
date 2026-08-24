@@ -124,13 +124,10 @@ def ask_missing(state: Mapping[str, Any]) -> dict:
                 )
                 plan["env"] = _parse_env(reply)
 
-            # 重新计算 missing / env_kind；options 原样带过（这里只补缺参，
-            # 不重新做结构化抽取，不能让 options 被 _plan_dict 的默认值冲掉）
             rebuilt = _plan_dict(
                 case_names=list(plan.get("case_names") or []),
                 version=str(plan.get("version") or ""),
                 env=str(plan.get("env") or ""),
-                options=plan.get("options"),
             )
             plan.update(rebuilt)
             # 若用户仍给逻辑组网，继续循环问

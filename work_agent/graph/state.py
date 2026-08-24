@@ -66,13 +66,9 @@ class TestFlowState(TypedDict):
     # --- 任务级：会话 / 路由 ---
     task_id: str  # 本次任务 id
     user_input: str  # 本轮用户输入（从 messages[-1] 提取）
-    intent: str  # analysis | execute | query | start | diagnose | chat | set_mode
+    intent: str  # analysis | execute | query | start | diagnose | chat
     requirement: str  # 预留：结构化需求（目前先等于 user_input）
     analysis_path: str  # 测试分析 markdown 落盘路径
-    # 个人偏好：调测模式。intake 每轮从 core/user_config.py 重新读取（不是简单
-    # 归零），保证换会话/换设备改了配置后，下一轮就能看到新值；intent=set_mode
-    # 时由 router 直接改写成目标值，本轮下游立刻生效，见 nodes/set_mode.py。
-    debug_mode: bool
 
     # --- 任务级：执行子图 output 写回 ---
     # {plans: [{case_names, version, env, env_kind, missing}, ...]}

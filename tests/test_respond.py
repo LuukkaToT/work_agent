@@ -175,17 +175,3 @@ def test_fallback_last_resort_is_valid_json():
     facts = _facts(state)
     reply = _fallback_reply(state, facts)
     assert json.loads(reply) == facts
-
-
-def test_respond_set_mode_passthrough_does_not_call_llm():
-    """intent=set_mode 走确定性直通，不该碰 invoke_text（没有 mock 也不能报错）。"""
-    state = state_base(intent="set_mode", summary={"status": "ok", "debug_mode": True})
-    out = respond(state)
-    assert out["reply"] == "已开启调试模式。"
-    assert out["audit"][0]["source"] == "passthrough"
-
-
-def test_respond_set_mode_passthrough_off():
-    state = state_base(intent="set_mode", summary={"status": "ok", "debug_mode": False})
-    out = respond(state)
-    assert out["reply"] == "已关闭调试模式。"

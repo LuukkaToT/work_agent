@@ -66,6 +66,7 @@ def _patch(monkeypatch, tool, ledger, *, retry_attempts: int = 1) -> None:
     getter.cache_clear = lambda: None  # type: ignore[attr-defined]
     monkeypatch.setattr(exec_flow_mod, "get_pipeline_tool", getter)
     monkeypatch.setattr(exec_flow_mod, "get_ledger", lambda: ledger)
+    monkeypatch.setattr(exec_flow_mod, "get_debug_mode", lambda uid: None)
     monkeypatch.setattr(
         exec_flow_mod, "get_settings", lambda: _settings_with_retry(retry_attempts)
     )
@@ -161,26 +162,38 @@ class _RecordingTool:
         raise KeyError(pipeline_id)
 
 
-def test_create_pipelines_falls_back_to_state_debug_mode_when_not_mentioned(
-    monkeypatch,
-):
-    """本轮未提及 debug_mode（options.debug_mode=None）→ 兜底 state["debug_mode"]。"""
+def test_create_pipelines_reads_debug_mode_from_user_config(monkeypatch):
+    """提交时点查 get_debug_mode，不读 state / plan.options。"""
     tool = _RecordingTool()
     ledger = _FakeLedger()
     _patch(monkeypatch, tool, ledger)
+    monkeypatch.setattr(exec_flow_mod, "get_debug_mode", lambda uid: True)
 
     state = _one_plan()
-    state["debug_mode"] = True
+    state["user_id"] = "z001"
     create_pipelines(state)
 
     assert tool.create_options[0]["debug_mode"] is True
 
 
-def test_create_pipelines_prefers_explicit_turn_override_over_state(monkeypatch):
-    """本轮显式提到 debug_mode → 用本轮值，覆盖 state 里的持久偏好。"""
+def test_create_pipelines_defaults_debug_mode_false_when_unset(monkeypatch):
+    """user_config 未设置过（get_debug_mode 返回 None）→ 提交 False。"""
     tool = _RecordingTool()
     ledger = _FakeLedger()
     _patch(monkeypatch, tool, ledger)
+    monkeypatch.setattr(exec_flow_mod, "get_debug_mode", lambda uid: None)
+
+    create_pipelines(_one_plan())
+
+    assert tool.create_options[0]["debug_mode"] is False
+
+
+def test_create_pipelines_ignores_plan_options_debug_mode(monkeypatch):
+    """口头 / 计划里夹带的 options.debug_mode 不再覆盖个人配置。"""
+    tool = _RecordingTool()
+    ledger = _FakeLedger()
+    _patch(monkeypatch, tool, ledger)
+    monkeypatch.setattr(exec_flow_mod, "get_debug_mode", lambda uid: True)
 
     plan = {
         "case_names": ["HF_20B_PUSCH_001"],
@@ -188,25 +201,15 @@ def test_create_pipelines_prefers_explicit_turn_override_over_state(monkeypatch)
         "env": "7.223.50.60",
         "options": {"debug_mode": False},
     }
-    state = {
-        "task_id": "t1",
-        "debug_mode": True,
-        "exec_params": {"plans": [plan], "exec_mode": "create_and_start"},
-    }
-    create_pipelines(state)
+    create_pipelines(
+        {
+            "task_id": "t1",
+            "user_id": "z001",
+            "exec_params": {"plans": [plan], "exec_mode": "create_and_start"},
+        }
+    )
 
-    assert tool.create_options[0]["debug_mode"] is False
-
-
-def test_create_pipelines_defaults_debug_mode_false_without_state(monkeypatch):
-    """state 里完全没有 debug_mode 字段时兜底 False，不抛错。"""
-    tool = _RecordingTool()
-    ledger = _FakeLedger()
-    _patch(monkeypatch, tool, ledger)
-
-    create_pipelines(_one_plan())  # 不带 debug_mode
-
-    assert tool.create_options[0]["debug_mode"] is False
+    assert tool.create_options[0]["debug_mode"] is True
 
 
 def test_create_pipelines_defaults_user_id_empty_when_missing(monkeypatch):

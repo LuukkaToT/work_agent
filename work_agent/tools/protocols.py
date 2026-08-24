@@ -68,7 +68,8 @@ class PipelineTool(Protocol):
             version: 软件版本（如 27B）。
             env: 物理组网 IP。
             options: 可选开关收纳参数（目前只有 ``debug_mode``）；新增开关都进
-                这个 dict 内部字段，本 Protocol 签名不再变。
+                这个 dict 内部字段，本 Protocol 签名不再变。``debug_mode`` 由
+                ``create_pipelines`` 提交时点查 ``user_config``，不从图状态传入。
 
         返回:
             含服务端 ``pipeline_id`` 的句柄。

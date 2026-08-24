@@ -18,6 +18,7 @@ from pydantic import BaseModel, Field
 from work_agent.core.config import get_settings
 from work_agent.core.ledger import get_ledger
 from work_agent.core.llm import get_fast_model
+from work_agent.core.user_config import get_debug_mode
 from work_agent.graph.helpers.context import conversation_context
 from work_agent.graph.helpers.sheet_plans import (
     apply_column_mapping,
@@ -33,19 +34,6 @@ _IP_RE = re.compile(
 )
 
 
-class PipelineOptions(BaseModel):
-    """创建流水线时的可选开关；字段收纳进这一个模型，Protocol 不用逐个加参数。"""
-
-    debug_mode: Optional[bool] = Field(
-        default=None,
-        description=(
-            "调测模式；仅当用户本轮明确说「用调测模式跑」才填 true/false；"
-            "没提则 null——null 表示沿用当前会话的调测模式偏好，不代表 false，"
-            "调用方不能把 null 当 false 处理"
-        ),
-    )
-
-
 class ExecPlanOut(BaseModel):
     case_names: list[str] = Field(
         default_factory=list, description="本条流水线要执行的用例名列表"
@@ -57,7 +45,6 @@ class ExecPlanOut(BaseModel):
         default=None,
         description="物理组网 IP，如 7.223.50.60；没说则 null",
     )
-    options: PipelineOptions = Field(default_factory=PipelineOptions)
 
 
 class ExecParamsOut(BaseModel):
@@ -111,7 +98,6 @@ def _plan_dict(
     case_names: list[str],
     version: str,
     env: str,
-    options: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """把计划字段归一成 dict，并计算 missing / env_kind。"""
     env_kind = _classify_env(env)
@@ -130,7 +116,6 @@ def _plan_dict(
         "env": env,
         "env_kind": env_kind,
         "missing": missing,
-        "options": dict(options or {}),
     }
 
 
@@ -276,8 +261,6 @@ def exec_params(state: Mapping[str, Any]) -> dict:
                     "同一环境多个用例合并成一条。"
                     "若用户说「只创建」「仅创建不用跑」，exec_mode=create_only；"
                     "否则 create_and_start。"
-                    "options.debug_mode：仅当用户本轮明确说「用调测模式跑」"
-                    "才填 true/false；没提及则 null，不要臆造成 true 或 false。"
                 )
             ),
             HumanMessage(content="\n".join(human_parts)),
@@ -293,7 +276,6 @@ def exec_params(state: Mapping[str, Any]) -> dict:
                 "case_names": list(item.case_names or []),
                 "version": version,
                 "env": env,
-                "options": item.options.model_dump(),
             }
         )
 
@@ -333,14 +315,11 @@ def exec_params(state: Mapping[str, Any]) -> dict:
                     }
                 ],
             }
-        # 表格场景本身不涉及口头开关，options 落全 None 默认值，
-        # 交给 create_pipelines 组装期兜底到 state["debug_mode"]。
         plans = [
             _plan_dict(
                 case_names=list(p.get("case_names") or []),
                 version=_normalize_version(str(p.get("version") or "")),
                 env=str(p.get("env") or "").strip(),
-                options=PipelineOptions().model_dump(),
             )
             for p in raw_plans
         ]
@@ -352,7 +331,6 @@ def exec_params(state: Mapping[str, Any]) -> dict:
                 case_names=list(p.get("case_names") or []),
                 version=str(p.get("version") or ""),
                 env=str(p.get("env") or ""),
-                options=p.get("options"),
             )
             for p in spoken_plans
         ]
@@ -479,8 +457,8 @@ def create_pipelines(state: Mapping[str, Any]) -> dict:
     逐计划 create；exec_mode=create_and_start 时再 start。单条失败不阻断。
 
     参数:
-        state: 读 ``exec_params`` / ``task_id`` / ``user_id``（写入台账时打标创建者）/
-            ``debug_mode``（本轮未显式提及时兜底的调测模式偏好）。
+        state: 读 ``exec_params`` / ``task_id`` / ``user_id``（写入台账时打标创建者）。
+            调测模式不进 state：提交时按 ``user_id`` 点查 ``get_debug_mode``。
 
     返回:
         ``pipelines`` 列表与聚合 ``summary``（created/failed_pipelines 等）及 audit。
@@ -490,7 +468,6 @@ def create_pipelines(state: Mapping[str, Any]) -> dict:
     exec_mode: ExecMode = params.get("exec_mode") or "create_and_start"
     task_id = state.get("task_id") or ""
     user_id = state.get("user_id") or ""
-    session_debug_mode = bool(state.get("debug_mode", False))
 
     if not plans:
         return {
@@ -503,6 +480,9 @@ def create_pipelines(state: Mapping[str, Any]) -> dict:
             },
             "audit": [{"step": "create_pipelines", "status": "empty"}],
         }
+
+    debug_mode = bool(get_debug_mode(user_id))
+    options = {"debug_mode": debug_mode}
 
     get_pipeline_tool.cache_clear()
     tool = get_pipeline_tool(scenario="all_pass")
@@ -535,16 +515,6 @@ def create_pipelines(state: Mapping[str, Any]) -> dict:
             )
             failed_n += 1
             continue
-
-        # 本轮显式提及 debug_mode（非 null）→ 用本轮值，一次性覆盖，不回写
-        # user_config；没提及 → 落到 state["debug_mode"]（当前会话已从
-        # user_config 读出的持久偏好，见 intake()）。
-        plan_options = plan.get("options") or {}
-        raw_debug_mode = plan_options.get("debug_mode")
-        effective_debug_mode = (
-            raw_debug_mode if raw_debug_mode is not None else session_debug_mode
-        )
-        options = {"debug_mode": effective_debug_mode}
 
         entry = _submit_one_pipeline(
             tool,

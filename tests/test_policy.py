@@ -37,11 +37,6 @@ def test_create_and_start_pipeline_require_confirmation():
     assert POLICIES["start_pipeline"].read_only is False
 
 
-def test_set_mode_is_low_risk_no_confirmation():
-    assert POLICIES["set_mode"].read_only is False
-    assert POLICIES["set_mode"].requires_confirmation is False
-
-
 def test_query_pipeline_is_read_only():
     assert POLICIES["query_pipeline"].read_only is True
     assert POLICIES["query_pipeline"].requires_confirmation is False

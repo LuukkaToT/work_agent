@@ -29,8 +29,11 @@ from work_agent.api.schemas import (
     SessionSummary,
     TurnRequest,
     TurnResponse,
+    UserConfigPatch,
+    UserConfigView,
 )
 from work_agent.core.sessions import list_sessions
+from work_agent.core.user_config import get_debug_mode, set_debug_mode
 
 app = FastAPI(title="work_agent gateway", version="0.1.0")
 
@@ -151,3 +154,25 @@ def get_sessions(
         )
         for s in mine
     ]
+
+
+def _user_config_view(user_id: str) -> UserConfigView:
+    return UserConfigView(debug_mode=get_debug_mode(user_id))
+
+
+@app.get("/users/me/config", response_model=UserConfigView)
+def get_my_config(user_id: str = Depends(get_current_user_id)) -> UserConfigView:
+    """读当前用户的个人偏好；未设置过的字段为 null。"""
+    return _user_config_view(user_id)
+
+
+@app.patch("/users/me/config", response_model=UserConfigView)
+def patch_my_config(
+    body: UserConfigPatch,
+    user_id: str = Depends(get_current_user_id),
+) -> UserConfigView:
+    """合并写入当前用户的个人偏好；未传入的字段保持不变。"""
+    updates = body.model_dump(exclude_unset=True)
+    if "debug_mode" in updates and updates["debug_mode"] is not None:
+        set_debug_mode(user_id, bool(updates["debug_mode"]))
+    return _user_config_view(user_id)

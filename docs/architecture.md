@@ -245,7 +245,7 @@ class PipelineTool(Protocol):
 
 Agent 侧命名纯净：`create` / `start` / `query`。`pipeline_id` **由服务端返回**。公司 SDK 放 `external/`，拼写怪异的公司函数名只在 `tools/real/` 做映射，不污染 Protocol。
 
-`create` 的 `options` 是可选开关的收纳参数（目前只有 `debug_mode`），新增开关都进这个 dict 内部字段，不再逐个改 Protocol 签名。`debug_mode` 的值从哪来见「八、状态设计」——本轮用户口头明确提及时用本轮值，否则兜底 `state["debug_mode"]`（当前会话的持久调测偏好）。Mock 只把 `options` 记录进内部记录（`_PipelineRecord.options`），不模拟公司 API 对它的行为差异；`RealPipelineTool` 接入时把 `options` 摊平进公司请求体即可，Protocol/图不用再改。
+`create` 的 `options` 是可选开关的收纳参数（目前只有 `debug_mode`），新增开关都进这个 dict 内部字段，不再逐个改 Protocol 签名。`debug_mode` 不进图状态：用户在前端 `GET/PATCH /users/me/config` 里改偏好，`create_pipelines` 提交时按当前 `user_id` 点查 `get_debug_mode`（未设置过当 `False`）再塞进 `options`。Mock 只把 `options` 记录进内部记录（`_PipelineRecord.options`），不模拟公司 API 对它的行为差异；`RealPipelineTool` 接入时把 `options` 摊平进公司请求体即可，Protocol/图不用再改。
 
 Mock 行为可配置四场景：全通过、版本失败、用例报错、环境不可用。`query` 用 tick 模拟分钟级执行进度；未 `start` 时 phase=`created`。
 
@@ -396,7 +396,7 @@ POLICIES: dict[str, ActionPolicy] = {
     "create_pipeline": ActionPolicy(..., read_only=False, requires_confirmation=True),
     "start_pipeline": ActionPolicy(..., read_only=False, requires_confirmation=True),
     "get_pipeline_status": ActionPolicy(..., read_only=True, requires_confirmation=False),
-    # ... 其余 diagnose 白名单工具、set_mode
+    # ... 其余 diagnose 白名单工具
 }
 ```
 
@@ -458,11 +458,7 @@ CLI 的 `run_turn`/`resume_pending` 是阻塞的：遇到 `interrupt` 就在进�
 
 `state.py` 的 `user_id` 是会话级字段（`intake` 绝不重置，跟 `messages`/`dialogue_summary` 同类）：CLI/API 拿到工号后，`runtime.run_turn`/`run_turn_step` 把它和 `messages` 一起塞进每次 invoke 的 payload（`{"messages": [...], "user_id": user_id}`）——每轮都传、不依赖“只在第一轮写”，天然幂等。`resume_step`/`resume_pending` 续跑时不用再传：那一轮的 `user_id` 在 thread 创建时已经写进 checkpoint 了。
 
-`debug_mode`（当前唯一的个人偏好）是任务级字段，但语义和其他任务级字段不一样：`intake` 不是把它归零，而是每轮都拿当前 `user_id` 去 `core/user_config.py` 重新查一次（`get_debug_mode`，未设置过时落成确定性的 `False`），这样换会话/换设备改了配置，当前会话下一轮就能看到新值。
-
-用户要改这个偏好走一个新意图 `set_mode`（`router.py` 的 `RouteDecision` 加了 `debug_mode_target: bool | None` 字段，跟 `intent` 一次结构化输出里一起判断，不用为了拿"开启还是关闭"这一个布尔值再单独调一次模型；判断不出方向时留空、退回 `chat`，不强行分类）。`router` 只在 `intent=set_mode` 且方向明确时才把 `debug_mode_target` 写进 `state["debug_mode"]`，覆盖 `intake` 读到的旧值；新节点 `nodes/set_mode.py` 只管把这个已经确定的目标值落库（`set_debug_mode`）、产出 `summary`，不重新问模型。`respond.py` 给这个意图加了一条确定性直通回复（"已开启/关闭调试模式。"），跟 `chat` 分支一样不走 LLM 转述——事实只有一个布尔值，没什么好转述的，直通更快也不会说错。
-
-`debug_mode` 不是只存不生效：`exec_flow.py` 的 `create_pipelines` 组装 `tool.create(..., options=...)` 时会读它兜底（本轮口头没提及时用 `state["debug_mode"]`，提及了则本轮值一次性覆盖，不回写 `user_config`），细节见「七、Tool 契约」。`ExecFlowInput`/`PipelineOpsInput` 都把 `debug_mode`（跟 `user_id` 一样）声明成子图 Input 字段，LangGraph 按同名字段自动从父图 state 灌进子图，不用额外接线代码。
+个人偏好不进图状态。`debug_mode` 存在 `user_config` 的 JSON blob 里，前端用 `GET/PATCH /users/me/config` 读写；聊天没有 `set_mode` 意图，口头说「开调测」也不会覆盖。真正生效的地方只有 `create_pipelines`：提交时按当前 `user_id` 点查 `get_debug_mode`（`None` 当 `False`），塞进 `tool.create(..., options={"debug_mode": ...})`。
 
 ### 并发：单进程内存锁，先够用
 

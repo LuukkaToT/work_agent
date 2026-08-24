@@ -16,7 +16,7 @@ class RouteDecision(BaseModel):
     """LLM 结构化输出：本轮意图 + 一句话理由。"""
 
     intent: Literal[
-        "analysis", "execute", "query", "start", "diagnose", "chat", "set_mode"
+        "analysis", "execute", "query", "start", "diagnose", "chat"
     ] = Field(
         description=(
             "analysis=做测试分析(需求/规格);"
@@ -24,18 +24,10 @@ class RouteDecision(BaseModel):
             "start=启动已创建但未跑的流水线;"
             "query=查某次流水线结果/进度;"
             "diagnose=拉日志并归因失败原因;"
-            "set_mode=开启/关闭调测模式等个人偏好设置;"
             "chat=普通问答"
         )
     )
     reason: str = Field(description="一句话说明分类理由")
-    debug_mode_target: bool | None = Field(
-        default=None,
-        description=(
-            "仅当 intent=set_mode 时填写：True=开启调试模式，False=关闭调试模式；"
-            "无法判断是开启还是关闭时，不要选 set_mode，改分类为 chat 并把这个字段留空"
-        ),
-    )
 
 
 def router(state: TestFlowState) -> dict:
@@ -72,10 +64,7 @@ def router(state: TestFlowState) -> dict:
                     "「用表格/excel 执行」属 execute；"
                     "「启动刚才创建的」属 start；"
                     "「查进度/怎么样了」属 query；"
-                    "「看日志/为什么失败/归因」属 diagnose；"
-                    "「开启/关闭调试模式」「打开 debug」「切换到调测模式」属 set_mode，"
-                    "并把要开启还是关闭的判断结果填进 debug_mode_target；"
-                    "无法确定开关方向时不要选 set_mode，退回 chat。"
+                    "「看日志/为什么失败/归因」属 diagnose。"
                     "不要执行任何操作。"
                 )
             ),
@@ -93,8 +82,6 @@ def router(state: TestFlowState) -> dict:
             }
         ],
     }
-    if decision.intent == "set_mode" and decision.debug_mode_target is not None:
-        out["debug_mode"] = decision.debug_mode_target
     return out
 
 

@@ -234,14 +234,6 @@ def respond(state: TestFlowState) -> dict:
         _persist_reply(task_id, reply)
         return _pack(reply, source="passthrough")
 
-    if intent == "set_mode":
-        # 简单的确认性回复，不用为这个走一次 LLM——事实只有一个布尔值，
-        # 没什么好让模型"转述"的，直通反而更快也不会说错。
-        debug_mode = bool(summary.get("debug_mode"))
-        reply = f"已{'开启' if debug_mode else '关闭'}调试模式。"
-        _persist_reply(task_id, reply)
-        return _pack(reply, source="passthrough")
-
     facts = _facts(state)
     user_parts = ["【事实】", json.dumps(facts, ensure_ascii=False, indent=2)]
 

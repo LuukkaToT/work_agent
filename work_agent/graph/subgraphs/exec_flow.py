@@ -34,7 +34,6 @@ class ExecFlowInput(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
     dialogue_summary: str
     user_id: str
-    debug_mode: bool
 
 
 class ExecFlowOutput(TypedDict):

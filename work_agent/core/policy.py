@@ -3,8 +3,7 @@
 
 背景：以前「create/start 需要确认」「diagnose 白名单只读」是散落在各处的
 手写约定（`diagnose_tools.py` 只手工注册只读函数、`hitl.py` 手写
-`interrupt()`），没有一份可测试的集中定义。以后新加 action（比如
-`set_mode`）容易漏掉该不该确认，或者不小心把写操作混进只读白名单。
+`interrupt()`），没有一份可测试的集中定义。以后新加 action 容易漏掉该不该确认，或者不小心把写操作混进只读白名单。
 
 这不是一个运行时权限判断引擎（不做 RBAC/动态规则），只是把"事实"收拢成一份
 可读、可测试的表，配合 `assert_read_only_whitelist` 在构造期自检。
@@ -58,14 +57,6 @@ POLICIES: dict[str, ActionPolicy] = {
     ),
     "search_knowledge": ActionPolicy(
         "search_knowledge", read_only=True, requires_confirmation=False
-    ),
-    # 原设计里叫 set_pipeline_mode，实际落地的节点/意图名是 set_mode
-    # （见 graph/nodes/set_mode.py）；这里按实际名字注册，不引入两个名字。
-    "set_mode": ActionPolicy(
-        "set_mode",
-        read_only=False,
-        requires_confirmation=False,
-        description="个人配置写入，低风险不确认",
     ),
 }
 

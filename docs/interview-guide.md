@@ -73,19 +73,17 @@ REPL 里依次输入，能覆盖主图五条分支中的四条（`chat` 靠随�
 
 ```mermaid
 flowchart TD
-  Start(["用户输入"]) --> Intake["intake 提取本轮 + 归零任务级字段 + 重读 debug_mode"]
+  Start(["用户输入"]) --> Intake["intake 提取本轮 + 归零任务级字段"]
   Intake --> Router["router LLM 意图分类"]
   Router -->|"analysis"| Analysis["test_analysis 加载 skill 生成文档"]
   Router -->|"execute"| ExecFlow["子图 exec_flow"]
   Router -->|"start/query/diagnose"| PipelineOps["子图 pipeline_ops"]
   Router -->|"chat"| Chat["quick_answer"]
-  Router -->|"set_mode"| SetMode["set_mode 落库调测偏好"]
 
   Analysis --> Respond
   ExecFlow --> Respond
   PipelineOps --> Respond
   Chat --> Respond
-  SetMode --> Respond
 
   Respond["respond 结构化事实转人话"] --> Memory["memory 滚动摘要"]
   Memory --> Finish(["END"])

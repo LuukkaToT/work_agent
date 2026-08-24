@@ -1,7 +1,4 @@
-"""
-router 的确定性部分：intent=set_mode 时才把 debug_mode_target 回写进 debug_mode，
-其余分支完全不碰这个字段。LLM 分类本身用 monkeypatch 固定返回值，不调真模型。
-"""
+"""router 的确定性部分：把 LLM 结构化输出写进 intent / requirement。不调真模型。"""
 
 from __future__ import annotations
 
@@ -36,38 +33,17 @@ def _run_router(monkeypatch, decision: RouteDecision, user_input: str = "问题"
     )
 
 
-def test_router_set_mode_writes_debug_mode_target(monkeypatch):
-    decision = RouteDecision(
-        intent="set_mode", reason="用户要开启调试模式", debug_mode_target=True
-    )
-    out = _run_router(monkeypatch, decision, user_input="开启调试模式")
-
-    assert out["intent"] == "set_mode"
-    assert out["debug_mode"] is True
-
-
-def test_router_set_mode_can_target_false(monkeypatch):
-    decision = RouteDecision(
-        intent="set_mode", reason="用户要关闭调试模式", debug_mode_target=False
-    )
-    out = _run_router(monkeypatch, decision, user_input="关闭调试模式")
-
-    assert out["intent"] == "set_mode"
-    assert out["debug_mode"] is False
-
-
-def test_router_set_mode_without_target_does_not_touch_debug_mode(monkeypatch):
-    """无法判断开关方向：不写 debug_mode，让下游按 intake 已读到的当前值处理。"""
-    decision = RouteDecision(intent="set_mode", reason="方向不明确", debug_mode_target=None)
-    out = _run_router(monkeypatch, decision, user_input="帮我设置一下模式")
-
-    assert out["intent"] == "set_mode"
-    assert "debug_mode" not in out
-
-
-def test_router_other_intents_do_not_touch_debug_mode(monkeypatch):
+def test_router_writes_intent_and_requirement(monkeypatch):
     decision = RouteDecision(intent="chat", reason="闲聊")
     out = _run_router(monkeypatch, decision, user_input="你好")
 
     assert out["intent"] == "chat"
+    assert out["requirement"] == "你好"
+    assert out["audit"][0]["reason"] == "闲聊"
     assert "debug_mode" not in out
+
+
+def test_router_execute_intent(monkeypatch):
+    decision = RouteDecision(intent="execute", reason="要跑用例")
+    out = _run_router(monkeypatch, decision, user_input="跑一下 HF_20B_PUSCH_001")
+    assert out["intent"] == "execute"

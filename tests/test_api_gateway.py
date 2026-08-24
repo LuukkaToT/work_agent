@@ -7,6 +7,8 @@ FastAPI 网关：鉴权 / 会话归属 / 并发锁 / 响应形状。
 
 from __future__ import annotations
 
+import uuid
+
 from fastapi.testclient import TestClient
 
 import work_agent.api.app as app_mod
@@ -210,3 +212,41 @@ def test_get_sessions_filters_by_user_prefix(monkeypatch):
     assert r.status_code == 200
     body = r.json()
     assert [s["thread_id"] for s in body] == ["z00888363-aaa"]
+
+
+def test_get_config_requires_auth():
+    r = client.get("/users/me/config")
+    assert r.status_code == 401
+
+
+def test_get_config_unset_returns_null_debug_mode(pg_env, pg_pool):
+    uid = f"z{uuid.uuid4().hex[:8]}"
+    try:
+        r = client.get("/users/me/config", headers={"X-User-Id": uid})
+        assert r.status_code == 200
+        assert r.json() == {"debug_mode": None}
+    finally:
+        with pg_pool.connection() as conn:
+            conn.execute("DELETE FROM user_config WHERE user_id=%s", (uid,))
+
+
+def test_patch_config_roundtrip(pg_env, pg_pool):
+    uid = f"z{uuid.uuid4().hex[:8]}"
+    headers = {"X-User-Id": uid}
+    try:
+        r = client.patch(
+            "/users/me/config", json={"debug_mode": True}, headers=headers
+        )
+        assert r.status_code == 200
+        assert r.json() == {"debug_mode": True}
+
+        r = client.get("/users/me/config", headers=headers)
+        assert r.json() == {"debug_mode": True}
+
+        r = client.patch(
+            "/users/me/config", json={"debug_mode": False}, headers=headers
+        )
+        assert r.json() == {"debug_mode": False}
+    finally:
+        with pg_pool.connection() as conn:
+            conn.execute("DELETE FROM user_config WHERE user_id=%s", (uid,))

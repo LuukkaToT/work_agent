@@ -9,7 +9,8 @@
 其它已有键保留。
 
 ``get_debug_mode`` 返回 ``None`` 表示用户从未设置过，交给调用方套系统
-默认值；不要把「未设置」和 ``False`` 混为一谈。
+默认值；不要把「未设置」和 ``False`` 混为一谈。偏好由前端
+``GET/PATCH /users/me/config`` 读写，不进图状态、不走聊天意图。
 """
 
 from __future__ import annotations

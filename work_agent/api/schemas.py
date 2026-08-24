@@ -44,3 +44,15 @@ class SessionSummary(BaseModel):
     updated_at: str
     preview: str
     pending: bool = False
+
+
+class UserConfigView(BaseModel):
+    """``GET/PATCH /users/me/config`` 响应：未设置过的字段为 null。"""
+
+    debug_mode: bool | None = None
+
+
+class UserConfigPatch(BaseModel):
+    """``PATCH /users/me/config`` 请求体：只覆盖传入的字段。"""
+
+    debug_mode: bool | None = None
