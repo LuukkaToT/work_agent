@@ -220,7 +220,7 @@ checkpointer 只按 `thread_id` 存图状态。用户换会话再问「上次执
 
 `pipelines.user_id` 存的是工号字符串，不是（未来）用户表的 int 主键。查询方法（`get` / `latest` / `find_by_case` / `find_by_task` / `list_recent`）都支持可选的 `user_id` 过滤。身份接线前的空 `user_id` 由 `schema.sql` 里那条幂等 `UPDATE` 回填成 `core/identity.py` 的 `DEFAULT_USER_ID`（`local-dev`），不在每次构造 Ledger 时偷偷跑。
 
-个人配置表 `user_config` 的 `config` 列存 JSON blob。`ci_cases` 表也在同一份 schema 里（后续模块接查询）。
+个人配置表 `user_config` 的 `config` 列存 JSON blob（当前键：`debug_mode`、`version_space`）。`ci_cases` 表也在同一份 schema 里（后续模块接查询）。
 
 测试：凡读写台账 / 个人配置 / checkpoint 的用例都连 `POSTGRES_TEST_DSN`（未配置或不可达则 skip）；图节点、路由等不碰库的单测仍不连库。`tests/test_storage_backend.py` 断言空 DSN 抛错。
 
@@ -458,7 +458,7 @@ CLI 的 `run_turn`/`resume_pending` 是阻塞的：遇到 `interrupt` 就在进�
 
 `state.py` 的 `user_id` 是会话级字段（`intake` 绝不重置，跟 `messages`/`dialogue_summary` 同类）：CLI/API 拿到工号后，`runtime.run_turn`/`run_turn_step` 把它和 `messages` 一起塞进每次 invoke 的 payload（`{"messages": [...], "user_id": user_id}`）——每轮都传、不依赖“只在第一轮写”，天然幂等。`resume_step`/`resume_pending` 续跑时不用再传：那一轮的 `user_id` 在 thread 创建时已经写进 checkpoint 了。
 
-个人偏好不进图状态。`debug_mode` 存在 `user_config` 的 JSON blob 里，前端用 `GET/PATCH /users/me/config` 读写；聊天没有 `set_mode` 意图，口头说「开调测」也不会覆盖。真正生效的地方只有 `create_pipelines`：提交时按当前 `user_id` 点查 `get_debug_mode`（`None` 当 `False`），塞进 `tool.create(..., options={"debug_mode": ...})`。
+个人偏好不进图状态。`debug_mode` 和 `version_space`（`27B/27A/26B/26A`，与流水线 version 同一枚举）存在 `user_config` 的 JSON blob 里，前端用 `GET/PATCH /users/me/config` 读写；未设置过的字段为 `null`，PATCH 只覆盖传入的键。`version_space` 是个人默认版本，本模块只落库——exec_params 补参顺序（口头 > CI 表 > `version_space` > HITL）后续模块再接。`debug_mode` 真正生效的地方只有 `create_pipelines`：提交时按当前 `user_id` 点查 `get_debug_mode`（`None` 当 `False`），塞进 `tool.create(..., options={"debug_mode": ...})`。
 
 ### 并发：单进程内存锁，先够用
 

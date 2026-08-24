@@ -224,7 +224,7 @@ def test_get_config_unset_returns_null_debug_mode(pg_env, pg_pool):
     try:
         r = client.get("/users/me/config", headers={"X-User-Id": uid})
         assert r.status_code == 200
-        assert r.json() == {"debug_mode": None}
+        assert r.json() == {"debug_mode": None, "version_space": None}
     finally:
         with pg_pool.connection() as conn:
             conn.execute("DELETE FROM user_config WHERE user_id=%s", (uid,))
@@ -238,15 +238,53 @@ def test_patch_config_roundtrip(pg_env, pg_pool):
             "/users/me/config", json={"debug_mode": True}, headers=headers
         )
         assert r.status_code == 200
-        assert r.json() == {"debug_mode": True}
+        assert r.json() == {"debug_mode": True, "version_space": None}
 
         r = client.get("/users/me/config", headers=headers)
-        assert r.json() == {"debug_mode": True}
+        assert r.json() == {"debug_mode": True, "version_space": None}
 
         r = client.patch(
             "/users/me/config", json={"debug_mode": False}, headers=headers
         )
-        assert r.json() == {"debug_mode": False}
+        assert r.json() == {"debug_mode": False, "version_space": None}
+    finally:
+        with pg_pool.connection() as conn:
+            conn.execute("DELETE FROM user_config WHERE user_id=%s", (uid,))
+
+
+def test_patch_config_version_space_roundtrip_and_merge(pg_env, pg_pool):
+    uid = f"z{uuid.uuid4().hex[:8]}"
+    headers = {"X-User-Id": uid}
+    try:
+        r = client.patch(
+            "/users/me/config", json={"version_space": "27b"}, headers=headers
+        )
+        assert r.status_code == 200
+        assert r.json() == {"debug_mode": None, "version_space": "27B"}
+
+        r = client.patch(
+            "/users/me/config", json={"debug_mode": True}, headers=headers
+        )
+        assert r.json() == {"debug_mode": True, "version_space": "27B"}
+
+        r = client.patch(
+            "/users/me/config", json={"version_space": None}, headers=headers
+        )
+        assert r.json() == {"debug_mode": True, "version_space": None}
+    finally:
+        with pg_pool.connection() as conn:
+            conn.execute("DELETE FROM user_config WHERE user_id=%s", (uid,))
+
+
+def test_patch_config_rejects_unknown_version_space(pg_env, pg_pool):
+    uid = f"z{uuid.uuid4().hex[:8]}"
+    try:
+        r = client.patch(
+            "/users/me/config",
+            json={"version_space": "28C"},
+            headers={"X-User-Id": uid},
+        )
+        assert r.status_code == 422
     finally:
         with pg_pool.connection() as conn:
             conn.execute("DELETE FROM user_config WHERE user_id=%s", (uid,))

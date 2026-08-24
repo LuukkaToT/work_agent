@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+from work_agent.core.user_config import VERSION_SPACES
 
 
 class TurnRequest(BaseModel):
@@ -50,9 +52,32 @@ class UserConfigView(BaseModel):
     """``GET/PATCH /users/me/config`` 响应：未设置过的字段为 null。"""
 
     debug_mode: bool | None = None
+    version_space: str | None = None
 
 
 class UserConfigPatch(BaseModel):
     """``PATCH /users/me/config`` 请求体：只覆盖传入的字段。"""
 
     debug_mode: bool | None = None
+    version_space: str | None = None
+
+    @field_validator("version_space", mode="before")
+    @classmethod
+    def normalize_version_space(cls, value: object) -> object:
+        """空串当清空；非空则转大写，非法值交给后续校验报 422。"""
+        if value is None:
+            return None
+        text = str(value).strip()
+        if not text:
+            return None
+        return text.upper()
+
+    @field_validator("version_space")
+    @classmethod
+    def version_space_must_be_allowed(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        if value not in VERSION_SPACES:
+            allowed = ", ".join(sorted(VERSION_SPACES))
+            raise ValueError(f"必须是 {allowed} 之一")
+        return value

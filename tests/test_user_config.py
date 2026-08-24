@@ -2,10 +2,14 @@
 
 from __future__ import annotations
 
+import pytest
+
 from work_agent.core.user_config import (
     PostgresUserConfigStore,
     get_debug_mode,
+    get_version_space,
     set_debug_mode,
+    set_version_space,
 )
 
 
@@ -51,3 +55,34 @@ def test_get_set_debug_mode_roundtrip(pg_env, test_user_id):
 
     set_debug_mode(test_user_id, False)
     assert get_debug_mode(test_user_id) is False
+
+
+def test_get_version_space_returns_none_when_unset(pg_env, test_user_id):
+    assert get_version_space(test_user_id) is None
+
+
+def test_get_set_version_space_roundtrip(pg_env, test_user_id):
+    set_version_space(test_user_id, "27b")
+    assert get_version_space(test_user_id) == "27B"
+
+    set_version_space(test_user_id, "26A")
+    assert get_version_space(test_user_id) == "26A"
+
+
+def test_set_version_space_none_clears(pg_env, test_user_id):
+    set_version_space(test_user_id, "27B")
+    set_version_space(test_user_id, None)
+    assert get_version_space(test_user_id) is None
+
+
+def test_set_version_space_rejects_unknown(pg_env, test_user_id):
+    with pytest.raises(ValueError, match="version_space"):
+        set_version_space(test_user_id, "28C")
+    assert get_version_space(test_user_id) is None
+
+
+def test_version_space_and_debug_mode_merge(pg_env, test_user_id):
+    set_debug_mode(test_user_id, True)
+    set_version_space(test_user_id, "27A")
+    assert get_debug_mode(test_user_id) is True
+    assert get_version_space(test_user_id) == "27A"

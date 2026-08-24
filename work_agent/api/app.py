@@ -7,6 +7,7 @@ FastAPI 网关：把 runtime 的两阶段 HITL 包成 HTTP 接口。
   重新拿回 interrupt 载荷或最终结果用这个，不用只靠客户端缓存 POST 的响应。
 - ``POST /turns/{thread_id}/resume``：客户端拿到 interrupt 后，把答案带过来续跑一步。
 - ``GET /sessions``：列出当前用户名下的会话（按 thread_id 前缀过滤）。
+- ``GET/PATCH /users/me/config``：读写个人偏好（``debug_mode``、``version_space``）。
 
 鉴权是 mock 的（见 ``work_agent.api.identity``），公司侧鉴权接入前先用这层跑通流程。
 同一个 thread_id 同一时刻只允许一个请求在跑，用进程内内存锁做非阻塞互斥，
@@ -33,7 +34,12 @@ from work_agent.api.schemas import (
     UserConfigView,
 )
 from work_agent.core.sessions import list_sessions
-from work_agent.core.user_config import get_debug_mode, set_debug_mode
+from work_agent.core.user_config import (
+    get_debug_mode,
+    get_version_space,
+    set_debug_mode,
+    set_version_space,
+)
 
 app = FastAPI(title="work_agent gateway", version="0.1.0")
 
@@ -157,7 +163,10 @@ def get_sessions(
 
 
 def _user_config_view(user_id: str) -> UserConfigView:
-    return UserConfigView(debug_mode=get_debug_mode(user_id))
+    return UserConfigView(
+        debug_mode=get_debug_mode(user_id),
+        version_space=get_version_space(user_id),
+    )
 
 
 @app.get("/users/me/config", response_model=UserConfigView)
@@ -175,4 +184,6 @@ def patch_my_config(
     updates = body.model_dump(exclude_unset=True)
     if "debug_mode" in updates and updates["debug_mode"] is not None:
         set_debug_mode(user_id, bool(updates["debug_mode"]))
+    if "version_space" in updates:
+        set_version_space(user_id, updates["version_space"])
     return _user_config_view(user_id)

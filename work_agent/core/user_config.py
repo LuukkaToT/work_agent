@@ -1,15 +1,16 @@
 """
-按用户持久化个人偏好（目前只有 ``debug_mode``）。
+按用户持久化个人偏好（``debug_mode``、``version_space``）。
 
 只走 Postgres。表由 ``python -m work_agent init-db`` 创建，运行时不建表。
 
-字段设计：``config`` 列存 JSON blob（``{"debug_mode": true, ...}``），
+字段设计：``config`` 列存 JSON blob
+（``{"debug_mode": true, "version_space": "27B"}``），
 不是一列一个字段——和 ``ledger.py`` 里 ``case_names`` 的存法一致，
 以后加新偏好不用改表结构。``update`` 是合并语义：只覆盖传入的键，
 其它已有键保留。
 
-``get_debug_mode`` 返回 ``None`` 表示用户从未设置过，交给调用方套系统
-默认值；不要把「未设置」和 ``False`` 混为一谈。偏好由前端
+读接口返回 ``None`` 表示用户从未设置过该字段，交给调用方套系统默认值
+或走 HITL；不要把「未设置」和 ``False`` / 空串混为一谈。偏好由前端
 ``GET/PATCH /users/me/config`` 读写，不进图状态、不走聊天意图。
 """
 
@@ -21,6 +22,9 @@ from functools import lru_cache
 from typing import Any, Protocol
 
 from work_agent.core.db import get_pool
+
+# 与流水线 ``version`` / CI 表 ``version`` 同一套枚举；个人默认版本只允许这些值。
+VERSION_SPACES = frozenset({"27B", "27A", "26B", "26A"})
 
 
 def _now() -> str:
@@ -125,3 +129,51 @@ def set_debug_mode(user_id: str, value: bool) -> None:
         value: 是否开启调测模式。
     """
     get_user_config_store().update(user_id, debug_mode=bool(value))
+
+
+def _normalize_version_space(value: object) -> str | None:
+    """空 / 非法版本视为未设置；合法值规范成大写。"""
+    if value is None:
+        return None
+    text = str(value).strip().upper()
+    if not text:
+        return None
+    if text not in VERSION_SPACES:
+        return None
+    return text
+
+
+def get_version_space(user_id: str) -> str | None:
+    """
+    读某用户的默认版本空间。
+
+    参数:
+        user_id: 工号。
+
+    返回:
+        ``27B`` / ``27A`` / ``26B`` / ``26A``；从未设置或库里是非法值时返回 ``None``。
+    """
+    return _normalize_version_space(
+        get_user_config_store().get(user_id).get("version_space")
+    )
+
+
+def set_version_space(user_id: str, value: str | None) -> None:
+    """
+    写某用户的默认版本空间；``None`` 表示清空（之后补参会落到 HITL）。
+
+    参数:
+        user_id: 工号。
+        value: 版本枚举，或 ``None`` 清空。大小写不敏感。
+
+    异常:
+        ValueError: 非空但不是 ``VERSION_SPACES`` 之一。
+    """
+    if value is None or str(value).strip() == "":
+        get_user_config_store().update(user_id, version_space=None)
+        return
+    text = str(value).strip().upper()
+    if text not in VERSION_SPACES:
+        allowed = ", ".join(sorted(VERSION_SPACES))
+        raise ValueError(f"version_space 必须是 {allowed} 之一，收到 {value!r}")
+    get_user_config_store().update(user_id, version_space=text)
