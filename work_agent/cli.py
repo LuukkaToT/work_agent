@@ -14,6 +14,8 @@ REPL 斜杠命令：
 单次：
     python -m work_agent.cli ask "分析一下 256T 下行"
     python -m work_agent.cli runs
+    python -m work_agent.cli init-db
+    python -m work_agent.cli init-db --test
 """
 
 from __future__ import annotations
@@ -26,6 +28,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
+from work_agent.core.db_init import init_database
 from work_agent.core.identity import EnvIdentityProvider
 from work_agent.core.ledger import get_ledger
 from work_agent.core.sessions import (
@@ -476,6 +479,32 @@ def list_runs(
         console.print("[dim]台账里还没有执行记录[/dim]")
         return
     console.print(_runs_table(rows, title=f"最近 {len(rows)} 条执行"))
+
+
+@app.command("init-db")
+def init_db(
+    test: bool = typer.Option(
+        False,
+        "--test",
+        help="用 POSTGRES_TEST_DSN 初始化测试库（不要拿生产 DSN 跑测试）",
+    ),
+) -> None:
+    """
+    执行 sql/schema.sql 并创建 LangGraph checkpoint 表。新环境先跑这一步再启动。
+    """
+    from work_agent.core.config import get_settings
+
+    settings = get_settings()
+    dsn = settings.postgres_test_dsn if test else settings.postgres_dsn
+    if test:
+        prod = (settings.postgres_dsn or "").strip()
+        testd = (settings.postgres_test_dsn or "").strip()
+        if prod and testd and prod == testd:
+            console.print("[red]POSTGRES_TEST_DSN 不能和生产 POSTGRES_DSN 相同[/red]")
+            raise typer.Exit(code=1)
+    init_database(dsn)
+    which = "测试库 POSTGRES_TEST_DSN" if test else "生产库 POSTGRES_DSN"
+    console.print(f"[green]已初始化 {which}[/green]")
 
 
 @app.callback(invoke_without_command=True)

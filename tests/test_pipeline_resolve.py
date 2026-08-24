@@ -1,9 +1,9 @@
-"""pipeline 消解：所有 / 序号 / pick 回复。"""
+"""pipeline 消解：所有 / 序号 / pick 回复。连测试库读台账。"""
 
 from __future__ import annotations
 
-from work_agent.core.ledger import RunLedger
-from work_agent.graph.helpers import pipeline_resolve as mod
+import uuid
+
 from work_agent.graph.helpers.pipeline_resolve import (
     _match_pick,
     _parse_ordinal,
@@ -11,9 +11,7 @@ from work_agent.graph.helpers.pipeline_resolve import (
 )
 
 
-def _insert(
-    ledger: RunLedger, pid: str, *, task_id: str, env: str, user_id: str = ""
-) -> None:
+def _insert(ledger, pid: str, *, task_id: str, env: str, user_id: str) -> None:
     ledger.upsert(
         pipeline_id=pid,
         task_id=task_id,
@@ -33,59 +31,58 @@ def test_parse_ordinal():
     assert _parse_ordinal("随便说说") is None
 
 
-def test_resolve_all_skips_pick(tmp_path, monkeypatch):
-    ledger = RunLedger(tmp_path / "index.db")
-    _insert(ledger, "p1", task_id="t1", env="7.223.1.9")
-    _insert(ledger, "p2", task_id="t2", env="7.223.10.11")
-    monkeypatch.setattr(mod, "get_ledger", lambda: ledger)
+def test_resolve_all_skips_pick(pg_ledger, test_user_id):
+    p1, p2 = f"p-{uuid.uuid4().hex[:10]}", f"p-{uuid.uuid4().hex[:10]}"
+    _insert(pg_ledger, p1, task_id="t1", env="7.223.1.9", user_id=test_user_id)
+    _insert(pg_ledger, p2, task_id="t2", env="7.223.10.11", user_id=test_user_id)
 
-    found = resolve_pipeline_records("当前所有流水线的执行状态是什么？")
-    assert {r.pipeline_id for r in found} == {"p1", "p2"}
+    found = resolve_pipeline_records(
+        "当前所有流水线的执行状态是什么？", user_id=test_user_id
+    )
+    assert {r.pipeline_id for r in found} == {p1, p2}
 
 
-def test_resolve_first_ordinal(tmp_path, monkeypatch):
-    ledger = RunLedger(tmp_path / "index.db")
-    _insert(ledger, "older", task_id="t1", env="7.223.10.11")
-    _insert(ledger, "newer", task_id="t2", env="7.223.1.9")
-    monkeypatch.setattr(mod, "get_ledger", lambda: ledger)
+def test_resolve_first_ordinal(pg_ledger, test_user_id):
+    older = f"p-{uuid.uuid4().hex[:10]}"
+    newer = f"p-{uuid.uuid4().hex[:10]}"
+    _insert(pg_ledger, older, task_id="t1", env="7.223.10.11", user_id=test_user_id)
+    _insert(pg_ledger, newer, task_id="t2", env="7.223.1.9", user_id=test_user_id)
 
-    found = resolve_pipeline_records("第一条流水线执行的怎么样了？")
+    found = resolve_pipeline_records(
+        "第一条流水线执行的怎么样了？", user_id=test_user_id
+    )
     # list_recent 倒序：第一条 = 最新
-    assert [r.pipeline_id for r in found] == ["newer"]
+    assert [r.pipeline_id for r in found] == [newer]
 
 
-def test_match_pick_ordinal_and_prefix(tmp_path, monkeypatch):
-    ledger = RunLedger(tmp_path / "index.db")
-    _insert(
-        ledger,
-        "932f222b-d6a1-4150-a818-e6ca048cff65",
-        task_id="t1",
-        env="7.223.1.9",
-    )
-    _insert(
-        ledger,
-        "77942b18-5041-42a2-9ac6-e9fb84c7326e",
-        task_id="t2",
-        env="7.223.10.11",
-    )
-    monkeypatch.setattr(mod, "get_ledger", lambda: ledger)
-    cands = ledger.list_recent(limit=5)
+def test_match_pick_ordinal_and_prefix(pg_ledger, test_user_id):
+    p1 = str(uuid.uuid4())
+    p2 = str(uuid.uuid4())
+    _insert(pg_ledger, p1, task_id="t1", env="7.223.1.9", user_id=test_user_id)
+    _insert(pg_ledger, p2, task_id="t2", env="7.223.10.11", user_id=test_user_id)
+    cands = pg_ledger.list_recent(limit=5, user_id=test_user_id)
 
     assert _match_pick("第一条", cands).pipeline_id == cands[0].pipeline_id
     assert _match_pick("1", cands).pipeline_id == cands[0].pipeline_id
-    assert _match_pick("77942b18", cands).pipeline_id.startswith("77942b18")
+    assert _match_pick(p2[:8], cands).pipeline_id == p2
     assert _match_pick("7.223.10.11", cands).env == "7.223.10.11"
 
 
-def test_resolve_pipeline_records_filters_by_user_id(tmp_path, monkeypatch):
+def test_resolve_pipeline_records_filters_by_user_id(pg_ledger, make_user_id):
     """两个不同 user_id 的记录：传自己的 user_id 只看得到自己的。"""
-    ledger = RunLedger(tmp_path / "index.db")
-    _insert(ledger, "p-alice", task_id="t1", env="7.223.1.9", user_id="alice")
-    _insert(ledger, "p-bob", task_id="t2", env="7.223.10.11", user_id="bob")
-    monkeypatch.setattr(mod, "get_ledger", lambda: ledger)
+    alice = make_user_id()
+    bob = make_user_id()
+    p_alice = f"p-{uuid.uuid4().hex[:10]}"
+    p_bob = f"p-{uuid.uuid4().hex[:10]}"
+    _insert(pg_ledger, p_alice, task_id="t1", env="7.223.1.9", user_id=alice)
+    _insert(pg_ledger, p_bob, task_id="t2", env="7.223.10.11", user_id=bob)
 
-    found = resolve_pipeline_records("当前所有流水线的执行状态是什么？", user_id="alice")
-    assert [r.pipeline_id for r in found] == ["p-alice"]
+    found = resolve_pipeline_records(
+        "当前所有流水线的执行状态是什么？", user_id=alice
+    )
+    assert [r.pipeline_id for r in found] == [p_alice]
 
-    found_bob = resolve_pipeline_records("当前所有流水线的执行状态是什么？", user_id="bob")
-    assert [r.pipeline_id for r in found_bob] == ["p-bob"]
+    found_bob = resolve_pipeline_records(
+        "当前所有流水线的执行状态是什么？", user_id=bob
+    )
+    assert [r.pipeline_id for r in found_bob] == [p_bob]

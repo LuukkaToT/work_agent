@@ -7,7 +7,7 @@ HTTP 侧（``work_agent.api.identity.HeaderIdentityProvider``）每次请求从
 不能硬套成同一个 Protocol（请求级 vs 进程级），所以这里单独定义
 ``IdentityProvider``，专给 CLI / 脚本用。
 
-``DEFAULT_USER_ID`` 同时也是 ``core/ledger.py`` 回填历史空 ``user_id`` 记录时
+``DEFAULT_USER_ID`` 同时也是 ``sql/schema.sql`` 回填历史空 ``user_id`` 记录时
 用的目标值——两处必须是同一个常量：以前没人配 ``WORK_AGENT_USER_ID`` 时留下的
 历史数据，语义上就该归到"没配工号时大家默认用的这个身份"，不能各自定义一份。
 """

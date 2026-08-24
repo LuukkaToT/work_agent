@@ -54,8 +54,8 @@ def _settings_with_retry(attempts: int) -> Settings:
         ),
         workspace_dir=base.workspace_dir,
         profile_path=base.profile_path,
-        checkpoint_path=base.checkpoint_path,
         postgres_dsn=base.postgres_dsn,
+        postgres_test_dsn=base.postgres_test_dsn,
     )
 
 

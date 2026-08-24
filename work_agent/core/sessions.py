@@ -1,4 +1,4 @@
-"""会话列表：从 checkpointer（SQLite 或 Postgres）读 thread，供 CLI /session 使用。"""
+"""会话列表：从 checkpointer（Postgres）读 thread，供 CLI /session 使用。"""
 
 from __future__ import annotations
 

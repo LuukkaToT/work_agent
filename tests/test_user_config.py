@@ -1,80 +1,53 @@
-"""
-core/user_config.py：SQLite 后端 CRUD + 无 DSN 时落回 SQLite。
-
-Postgres 真库测试在 test_postgres_integration.py（模块级 skipif）。
-"""
+"""core/user_config.py：连 POSTGRES_TEST_DSN 测配置合并语义。"""
 
 from __future__ import annotations
 
-from dataclasses import replace
-
-import work_agent.core.user_config as user_config_mod
-from work_agent.core.config import get_settings
 from work_agent.core.user_config import (
-    SqliteUserConfigStore,
+    PostgresUserConfigStore,
     get_debug_mode,
     set_debug_mode,
 )
 
 
-def test_sqlite_get_returns_empty_dict_for_unknown_user(tmp_path):
-    store = SqliteUserConfigStore(tmp_path / "user_config.db")
-    assert store.get("z00001") == {}
+def test_get_user_config_store_returns_postgres(pg_user_config):
+    assert isinstance(pg_user_config, PostgresUserConfigStore)
 
 
-def test_sqlite_update_is_merge_not_replace(tmp_path):
-    store = SqliteUserConfigStore(tmp_path / "user_config.db")
-    store.update("z00001", debug_mode=True)
-    store.update("z00001", theme="dark")
-
-    cfg = store.get("z00001")
-    assert cfg == {"debug_mode": True, "theme": "dark"}
+def test_get_returns_empty_dict_for_unknown_user(pg_user_config, test_user_id):
+    assert pg_user_config.get(test_user_id) == {}
 
 
-def test_sqlite_update_overwrites_same_key(tmp_path):
-    store = SqliteUserConfigStore(tmp_path / "user_config.db")
-    store.update("z00001", debug_mode=True)
-    store.update("z00001", debug_mode=False)
-    assert store.get("z00001")["debug_mode"] is False
+def test_update_is_merge_not_replace(pg_user_config, test_user_id):
+    pg_user_config.update(test_user_id, debug_mode=True)
+    pg_user_config.update(test_user_id, theme="dark")
+    assert pg_user_config.get(test_user_id) == {
+        "debug_mode": True,
+        "theme": "dark",
+    }
 
 
-def test_sqlite_users_are_isolated(tmp_path):
-    store = SqliteUserConfigStore(tmp_path / "user_config.db")
-    store.update("alice", debug_mode=True)
-    store.update("bob", debug_mode=False)
-
-    assert store.get("alice") == {"debug_mode": True}
-    assert store.get("bob") == {"debug_mode": False}
+def test_update_overwrites_same_key(pg_user_config, test_user_id):
+    pg_user_config.update(test_user_id, debug_mode=True)
+    pg_user_config.update(test_user_id, debug_mode=False)
+    assert pg_user_config.get(test_user_id)["debug_mode"] is False
 
 
-def test_get_debug_mode_returns_none_when_unset(monkeypatch, tmp_path):
-    store = SqliteUserConfigStore(tmp_path / "user_config.db")
-    monkeypatch.setattr(user_config_mod, "get_user_config_store", lambda: store)
-
-    assert get_debug_mode("z00001") is None
-
-
-def test_get_set_debug_mode_roundtrip(monkeypatch, tmp_path):
-    store = SqliteUserConfigStore(tmp_path / "user_config.db")
-    monkeypatch.setattr(user_config_mod, "get_user_config_store", lambda: store)
-
-    set_debug_mode("z00001", True)
-    assert get_debug_mode("z00001") is True
-
-    set_debug_mode("z00001", False)
-    assert get_debug_mode("z00001") is False
+def test_users_are_isolated(pg_user_config, make_user_id):
+    alice = make_user_id()
+    bob = make_user_id()
+    pg_user_config.update(alice, debug_mode=True)
+    pg_user_config.update(bob, debug_mode=False)
+    assert pg_user_config.get(alice) == {"debug_mode": True}
+    assert pg_user_config.get(bob) == {"debug_mode": False}
 
 
-def test_get_user_config_store_falls_back_to_sqlite_without_dsn(monkeypatch, tmp_path):
-    base = get_settings()
-    monkeypatch.setattr(
-        user_config_mod,
-        "get_settings",
-        lambda: replace(base, postgres_dsn="", workspace_dir=tmp_path),
-    )
-    user_config_mod.get_user_config_store.cache_clear()
-    try:
-        store = user_config_mod.get_user_config_store()
-        assert isinstance(store, SqliteUserConfigStore)
-    finally:
-        user_config_mod.get_user_config_store.cache_clear()
+def test_get_debug_mode_returns_none_when_unset(pg_env, test_user_id):
+    assert get_debug_mode(test_user_id) is None
+
+
+def test_get_set_debug_mode_roundtrip(pg_env, test_user_id):
+    set_debug_mode(test_user_id, True)
+    assert get_debug_mode(test_user_id) is True
+
+    set_debug_mode(test_user_id, False)
+    assert get_debug_mode(test_user_id) is False

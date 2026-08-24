@@ -1,7 +1,7 @@
 """
 配置加载：
 
-1. .env          → LLM、TOOL_BACKEND 等（密钥不入库）
+1. .env          → LLM、TOOL_BACKEND、Postgres DSN 等（密钥不入库）
 2. profile.yaml  → 个人默认版本、常用组网、轮询参数
 
 get_settings() 带缓存，进程内只读一次。
@@ -68,8 +68,8 @@ class Settings:
     profile: Profile
     workspace_dir: Path  # 报告落盘根目录
     profile_path: Path
-    checkpoint_path: Path  # LangGraph 状态库（SQLite，迁移期兼容，见 postgres_dsn）
-    postgres_dsn: str  # 上线用：checkpointer / ledger / user_config 共用；空串表示未配置
+    postgres_dsn: str  # 生产库；空串表示未配置
+    postgres_test_dsn: str  # 测试库；必须与生产 DSN 指向不同 database
 
 
 def _load_profile(path: Path) -> Profile:
@@ -129,6 +129,6 @@ def get_settings() -> Settings:
         profile=_load_profile(profile_path),
         workspace_dir=root / "workspace",
         profile_path=profile_path,
-        checkpoint_path=root / "workspace" / "checkpoints.sqlite",
         postgres_dsn=os.getenv("POSTGRES_DSN", ""),
+        postgres_test_dsn=os.getenv("POSTGRES_TEST_DSN", ""),
     )

@@ -2,11 +2,6 @@
 
 from __future__ import annotations
 
-import sqlite3
-from pathlib import Path
-
-from langgraph.checkpoint.sqlite import SqliteSaver
-
 from work_agent.core.sessions import (
     SessionInfo,
     list_sessions,
@@ -34,31 +29,23 @@ def test_resolve_session_pick_by_id():
     assert resolve_session_pick("", sessions) is None
 
 
-def _patch_checkpointer(monkeypatch, path: Path):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(str(path), check_same_thread=False)
-    saver = SqliteSaver(conn)
-    saver.setup()
+def test_list_sessions_and_exists(monkeypatch):
+    class _Saver:
+        def get_tuple(self, config):
+            return None
 
+    # 补丁目标必须与 sessions.py 从 checkpoint 导入的 query_recent_threads 同名
     monkeypatch.setattr(
-        "work_agent.core.sessions.get_checkpointer", lambda: saver
+        "work_agent.core.sessions.get_checkpointer", lambda: _Saver()
     )
-    return saver
-
-
-def test_list_sessions_and_exists(tmp_path, monkeypatch):
-    saver = _patch_checkpointer(monkeypatch, tmp_path / "cp.sqlite")
-    # 直接写两行不同 thread（无需完整 checkpoint blob 也能 list / exists）
-    for tid, cid in (("thread-old", "1"), ("thread-new", "2")):
-        saver.conn.execute(
-            """
-            INSERT INTO checkpoints
-            (thread_id, checkpoint_ns, checkpoint_id, parent_checkpoint_id, type, checkpoint, metadata)
-            VALUES (?, '', ?, NULL, NULL, ?, ?)
-            """,
-            (tid, cid, b"{}", b"{}"),
-        )
-    saver.conn.commit()
+    monkeypatch.setattr(
+        "work_agent.core.sessions.query_recent_threads",
+        lambda saver, limit: [("thread-new", "2"), ("thread-old", "1")],
+    )
+    monkeypatch.setattr(
+        "work_agent.core.sessions.thread_checkpoint_exists",
+        lambda saver, tid: tid == "thread-new",
+    )
 
     sessions = list_sessions(limit=10)
     assert [s.thread_id for s in sessions] == ["thread-new", "thread-old"]

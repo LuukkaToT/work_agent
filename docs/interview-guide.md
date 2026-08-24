@@ -53,7 +53,7 @@
 ### 3. 跑起来看一遍
 
 ```powershell
-.\.venv\Scripts\python.exe -m pytest tests -q          # 208 个测试（含 Postgres 集成测试，无本地库自动 skip）
+.\.venv\Scripts\python.exe -m pytest tests -q          # 不碰库的单测会跑；台账/配置/checkpoint 连 POSTGRES_TEST_DSN，未配则 skip
 .\.venv\Scripts\python.exe -m work_agent.cli chat -v   # -v 看 audit 与 summary
 ```
 
@@ -208,7 +208,7 @@ def append_audit(old, new):
 
 **Q8：多轮对话的记忆 / 上下文工程怎么处理的？**
 
-分多层。完整对话由 checkpointer 全量持久化；关键事实落 SQLite 台账。喂给 LLM 的才做裁剪：
+分多层。完整对话由 checkpointer 全量持久化；关键事实落 Postgres 台账。喂给 LLM 的才做裁剪：
 
 1. 最近 N 条（`memory_keep_recent`，默认 8）+ 更早滚动 `dialogue_summary`
 2. 诊断路径：原始日志不进主图 `messages`，只回写 evidence / 结论 / `ruled_out`
@@ -264,7 +264,7 @@ flowchart TD
 
 **Q16：并发怎么办？多个人同时用会不会打架？**
 
-现在已经是多用户了：checkpointer 按 `thread_id` 隔离每个会话的图状态，台账 `pipelines` 表按 `user_id` 隔离每个人能看到的流水线——CLI 用 `EnvIdentityProvider` 读环境变量、HTTP 网关用 `HeaderIdentityProvider` 读请求头拿工号，两边生成的 `thread_id` 前缀规则一致，全链路的写入（`exec_flow.py`）和读取（消解逻辑、诊断工具、CLI `runs`）都真实传了 `user_id`。历史数据靠一次幂等回填解决：`RunLedger`/`PostgresLedger` 建表时顺手把老的空 `user_id` 行统一改成默认身份，不会因为打开过滤就"丢数据"。并发写这块，同一个 thread 不能被两个请求同时续跑（checkpointer 不是为并发写设计的），现在用 `api/locks.py` 的进程内 `dict[thread_id, Lock]` 做非阻塞互斥，抢不到直接 409；若要多副本部署，这层还差 Postgres advisory lock 这一步，检查点/台账/配置已经是共享的 Postgres 了，不用再迁移存储。
+现在已经是多用户了：checkpointer 按 `thread_id` 隔离每个会话的图状态，台账 `pipelines` 表按 `user_id` 隔离每个人能看到的流水线——CLI 用 `EnvIdentityProvider` 读环境变量、HTTP 网关用 `HeaderIdentityProvider` 读请求头拿工号，两边生成的 `thread_id` 前缀规则一致，全链路的写入（`exec_flow.py`）和读取（消解逻辑、诊断工具、CLI `runs`）都真实传了 `user_id`。历史空 `user_id` 由 `sql/schema.sql` 里的幂等 `UPDATE` 回填成默认身份，不会因为打开过滤就"丢数据"。并发写这块，同一个 thread 不能被两个请求同时续跑（checkpointer 不是为并发写设计的），现在用 `api/locks.py` 的进程内 `dict[thread_id, Lock]` 做非阻塞互斥，抢不到直接 409；若要多副本部署，这层还差 Postgres advisory lock 这一步。
 
 **Q17：成本怎么控制？**
 

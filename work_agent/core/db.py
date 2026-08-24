@@ -22,21 +22,23 @@ def get_pool() -> ConnectionPool:
     返回进程内共享的 Postgres 连接池（首次调用时才真正建连）。
 
     row_factory 统一用 dict_row：langgraph 的 PostgresSaver 要求连接是
-    ``Connection[dict]``；ledger 这边用 dict 取列也比 sqlite3.Row 顺手，
+    ``Connection[dict]``；ledger 这边用 dict 取列也方便，
     两边共用同一个池、同一套访问方式。
 
     返回:
         已 open 并等待就绪的 ConnectionPool。
 
     异常:
-        RuntimeError: 未配置 POSTGRES_DSN（不给假默认值，配置缺失要显式报错）。
+        RuntimeError: 未配置 POSTGRES_DSN（应用连生产库；测试请配 POSTGRES_TEST_DSN
+            并由 pytest 把生效 DSN 换成测试库，见 tests/conftest.py）。
         psycopg 相关异常: DSN 配了但连不上（网络 / 账号密码错误），不静默吞掉。
     """
     dsn = get_settings().postgres_dsn
     if not dsn:
         raise RuntimeError(
-            "POSTGRES_DSN 未配置：请在 .env 里设置，"
-            "例如 postgresql://user:pass@host:5432/work_agent"
+            "POSTGRES_DSN 未配置：请在 .env 里设置生产库连接串，"
+            "例如 postgresql://user:pass@host:5432/work_agent。"
+            "测试库用 POSTGRES_TEST_DSN，二者必须是不同的 database。"
         )
     pool = ConnectionPool(
         conninfo=dsn,

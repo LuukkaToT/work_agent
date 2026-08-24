@@ -1,11 +1,14 @@
-"""RunLedger：用临时目录建库，不碰 workspace/index.db。"""
+"""PostgresLedger：连 POSTGRES_TEST_DSN 测台账行为。"""
 
-from work_agent.core.identity import DEFAULT_USER_ID
-from work_agent.core.ledger import RunLedger
+from __future__ import annotations
+
+import uuid
+
+from work_agent.core.ledger import PostgresLedger
 
 
-def make_ledger(tmp_path):
-    return RunLedger(tmp_path / "index.db")
+def _pid() -> str:
+    return f"p-{uuid.uuid4().hex[:12]}"
 
 
 def insert(
@@ -17,6 +20,7 @@ def insert(
     report_path="",
     env="7.223.50.60",
     task_id=None,
+    user_id="",
 ):
     ledger.upsert(
         pipeline_id=pipeline_id,
@@ -26,145 +30,149 @@ def insert(
         env=env,
         status=status,
         report_path=report_path,
+        user_id=user_id,
     )
 
 
-def test_upsert_and_get(tmp_path):
-    ledger = make_ledger(tmp_path)
-    insert(ledger, "r1")
-    rec = ledger.get("r1")
+def test_get_ledger_returns_postgres_ledger(pg_ledger):
+    assert isinstance(pg_ledger, PostgresLedger)
+
+
+def test_upsert_and_get(pg_ledger, test_user_id):
+    pid = _pid()
+    insert(pg_ledger, pid, user_id=test_user_id)
+    rec = pg_ledger.get(pid)
     assert rec is not None
     assert rec.case_names == ["HF_20B_PUSCH_001"]
     assert rec.env == "7.223.50.60"
     assert rec.status == "running"
-    assert ledger.get("no-such-id") is None
+    assert rec.user_id == test_user_id
+    assert pg_ledger.get("no-such-id") is None
 
 
-def test_upsert_conflict_keeps_old_report_path(tmp_path):
-    ledger = make_ledger(tmp_path)
-    insert(ledger, "r1", report_path="D:/x/report.md")
-    insert(ledger, "r1", status="finished", report_path="")
-    rec = ledger.get("r1")
+def test_upsert_conflict_keeps_old_report_path(pg_ledger, test_user_id):
+    pid = _pid()
+    insert(pg_ledger, pid, report_path="D:/x/report.md", user_id=test_user_id)
+    insert(pg_ledger, pid, status="finished", report_path="", user_id=test_user_id)
+    rec = pg_ledger.get(pid)
     assert rec.status == "finished"
     assert rec.report_path == "D:/x/report.md"
 
 
-def test_update_status_partial(tmp_path):
-    ledger = make_ledger(tmp_path)
-    insert(ledger, "r1", report_path="D:/x/report.md")
+def test_update_status_partial(pg_ledger, test_user_id):
+    pid = _pid()
+    insert(pg_ledger, pid, report_path="D:/x/report.md", user_id=test_user_id)
 
-    ledger.update_status("r1", status="finished")
-    rec = ledger.get("r1")
+    pg_ledger.update_status(pid, status="finished")
+    rec = pg_ledger.get(pid)
     assert rec.status == "finished"
     assert rec.report_path == "D:/x/report.md"
 
-    ledger.update_status("r1", report_path="D:/y/report.md")
-    rec = ledger.get("r1")
+    pg_ledger.update_status(pid, report_path="D:/y/report.md")
+    rec = pg_ledger.get(pid)
     assert rec.status == "finished"
     assert rec.report_path == "D:/y/report.md"
 
 
-def test_latest_orders_by_created_at(tmp_path):
-    ledger = make_ledger(tmp_path)
-    insert(ledger, "r1")
-    insert(ledger, "r2")
-    insert(ledger, "r3")
-    latest = ledger.latest(limit=2)
-    assert [r.pipeline_id for r in latest] == ["r3", "r2"]
+def test_latest_orders_by_created_at(pg_ledger, test_user_id):
+    p1, p2, p3 = _pid(), _pid(), _pid()
+    insert(pg_ledger, p1, user_id=test_user_id)
+    insert(pg_ledger, p2, user_id=test_user_id)
+    insert(pg_ledger, p3, user_id=test_user_id)
+    latest = pg_ledger.latest(limit=2, user_id=test_user_id)
+    assert [r.pipeline_id for r in latest] == [p3, p2]
 
 
-def test_find_by_case_exact_match(tmp_path):
-    ledger = make_ledger(tmp_path)
-    insert(ledger, "r1", case_names=["case_a_long"])
-    insert(ledger, "r2", case_names=["case_a_long_extra"])
-    insert(ledger, "r3", case_names=["case_b_long", "case_a_long"])
+def test_find_by_case_exact_match(pg_ledger, test_user_id):
+    p1, p2, p3 = _pid(), _pid(), _pid()
+    insert(pg_ledger, p1, case_names=["case_a_long"], user_id=test_user_id)
+    insert(pg_ledger, p2, case_names=["case_a_long_extra"], user_id=test_user_id)
+    insert(
+        pg_ledger,
+        p3,
+        case_names=["case_b_long", "case_a_long"],
+        user_id=test_user_id,
+    )
 
-    found = ledger.find_by_case("case_a_long")
-    assert {r.pipeline_id for r in found} == {"r1", "r3"}
+    found = pg_ledger.find_by_case("case_a_long", user_id=test_user_id)
+    assert {r.pipeline_id for r in found} == {p1, p3}
 
 
-def test_find_by_task(tmp_path):
-    ledger = make_ledger(tmp_path)
-    ledger.upsert(
-        pipeline_id="p1",
-        task_id="task-x",
+def test_find_by_task(pg_ledger, test_user_id):
+    task_x = f"task-x-{uuid.uuid4().hex[:8]}"
+    task_y = f"task-y-{uuid.uuid4().hex[:8]}"
+    p1, p2, p3 = _pid(), _pid(), _pid()
+    pg_ledger.upsert(
+        pipeline_id=p1,
+        task_id=task_x,
         case_names=["HF_A_001"],
         version="27B",
         env="7.223.50.60",
         status="running",
+        user_id=test_user_id,
     )
-    ledger.upsert(
-        pipeline_id="p2",
-        task_id="task-x",
+    pg_ledger.upsert(
+        pipeline_id=p2,
+        task_id=task_x,
         case_names=["HF_B_001"],
         version="27B",
         env="7.223.60.11",
         status="running",
+        user_id=test_user_id,
     )
-    ledger.upsert(
-        pipeline_id="p3",
-        task_id="task-y",
+    pg_ledger.upsert(
+        pipeline_id=p3,
+        task_id=task_y,
         case_names=["HF_C_001"],
         version="27A",
         env="7.223.50.60",
         status="running",
+        user_id=test_user_id,
     )
-    found = ledger.find_by_task("task-x")
-    assert [r.pipeline_id for r in found] == ["p1", "p2"]
+    found = pg_ledger.find_by_task(task_x, user_id=test_user_id)
+    assert [r.pipeline_id for r in found] == [p1, p2]
 
 
-def test_legacy_empty_user_id_backfilled_on_next_startup(tmp_path):
-    """历史空 user_id 记录：下次启动（重新构造 RunLedger）时应被回填成默认身份。"""
-    db_path = tmp_path / "index.db"
-    ledger = RunLedger(db_path)
-    insert(ledger, "r1")  # 默认 user_id=""，模拟身份接线前留下的老记录
-    assert ledger.get("r1").user_id == ""
-
-    # 重新构造指向同一个库：_init_db 里的回填该跑一次
-    ledger2 = RunLedger(db_path)
-    rec = ledger2.get("r1")
-    assert rec is not None
-    assert rec.user_id == DEFAULT_USER_ID
-
-
-def test_backfill_is_idempotent_and_does_not_touch_real_user_ids(tmp_path):
-    db_path = tmp_path / "index.db"
-    ledger = RunLedger(db_path)
-    insert(ledger, "legacy")
-    ledger.upsert(
-        pipeline_id="owned",
-        task_id="task-owned",
-        case_names=["HF_A_001"],
-        version="27B",
-        env="7.223.50.60",
-        status="running",
-        user_id="z00888363",
-    )
-
-    # 连续两次重新构造：回填只影响空串，不影响已有真实身份，且重复跑不出错
-    for _ in range(2):
-        fresh = RunLedger(db_path)
-        assert fresh.get("legacy").user_id == DEFAULT_USER_ID
-        assert fresh.get("owned").user_id == "z00888363"
-
-
-def test_replace_id_swaps_primary_key(tmp_path):
-    ledger = make_ledger(tmp_path)
+def test_replace_id_swaps_primary_key(pg_ledger, test_user_id):
+    old_id = f"local-{uuid.uuid4().hex[:12]}"
+    new_id = str(uuid.uuid4())
     insert(
-        ledger,
-        "local-abc",
+        pg_ledger,
+        old_id,
         status="creating",
         task_id="task-1",
         env="7.223.50.60",
+        user_id=test_user_id,
     )
-    ledger.replace_id(
-        "local-abc",
-        "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
-        status="created",
-    )
-    assert ledger.get("local-abc") is None
-    rec = ledger.get("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee")
+    pg_ledger.replace_id(old_id, new_id, status="created")
+    assert pg_ledger.get(old_id) is None
+    rec = pg_ledger.get(new_id)
     assert rec is not None
     assert rec.status == "created"
     assert rec.task_id == "task-1"
     assert rec.env == "7.223.50.60"
+    assert rec.user_id == test_user_id
+
+
+def test_get_filters_by_user_id(pg_ledger, make_user_id):
+    alice = make_user_id()
+    bob = make_user_id()
+    pid = _pid()
+    insert(pg_ledger, pid, user_id=alice)
+    assert pg_ledger.get(pid, user_id=alice) is not None
+    assert pg_ledger.get(pid, user_id=bob) is None
+
+
+def test_find_by_task_isolates_users(pg_ledger, make_user_id):
+    alice = make_user_id()
+    bob = make_user_id()
+    task_id = f"task-{uuid.uuid4().hex[:8]}"
+    pid_a, pid_b = _pid(), _pid()
+    insert(pg_ledger, pid_a, task_id=task_id, user_id=alice)
+    insert(pg_ledger, pid_b, task_id=task_id, env="7.223.60.11", user_id=bob)
+
+    alice_records = pg_ledger.find_by_task(task_id, user_id=alice)
+    assert [r.pipeline_id for r in alice_records] == [pid_a]
+
+    all_records = pg_ledger.find_by_task(task_id)
+    assert {r.pipeline_id for r in all_records} == {pid_a, pid_b}

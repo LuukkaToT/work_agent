@@ -1,5 +1,5 @@
-from work_agent.core.ledger import RunLedger
-from work_agent.graph.helpers import diagnose_tools as diagnose_tools_mod
+import uuid
+
 from work_agent.graph.helpers.diagnose_tools import build_diagnose_tools
 from work_agent.graph.helpers.truncate import CharBudget
 from work_agent.tools.registry import get_pipeline_tool
@@ -54,38 +54,39 @@ def test_search_knowledge_hits():
     assert "### " in out or "knowledge" in out
 
 
-def test_find_case_history_filters_by_user_id(tmp_path, monkeypatch):
+def test_find_case_history_filters_by_user_id(pg_ledger, make_user_id):
     """user_id 只在自己名下的记录里查得到，看不到别人的。"""
-    ledger = RunLedger(tmp_path / "index.db")
-    ledger.upsert(
-        pipeline_id="p-alice",
+    alice = make_user_id()
+    bob = make_user_id()
+    case_name = f"case_dl_{uuid.uuid4().hex[:10]}"
+    pid_alice = f"p-{uuid.uuid4().hex[:10]}"
+    pid_bob = f"p-{uuid.uuid4().hex[:10]}"
+    pg_ledger.upsert(
+        pipeline_id=pid_alice,
         task_id="t1",
-        case_names=["case_downlink_001"],
+        case_names=[case_name],
         version="27B",
         env="7.223.50.60",
         status="running",
-        user_id="alice",
+        user_id=alice,
     )
-    ledger.upsert(
-        pipeline_id="p-bob",
+    pg_ledger.upsert(
+        pipeline_id=pid_bob,
         task_id="t2",
-        case_names=["case_downlink_001"],
+        case_names=[case_name],
         version="27B",
         env="7.223.60.11",
         status="running",
-        user_id="bob",
+        user_id=bob,
     )
-    monkeypatch.setattr(diagnose_tools_mod, "get_ledger", lambda: ledger)
 
-    alice_tools = {t.name: t for t in build_diagnose_tools(user_id="alice")}
-    out = alice_tools["find_case_history"].invoke({"case_name": "case_downlink_001"})
-    assert "p-alice" in out
-    assert "p-bob" not in out
+    alice_tools = {t.name: t for t in build_diagnose_tools(user_id=alice)}
+    out = alice_tools["find_case_history"].invoke({"case_name": case_name})
+    assert pid_alice in out
+    assert pid_bob not in out
 
     empty_tools = {t.name: t for t in build_diagnose_tools()}  # user_id 默认空串
-    out_empty = empty_tools["find_case_history"].invoke(
-        {"case_name": "case_downlink_001"}
-    )
+    out_empty = empty_tools["find_case_history"].invoke({"case_name": case_name})
     assert "no records" in out_empty
 
 

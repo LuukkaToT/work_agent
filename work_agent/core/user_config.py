@@ -1,9 +1,7 @@
 """
 按用户持久化个人偏好（目前只有 ``debug_mode``）。
 
-后端选择与 checkpointer / ledger 一致：``POSTGRES_DSN`` 配了用
-``PostgresUserConfigStore``（走 ``core/db.py`` 连接池），没配退回本地
-``SqliteUserConfigStore``（``workspace/user_config.db``）。
+只走 Postgres。表由 ``python -m work_agent init-db`` 创建，运行时不建表。
 
 字段设计：``config`` 列存 JSON blob（``{"debug_mode": true, ...}``），
 不是一列一个字段——和 ``ledger.py`` 里 ``case_names`` 的存法一致，
@@ -17,13 +15,10 @@
 from __future__ import annotations
 
 import json
-import sqlite3
 from datetime import datetime, timezone
 from functools import lru_cache
-from pathlib import Path
 from typing import Any, Protocol
 
-from work_agent.core.config import get_settings
 from work_agent.core.db import get_pool
 
 
@@ -33,7 +28,7 @@ def _now() -> str:
 
 
 class UserConfigStore(Protocol):
-    """个人配置后端协议：SQLite / Postgres 都实现这套方法。"""
+    """个人配置后端协议。"""
 
     def get(self, user_id: str) -> dict[str, Any]:
         """
@@ -61,82 +56,8 @@ class UserConfigStore(Protocol):
         ...
 
 
-class SqliteUserConfigStore:
-    """本地 SQLite 个人配置：``workspace/user_config.db``。"""
-
-    def __init__(self, db_path: Path) -> None:
-        """
-        参数:
-            db_path: 库文件路径；父目录不存在会自动创建。
-        """
-        self.db_path = db_path
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
-        self._init_db()
-
-    def _connect(self) -> sqlite3.Connection:
-        conn = sqlite3.connect(str(self.db_path))
-        conn.row_factory = sqlite3.Row
-        return conn
-
-    def _init_db(self) -> None:
-        with self._connect() as conn:
-            conn.execute(
-                """
-                CREATE TABLE IF NOT EXISTS user_config (
-                    user_id TEXT PRIMARY KEY,
-                    config TEXT NOT NULL DEFAULT '{}',
-                    updated_at TEXT NOT NULL
-                )
-                """
-            )
-            conn.commit()
-
-    def get(self, user_id: str) -> dict[str, Any]:
-        with self._connect() as conn:
-            row = conn.execute(
-                "SELECT config FROM user_config WHERE user_id=?", (user_id,)
-            ).fetchone()
-        if not row:
-            return {}
-        return json.loads(row["config"] or "{}")
-
-    def update(self, user_id: str, **fields: Any) -> dict[str, Any]:
-        current = self.get(user_id)
-        current.update(fields)
-        now = _now()
-        blob = json.dumps(current, ensure_ascii=False)
-        with self._connect() as conn:
-            conn.execute(
-                """
-                INSERT INTO user_config (user_id, config, updated_at)
-                VALUES (?, ?, ?)
-                ON CONFLICT(user_id) DO UPDATE SET
-                    config=excluded.config,
-                    updated_at=excluded.updated_at
-                """,
-                (user_id, blob, now),
-            )
-            conn.commit()
-        return current
-
-
 class PostgresUserConfigStore:
-    """Postgres 个人配置：上线用，方法签名与 ``SqliteUserConfigStore`` 对齐。"""
-
-    def __init__(self) -> None:
-        self._ensure_table()
-
-    def _ensure_table(self) -> None:
-        with get_pool().connection() as conn:
-            conn.execute(
-                """
-                CREATE TABLE IF NOT EXISTS user_config (
-                    user_id TEXT PRIMARY KEY,
-                    config TEXT NOT NULL DEFAULT '{}',
-                    updated_at TEXT NOT NULL
-                )
-                """
-            )
+    """Postgres 个人配置。表须已由 init-db 建好。"""
 
     def get(self, user_id: str) -> dict[str, Any]:
         with get_pool().connection() as conn:
@@ -169,14 +90,12 @@ class PostgresUserConfigStore:
 @lru_cache(maxsize=1)
 def get_user_config_store() -> UserConfigStore:
     """
-    返回进程内共享的个人配置实例；按 ``POSTGRES_DSN`` 是否配置自动选后端。
+    返回进程内共享的个人配置实例。
 
     返回:
-        ``PostgresUserConfigStore``（配了 DSN）或 ``SqliteUserConfigStore``（本地 SQLite）。
+        ``PostgresUserConfigStore``。未配 DSN 时第一次查库由 ``get_pool()`` 报错。
     """
-    if get_settings().postgres_dsn:
-        return PostgresUserConfigStore()
-    return SqliteUserConfigStore(get_settings().workspace_dir / "user_config.db")
+    return PostgresUserConfigStore()
 
 
 def get_debug_mode(user_id: str) -> bool | None:

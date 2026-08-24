@@ -214,19 +214,15 @@ checkpointer 只按 `thread_id` 存图状态。用户换会话再问「上次执
 
 这就是为什么查询 / 启动类**不需要**子 agent：规则能穷举，用不着让模型自由探索。
 
-### 存储后端：本地 SQLite / 上线 Postgres 双模式
+### 存储后端：Postgres + 显式 init-db
 
-`checkpointer`（`core/checkpoint.py`）、台账（`core/ledger.py`）和个人配置（`core/user_config.py`）都按同一个规则选后端：`POSTGRES_DSN` 配了用 Postgres（`PostgresSaver` / `PostgresLedger` / `PostgresUserConfigStore`，走 `core/db.py` 共享的 `psycopg_pool.ConnectionPool`），没配就退回本地 SQLite（`SqliteSaver` / `RunLedger` / `SqliteUserConfigStore`，分别落在 `workspace/checkpoints.sqlite`、`workspace/index.db`、`workspace/user_config.db`）。本地开发用 `docker-compose.yml` 起一个 Postgres 容器（`docker compose up -d`），`.env` 里配好 `POSTGRES_DSN` 即可切到真实库，不用改代码。
+`checkpointer`（`core/checkpoint.py`）、台账（`core/ledger.py`）和个人配置（`core/user_config.py`）只走 Postgres，共用 `core/db.py` 的连接池。生产连 `POSTGRES_DSN`，集成测试连 `POSTGRES_TEST_DSN`（必须是另一个 database）。表不在运行时创建：新环境先建空库，再跑 `python -m work_agent init-db`（测试库加 `--test`），脚本执行 `sql/schema.sql` 并调用一次 `PostgresSaver.setup()`。未配 DSN 时 `get_pool()` 直接报错，不再回落 SQLite。
 
-两个后端方法签名完全对齐：`checkpoint.py` 用 `query_recent_threads` / `thread_checkpoint_exists` 把「拿原始连接、拼 SQL」这层后端差异封起来，`sessions.py` 不关心底层是哪个库；`ledger.py` 用 `LedgerProtocol`，`user_config.py` 用 `UserConfigStore`，各自双实现。
+`pipelines.user_id` 存的是工号字符串，不是（未来）用户表的 int 主键。查询方法（`get` / `latest` / `find_by_case` / `find_by_task` / `list_recent`）都支持可选的 `user_id` 过滤。身份接线前的空 `user_id` 由 `schema.sql` 里那条幂等 `UPDATE` 回填成 `core/identity.py` 的 `DEFAULT_USER_ID`（`local-dev`），不在每次构造 Ledger 时偷偷跑。
 
-`pipelines.user_id` 存的是工号字符串，不是（未来）用户表的 int 主键——工号是从鉴权拿到的稳定业务身份，台账没必要为了一个代理键去 join 一张现在还不存在的用户表。查询方法（`get` / `latest` / `find_by_case` / `find_by_task` / `list_recent`）都支持可选的 `user_id` 过滤参数：`None` 表示不过滤（现在没有任何生产调用点这么用，只留给管理/调试场景），其余情况下都真的按传入的工号过滤——所有写入路径（`exec_flow.py` 建流水线）和读取路径（`pipeline_resolve.py` 的 start/query/diagnose 消解、`diagnose_tools.py` 的 `find_case_history`、CLI 的 `runs` 命令）都已经把 `state["user_id"]` / `_USER_ID` 传进去了。
+个人配置表 `user_config` 的 `config` 列存 JSON blob。`ci_cases` 表也在同一份 schema 里（后续模块接查询）。
 
-**历史回填**：身份接线之前创建的记录 `user_id` 全是空串，直接打开过滤会让这些老记录“查不到”。解决办法是让 `RunLedger._init_db()` / `PostgresLedger._ensure_table()` 在建表之后顺手跑一条 `UPDATE pipelines SET user_id=? WHERE user_id=''`，把历史空值统一改成 `core/identity.py` 的 `DEFAULT_USER_ID`（即未配 `WORK_AGENT_USER_ID` 时的默认身份 `local-dev`）——语义上等价于“以前没人配工号时的数据，就属于这个默认身份”，跟现在没配工号的 CLI 查询用的身份完全对齐。这条语句和建表一样是幂等操作，回填完之后每次启动都是 0 行受影响的空操作，没有引入单独的迁移脚本或版本号表。空串本身作为过滤值时（某处没拿到身份的兜底）语义是“过滤到这个身份”，回填后台账里不会再有这个身份的行，效果是“看不到任何记录”而不是“看到别人的”，失败方向更安全。
-
-个人配置表 `user_config` 的 `config` 列存 JSON blob（`{"debug_mode": true, ...}`），不是一列一个字段——和台账里 `case_names` 的存法一致，以后加新偏好字段不用改表结构。`update` 是合并语义（只覆盖传入的键）。`get_debug_mode` 返回 `None` 表示用户从未设置过，交给调用方套系统默认值，不要把「未设置」和 `False` 混为一谈。CLI 侧身份来源见 `core/identity.py`（`EnvIdentityProvider` 读 `WORK_AGENT_USER_ID`）；HTTP 侧仍用 `api/identity.py` 的请求级 mock 鉴权——两者调用形状不同（进程级 vs 请求级），不硬套同一个类。
-
-测试策略：`tests/test_storage_backend.py` / `tests/test_user_config.py` 验证「DSN 为空 → 落回 SQLite」这条回退路径，不需要真实库，始终跑；`tests/test_postgres_integration.py` 端到端验证 Postgres 后端（checkpointer 跨「进程」持久化、ledger CRUD、`user_id` 隔离、user_config CRUD），模块级 `skipif` 探测 DSN 是否配置、连接是否可达，连不上就整份跳过，不阻塞没有本地 Postgres 的机器。
+测试：凡读写台账 / 个人配置 / checkpoint 的用例都连 `POSTGRES_TEST_DSN`（未配置或不可达则 skip）；图节点、路由等不碰库的单测仍不连库。`tests/test_storage_backend.py` 断言空 DSN 抛错。
 
 ## 七、Tool 契约
 
@@ -308,7 +304,7 @@ class TestFlowState(TypedDict):
 | M7 | `exec_params` + `create_pipelines` / `start_pipelines` | 多计划 create + 按需 start | 约 150 行 |
 | M8 | （已移除轮询） | — | — |
 | M9 | （已移除执行报告落盘；结果看流水线前端） | — | — |
-| M10 | SQLite checkpointer + thread_id | 持久化与断点恢复 | 约 80 行 |
+| M10 | Postgres checkpointer + thread_id | 持久化与断点恢复 | 约 80 行 |
 | M11 | interrupt 补参数与执行前确认 | `interrupt` / `Command(resume)` | 约 110 行 |
 | M12 | `skills/` 目录 + `SkillLoader` | prompt 组装 | 约 90 行 |
 | M13 | `test_analysis` Role 节点 | Role 抽象与产物落盘 | 约 110 行 |
@@ -409,7 +405,7 @@ POLICIES: dict[str, ActionPolicy] = {
 其他选型：
 
 - CLI：`typer` + `rich`，PowerShell 直接可用
-- 持久化：`langgraph-checkpoint-sqlite`
+- 持久化：`langgraph-checkpoint-postgres`
 - 已装：langgraph 1.2.10、langchain 1.3.14、langchain-openai（无需再装 google 专用包）
 
 ## 十二、从 MVP 到商用的加固清单
