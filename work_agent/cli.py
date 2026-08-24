@@ -227,7 +227,9 @@ def _render_interrupt(payloads: list[Any]) -> str:
             if allowed:
                 lines.append("可选版本：" + " / ".join(str(x) for x in allowed))
         elif kind == "ask_env":
-            lines.append("示例：7.223.50.60")
+            lines.append(
+                "示例：7.223.50.60，或逻辑组网 3BBL_86_1BBL86 / 85+86"
+            )
         elif kind == "pick_run":
             lines.append("可输入：序号（1 / 第一条）、pipeline_id 前缀、环境 IP，或「全部」")
         elif kind == "pick_sheet_column":

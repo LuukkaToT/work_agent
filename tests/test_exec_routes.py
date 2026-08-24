@@ -47,7 +47,7 @@ def test_plan_dict_marks_missing_env():
     assert plan["env_kind"] == ""
 
 
-def test_plan_dict_logical_env_is_missing():
+def test_plan_dict_logical_env_without_constraint_is_missing():
     plan = _plan_dict(
         case_names=["HF_20B_PUSCH_001"],
         version="27B",
@@ -55,6 +55,31 @@ def test_plan_dict_logical_env_is_missing():
     )
     assert plan["env_kind"] == "logical"
     assert "env" in plan["missing"]
+    assert plan["logic_constraint"] == ""
+
+
+def test_plan_dict_logical_env_with_constraint_is_complete():
+    plan = _plan_dict(
+        case_names=["HF_20B_PUSCH_001"],
+        version="27B",
+        env="3BBL_86_1BBL86",
+        logic_constraint="85+86",
+    )
+    assert plan["env_kind"] == "logical"
+    assert plan["missing"] == []
+    assert plan["logic_constraint"] == "85+86"
+
+
+def test_plan_dict_physical_clears_constraint():
+    plan = _plan_dict(
+        case_names=["HF_20B_PUSCH_001"],
+        version="27B",
+        env="7.223.50.60",
+        logic_constraint="85+86",
+    )
+    assert plan["env_kind"] == "physical"
+    assert plan["logic_constraint"] == ""
+    assert plan["missing"] == []
 
 
 def test_plan_dict_invalid_version():

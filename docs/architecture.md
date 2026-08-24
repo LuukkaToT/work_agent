@@ -74,39 +74,29 @@ workspace/
   index.db              # 运行台账（跨会话查询用）
 ```
 
-## 四、参数解析：物理环境与优先级链
+## 四、参数解析：物理 / 逻辑组网与优先级链
 
-执行 tool 现阶段入参是 **物理组网 IP**（如 `7.223.50.60`）。逻辑组网（如 `3BBL_86_1BBL86` / 「85+86 环境」）后续靠型号映射 markdown 解析，当前识别到会 interrupt 提示改传物理 IP。
+执行计划的环境可以是 **物理组网 IP**（如 `7.223.50.60`），或 **完整逻辑组网**（`logic_env` + `logic_constraint`，如 `3BBL_86_1BBL86` / `85+86`）。`exec_params` 抽完口头字段后，按用例路径查 CI 表再补缺；仍缺才 HITL。`PipelineTool.create` 目前仍吃 `env` 字符串（逻辑完整时把 `logic_env` 放进 `env`），双模式 create 下一模块再接。
 
-一次用户输入可拆成 **多条执行计划**：不同环境各一次 `create`（多个 `pipeline_id`）；同一环境多个用例合并为一条（批量 `case_names`）。`exec_mode`：`create_only`（只建不跑）或 `create_and_start`（默认，创建并启动）。
+一次用户输入可拆成 **多条执行计划**：`(version, env_kind, env, logic_constraint)` 不同则各一次 `create`；同一组网多个用例合并为一条。`exec_mode`：`create_only`（只建不跑）或 `create_and_start`（默认，创建并启动）。
 
 参数来源优先级：
 
 ```mermaid
 flowchart LR
-  A["1 用户本次显式输入"] --> B["2 当前会话上下文"]
-  B --> C["3 用户个人配置默认值"]
+  A["1 本轮口头 version / 物理 IP / 完整逻辑组网"] --> B["2 CI 表 lookup_ci_case"]
+  B --> C["3 user_config.version_space 只补 version"]
   C --> D["4 interrupt 反问用户"]
 ```
 
 | 参数 | 缺失时行为 |
 |------|-----------|
 | `case_names` | 缺失则 interrupt 询问；agent **不预校验**用例名，流水线自己验证 |
-| `version` | 枚举 `27B/27A/26B/26A`；本轮未说则 interrupt，**不静默填默认** |
-| `env` | 物理 IP；**不允许静默填充**；逻辑组网写法视为缺失并提示 |
+| `version` | 枚举 `27B/27A/26B/26A`；口头 → CI 表 → `version_space` → 仍空则 interrupt。非法口头值不覆盖 |
+| `env` | 口头物理 IP 或完整逻辑组网 → CI 表逻辑组网+约束 → 仍缺则 interrupt。`version_space` 不补环境 |
 | `exec_mode` | 默认 `create_and_start`；用户说「只创建」则为 `create_only` |
 
-个人配置放 `config/profile.yaml`：
-
-```yaml
-default_version: "27B"
-frequent_topologies: ["topo_a", "topo_b"]
-poll_interval_seconds: 30
-poll_max_attempts: 40
-create_retry_attempts: 1
-```
-
-环境必须问，是因为跑错环境代价高。`poll_*` 配置保留但执行链路已不再轮询；`create_retry_attempts` 控制 **start** 失败后的同 `pipeline_id` 重试次数（create 失败不盲目重试，防双建）。
+个人运行参数仍有一部分在 `config/profile.yaml`（轮询间隔、start 重试次数等）。默认版本不再写在 yaml 里，而是 `user_config.version_space`。跑错环境代价高，所以环境不允许用个人配置静默填充：口头和 CI 表都没有才 interrupt。`poll_*` 配置保留但执行链路已不再轮询；`create_retry_attempts` 控制 **start** 失败后的同 `pipeline_id` 重试次数（create 失败不盲目重试，防双建）。
 
 ## 五、主流程
 
@@ -458,7 +448,7 @@ CLI 的 `run_turn`/`resume_pending` 是阻塞的：遇到 `interrupt` 就在进�
 
 `state.py` 的 `user_id` 是会话级字段（`intake` 绝不重置，跟 `messages`/`dialogue_summary` 同类）：CLI/API 拿到工号后，`runtime.run_turn`/`run_turn_step` 把它和 `messages` 一起塞进每次 invoke 的 payload（`{"messages": [...], "user_id": user_id}`）——每轮都传、不依赖“只在第一轮写”，天然幂等。`resume_step`/`resume_pending` 续跑时不用再传：那一轮的 `user_id` 在 thread 创建时已经写进 checkpoint 了。
 
-个人偏好不进图状态。`debug_mode` 和 `version_space`（`27B/27A/26B/26A`，与流水线 version 同一枚举）存在 `user_config` 的 JSON blob 里，前端用 `GET/PATCH /users/me/config` 读写；未设置过的字段为 `null`，PATCH 只覆盖传入的键。`version_space` 是个人默认版本。CI 目录按用例路径点查 `lookup_ci_case(case_path)`。exec_params 补参顺序（口头 > CI 表 > `version_space` > HITL）后续模块再接。`debug_mode` 真正生效的地方只有 `create_pipelines`：提交时按当前 `user_id` 点查 `get_debug_mode`（`None` 当 `False`），塞进 `tool.create(..., options={"debug_mode": ...})`。
+个人偏好不进图状态。`debug_mode` 和 `version_space`（`27B/27A/26B/26A`，与流水线 version 同一枚举）存在 `user_config` 的 JSON blob 里，前端用 `GET/PATCH /users/me/config` 读写；未设置过的字段为 `null`，PATCH 只覆盖传入的键。`version_space` 是个人默认版本。CI 目录按用例路径点查 `lookup_ci_case(case_path)`。`exec_params` 末尾按「口头 > CI 表 > `version_space`（仅 version）> HITL」补参：完整逻辑组网不再当成缺参；多条路径查表后字段不同则拆 plan。`debug_mode` 真正生效的地方只有 `create_pipelines`：提交时按当前 `user_id` 点查 `get_debug_mode`（`None` 当 `False`），塞进 `tool.create(..., options={"debug_mode": ...})`。
 
 ### 并发：单进程内存锁，先够用
 

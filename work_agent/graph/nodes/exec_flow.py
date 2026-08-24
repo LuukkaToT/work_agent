@@ -15,10 +15,11 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.types import interrupt
 from pydantic import BaseModel, Field
 
+from work_agent.core.ci_cases import lookup_ci_case
 from work_agent.core.config import get_settings
 from work_agent.core.ledger import get_ledger
 from work_agent.core.llm import get_fast_model
-from work_agent.core.user_config import get_debug_mode
+from work_agent.core.user_config import get_debug_mode, get_version_space
 from work_agent.graph.helpers.context import conversation_context
 from work_agent.graph.helpers.sheet_plans import (
     apply_column_mapping,
@@ -36,14 +37,22 @@ _IP_RE = re.compile(
 
 class ExecPlanOut(BaseModel):
     case_names: list[str] = Field(
-        default_factory=list, description="本条流水线要执行的用例名列表"
+        default_factory=list, description="本条流水线要执行的用例路径列表"
     )
     version: Optional[str] = Field(
         default=None, description="版本：27B / 27A / 26B / 26A"
     )
-    env: Optional[str] = Field(
+    physical_env: Optional[str] = Field(
         default=None,
         description="物理组网 IP，如 7.223.50.60；没说则 null",
+    )
+    logic_env: Optional[str] = Field(
+        default=None,
+        description="逻辑组网，如 3BBL_86_1BBL86；没说则 null",
+    )
+    logic_constraint: Optional[str] = Field(
+        default=None,
+        description="逻辑约束，如 85+86；没说则 null",
     )
 
 
@@ -98,15 +107,29 @@ def _plan_dict(
     case_names: list[str],
     version: str,
     env: str,
+    logic_constraint: str = "",
 ) -> dict[str, Any]:
-    """把计划字段归一成 dict，并计算 missing / env_kind。"""
+    """把计划字段归一成 dict，并计算 missing / env_kind。
+
+    物理 IP 单独就算环境完整。逻辑组网必须 ``env`` + ``logic_constraint`` 成对
+    才算完整，不再把逻辑组网当成「必须改成物理 IP」。
+    """
+    env = (env or "").strip()
+    logic_constraint = (logic_constraint or "").strip()
     env_kind = _classify_env(env)
+    if env_kind == "physical":
+        logic_constraint = ""
+        env_complete = True
+    elif env_kind == "logical":
+        env_complete = bool(logic_constraint)
+    else:
+        env_complete = False
+        logic_constraint = ""
+
     missing: list[str] = []
     if not case_names:
         missing.append("case_names")
-    if not env:
-        missing.append("env")
-    elif env_kind == "logical":
+    if not env_complete:
         missing.append("env")
     if version not in ALLOWED_VERSIONS:
         missing.append("version")
@@ -115,6 +138,7 @@ def _plan_dict(
         "version": version,
         "env": env,
         "env_kind": env_kind,
+        "logic_constraint": logic_constraint,
         "missing": missing,
     }
 
@@ -129,16 +153,137 @@ def _normalize_version(raw: str) -> str:
     return text
 
 
-def _spoken_env_version(plans: list[dict]) -> tuple[str, str]:
-    """从口头计划里抽出第一份非空 env / version。"""
+def _spoken_env_from_item(item: ExecPlanOut) -> tuple[str, str]:
+    """从结构化输出抽出 (env, logic_constraint)；物理 IP 优先于逻辑组网。"""
+    physical = (item.physical_env or "").strip()
+    if _classify_env(physical) == "physical":
+        return physical, ""
+    logic_env = (item.logic_env or "").strip()
+    constraint = (item.logic_constraint or "").strip()
+    if logic_env:
+        return logic_env, constraint
+    return "", constraint
+
+
+def _resolve_version(
+    spoken: str,
+    ci_version: str,
+    version_space: str | None,
+) -> str:
+    """口头 version → CI version → version_space。非法口头值不覆盖。"""
+    spoken_norm = _normalize_version(spoken)
+    if spoken_norm in ALLOWED_VERSIONS:
+        return spoken_norm
+    if spoken_norm:
+        return spoken_norm
+    ci_norm = _normalize_version(ci_version)
+    if ci_norm in ALLOWED_VERSIONS:
+        return ci_norm
+    space = (version_space or "").strip()
+    if space in ALLOWED_VERSIONS:
+        return space
+    return ""
+
+
+def _resolve_env(
+    spoken_env: str,
+    spoken_constraint: str,
+    ci_logic_env: str,
+    ci_constraint: str,
+) -> tuple[str, str]:
+    """口头物理 IP 或完整逻辑组网优先；否则用 CI 的逻辑组网+约束。"""
+    spoken_env = (spoken_env or "").strip()
+    spoken_constraint = (spoken_constraint or "").strip()
+    kind = _classify_env(spoken_env)
+    if kind == "physical":
+        return spoken_env, ""
+    if kind == "logical" and spoken_constraint:
+        return spoken_env, spoken_constraint
+    if kind == "logical":
+        # 口头只给了逻辑环境：约束可从 CI 补
+        ci_c = (ci_constraint or "").strip()
+        if ci_c:
+            return spoken_env, ci_c
+        return spoken_env, ""
+    ci_env = (ci_logic_env or "").strip()
+    ci_c = (ci_constraint or "").strip()
+    if ci_env:
+        return ci_env, ci_c
+    return "", ""
+
+
+def _fill_plans_from_ci_and_config(
+    plans: list[dict[str, Any]],
+    *,
+    user_id: str,
+) -> list[dict[str, Any]]:
+    """
+    按用例路径补 version / 环境，再按 (version, env_kind, env, constraint) 重分组。
+
+    优先级：口头 → CI 表 → user_config.version_space（仅 version）。
+    """
+    version_space = get_version_space(user_id)
+    groups: dict[tuple[str, str, str, str], list[str]] = {}
+    empty_slots: list[dict[str, Any]] = []
+
+    for plan in plans:
+        names = [str(n).strip() for n in (plan.get("case_names") or []) if str(n).strip()]
+        spoken_version = str(plan.get("version") or "")
+        spoken_env = str(plan.get("env") or "").strip()
+        spoken_constraint = str(plan.get("logic_constraint") or "").strip()
+
+        if not names:
+            version = _resolve_version(spoken_version, "", version_space)
+            env, constraint = _resolve_env(
+                spoken_env, spoken_constraint, "", ""
+            )
+            empty_slots.append(
+                _plan_dict(
+                    case_names=[],
+                    version=version,
+                    env=env,
+                    logic_constraint=constraint,
+                )
+            )
+            continue
+
+        for name in names:
+            rec = lookup_ci_case(name)
+            ci_ver = rec.version if rec else ""
+            ci_env = rec.logic_env if rec else ""
+            ci_con = rec.logic_constraint if rec else ""
+            version = _resolve_version(spoken_version, ci_ver, version_space)
+            env, constraint = _resolve_env(
+                spoken_env, spoken_constraint, ci_env, ci_con
+            )
+            key = (version, env, constraint, _classify_env(env))
+            groups.setdefault(key, []).append(name)
+
+    filled = [
+        _plan_dict(
+            case_names=case_names,
+            version=version,
+            env=env,
+            logic_constraint=constraint,
+        )
+        for (version, env, constraint, _kind), case_names in groups.items()
+    ]
+    return filled + empty_slots
+
+
+def _spoken_env_version(plans: list[dict]) -> tuple[str, str, str]:
+    """从口头计划里抽出第一份非空 env / version / logic_constraint。"""
     env = ""
     version = ""
+    constraint = ""
     for p in plans:
         if not env and p.get("env"):
             env = str(p.get("env") or "").strip()
         if not version and p.get("version"):
             version = _normalize_version(str(p.get("version") or ""))
-    return env, version
+        if not constraint and p.get("logic_constraint"):
+            constraint = str(p.get("logic_constraint") or "").strip()
+    return env, version, constraint
 
 
 def _resolve_sheet_plans(
@@ -147,6 +292,7 @@ def _resolve_sheet_plans(
     row_limit: int | None,
     spoken_env: str,
     spoken_version: str,
+    spoken_constraint: str = "",
 ) -> tuple[list[dict], dict]:
     """读表 → 列映射（可 HITL）→ 切片计划。返回 (raw_plans, audit_extra)。"""
     tool = get_case_sheet_tool()
@@ -205,6 +351,7 @@ def _resolve_sheet_plans(
         row_limit=row_limit,
         spoken_env=spoken_env,
         spoken_version=spoken_version,
+        spoken_constraint=spoken_constraint,
     )
     audit = {
         "sheet_path": table.path or sheet_path,
@@ -225,7 +372,8 @@ def exec_params(state: Mapping[str, Any]) -> dict:
     从用户话抽出执行计划列表与 exec_mode；可走 Excel 读用例。
 
     参数优先级：
-    - version / env：用户没说 → 留空，后续 ask_missing interrupt
+    - version：口头 → CI 表 → user_config.version_space → 仍空则 ask_missing
+    - 环境：口头物理 IP 或完整逻辑组网 → CI 表逻辑组网+约束 → 仍缺则 ask_missing
     - exec_mode：默认 create_and_start
     - sheet_path：有则读表组装 plans（用例名不经模型手抄）
 
@@ -254,7 +402,9 @@ def exec_params(state: Mapping[str, Any]) -> dict:
                     "用例名通常很长，形如 HF_20B_PUSCH_..._MCS0_1_10_01，"
                     "按原文提取，不要截断；若用例来自表格则 case_names 可为空列表。"
                     "版本只能是 27B / 27A / 26B / 26A；本轮没明确说返回 null。"
-                    "env 是物理组网 IP（如 7.223.50.60）；本轮没明确说返回 null。"
+                    "物理组网 IP（如 7.223.50.60）填 physical_env；没说则 null。"
+                    "逻辑组网（如 3BBL_86_1BBL86）填 logic_env，配套约束（如 85+86）"
+                    "填 logic_constraint；没说则 null。物理 IP 和逻辑组网不要填进同一个字段。"
                     "若用户给了 Excel/CSV 路径，填写 sheet_path（尽量保留原路径）。"
                     "若说「前三个/只要前 N 条」，填写 row_limit=N；否则 null。"
                     "若用户说「A 环境执行 X，B 环境执行 Y」，拆成两条计划；"
@@ -270,12 +420,13 @@ def exec_params(state: Mapping[str, Any]) -> dict:
     spoken_plans: list[dict] = []
     for item in parsed.plans or []:
         version = _normalize_version(item.version or "")
-        env = (item.env or "").strip()
+        env, constraint = _spoken_env_from_item(item)
         spoken_plans.append(
             {
                 "case_names": list(item.case_names or []),
                 "version": version,
                 "env": env,
+                "logic_constraint": constraint,
             }
         )
 
@@ -284,17 +435,27 @@ def exec_params(state: Mapping[str, Any]) -> dict:
     sheet_audit: dict | None = None
 
     if sheet_path:
-        spoken_env, spoken_version = _spoken_env_version(spoken_plans)
+        spoken_env, spoken_version, spoken_constraint = _spoken_env_version(
+            spoken_plans
+        )
         try:
             raw_plans, sheet_audit = _resolve_sheet_plans(
                 sheet_path=sheet_path,
                 row_limit=row_limit,
                 spoken_env=spoken_env,
                 spoken_version=spoken_version,
+                spoken_constraint=spoken_constraint,
             )
         except Exception as exc:  # noqa: BLE001
             params = {
-                "plans": [_plan_dict(case_names=[], version="", env=spoken_env)],
+                "plans": [
+                    _plan_dict(
+                        case_names=[],
+                        version="",
+                        env=spoken_env,
+                        logic_constraint=spoken_constraint,
+                    )
+                ],
                 "exec_mode": parsed.exec_mode or "create_and_start",
                 "sheet_path": sheet_path,
                 "row_limit": row_limit,
@@ -316,26 +477,37 @@ def exec_params(state: Mapping[str, Any]) -> dict:
                 ],
             }
         plans = [
-            _plan_dict(
-                case_names=list(p.get("case_names") or []),
-                version=_normalize_version(str(p.get("version") or "")),
-                env=str(p.get("env") or "").strip(),
-            )
+            {
+                "case_names": list(p.get("case_names") or []),
+                "version": _normalize_version(str(p.get("version") or "")),
+                "env": str(p.get("env") or "").strip(),
+                "logic_constraint": str(p.get("logic_constraint") or "").strip(),
+            }
             for p in raw_plans
         ]
         if not plans:
-            plans = [_plan_dict(case_names=[], version=spoken_version, env=spoken_env)]
+            plans = [
+                {
+                    "case_names": [],
+                    "version": spoken_version,
+                    "env": spoken_env,
+                    "logic_constraint": "",
+                }
+            ]
     else:
-        plans = [
-            _plan_dict(
-                case_names=list(p.get("case_names") or []),
-                version=str(p.get("version") or ""),
-                env=str(p.get("env") or ""),
-            )
-            for p in spoken_plans
-        ]
+        plans = list(spoken_plans)
         if not plans:
-            plans = [_plan_dict(case_names=[], version="", env="")]
+            plans = [
+                {
+                    "case_names": [],
+                    "version": "",
+                    "env": "",
+                    "logic_constraint": "",
+                }
+            ]
+
+    user_id = state.get("user_id") or ""
+    plans = _fill_plans_from_ci_and_config(plans, user_id=user_id)
 
     exec_mode: ExecMode = parsed.exec_mode or "create_and_start"
     params: dict[str, Any] = {

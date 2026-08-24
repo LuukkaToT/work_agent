@@ -12,12 +12,13 @@ Human-in-the-loop 节点。
 
 from __future__ import annotations
 
+import json
 import re
 from typing import Any, Mapping
 
 from langgraph.types import interrupt
 
-from work_agent.graph.nodes.exec_flow import ALLOWED_VERSIONS, _plan_dict
+from work_agent.graph.nodes.exec_flow import ALLOWED_VERSIONS, _classify_env, _plan_dict
 
 
 def _parse_case_names(reply: Any) -> list[str]:
@@ -32,13 +33,76 @@ def _parse_case_names(reply: Any) -> list[str]:
     return []
 
 
-def _parse_env(reply: Any) -> str:
-    """把 HITL 回答解析成环境 IP / 组网字符串。"""
-    if isinstance(reply, str):
-        return reply.strip()
+def _parse_env_reply(reply: Any) -> tuple[str, str]:
+    """把 HITL 回答解析成 (env, logic_constraint)。
+
+    物理 IP 走物理模式；否则按「环境 / 约束」两段或 JSON 拆逻辑组网。
+    单段非 IP 只当作 logic_env，约束留空。
+    """
     if isinstance(reply, dict):
-        return str(reply.get("env") or reply.get("topology") or "").strip()
-    return str(reply or "").strip()
+        physical = str(reply.get("physical_env") or "").strip()
+        if physical:
+            return physical, ""
+        env = str(
+            reply.get("env")
+            or reply.get("logic_env")
+            or reply.get("topology")
+            or ""
+        ).strip()
+        constraint = str(
+            reply.get("logic_constraint") or reply.get("constraint") or ""
+        ).strip()
+        return env, constraint
+
+    text = str(reply or "").strip()
+    if not text:
+        return "", ""
+    if text.startswith("{") and text.endswith("}"):
+        try:
+            data = json.loads(text)
+        except json.JSONDecodeError:
+            data = None
+        if isinstance(data, dict):
+            return _parse_env_reply(data)
+
+    if _classify_env(text) == "physical":
+        return text, ""
+
+    for sep in ("/", "，", ","):
+        if sep in text:
+            left, right = text.split(sep, 1)
+            env, constraint = left.strip(), right.strip()
+            if env or constraint:
+                return env, constraint
+    return text, ""
+
+
+def _apply_env_reply(plan: Mapping[str, Any], reply: Any) -> tuple[str, str]:
+    """把本次回答叠到当前计划上：可整段替换，也可只补约束。"""
+    env, constraint = _parse_env_reply(reply)
+    existing_env = str(plan.get("env") or "").strip()
+    existing_kind = plan.get("env_kind") or _classify_env(existing_env)
+    existing_constraint = str(plan.get("logic_constraint") or "").strip()
+
+    if _classify_env(env) == "physical":
+        return env, ""
+    if (
+        existing_kind == "logical"
+        and existing_env
+        and not existing_constraint
+        and env
+        and not constraint
+        and env != existing_env
+        and "+" in env
+    ):
+        return existing_env, env
+    if not env and constraint and existing_kind == "logical" and existing_env:
+        return existing_env, constraint
+    if not env:
+        env = existing_env
+    if not constraint:
+        constraint = existing_constraint if _classify_env(env) == "logical" else ""
+    return env, constraint
 
 
 def _parse_version(reply: Any) -> str:
@@ -52,7 +116,9 @@ def _parse_version(reply: Any) -> str:
 
 def ask_missing(state: Mapping[str, Any]) -> dict:
     """
-    按计划逐条补缺参（用例/版本/环境）；逻辑组网会提示改物理 IP。
+    按计划逐条补缺参（用例/版本/环境）。
+
+    环境可填物理 IP，或完整逻辑组网（逻辑环境 + 约束）。
 
     参数:
         state: 读 ``exec_params.plans``（可缺省为空计划）。
@@ -102,17 +168,19 @@ def ask_missing(state: Mapping[str, Any]) -> dict:
 
             if "env" in missing:
                 env_kind = plan.get("env_kind") or ""
-                if env_kind == "logical":
+                current_env = str(plan.get("env") or "").strip()
+                if env_kind == "logical" and current_env:
                     msg = (
-                        f"第 {idx + 1}/{len(plans)} 条计划给的是逻辑组网 "
-                        f"`{plan.get('env')}`，现阶段只支持物理 IP。"
-                        "请输入物理环境 IP，例如 7.223.50.60"
-                        "（逻辑组网型号映射后续接入）"
+                        f"第 {idx + 1}/{len(plans)} 条计划已有逻辑组网 `{current_env}`，"
+                        "还缺约束。请补充约束（如 85+86），"
+                        "或改填物理组网 IP（如 7.223.50.60）"
                     )
                 else:
                     msg = (
-                        f"第 {idx + 1}/{len(plans)} 条计划缺少物理组网 IP，"
-                        "请输入如 7.223.50.60"
+                        f"第 {idx + 1}/{len(plans)} 条计划缺少环境。"
+                        "请提供物理组网 IP（如 7.223.50.60），"
+                        "或完整逻辑组网（逻辑环境 + 约束，"
+                        "例如 3BBL_86_1BBL86 / 85+86）"
                     )
                 reply = interrupt(
                     {
@@ -122,15 +190,17 @@ def ask_missing(state: Mapping[str, Any]) -> dict:
                         "current": plan,
                     }
                 )
-                plan["env"] = _parse_env(reply)
+                env, constraint = _apply_env_reply(plan, reply)
+                plan["env"] = env
+                plan["logic_constraint"] = constraint
 
             rebuilt = _plan_dict(
                 case_names=list(plan.get("case_names") or []),
                 version=str(plan.get("version") or ""),
                 env=str(plan.get("env") or ""),
+                logic_constraint=str(plan.get("logic_constraint") or ""),
             )
             plan.update(rebuilt)
-            # 若用户仍给逻辑组网，继续循环问
             if plan.get("missing"):
                 continue
             break

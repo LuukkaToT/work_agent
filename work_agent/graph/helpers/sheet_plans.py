@@ -18,6 +18,7 @@ def apply_column_mapping(
     row_limit: int | None,
     spoken_env: str,
     spoken_version: str,
+    spoken_constraint: str = "",
 ) -> list[dict[str, Any]]:
     """
     按列下标从表格取原文，组装粗 plans（尚未跑 _plan_dict 校验）。
@@ -25,6 +26,7 @@ def apply_column_mapping(
     优先级：
       env: spoken_env > 表内 env 列
       version: 表内 version 列（按行）> spoken_version
+      logic_constraint: spoken_constraint（表内暂不解析约束列）
       条数: row_limit 非空行；上限 _SHEET_ROW_CAP
 
     参数:
@@ -35,17 +37,19 @@ def apply_column_mapping(
         row_limit: 最多取多少条非空用例；None 用上限。
         spoken_env: 用户口头环境，优先于表内。
         spoken_version: 用户口头版本，作表内缺省。
+        spoken_constraint: 用户口头逻辑约束，覆盖到每条计划。
 
     返回:
-        粗计划列表（case_names / version / env）。
+        粗计划列表（case_names / version / env / logic_constraint）。
     """
     width = len(table.headers)
     if case_name_col < 0 or case_name_col >= width:
         raise ValueError(f"用例名列下标越界: {case_name_col}")
 
     limit = _SHEET_ROW_CAP if row_limit is None else max(0, int(row_limit))
-    # 按「环境+版本」分组合并 case_names
-    groups: dict[tuple[str, str], list[str]] = {}
+    spoken_constraint = (spoken_constraint or "").strip()
+    # 按「环境+版本+约束」分组合并 case_names
+    groups: dict[tuple[str, str, str], list[str]] = {}
     taken = 0
 
     for row in table.rows:
@@ -67,17 +71,18 @@ def apply_column_mapping(
         if not env and env_col is not None and 0 <= env_col < len(row):
             env = (row[env_col] or "").strip()
 
-        key = (version, env)
+        key = (version, env, spoken_constraint)
         groups.setdefault(key, []).append(name)
         taken += 1
 
     plans: list[dict[str, Any]] = []
-    for (version, env), names in groups.items():
+    for (version, env, constraint), names in groups.items():
         plans.append(
             {
                 "case_names": names,
                 "version": version,
                 "env": env,
+                "logic_constraint": constraint,
             }
         )
     return plans

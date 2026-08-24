@@ -49,6 +49,31 @@ def test_apply_column_mapping_row_limit_and_spoken_env():
     assert by_ver["27B"]["case_names"] == ["CaseA_235T_nmimo", "HF_20B_PUSCH_001"]
     assert by_ver["26A"]["case_names"] == ["HF_20B_PUSCH_002"]
     assert all(p["env"] == "7.223.1.9" for p in plans)
+    assert all(p.get("logic_constraint") == "" for p in plans)
+
+
+def test_apply_column_mapping_spoken_constraint():
+    table = SheetTable(
+        headers=["case", "ver"],
+        rows=[
+            ["HF_20B_PUSCH_001", "27B"],
+            ["HF_20B_PUSCH_002", "27B"],
+        ],
+    )
+    plans = apply_column_mapping(
+        table,
+        case_name_col=0,
+        version_col=1,
+        env_col=None,
+        row_limit=None,
+        spoken_env="3BBL_86_1BBL86",
+        spoken_version="",
+        spoken_constraint="85+86",
+    )
+    assert len(plans) == 1
+    assert plans[0]["env"] == "3BBL_86_1BBL86"
+    assert plans[0]["logic_constraint"] == "85+86"
+    assert plans[0]["case_names"] == ["HF_20B_PUSCH_001", "HF_20B_PUSCH_002"]
 
 
 def test_read_missing_file():

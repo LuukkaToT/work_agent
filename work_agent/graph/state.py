@@ -71,7 +71,7 @@ class TestFlowState(TypedDict):
     analysis_path: str  # 测试分析 markdown 落盘路径
 
     # --- 任务级：执行子图 output 写回 ---
-    # {plans: [{case_names, version, env, env_kind, missing}, ...]}
+    # {plans: [{case_names, version, env, env_kind, logic_constraint, missing}, ...]}
     exec_params: dict
     # [{pipeline_id, case_names, version, env, status, error}, ...]
     pipelines: list[dict]

@@ -95,7 +95,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  P["exec_params LLM 抽计划列表"] --> A["ask_missing interrupt 逐条补参"]
+  P["exec_params 抽计划 + CI/config 补参"] --> A["ask_missing interrupt 逐条补参"]
   A --> C{"confirm_exec 人工确认"}
   C -->|"cancel"| E(["END"])
   C -->|"proceed"| CR["create_pipelines write-ahead + 对账"]
@@ -317,7 +317,7 @@ checkpoint 不是缓存，是断点续跑的**唯一权威数据源**——`inte
 
 | 短板               | 现状与理由                          | 计划                                              |
 | ---------------- | ------------------------------ | ----------------------------------------------- |
-| 逻辑组网未支持          | 只支持物理 IP；型号映射表（86 是 BBH 等）还没拿到 | 拿到映射 markdown 后加解析层，识别「85+86 环境」这类说法            |
+| 逻辑组网 create 双模式   | 补参/HITL 已接受物理 IP 或完整逻辑组网；`PipelineTool.create` 仍只传 `env` 字符串 | 下一模块让 create 物理 / 逻辑+约束二选一 |
 | 用例分析 tool 是 mock | 公司侧接口未就绪                       | Protocol 已定义，接入只需写 real 实现                      |
 | 无失败归因            | 已有受限 ReAct `error_analysis`（只读工具 + evidence/ruled_out） | 继续接真实日志 API / w3 MCP 检索 |
 | 鉴权是假的           | FastAPI 网关（两阶段 HITL）+ CLI/API 统一身份接线、`ledger` 按 `user_id` 的读写隔离都已完成：CLI 用 `EnvIdentityProvider` 读环境变量，HTTP 用 `HeaderIdentityProvider` 读请求头，两边生成的 `thread_id` 前缀规则一致；台账全部写入/读取路径（`exec_flow.py`/`pipeline_resolve.py`/`diagnose_tools.py`/CLI `runs`）都真实按 `user_id` 过滤，历史空值靠 `_init_db`/`_ensure_table` 里一条幂等 `UPDATE` 回填成默认身份，没有丢数据。剩下没做的只是两个 Provider 内部还是 mock，不校验真实 token/session | 接公司真实鉴权只用改 `EnvIdentityProvider`/`HeaderIdentityProvider` 内部实现，调用形状（返回一个工号字符串）不用变 |
