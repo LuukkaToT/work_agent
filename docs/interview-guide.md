@@ -240,9 +240,11 @@ def append_audit(old, new):
 
 1. 最近 N 条（`memory_keep_recent`，默认 8）+ 更早滚动 `dialogue_summary`
 2. 诊断路径：原始日志不进主图 `messages`，只回写 evidence / 结论 / `ruled_out`
-3. Tool observation 经 `compress_observation` 提炼后再进二次结构化抽取
+3. ReAct 热路径按 `ReActStep` 原子裁历史（配对不变量）；抽取阶段走 ContextManager（去重 / 打分 / 超预算才摘要 / 原文归档）
 4. 本地混合 RAG（BM25∥Embedding→RRF→top_k，可降级纯 BM25）；低分不灌
-5. 超预算时 `assemble_blocks` 按优先级裁剪：结论 > evidence > ruled_out > RAG > 原始 tool 摘录
+5. `legacy` 基线仍是 `assemble_blocks` 按优先级整块丢；线上 `managed` 不再走这条
+
+展开、指标和踩坑见 `docs/context-manager-and-eval.md`。
 
 **Q9：为什么把参数校验放在代码里，而不是让模型自己判断？**
 

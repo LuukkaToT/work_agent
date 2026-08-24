@@ -15,7 +15,7 @@
 
 失败归因（`error_analysis`）是全图唯一的 ReAct 节点：模型自己决定调 `get_pipeline_status` / `fetch_logs` / `grep_logs` …… 一步一步取证，最后再做一次结构化抽取，吐出 `fail_kind` / `evidence` / `conclusion`。
 
-改造前有三个具体毛病，不是「上下文太长」这种空话：
+改造前有四个具体毛病，不是「上下文太长」这种空话：
 
 | 毛病 | 实际表现 |
 |------|----------|
@@ -52,6 +52,7 @@ run_agent_loop                         run_diagnosis
 |------|--------|
 | `work_agent/graph/nodes/error_analysis.py` | `run_diagnosis`、`DiagnosisResult`、`error_analysis` 薄壳。**先读这个。** |
 | `work_agent/core/config.py` + `config/profile.yaml` | `react_observation_max_chars`（单条观察进 ToolMessage 前的上限）、`react_history_max_chars`（历史 step 的字符预算）。 |
+| `work_agent/core/usage.py` | `TokenUsage` / `usage_from_message`。摘要和抽取的 token 从这里归集，eval 才对得上。 |
 
 `run_diagnosis` 的分支只有一处：
 
@@ -61,6 +62,8 @@ run_agent_loop                         run_diagnosis
 节点本身永远走 `managed`。`legacy` 只为 A/B 基线存在，线上不会走到。
 
 读 `DiagnosisResult` 时盯这几个字段：`context_text`（真正喂给抽取器的原文，eval 的 `evidence_recall` 在它上面算）、`context_chars`、`token_usage`、`selected_context_ids`、`trimmed_steps`。
+
+两套预算不要混：`react_history_max_chars`（默认 20000）管的是 ReAct 每步发给模型的历史；抽取阶段 `ContextManager.render` 的 `limit` 是 `min(12000, react_total_chars_budget // 2)`。历史裁了不等于抽取上下文一定短，反之亦然。
 
 ### 1.2 ReAct 热路径
 
@@ -185,6 +188,8 @@ score = -priority * 10 + goal_relevance * 4 + evidence_bonus * 2 + recency * 0.5
 `goal_relevance` 是目标词元在本块中的覆盖率。中文不能直接用 `retrieval.tokenize`：它把连续汉字当成一个 token，「流水线失败」对不上「流水线」。Selector 里对汉字串补了 bigram（`流水`/`水线`/`线失`/`失败`）。
 
 `evidence_bonus` 命中 `ERROR` / `FAIL` / `Traceback` / `KeyError` 等关键词加分。词表和 `compress_observation` 共用 `EVIDENCE_KEYWORDS`，两处必须是同一份，否则「压缩器认为这行是证据、选择器认为不是」会对不上。
+
+对照代码时看 `select_within_budget`：先把 immutable 全装进、超了就抛；再把 protected 全装进，超了不删、标进 `needs_compression`；最后 `normal` 按分数贪心填充，装不下进 `dropped`。`over_budget` 为真当且仅当有待压缩的 protected 或被挤掉的 normal。
 
 ### 2.5 去重：完全重复 + 同源包含
 
@@ -415,7 +420,7 @@ Prompt 明确要求保留报错关键词原文、不要下结论。LLM 失败或
 
 ## 5. 实现时踩过的问题（面试「遇到什么困难」就讲这些）
 
-按「问题 → 为什么会犯 → 怎么改 → 现在怎么防」写。口述时挑 2～3 个最硬的讲透，不必全背。
+按「问题 → 为什么会犯 → 怎么改 → 现在怎么防」写。口述时挑 2～3 个最硬的讲透，不必全背。建议就讲 **5.3 ReActStep 配对**、**5.2 pin 不等于绕过预算**、**5.5 / 5.6 指标怎么选**——前两个是正确性，后一个是「你怎么知道改好了」。
 
 ### 5.1 「每一步都是纯函数」和 LLM / 写盘互相矛盾
 
