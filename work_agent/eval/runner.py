@@ -228,6 +228,7 @@ def run_case(
             "selected_context_ids": result.selected_context_ids,
             "compressed_ids": result.compressed_ids,
             "trimmed_steps": result.trimmed_steps,
+            "react_context_chars": result.react_context_chars,
             "obs_compressed_n": result.obs_compressed_n,
             "ruled_out_n": result.ruled_out_n,
         }
@@ -334,6 +335,7 @@ def summarize(rows: Sequence[Mapping[str, Any]]) -> dict[str, dict[str, Any]]:
             "accuracy": _mean(1.0 if i.get("correct") else 0.0 for i in items),
             "evidence_recall": _mean(float(i.get("evidence_recall") or 0.0) for i in items),
             "context_chars": _mean(float(i.get("context_chars") or 0) for i in items),
+            "react_context_chars": _mean(float(i.get("react_context_chars") or 0) for i in items),
             "token_total": _mean(float(i.get("token_total") or 0) for i in items),
             "latency_ms": _mean(float(i.get("latency_ms") or 0) for i in items),
             "tool_calls": _mean(float(i.get("tool_calls") or 0) for i in items),
@@ -355,13 +357,17 @@ def format_report(summary: Mapping[str, Mapping[str, Any]]) -> str:
     if not summary:
         return "(没有可汇总的记录)"
 
-    header = f"{'strategy':<10}{'n':>4}{'accuracy':>10}{'evid_recall':>13}{'ctx_chars':>11}{'tokens':>9}{'ms':>8}{'tools':>7}{'err':>5}"
+    header = (
+        f"{'strategy':<10}{'n':>4}{'accuracy':>10}{'evid_recall':>13}"
+        f"{'ctx_chars':>11}{'react_ctx':>11}{'tokens':>9}{'ms':>8}{'tools':>7}{'err':>5}"
+    )
     lines = [header, "-" * len(header)]
     for strategy in sorted(summary):
         s = summary[strategy]
         lines.append(
             f"{strategy:<10}{s['n']:>4}{s['accuracy']:>10.2f}{s['evidence_recall']:>13.2f}"
-            f"{s['context_chars']:>11.0f}{s['token_total']:>9.0f}"
+            f"{s['context_chars']:>11.0f}{s.get('react_context_chars', 0):>11.0f}"
+            f"{s['token_total']:>9.0f}"
             f"{s['latency_ms']:>8.0f}{s['tool_calls']:>7.1f}{s['errors']:>5}"
         )
 
@@ -370,7 +376,12 @@ def format_report(summary: Mapping[str, Mapping[str, Any]]) -> str:
     if base and new and base["context_chars"]:
         delta = (new["context_chars"] - base["context_chars"]) / base["context_chars"]
         lines.append("")
-        lines.append(f"managed 相对 legacy 的 context_chars 变化：{delta:+.1%}")
+        lines.append(f"managed 相对 legacy 的抽取 context_chars 变化：{delta:+.1%}")
+        if base.get("react_context_chars"):
+            rdelta = (
+                new.get("react_context_chars", 0) - base["react_context_chars"]
+            ) / base["react_context_chars"]
+            lines.append(f"managed 相对 legacy 的 ReAct 历史 context_chars 变化：{rdelta:+.1%}")
         lines.append(
             f"证据留存 {base['evidence_recall']:.2f} → {new['evidence_recall']:.2f}，"
             f"token {base['token_total']:.0f} → {new['token_total']:.0f}"

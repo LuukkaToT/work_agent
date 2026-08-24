@@ -26,3 +26,15 @@ def test_compress_keeps_error_lines():
     out = compress_observation(text, max_chars=120)
     assert "KeyError" in out
     assert len(out) <= 150
+
+
+def test_compress_keyed_overflow_keeps_tail_not_head():
+    """超限时留尾部：根因在后，从头部切会把证据丢掉。"""
+    noise = "\n".join(f"ERROR queue backpressure noise_seq={i}" for i in range(80))
+    text = noise + "\nERROR Traceback\nKeyError: 'antenna_map'\n"
+    out = compress_observation(text, max_chars=400)
+    assert "KeyError" in out
+    assert "antenna_map" in out
+    assert len(out) <= 400
+    assert "truncated" in out
+    assert "noise_seq=0" not in out

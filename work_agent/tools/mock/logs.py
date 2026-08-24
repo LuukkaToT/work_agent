@@ -8,6 +8,15 @@ from typing import Literal
 
 MockScenario = Literal["all_pass", "version_fail", "case_error", "env_error"]
 
+# 默认拉到数千行，模拟真实流水线日志。INFO 噪声占绝大多数；失败场景在
+# 特征证据 *之前* 插入足够多的 ERROR 噪声，把单次观察撑到
+# react_observation_max_chars（4000）附近，好让 8 步 ReAct 顶满
+# react_history_max_chars（20K），多份去重后的大块再顶满抽取预算（12K）触发 Compressor。
+# 观察截断改为留尾，根因行在文件末尾，不会被噪声从头部挤掉。
+_DEFAULT_TOTAL_LINES = 8000
+# 约 80 * 80 字 ≈ 6.4K keyed，压缩到 4000 时留尾部（含特征证据）。
+_ERROR_NOISE_LINES = 80
+
 
 class MockLogTool:
     """实现 LogTool：按 scenario 生成可 grep 的假日志。"""
@@ -16,15 +25,19 @@ class MockLogTool:
         self,
         scenario: MockScenario = "case_error",
         *,
-        total_lines: int = 480,
+        total_lines: int = _DEFAULT_TOTAL_LINES,
+        error_noise_lines: int = _ERROR_NOISE_LINES,
     ) -> None:
         """
         参数:
             scenario: 决定尾部错误特征。
-            total_lines: 生成日志总行数下限约 50。
+            total_lines: 生成日志总行数；INFO 噪声填满额度，特征行占尾部。
+            error_noise_lines: 失败场景在特征证据前插入的 ERROR 噪声行数；
+                ``all_pass`` 忽略此项，避免尾部出现 ERROR。
         """
         self.scenario = scenario
         self.total_lines = max(50, total_lines)
+        self.error_noise_lines = max(0, error_noise_lines)
 
     def fetch_logs(
         self,
@@ -113,14 +126,22 @@ class MockLogTool:
         seed = hash(f"{pid}:{self.scenario}") % (2**32)
         rng = random.Random(seed)
 
-        lines: list[str] = [
+        signature = _signature_lines(self.scenario)
+        error_noise = (
+            []
+            if self.scenario == "all_pass"
+            else _error_noise_lines(rng, self.error_noise_lines)
+        )
+        header = [
             f"[mock-log] pipeline_id={pid} scenario={self.scenario}",
             "2026-08-09 10:00:00 INFO runner boot ok",
             "2026-08-09 10:00:01 INFO start case CaseA_235T_nmimo",
         ]
+        reserved = len(header) + len(error_noise) + len(signature)
+        info_n = max(0, self.total_lines - reserved)
 
-        noise_n = self.total_lines - 30
-        for i in range(max(0, noise_n)):
+        lines: list[str] = list(header)
+        for i in range(info_n):
             sec = 2 + (i % 50)
             kind = rng.choice(["INFO", "INFO", "INFO", "DEBUG", "WARN"])
             msg = rng.choice(
@@ -134,45 +155,71 @@ class MockLogTool:
             )
             lines.append(f"2026-08-09 10:00:{sec:02d} {kind} {msg} seq={i}")
 
-        # 错误特征放在尾部，保证 tail_lines=200 也能看到
-        if self.scenario == "all_pass":
-            lines.extend(
-                [
-                    "2026-08-09 10:05:01 INFO assert kpi=0.995 threshold=0.99",
-                    "2026-08-09 10:05:02 INFO case finished verdict=pass",
-                ]
-            )
-        elif self.scenario == "version_fail":
-            lines.extend(
-                [
-                    "2026-08-09 10:05:01 ERROR protocol mismatch with peer",
-                    "2026-08-09 10:05:01 ERROR version 27B incompatible with env firmware",
-                    "2026-08-09 10:05:02 INFO case finished verdict=fail",
-                ]
-            )
-        elif self.scenario == "case_error":
-            lines.extend(
-                [
-                    "2026-08-09 10:05:01 ERROR AssertionError: KPI below threshold",
-                    "2026-08-09 10:05:01 ERROR Traceback (most recent call last):",
-                    '  File "case_runner.py", line 42, in run',
-                    "    cfg = params['antenna_map']",
-                    "KeyError: 'antenna_map'",
-                    "2026-08-09 10:05:02 INFO case finished verdict=fail",
-                ]
-            )
-        else:  # env_error
-            lines.extend(
-                [
-                    "2026-08-09 10:05:01 ERROR Connection refused to 7.223.50.60:22",
-                    "2026-08-09 10:05:01 ERROR node unreachable after 3 retries",
-                    "2026-08-09 10:05:02 INFO case finished verdict=error",
-                ]
-            )
+        # 特征证据必须在文件最末：tail_lines=80 的单测和默认 tail=200 都要能看到。
+        lines.extend(error_noise)
+        lines.extend(signature)
+        return lines
 
-        # 补齐到接近 total_lines（若噪声不够）
-        while len(lines) < self.total_lines:
-            lines.append(
-                f"2026-08-09 10:06:00 INFO pad line {len(lines)}"
-            )
-        return lines[: self.total_lines] if len(lines) > self.total_lines else lines
+
+def _signature_lines(scenario: MockScenario) -> list[str]:
+    """场景可判别的尾部特征。eval 的 expected_evidence_keys 绑在这些行上。"""
+    if scenario == "all_pass":
+        return [
+            "2026-08-09 10:05:01 INFO assert kpi=0.995 threshold=0.99",
+            "2026-08-09 10:05:02 INFO case finished verdict=pass",
+        ]
+    if scenario == "version_fail":
+        return [
+            "2026-08-09 10:05:01 ERROR protocol mismatch with peer",
+            "2026-08-09 10:05:01 ERROR version 27B incompatible with env firmware",
+            "2026-08-09 10:05:02 INFO case finished verdict=fail",
+        ]
+    if scenario == "case_error":
+        return [
+            "2026-08-09 10:05:01 ERROR AssertionError: KPI below threshold",
+            "2026-08-09 10:05:01 ERROR Traceback (most recent call last):",
+            '  File "case_runner.py", line 42, in run',
+            "    cfg = params['antenna_map']",
+            "KeyError: 'antenna_map'",
+            "2026-08-09 10:05:02 INFO case finished verdict=fail",
+        ]
+    return [
+        "2026-08-09 10:05:01 ERROR Connection refused to 7.223.50.60:22",
+        "2026-08-09 10:05:01 ERROR node unreachable after 3 retries",
+        "2026-08-09 10:05:02 INFO case finished verdict=error",
+    ]
+
+
+def _error_noise_lines(rng: random.Random, n: int) -> list[str]:
+    """
+    失败场景的 ERROR 噪声。
+
+    故意不用场景特征词（KeyError / mismatch / refused / antenna_map 等），
+    避免污染 evidence_recall；但仍带 ERROR，好让 compress_observation 当成
+    证据行留下来，把单次观察撑到数千字符。
+    """
+    out: list[str] = []
+    msgs = (
+        "queue backpressure",
+        "slot grant delayed",
+        "kpi sample dropped",
+        "sync slice lag",
+        "buffer occupancy high",
+    )
+    # 不得出现根因特征词，避免和 evidence_recall 抢窗口；ERROR 本身要保留。
+    forbidden = (
+        "fail",
+        "exception",
+        "traceback",
+        "rejected",
+        "timeout",
+        "refused",
+        "keyerror",
+        "mismatch",
+    )
+    for i in range(n):
+        msg = rng.choice(msgs)
+        line = f"2026-08-09 10:04:{i % 60:02d} ERROR {msg} noise_seq={i}"
+        assert not any(k in line.lower() for k in forbidden), line
+        out.append(line)
+    return out

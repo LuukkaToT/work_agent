@@ -101,6 +101,9 @@ class DiagnosisResult:
     react_limit: int = 0
     trimmed_steps: int = 0
     compressed_ids: list[str] = field(default_factory=list)
+    # 最后一次真正发给 ReAct 模型的历史字符数（含 prelude）。和抽取
+    # context_chars 不是同一层：legacy 不裁历史，managed 受 react_history_max_chars 约束。
+    react_context_chars: int = 0
 
     @property
     def fail_kind(self) -> str:
@@ -246,6 +249,7 @@ def run_diagnosis(
     obs_compressed: list[str] = []
     obs_items: list[ContextItem] = []
     trimmed_steps = 0
+    react_context_chars = 0
     analysis_text = ""
     try:
         loop = run_agent_loop(
@@ -259,6 +263,7 @@ def run_diagnosis(
         )
         usage = usage + loop.usage
         trimmed_steps = loop.trimmed_steps
+        react_context_chars = loop.context_chars
         tool_trace = extract_tool_trace(loop.messages)
         obs_compressed = collect_compressed_observations(loop.messages)
         obs_items = collect_observation_items(loop.messages)
@@ -350,6 +355,7 @@ def run_diagnosis(
         react_limit=react_limit,
         trimmed_steps=trimmed_steps,
         compressed_ids=compressed_ids,
+        react_context_chars=react_context_chars,
     )
 
 

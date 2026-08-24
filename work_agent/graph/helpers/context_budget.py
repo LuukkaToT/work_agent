@@ -103,7 +103,10 @@ def compress_observation(text: str, *, max_chars: int = 400) -> str:
     if keyed:
         out = "\n".join(keyed)
         if len(out) > max_chars:
-            out = out[: max_chars - 20] + "\n...(truncated)"
+            # 根因在日志尾部：从头部切会把 KeyError 留给噪声。超限时留尾。
+            marker = "\n...(truncated)\n"
+            room = max(0, max_chars - len(marker))
+            out = marker + out[-room:]
         return out
 
     head = max_chars // 2
