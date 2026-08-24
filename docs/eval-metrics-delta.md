@@ -1,6 +1,6 @@
 # 上下文策略指标差距：能说到什么程度
 
-**最新压满预算的基准**（8000 行日志、20K 历史触顶、抽取 Compressor 触发）见 [context-trim-eval.md](context-trim-eval.md)。下文保留「为什么短日志会打平、加噪声后 recall 会拉开」的过程记录，避免和最新表混读。
+**最新压满预算的基准**（8000 行日志、20K 历史触顶、抽取 Compressor 触发）见 [context-trim-eval.md](context-trim-eval.md)。下文这张 **recall 0.83 vs 1.00** 的表，是「头切 + 40 行噪声」时测的，算法上更接近真正的旧提交 `36a4364`，不是当前代码里已经留尾的 `legacy` 开关。相对旧提交的粗估见 [context-trim-eval.md §5](context-trim-eval.md)。下文其余部分保留过程记录，避免和最新表混读。
 
 
 本文回答一件事：**用现在这套 eval，legacy（改造前）和 managed（现在）差多少。**

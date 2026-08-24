@@ -61,6 +61,8 @@ run_agent_loop                         run_diagnosis
 
 节点本身永远走 `managed`。`legacy` 只为 A/B 基线存在，线上不会走到。
 
+注意：这个 `legacy` **不等于** git 上的旧提交 `36a4364`。旧提交还是 480 行日志、keyed 超限从头部切；当前开关已经带了留尾和加长 mock。相对真正旧分支的粗估（recall 约 0.83→1.0，失败 case 历史约 -16%）写在 [context-trim-eval.md §5](context-trim-eval.md)。
+
 读 `DiagnosisResult` 时盯这几个字段：`context_text`（真正喂给抽取器的原文，eval 的 `evidence_recall` 在它上面算）、`context_chars`、`token_usage`、`selected_context_ids`、`trimmed_steps`。
 
 两套预算不要混：`react_history_max_chars`（默认 20000）管的是 ReAct 每步发给模型的历史；抽取阶段 `ContextManager.render` 的 `limit` 是 `min(12000, react_total_chars_budget // 2)`。历史裁了不等于抽取上下文一定短，反之亦然。
