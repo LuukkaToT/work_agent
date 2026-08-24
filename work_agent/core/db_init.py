@@ -61,6 +61,9 @@ def init_database(dsn: str) -> None:
         with pool.connection() as conn:
             for stmt in _statements(schema):
                 conn.execute(stmt)
+            from work_agent.core.logic_topologies import seed_logic_topologies
+
+            seed_logic_topologies(conn)
         PostgresSaver(pool).setup()
     finally:
         pool.close()

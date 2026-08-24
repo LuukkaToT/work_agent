@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from work_agent.tools.create_mode import resolve_create_env
 from work_agent.tools.models import PipelineHandle, PipelineResult
 
 
@@ -24,7 +25,10 @@ class RealPipelineTool:
         self,
         case_names: list[str],
         version: str,
-        env: str,
+        *,
+        physical_env: str | None = None,
+        logic_env: str | None = None,
+        logic_constraint: str | None = None,
         options: dict[str, Any] | None = None,
     ) -> PipelineHandle:
         """
@@ -33,12 +37,19 @@ class RealPipelineTool:
         参数:
             case_names: 用例名列表。
             version: 版本。
-            env: 组网 IP。
+            physical_env: 物理组网 IP；与逻辑模式互斥。
+            logic_env: 规范逻辑组网名；须与 ``logic_constraint`` 成对。
+            logic_constraint: 逻辑约束。
             options: 可选开关（如 ``debug_mode``）；接入公司 API 时摊平进请求体。
 
         返回:
             PipelineHandle（当前未实现）。
         """
+        resolve_create_env(
+            physical_env=physical_env,
+            logic_env=logic_env,
+            logic_constraint=logic_constraint,
+        )
         raise NotImplementedError(
             "RealPipelineTool.create 未实现：请接入 external SDK 后在此映射"
         )

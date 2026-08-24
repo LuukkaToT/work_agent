@@ -10,6 +10,7 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
+from work_agent.tools.create_mode import resolve_create_env
 from work_agent.tools.models import CaseResult, PipelineHandle, PipelineResult
 
 MockScenario = Literal["all_pass", "version_fail", "case_error", "env_error"]
@@ -55,7 +56,10 @@ class MockPipelineTool:
         self,
         case_names: list[str],
         version: str,
-        env: str,
+        *,
+        physical_env: str | None = None,
+        logic_env: str | None = None,
+        logic_constraint: str | None = None,
         options: dict[str, Any] | None = None,
     ) -> PipelineHandle:
         """
@@ -64,7 +68,9 @@ class MockPipelineTool:
         参数:
             case_names: 用例名列表。
             version: 版本。
-            env: 组网 IP。
+            physical_env: 物理组网 IP；与逻辑模式互斥。
+            logic_env: 规范逻辑组网名；须与 ``logic_constraint`` 成对。
+            logic_constraint: 逻辑约束。
             options: 可选开关（目前只有 ``debug_mode``）；只记录进内部记录，
                 不改变 mock 的执行行为（mock 不模拟公司 API 差异）。
 
@@ -75,8 +81,11 @@ class MockPipelineTool:
             raise ValueError("case_names 不能为空")
         if not version:
             raise ValueError("version 不能为空")
-        if not env:
-            raise ValueError("env 不能为空")
+        env_kind, display_env, constraint = resolve_create_env(
+            physical_env=physical_env,
+            logic_env=logic_env,
+            logic_constraint=logic_constraint,
+        )
 
         bad = [n for n in case_names if not _CASE_NAME_RE.match(n)]
         if bad:
@@ -87,7 +96,9 @@ class MockPipelineTool:
             pipeline_id=pipeline_id,
             case_names=list(case_names),
             version=version,
-            env=env,
+            env=display_env,
+            env_kind=env_kind,
+            logic_constraint=constraint,
         )
         self._runs[pipeline_id] = _PipelineRecord(
             handle=handle, options=dict(options or {})

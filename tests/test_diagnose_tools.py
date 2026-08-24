@@ -32,7 +32,7 @@ def test_fetch_logs_and_status_callable():
     handle = pipe.create(
         case_names=["case_downlink_001"],
         version="27B",
-        env="7.223.50.60",
+        physical_env="7.223.50.60",
     )
     pipe.start(handle.pipeline_id)
 
@@ -104,7 +104,7 @@ def test_budget_can_block():
     handle = pipe.create(
         case_names=["case_downlink_001"],
         version="27B",
-        env="7.223.50.60",
+        physical_env="7.223.50.60",
     )
     # 连续调用，第二次起容易触预算
     tools["fetch_logs"].invoke({"pipeline_id": handle.pipeline_id, "tail_lines": 200})

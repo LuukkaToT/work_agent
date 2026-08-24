@@ -31,7 +31,9 @@ class PipelineHandle:
     pipeline_id: str  # 服务端流水线 id
     case_names: list[str]  # 本流水线包含的用例
     version: str  # 软件版本
-    env: str  # 物理组网 IP，如 7.223.50.60
+    env: str  # 展示用环境：物理 IP 或 logic_env 字符串
+    env_kind: str = "physical"  # physical | logical
+    logic_constraint: str = ""  # 逻辑模式才有；物理模式为空
 
 
 @dataclass(frozen=True)

@@ -13,24 +13,32 @@ VALID_CASES = [
 
 
 def create(ex, *, cases=None, version="27B", env="7.223.50.60"):
-    return ex.create(cases or VALID_CASES, version, env)
+    return ex.create(cases or VALID_CASES, version, physical_env=env)
 
 
 def test_create_validates_params():
     ex = MockPipelineTool()
     with pytest.raises(ValueError):
-        ex.create([], "27B", "7.223.50.60")
+        ex.create([], "27B", physical_env="7.223.50.60")
     with pytest.raises(ValueError):
-        ex.create(VALID_CASES, "", "7.223.50.60")
+        ex.create(VALID_CASES, "", physical_env="7.223.50.60")
     with pytest.raises(ValueError):
-        ex.create(VALID_CASES, "27B", "")
+        ex.create(VALID_CASES, "27B", physical_env="")
+    with pytest.raises(ValueError, match="二选一"):
+        ex.create(
+            VALID_CASES,
+            "27B",
+            physical_env="7.223.50.60",
+            logic_env="BESA_SDV_2BBH_1BBL",
+            logic_constraint="1G_2A",
+        )
 
 
 def test_create_rejects_short_case_names():
     """流水线自己校验用例名；agent 不预检，但 mock 要能模拟拒绝。"""
     ex = MockPipelineTool()
     with pytest.raises(ValueError, match="非法用例名"):
-        ex.create(["case_a", "ok"], "27B", "7.223.50.60")
+        ex.create(["case_a", "ok"], "27B", physical_env="7.223.50.60")
 
 
 def test_create_returns_server_pipeline_id():
@@ -43,7 +51,7 @@ def test_create_returns_server_pipeline_id():
 def test_create_records_options_without_changing_behavior():
     """options 只记录进内部记录，不影响 create/start/query 的行为。"""
     ex = MockPipelineTool()
-    handle = ex.create(VALID_CASES, "27B", "7.223.50.60", options={"debug_mode": True})
+    handle = ex.create(VALID_CASES, "27B", physical_env="7.223.50.60", options={"debug_mode": True})
     assert ex._runs[handle.pipeline_id].options == {"debug_mode": True}
 
 
@@ -51,6 +59,25 @@ def test_create_defaults_options_to_empty_dict_when_omitted():
     ex = MockPipelineTool()
     handle = create(ex)
     assert ex._runs[handle.pipeline_id].options == {}
+
+
+def test_create_logical_mode_records_constraint():
+    ex = MockPipelineTool()
+    handle = ex.create(
+        VALID_CASES,
+        "27B",
+        logic_env="BESA_SDV_2BBH_1BBL",
+        logic_constraint="1G_2A",
+    )
+    assert handle.env == "BESA_SDV_2BBH_1BBL"
+    assert handle.env_kind == "logical"
+    assert handle.logic_constraint == "1G_2A"
+
+
+def test_create_logical_mode_requires_constraint():
+    ex = MockPipelineTool()
+    with pytest.raises(ValueError, match="logic_constraint"):
+        ex.create(VALID_CASES, "27B", logic_env="BESA_SDV_2BBH_1BBL")
 
 
 def test_start_then_query_ticks():

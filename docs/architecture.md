@@ -76,7 +76,7 @@ workspace/
 
 ## 四、参数解析：物理 / 逻辑组网与优先级链
 
-执行计划的环境可以是 **物理组网 IP**（如 `7.223.50.60`），或 **完整逻辑组网**（`logic_env` + `logic_constraint`，如 `3BBL_86_1BBL86` / `85+86`）。`exec_params` 抽完口头字段后，按用例路径查 CI 表再补缺；仍缺才 HITL。`PipelineTool.create` 目前仍吃 `env` 字符串（逻辑完整时把 `logic_env` 放进 `env`），双模式 create 下一模块再接。
+执行计划的环境可以是 **物理组网 IP**（如 `7.223.50.60`），或 **目录内的完整逻辑组网**（`logic_env` + `logic_constraint`，如 `BESA_SDV_2BBH_1BBL` / `1G_2A`）。`exec_params` 抽完口头字段后，按用例路径查 CI 表补缺，再拿 Postgres `logic_topologies` 做成员校验。口头逻辑组网由快模型抽特征并提议规范名，**代码以表为准**：命中则写入 plan；未命中则按 BBH/BBL/板型筛候选，HITL 让用户点选。`PipelineTool.create` 环境二选一：`physical_env`，或 `logic_env` + `logic_constraint`。
 
 一次用户输入可拆成 **多条执行计划**：`(version, env_kind, env, logic_constraint)` 不同则各一次 `create`；同一组网多个用例合并为一条。`exec_mode`：`create_only`（只建不跑）或 `create_and_start`（默认，创建并启动）。
 
@@ -84,16 +84,16 @@ workspace/
 
 ```mermaid
 flowchart LR
-  A["1 本轮口头 version / 物理 IP / 完整逻辑组网"] --> B["2 CI 表 lookup_ci_case"]
+  A["1 本轮口头 version / 物理 IP / 逻辑组网"] --> B["2 CI 表 lookup_ci_case"]
   B --> C["3 user_config.version_space 只补 version"]
-  C --> D["4 interrupt 反问用户"]
+  C --> D["4 logic_topologies 校验；失败则候选 HITL"]
 ```
 
 | 参数 | 缺失时行为 |
 |------|-----------|
 | `case_names` | 缺失则 interrupt 询问；agent **不预校验**用例名，流水线自己验证 |
 | `version` | 枚举 `27B/27A/26B/26A`；口头 → CI 表 → `version_space` → 仍空则 interrupt。非法口头值不覆盖 |
-| `env` | 口头物理 IP 或完整逻辑组网 → CI 表逻辑组网+约束 → 仍缺则 interrupt。`version_space` 不补环境 |
+| `env` | 口头物理 IP 或目录内完整逻辑组网 → CI 表逻辑组网+约束 → `logic_topologies` 校验。非法逻辑组网按特征列出候选 HITL 点选。`version_space` 不补环境 |
 | `exec_mode` | 默认 `create_and_start`；用户说「只创建」则为 `create_only` |
 
 个人运行参数仍有一部分在 `config/profile.yaml`（轮询间隔、start 重试次数等）。默认版本不再写在 yaml 里，而是 `user_config.version_space`。跑错环境代价高，所以环境不允许用个人配置静默填充：口头和 CI 表都没有才 interrupt。`poll_*` 配置保留但执行链路已不再轮询；`create_retry_attempts` 控制 **start** 失败后的同 `pipeline_id` 重试次数（create 失败不盲目重试，防双建）。
@@ -210,7 +210,7 @@ checkpointer 只按 `thread_id` 存图状态。用户换会话再问「上次执
 
 `pipelines.user_id` 存的是工号字符串，不是（未来）用户表的 int 主键。查询方法（`get` / `latest` / `find_by_case` / `find_by_task` / `list_recent`）都支持可选的 `user_id` 过滤。身份接线前的空 `user_id` 由 `schema.sql` 里那条幂等 `UPDATE` 回填成 `core/identity.py` 的 `DEFAULT_USER_ID`（`local-dev`），不在每次构造 Ledger 时偷偷跑。
 
-个人配置表 `user_config` 的 `config` 列存 JSON blob（当前键：`debug_mode`、`version_space`）。`ci_cases` 是 CI 用例目录镜像（`case_path` PK + `logic_env` / `logic_constraint` / `version`），查询入口是 `core/ci_cases.py` 的 `lookup_ci_case`；本阶段只查不灌数。
+个人配置表 `user_config` 的 `config` 列存 JSON blob（当前键：`debug_mode`、`version_space`）。`ci_cases` 是 CI 用例目录镜像（`case_path` PK + `logic_env` / `logic_constraint` / `version`），查询入口是 `core/ci_cases.py` 的 `lookup_ci_case`；本阶段只查不灌数。`logic_topologies` 是逻辑组网白名单（`(logic_env, logic_constraint)` PK + BBH/BBL 数量与板型），`init-db` 会从 `config/logic_topologies.csv` upsert 种子；运行时只认库。查询入口是 `core/logic_topologies.py`。
 
 测试：凡读写台账 / 个人配置 / checkpoint 的用例都连 `POSTGRES_TEST_DSN`（未配置或不可达则 skip）；图节点、路由等不碰库的单测仍不连库。`tests/test_storage_backend.py` 断言空 DSN 抛错。
 
@@ -226,7 +226,10 @@ class PipelineTool(Protocol):
         self,
         case_names: list[str],
         version: str,
-        env: str,
+        *,
+        physical_env: str | None = None,
+        logic_env: str | None = None,
+        logic_constraint: str | None = None,
         options: dict[str, Any] | None = None,
     ) -> PipelineHandle: ...
     def start(self, pipeline_id: str) -> bool: ...
@@ -235,7 +238,7 @@ class PipelineTool(Protocol):
 
 Agent 侧命名纯净：`create` / `start` / `query`。`pipeline_id` **由服务端返回**。公司 SDK 放 `external/`，拼写怪异的公司函数名只在 `tools/real/` 做映射，不污染 Protocol。
 
-`create` 的 `options` 是可选开关的收纳参数（目前只有 `debug_mode`），新增开关都进这个 dict 内部字段，不再逐个改 Protocol 签名。`debug_mode` 不进图状态：用户在前端 `GET/PATCH /users/me/config` 里改偏好，`create_pipelines` 提交时按当前 `user_id` 点查 `get_debug_mode`（未设置过当 `False`）再塞进 `options`。Mock 只把 `options` 记录进内部记录（`_PipelineRecord.options`），不模拟公司 API 对它的行为差异；`RealPipelineTool` 接入时把 `options` 摊平进公司请求体即可，Protocol/图不用再改。
+`create` 的环境参数二选一：`physical_env`（物理 IP），或 `logic_env` + `logic_constraint`（逻辑组网，由平台分配物理机）。两种都给或都缺则 `ValueError`。`options` 仍只收开关（目前 `debug_mode`）。`debug_mode` 不进图状态：前端 `GET/PATCH /users/me/config` 改偏好，`create_pipelines` 提交时按 `user_id` 点查 `get_debug_mode`（未设置过当 `False`）再塞进 `options`。计划上的 `env_kind` 决定走哪条模式；台账 `env` 列仍存展示字符串（IP 或 logic_env），不为此改表。Mock 把模式记在 `PipelineHandle.env_kind` / `logic_constraint`，不模拟公司 API 对两种模式的行为差异；`RealPipelineTool` 接入时把对应字段摊平进公司请求体即可。
 
 Mock 行为可配置四场景：全通过、版本失败、用例报错、环境不可用。`query` 用 tick 模拟分钟级执行进度；未 `start` 时 phase=`created`。
 
@@ -448,7 +451,7 @@ CLI 的 `run_turn`/`resume_pending` 是阻塞的：遇到 `interrupt` 就在进�
 
 `state.py` 的 `user_id` 是会话级字段（`intake` 绝不重置，跟 `messages`/`dialogue_summary` 同类）：CLI/API 拿到工号后，`runtime.run_turn`/`run_turn_step` 把它和 `messages` 一起塞进每次 invoke 的 payload（`{"messages": [...], "user_id": user_id}`）——每轮都传、不依赖“只在第一轮写”，天然幂等。`resume_step`/`resume_pending` 续跑时不用再传：那一轮的 `user_id` 在 thread 创建时已经写进 checkpoint 了。
 
-个人偏好不进图状态。`debug_mode` 和 `version_space`（`27B/27A/26B/26A`，与流水线 version 同一枚举）存在 `user_config` 的 JSON blob 里，前端用 `GET/PATCH /users/me/config` 读写；未设置过的字段为 `null`，PATCH 只覆盖传入的键。`version_space` 是个人默认版本。CI 目录按用例路径点查 `lookup_ci_case(case_path)`。`exec_params` 末尾按「口头 > CI 表 > `version_space`（仅 version）> HITL」补参：完整逻辑组网不再当成缺参；多条路径查表后字段不同则拆 plan。`debug_mode` 真正生效的地方只有 `create_pipelines`：提交时按当前 `user_id` 点查 `get_debug_mode`（`None` 当 `False`），塞进 `tool.create(..., options={"debug_mode": ...})`。
+个人偏好不进图状态。`debug_mode` 和 `version_space`（`27B/27A/26B/26A`，与流水线 version 同一枚举）存在 `user_config` 的 JSON blob 里，前端用 `GET/PATCH /users/me/config` 读写；未设置过的字段为 `null`，PATCH 只覆盖传入的键。`version_space` 是个人默认版本。CI 目录按用例路径点查 `lookup_ci_case(case_path)`。逻辑组网目录按 `(logic_env, logic_constraint)` 点查 `lookup_logic_topology`：快模型只提议参数，代码校验是否在表内；失败则按特征返回候选并 HITL 点选。`exec_params` 末尾按「口头 > CI 表 > `version_space`（仅 version）> 组网目录校验 > HITL」补参。`debug_mode` 真正生效的地方只有 `create_pipelines`：提交时按当前 `user_id` 点查 `get_debug_mode`（`None` 当 `False`），塞进 `tool.create(..., options={"debug_mode": ...})`。
 
 ### 并发：单进程内存锁，先够用
 

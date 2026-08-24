@@ -57,19 +57,27 @@ class PipelineTool(Protocol):
         self,
         case_names: list[str],
         version: str,
-        env: str,
+        *,
+        physical_env: str | None = None,
+        logic_env: str | None = None,
+        logic_constraint: str | None = None,
         options: dict[str, Any] | None = None,
     ) -> PipelineHandle:
         """
         创建流水线，不启动。
 
+        环境二选一：``physical_env``（物理 IP），或 ``logic_env`` +
+        ``logic_constraint``（逻辑组网，由平台分配物理环境）。两种都给或都缺则非法。
+
         参数:
             case_names: 要跑的用例名列表。
             version: 软件版本（如 27B）。
-            env: 物理组网 IP。
+            physical_env: 物理组网 IP；与逻辑模式互斥。
+            logic_env: 规范逻辑组网名；须与 ``logic_constraint`` 成对。
+            logic_constraint: 逻辑约束编码。
             options: 可选开关收纳参数（目前只有 ``debug_mode``）；新增开关都进
-                这个 dict 内部字段，本 Protocol 签名不再变。``debug_mode`` 由
-                ``create_pipelines`` 提交时点查 ``user_config``，不从图状态传入。
+                这个 dict 内部字段，本 Protocol 签名不再为开关改形。
+                ``debug_mode`` 由 ``create_pipelines`` 提交时点查 ``user_config``。
 
         返回:
             含服务端 ``pipeline_id`` 的句柄。

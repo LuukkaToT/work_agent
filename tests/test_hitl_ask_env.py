@@ -10,6 +10,13 @@ from work_agent.graph.nodes.hitl import (
 )
 
 
+def _passthrough_catalog(monkeypatch):
+    monkeypatch.setattr(
+        "work_agent.graph.nodes.hitl.apply_logic_catalog",
+        lambda plans, user_input="": plans,
+    )
+
+
 def test_parse_env_reply_physical_ip():
     assert _parse_env_reply("7.223.50.60") == ("7.223.50.60", "")
 
@@ -53,6 +60,7 @@ def test_apply_env_reply_plus_fills_existing_logical_constraint():
 
 
 def test_ask_missing_accepts_logical_pair(monkeypatch):
+    _passthrough_catalog(monkeypatch)
     captured: list[dict] = []
 
     def fake_interrupt(payload):
@@ -78,6 +86,7 @@ def test_ask_missing_accepts_logical_pair(monkeypatch):
 
 
 def test_ask_missing_accepts_physical_ip(monkeypatch):
+    _passthrough_catalog(monkeypatch)
     monkeypatch.setattr(
         "work_agent.graph.nodes.hitl.interrupt",
         lambda payload: "7.223.50.60",
@@ -96,6 +105,7 @@ def test_ask_missing_accepts_physical_ip(monkeypatch):
 
 
 def test_ask_missing_constraint_only_keeps_logical_env(monkeypatch):
+    _passthrough_catalog(monkeypatch)
     monkeypatch.setattr(
         "work_agent.graph.nodes.hitl.interrupt",
         lambda payload: "85+86",
@@ -109,4 +119,30 @@ def test_ask_missing_constraint_only_keeps_logical_env(monkeypatch):
     filled = out["exec_params"]["plans"][0]
     assert filled["env"] == "3BBL_86_1BBL86"
     assert filled["logic_constraint"] == "85+86"
+    assert filled["missing"] == []
+
+
+def test_ask_missing_picks_logic_candidate_index(monkeypatch):
+    _passthrough_catalog(monkeypatch)
+    captured: list[dict] = []
+
+    def fake_interrupt(payload):
+        captured.append(payload)
+        return "1"
+
+    monkeypatch.setattr("work_agent.graph.nodes.hitl.interrupt", fake_interrupt)
+    plan = _plan_dict(
+        case_names=["HF_20B_PUSCH_001"],
+        version="27B",
+        env="2BBH+1BBL",
+    )
+    plan["logic_candidates"] = [
+        {"logic_env": "BESA_SDV_2BBH_1BBL", "logic_constraint": "1G_2A"},
+        {"logic_env": "BESA_SDV_2BBH_1BBL", "logic_constraint": "2G_1A"},
+    ]
+    out = ask_missing({"exec_params": {"plans": [plan]}})
+    filled = out["exec_params"]["plans"][0]
+    assert captured[0]["type"] == "pick_logic_topology"
+    assert filled["env"] == "BESA_SDV_2BBH_1BBL"
+    assert filled["logic_constraint"] == "1G_2A"
     assert filled["missing"] == []

@@ -21,10 +21,12 @@ from work_agent.core.ledger import get_ledger
 from work_agent.core.llm import get_fast_model
 from work_agent.core.user_config import get_debug_mode, get_version_space
 from work_agent.graph.helpers.context import conversation_context
+from work_agent.graph.helpers.logic_env import apply_logic_catalog
 from work_agent.graph.helpers.sheet_plans import (
     apply_column_mapping,
     mapping_prompt_payload,
 )
+from work_agent.tools.create_mode import create_kwargs_from_plan
 from work_agent.tools.registry import get_case_sheet_tool, get_pipeline_tool
 
 ALLOWED_VERSIONS = frozenset({"27B", "27A", "26B", "26A"})
@@ -508,6 +510,7 @@ def exec_params(state: Mapping[str, Any]) -> dict:
 
     user_id = state.get("user_id") or ""
     plans = _fill_plans_from_ci_and_config(plans, user_id=user_id)
+    plans = apply_logic_catalog(plans, user_input=user_input)
 
     exec_mode: ExecMode = parsed.exec_mode or "create_and_start"
     params: dict[str, Any] = {
@@ -561,6 +564,9 @@ def _submit_one_pipeline(
     case_names: list[str],
     version: str,
     env: str,
+    env_kind: str,
+    logic_constraint: str,
+    create_kwargs: dict[str, str],
     exec_mode: ExecMode,
     retry_attempts: int,
     user_id: str = "",
@@ -576,6 +582,8 @@ def _submit_one_pipeline(
         "case_names": case_names,
         "version": version,
         "env": env,
+        "env_kind": env_kind,
+        "logic_constraint": logic_constraint,
         "status": "pending",
         "error": "",
         "notes": [],
@@ -592,7 +600,9 @@ def _submit_one_pipeline(
     )
 
     try:
-        handle = tool.create(case_names, version, env, options=options or {})
+        handle = tool.create(
+            case_names, version, options=options or {}, **create_kwargs
+        )
     except Exception as exc:  # noqa: BLE001
         entry["status"] = "failed"
         entry["error"] = str(exc)
@@ -668,19 +678,34 @@ def create_pipelines(state: Mapping[str, Any]) -> dict:
     for plan in plans:
         case_names = list(plan.get("case_names") or [])
         version = str(plan.get("version") or "")
-        env = str(plan.get("env") or "").strip()
+        try:
+            env, env_kind, logic_constraint, create_kwargs = create_kwargs_from_plan(
+                plan
+            )
+        except ValueError:
+            env = str(plan.get("env") or "").strip()
+            env_kind = str(plan.get("env_kind") or "")
+            logic_constraint = str(plan.get("logic_constraint") or "").strip()
+            create_kwargs = None
 
-        if not case_names or not env or version not in ALLOWED_VERSIONS:
+        if (
+            not case_names
+            or version not in ALLOWED_VERSIONS
+            or create_kwargs is None
+        ):
             pipelines.append(
                 {
                     "pipeline_id": "",
                     "case_names": case_names,
                     "version": version,
                     "env": env,
+                    "env_kind": env_kind,
+                    "logic_constraint": logic_constraint,
                     "status": "failed",
                     "error": (
                         f"参数不完整: cases={bool(case_names)} "
-                        f"version={version!r} env={env!r}"
+                        f"version={version!r} env={env!r} "
+                        f"env_kind={env_kind!r} constraint={logic_constraint!r}"
                     ),
                     "notes": [],
                 }
@@ -695,6 +720,9 @@ def create_pipelines(state: Mapping[str, Any]) -> dict:
             case_names=case_names,
             version=version,
             env=env,
+            env_kind=env_kind,
+            logic_constraint=logic_constraint,
+            create_kwargs=create_kwargs,
             exec_mode=exec_mode,
             retry_attempts=retry_attempts,
             user_id=user_id,

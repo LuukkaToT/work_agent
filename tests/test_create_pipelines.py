@@ -141,18 +141,38 @@ def test_create_pipelines_writes_user_id_into_ledger(monkeypatch):
 
 
 class _RecordingTool:
-    """记录每次 create 收到的 options，供断言 debug_mode 解析逻辑。"""
+    """记录每次 create 收到的 options / 环境模式，供断言提交逻辑。"""
 
     def __init__(self) -> None:
         self.create_options: list[dict] = []
+        self.create_kwargs: list[dict] = []
 
-    def create(self, case_names, version, env, options=None):
+    def create(
+        self,
+        case_names,
+        version,
+        *,
+        physical_env=None,
+        logic_env=None,
+        logic_constraint=None,
+        options=None,
+    ):
         self.create_options.append(dict(options or {}))
+        self.create_kwargs.append(
+            {
+                "physical_env": physical_env,
+                "logic_env": logic_env,
+                "logic_constraint": logic_constraint,
+            }
+        )
+        display = (physical_env or logic_env or "").strip()
         return PipelineHandle(
             pipeline_id="33333333-3333-3333-3333-333333333333",
             case_names=case_names,
             version=version,
-            env=env,
+            env=display,
+            env_kind="logical" if logic_env else "physical",
+            logic_constraint=logic_constraint or "",
         )
 
     def start(self, pipeline_id):
@@ -278,13 +298,23 @@ def test_write_ahead_before_create(monkeypatch):
     seen_at_create: list[str] = []
 
     class Tool:
-        def create(self, case_names, version, env, options=None):
+        def create(
+            self,
+            case_names,
+            version,
+            *,
+            physical_env=None,
+            logic_env=None,
+            logic_constraint=None,
+            options=None,
+        ):
             seen_at_create.extend(r["status"] for r in ledger.rows)
+            display = (physical_env or logic_env or "").strip()
             return PipelineHandle(
                 pipeline_id="11111111-1111-1111-1111-111111111111",
                 case_names=case_names,
                 version=version,
-                env=env,
+                env=display,
             )
 
         def start(self, pipeline_id):
@@ -315,7 +345,16 @@ def test_create_fail_no_retry(monkeypatch):
         def __init__(self) -> None:
             self.create_calls = 0
 
-        def create(self, case_names, version, env, options=None):
+        def create(
+            self,
+            case_names,
+            version,
+            *,
+            physical_env=None,
+            logic_env=None,
+            logic_constraint=None,
+            options=None,
+        ):
             self.create_calls += 1
             raise TimeoutError("http timeout")
 
@@ -346,7 +385,7 @@ def test_start_pipelines_retries(monkeypatch):
         def __init__(self) -> None:
             self.start_calls = 0
 
-        def create(self, case_names, version, env, options=None):
+        def create(self, case_names, version, *args, **kwargs):
             raise AssertionError("不应 create")
 
         def start(self, pipeline_id):
@@ -379,3 +418,78 @@ def test_start_pipelines_retries(monkeypatch):
     assert out["pipelines"][0]["status"] == "running"
     assert tool.start_calls == 2
     assert ledger.updates[-1]["status"] == "running"
+
+
+def test_create_pipelines_logical_mode_kwargs(monkeypatch):
+    tool = _RecordingTool()
+    ledger = _FakeLedger()
+    _patch(monkeypatch, tool, ledger)
+
+    out = create_pipelines(
+        {
+            "task_id": "t1",
+            "exec_params": {
+                "exec_mode": "create_and_start",
+                "plans": [
+                    {
+                        "case_names": ["HF_20B_PUSCH_001"],
+                        "version": "27B",
+                        "env": "BESA_SDV_2BBH_1BBL",
+                        "env_kind": "logical",
+                        "logic_constraint": "1G_2A",
+                    }
+                ],
+            },
+        }
+    )
+
+    assert out["summary"]["status"] == "submitted"
+    assert out["pipelines"][0]["env"] == "BESA_SDV_2BBH_1BBL"
+    assert out["pipelines"][0]["env_kind"] == "logical"
+    assert out["pipelines"][0]["logic_constraint"] == "1G_2A"
+    assert tool.create_kwargs[0] == {
+        "physical_env": None,
+        "logic_env": "BESA_SDV_2BBH_1BBL",
+        "logic_constraint": "1G_2A",
+    }
+    assert ledger.rows[0]["env"] == "BESA_SDV_2BBH_1BBL"
+
+
+def test_create_pipelines_physical_mode_kwargs(monkeypatch):
+    tool = _RecordingTool()
+    ledger = _FakeLedger()
+    _patch(monkeypatch, tool, ledger)
+
+    create_pipelines(_one_plan())
+    assert tool.create_kwargs[0] == {
+        "physical_env": "7.223.50.60",
+        "logic_env": None,
+        "logic_constraint": None,
+    }
+
+
+def test_create_pipelines_logical_missing_constraint_fails(monkeypatch):
+    tool = _RecordingTool()
+    ledger = _FakeLedger()
+    _patch(monkeypatch, tool, ledger)
+
+    out = create_pipelines(
+        {
+            "task_id": "t1",
+            "exec_params": {
+                "exec_mode": "create_and_start",
+                "plans": [
+                    {
+                        "case_names": ["HF_20B_PUSCH_001"],
+                        "version": "27B",
+                        "env": "BESA_SDV_2BBH_1BBL",
+                        "env_kind": "logical",
+                        "logic_constraint": "",
+                    }
+                ],
+            },
+        }
+    )
+    assert out["summary"]["status"] == "failed"
+    assert out["pipelines"][0]["status"] == "failed"
+    assert tool.create_kwargs == []

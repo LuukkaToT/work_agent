@@ -29,3 +29,15 @@ CREATE TABLE IF NOT EXISTS ci_cases (
     logic_constraint TEXT NOT NULL DEFAULT '',
     version TEXT NOT NULL DEFAULT ''
 );
+
+-- 逻辑组网目录：校验白名单 + HITL 候选。种子由 init-db 从 config/logic_topologies.csv upsert。
+CREATE TABLE IF NOT EXISTS logic_topologies (
+    logic_env TEXT NOT NULL,
+    logic_constraint TEXT NOT NULL,
+    bbh_count INTEGER NOT NULL,
+    bbl_count INTEGER NOT NULL,
+    bbh_board TEXT NOT NULL DEFAULT '',
+    bbl_board TEXT NOT NULL DEFAULT '',
+    aliases TEXT NOT NULL DEFAULT '',
+    PRIMARY KEY (logic_env, logic_constraint)
+);

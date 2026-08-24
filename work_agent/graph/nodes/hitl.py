@@ -18,6 +18,11 @@ from typing import Any, Mapping
 
 from langgraph.types import interrupt
 
+from work_agent.graph.helpers.logic_env import (
+    apply_logic_catalog,
+    format_logic_candidate_message,
+    pick_logic_candidate,
+)
 from work_agent.graph.nodes.exec_flow import ALLOWED_VERSIONS, _classify_env, _plan_dict
 
 
@@ -167,14 +172,23 @@ def ask_missing(state: Mapping[str, Any]) -> dict:
                 plan["version"] = _parse_version(reply)
 
             if "env" in missing:
+                candidates = list(plan.get("logic_candidates") or [])
                 env_kind = plan.get("env_kind") or ""
                 current_env = str(plan.get("env") or "").strip()
-                if env_kind == "logical" and current_env:
+                if candidates:
+                    msg = format_logic_candidate_message(
+                        plan_index=idx + 1,
+                        plan_count=len(plans),
+                        candidates=candidates,
+                    )
+                    interrupt_type = "pick_logic_topology"
+                elif env_kind == "logical" and current_env:
                     msg = (
                         f"第 {idx + 1}/{len(plans)} 条计划已有逻辑组网 `{current_env}`，"
                         "还缺约束。请补充约束（如 85+86），"
                         "或改填物理组网 IP（如 7.223.50.60）"
                     )
+                    interrupt_type = "ask_env"
                 else:
                     msg = (
                         f"第 {idx + 1}/{len(plans)} 条计划缺少环境。"
@@ -182,15 +196,21 @@ def ask_missing(state: Mapping[str, Any]) -> dict:
                         "或完整逻辑组网（逻辑环境 + 约束，"
                         "例如 3BBL_86_1BBL86 / 85+86）"
                     )
+                    interrupt_type = "ask_env"
                 reply = interrupt(
                     {
-                        "type": "ask_env",
+                        "type": interrupt_type,
                         "message": msg,
                         "plan_index": idx,
                         "current": plan,
+                        "candidates": candidates,
                     }
                 )
-                env, constraint = _apply_env_reply(plan, reply)
+                picked = pick_logic_candidate(plan, reply)
+                if picked:
+                    env, constraint = picked
+                else:
+                    env, constraint = _apply_env_reply(plan, reply)
                 plan["env"] = env
                 plan["logic_constraint"] = constraint
 
@@ -200,7 +220,8 @@ def ask_missing(state: Mapping[str, Any]) -> dict:
                 env=str(plan.get("env") or ""),
                 logic_constraint=str(plan.get("logic_constraint") or ""),
             )
-            plan.update(rebuilt)
+            gated = apply_logic_catalog([rebuilt], user_input="")[0]
+            plan.update(gated)
             if plan.get("missing"):
                 continue
             break
