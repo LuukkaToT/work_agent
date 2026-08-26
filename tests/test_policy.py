@@ -40,3 +40,12 @@ def test_create_and_start_pipeline_require_confirmation():
 def test_query_pipeline_is_read_only():
     assert POLICIES["query_pipeline"].read_only is True
     assert POLICIES["query_pipeline"].requires_confirmation is False
+
+
+def test_fetch_archived_block_is_registered_and_read_only():
+    policy = POLICIES.get("fetch_archived_block")
+    assert policy is not None, "回读工具必须在 POLICIES 注册，否则构造期自检会拦"
+    assert policy.read_only is True
+    assert policy.requires_confirmation is False
+    # 回读工具也要能通过只读白名单自检
+    assert_read_only_whitelist(["fetch_archived_block"])

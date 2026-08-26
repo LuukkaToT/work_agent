@@ -104,6 +104,8 @@ class DiagnosisResult:
     # 最后一次真正发给 ReAct 模型的历史字符数（含 prelude）。和抽取
     # context_chars 不是同一层：legacy 不裁历史，managed 受 react_history_max_chars 约束。
     react_context_chars: int = 0
+    # 归档条数（managed 且传了 archive 时 > 0）：被裁历史 + 抽取期被压块的原文都在里面。
+    archived_n: int = 0
 
     @property
     def fail_kind(self) -> str:
@@ -235,12 +237,20 @@ def run_diagnosis(
     managed = context_strategy == "managed"
     usage = TokenUsage()
 
+    # 归档器在 ReAct 循环前就建好（仅 managed）：循环内裁剪历史时当场落盘，
+    # 抽取期 ContextManager 复用同一实例，两阶段共享一份 external context。
+    # legacy 恒为 None，基线行为不变。
+    live_archive: ContextArchive | None = None
+    if managed:
+        live_archive = archive if archive is not None else ContextArchive(run_id=run_id)
+
     system = _load_system_prompt()
     tools = build_diagnose_tools(
         scenario=scenario,  # type: ignore[arg-type]
         budget=budget,
         tool_result_max_chars=profile.tool_result_max_chars,
         user_id=user_id,
+        archive=live_archive,
     )
     model = get_reasoning_model(temperature=0)  # Role：开放式多步推理
     human = _build_human_prompt(pipelines, user_input)
@@ -260,6 +270,7 @@ def run_diagnosis(
             max_steps=react_limit,
             observation_max_chars=profile.react_observation_max_chars,
             history_max_chars=profile.react_history_max_chars if managed else 0,
+            archive=live_archive,
         )
         usage = usage + loop.usage
         trimmed_steps = loop.trimmed_steps
@@ -275,10 +286,7 @@ def run_diagnosis(
     selected_ids: list[str] = []
     compressed_ids: list[str] = []
     if managed:
-        manager = ContextManager(
-            compressor=compressor,
-            archive=archive if archive is not None else ContextArchive(run_id=run_id),
-        )
+        manager = ContextManager(compressor=compressor, archive=live_archive)
         rendered = manager.render(
             _managed_items(user_input, analysis_text, obs_items),
             goal=user_input or analysis_text,
@@ -356,6 +364,7 @@ def run_diagnosis(
         trimmed_steps=trimmed_steps,
         compressed_ids=compressed_ids,
         react_context_chars=react_context_chars,
+        archived_n=len(live_archive.refs) if live_archive is not None else 0,
     )
 
 

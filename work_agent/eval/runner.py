@@ -204,6 +204,8 @@ def run_case(
                 "missing_evidence": list(case.expected_evidence_keys),
                 "context_chars": 0,
                 "latency_ms": int((time.perf_counter() - started) * 1000),
+                "archived_n": 0,
+                "readback_calls": 0,
             }
         )
         return row
@@ -231,6 +233,12 @@ def run_case(
             "react_context_chars": result.react_context_chars,
             "obs_compressed_n": result.obs_compressed_n,
             "ruled_out_n": result.ruled_out_n,
+            "archived_n": getattr(result, "archived_n", 0),
+            "readback_calls": sum(
+                1
+                for t in result.tool_trace
+                if t.get("type") == "call" and t.get("name") == "fetch_archived_block"
+            ),
         }
     )
     return row
@@ -339,6 +347,8 @@ def summarize(rows: Sequence[Mapping[str, Any]]) -> dict[str, dict[str, Any]]:
             "token_total": _mean(float(i.get("token_total") or 0) for i in items),
             "latency_ms": _mean(float(i.get("latency_ms") or 0) for i in items),
             "tool_calls": _mean(float(i.get("tool_calls") or 0) for i in items),
+            "archived_n": _mean(float(i.get("archived_n") or 0) for i in items),
+            "readback_calls": _mean(float(i.get("readback_calls") or 0) for i in items),
             "errors": sum(1 for i in items if i.get("error")),
         }
     return out

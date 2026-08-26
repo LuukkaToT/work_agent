@@ -58,6 +58,12 @@ POLICIES: dict[str, ActionPolicy] = {
     "search_knowledge": ActionPolicy(
         "search_knowledge", read_only=True, requires_confirmation=False
     ),
+    "fetch_archived_block": ActionPolicy(
+        "fetch_archived_block",
+        read_only=True,
+        requires_confirmation=False,
+        description="按 artifact 引用回读已归档的历史上下文原文",
+    ),
 }
 
 

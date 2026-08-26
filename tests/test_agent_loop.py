@@ -6,6 +6,7 @@ from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, System
 from langchain_core.tools import tool
 
 from work_agent.graph.helpers.agent_loop import ReActStep, run_agent_loop, trim_steps
+from work_agent.graph.helpers.context_archive import ContextArchive
 from work_agent.graph.helpers.progress import reset_progress_hook, set_progress_hook
 
 
@@ -280,3 +281,110 @@ def test_history_trimming_shrinks_what_model_receives():
         assert_tool_pairing(sent)
     # 最后一次发送的上下文受预算约束，远小于未裁剪时的三轮全文
     assert result.context_chars < 3 * len(long_obs)
+
+
+def test_trim_steps_with_archive_stores_original_and_marks_reference(tmp_path):
+    """压缩分支：原文落盘，压缩消息挂引用；read 能取回原始观察全文。"""
+    archive = ContextArchive(tmp_path, run_id="t")
+    steps = [
+        _step("step01", text="第一轮", obs="ERROR old " + "a" * 900),
+        _step("step02", text="第二轮", obs="ERROR new " + "b" * 900),
+    ]
+    trimmed, changed = trim_steps(
+        steps, max_chars=1000, summary_max_chars=120, archive=archive
+    )
+
+    assert changed == 1
+    assert len(archive.refs) == 1
+    ref = archive.refs[0]
+    assert ref.artifact_id.startswith("react_step01") or "step01" in ref.artifact_id
+
+    compacted = next(s for s in trimmed if not s.has_tool_calls)
+    assert f"artifact {ref.artifact_id}" in compacted.assistant_message.content
+    # 原文可回读：包含压缩摘要里已经看不到的完整观察
+    restored = archive.read(ref.artifact_id)
+    assert "[观察 echo]" in restored
+    assert ("a" * 900) in restored
+
+    flat = [m for s in trimmed for m in s.to_messages()]
+    assert_tool_pairing(flat)
+
+
+def test_trim_steps_drop_branch_leaves_stub_with_artifact(tmp_path):
+    """整步丢弃分支：留一条 stub AIMessage 指向 artifact，且不带 tool_calls。"""
+    archive = ContextArchive(tmp_path, run_id="t")
+    steps = [
+        _step("step01", text="最早一轮", obs="ERROR first " + "x" * 2000),
+        _step("step02", text="第二轮", obs="y" * 1200),
+        _step("step03", text="第三轮", obs="z" * 1200),
+        _step("step04", text="第四轮", obs="w" * 1200),
+    ]
+    trimmed, changed = trim_steps(
+        steps, max_chars=2600, summary_max_chars=60, archive=archive
+    )
+
+    stubs = [
+        s
+        for s in trimmed
+        if not s.has_tool_calls and "已整体归档" in s.assistant_message.content
+    ]
+    assert changed >= 2
+    assert stubs, "连摘要都塞不下的 step 必须留下归档占位"
+    for s in stubs:
+        assert s.tool_messages == []
+        assert "artifact" in s.assistant_message.content
+        # stub 引用的 artifact 真的能回读出该 step 的观察
+        aid = s.assistant_message.content.split("artifact ")[-1].rstrip("]")
+        assert _step_obs_marker(steps, s.step_id) in archive.read(aid)
+
+    flat = [m for s in trimmed for m in s.to_messages()]
+    assert_tool_pairing(flat)
+
+
+def _step_obs_marker(steps: list[ReActStep], step_id: str) -> str:
+    """取指定 step 观察里独有的长串片段，用于验证归档原文。"""
+    step = next(s for s in steps if s.step_id == step_id)
+    obs = step.tool_messages[0].content
+    return obs[-50:]
+
+
+def test_compact_without_archive_keeps_legacy_output():
+    """无 archive 时 compact 输出不带任何归档引用（回归保护）。"""
+    step = _step("step01", text="第一轮", obs="ERROR " + "a" * 900)
+    compacted = step.compact(max_chars=120)
+    assert "artifact" not in compacted.assistant_message.content
+    assert "已归档" not in compacted.assistant_message.content
+
+
+def test_run_agent_loop_archive_is_idempotent_across_compose_rounds(tmp_path):
+    """compose() 每轮都会重算裁剪：同一 step 多轮触发只落盘一次。"""
+    long_obs = "ERROR boom " + "q" * 3000
+
+    def call(i: int) -> AIMessage:
+        return AIMessage(
+            content=f"第{i}轮",
+            tool_calls=[{"id": str(i), "name": "echo", "args": {"text": long_obs}}],
+        )
+
+    model = _ScriptedModel([call(1), call(2), call(3), AIMessage(content="结论")])
+    archive = ContextArchive(tmp_path, run_id="t")
+    result = run_agent_loop(
+        model=model,
+        tools=[echo],
+        system="sys",
+        user="user",
+        max_steps=4,
+        observation_max_chars=4000,
+        history_max_chars=2000,
+        step_summary_max_chars=150,
+        archive=archive,
+    )
+
+    assert result.trimmed_steps >= 1
+    item_ids = [f"react_step{n:02d}" for n in (1, 2, 3)]
+    stored = {r.artifact_id for r in archive.refs}
+    # 每个 step 至多一条归档记录：store 按 item_id 去重
+    assert len(stored) == len(archive.refs) <= 3
+    for iid in item_ids:
+        matches = [r.artifact_id for r in archive.refs if iid.replace("react_", "") in r.artifact_id]
+        assert len(matches) <= 1

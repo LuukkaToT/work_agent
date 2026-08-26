@@ -187,6 +187,8 @@ ReAct 式 Agent 让模型自己决定调哪个 tool、调几次，对「执行�
 
 还有个思路是 working context 与 external context 分离：被裁掉的内容不是删掉，而是原文落盘，上下文里只留一句摘要加 `[原文 N 字符已归档，详见 artifact xxx]`。信息没丢，只是不再常驻。
 
+而且这条引用是**活的**：ReAct 循环内历史 step 被压缩时也走同一份 Archive 落盘，压缩消息挂上 artifact 引用；同时白名单里注册了只读工具 `fetch_archived_block(artifact_id)`，模型发现摘要缺细节（报错原文、行号被摘没了）可以自己把原文取回来继续取证。也就是「裁掉 ≠ 丢掉，还找得回来」——确定性压缩负责省预算，模型主动回读兜住信息损失。这是纯 legacy 结构上做不到的事：它只会静默丢，连「丢了什么」都不告诉模型。
+
 **追问：你怎么证明这套改造真的有用，而不是自我感觉良好？**
 
 这是我特意补的一块。`error_analysis` 的核心抽成了 `run_diagnosis(context_strategy="legacy"|"managed")`，同一个 case 能按改造前和改造后各跑一遍，`python -m work_agent.cli eval-diagnose` 在 `config/eval_cases.json`（6 条，覆盖 case/version/env/none）上对比，每个 `case × strategy` 落一行长表 jsonl。

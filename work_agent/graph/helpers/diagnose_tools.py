@@ -15,6 +15,7 @@ from langchain_core.tools import BaseTool, tool
 
 from work_agent.core.ledger import get_ledger
 from work_agent.core.policy import assert_read_only_whitelist
+from work_agent.graph.helpers.context_archive import ContextArchive
 from work_agent.graph.helpers.truncate import CharBudget
 from work_agent.tools.mock.executor import MockScenario
 from work_agent.tools.registry import (
@@ -33,6 +34,7 @@ def build_diagnose_tools(
     budget: CharBudget | None = None,
     tool_result_max_chars: int = _DEFAULT_MAX_CHARS,
     user_id: str = "",
+    archive: ContextArchive | None = None,
 ) -> list[BaseTool]:
     """
     构造诊断白名单工具（只读；禁止 create/start）。
@@ -45,6 +47,9 @@ def build_diagnose_tools(
         tool_result_max_chars: 单次工具结果截断上限。
         user_id: 当前操作者工号；``find_case_history`` 只在其名下记录里查，
             空串表示未接身份（此时按台账回填后的语义查不到任何记录）。
+        archive: 归档器；传入时额外注册 ``fetch_archived_block``，
+            供模型按 artifact 引用回读被裁剪历史的原文。None 不注册，
+            工具集保持原有 6 个（legacy 基线不变）。
 
     返回:
         LangChain BaseTool 列表，供 ReAct agent 使用。
@@ -149,6 +154,14 @@ def build_diagnose_tools(
         except Exception as exc:  # noqa: BLE001
             return _out(f"[search_knowledge error] {exc}")
 
+    @tool
+    def fetch_archived_block(artifact_id: str) -> str:
+        """按 artifact 引用回读已归档的历史原文（只读）。历史步骤被压缩后摘要缺细节时用它取回全文。"""
+        try:
+            return _out(archive.read(artifact_id))
+        except Exception as exc:  # noqa: BLE001
+            return _out(f"[fetch_archived_block error] {exc}")
+
     tools = [
         get_pipeline_status,
         fetch_logs,
@@ -157,6 +170,8 @@ def build_diagnose_tools(
         get_case_spec,
         search_knowledge,
     ]
+    if archive is not None:
+        tools.append(fetch_archived_block)
     # 构造期自检：误把写操作工具混进这份只读白名单时直接拦住，不用等运行时才发现。
     assert_read_only_whitelist([t.name for t in tools])
     return tools

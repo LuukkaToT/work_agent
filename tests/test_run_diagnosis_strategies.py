@@ -201,6 +201,48 @@ def test_managed_trims_react_history_legacy_does_not(tmp_path, monkeypatch):
     assert managed.trimmed_steps >= 0
 
 
+def test_managed_uses_shared_archive_and_reports_archived_n(tmp_path, monkeypatch):
+    """managed：ReAct 裁剪与抽取压缩共用同一归档目录，archived_n 如实上报。"""
+    _install(monkeypatch)
+    fast_for_compress = _FakeFast()
+    archive = ContextArchive(tmp_path / "shared", run_id="t")
+    result = run_diagnosis(
+        pipelines=_BRIEF,
+        user_input="CaseA_235T_nmimo 为什么报 KeyError？",
+        context_strategy="managed",
+        scenario="case_error",
+        run_id="t",
+        compressor=ContextCompressor(model_factory=lambda: fast_for_compress),
+        archive=archive,
+    )
+    assert result.archived_n == len(archive.refs)
+    assert result.archived_n >= 0
+    # 注入的 archive 目录就是唯一落盘点：两阶段共享，不另建 adhoc 目录
+    assert not (tmp_path / "t").exists() or (tmp_path / "shared") in list(
+        tmp_path.iterdir()
+    )
+
+
+def test_legacy_never_touches_archive(tmp_path, monkeypatch):
+    """legacy：archive 恒为 None——不归档、archived_n=0、无回读工具。"""
+    _install(monkeypatch)
+    fast_for_compress = _FakeFast()
+    legacy_archive = ContextArchive(tmp_path / "legacy", run_id="t")
+    result = run_diagnosis(
+        pipelines=_BRIEF,
+        user_input="CaseA_235T_nmimo 为什么报 KeyError？",
+        context_strategy="legacy",
+        scenario="case_error",
+        run_id="t",
+        compressor=ContextCompressor(model_factory=lambda: fast_for_compress),
+        archive=legacy_archive,
+    )
+    assert result.archived_n == 0
+    # legacy 不该往注入的 archive 里写任何东西
+    assert legacy_archive.refs == []
+    assert not legacy_archive.directory.exists()
+
+
 def test_node_output_shape_is_unchanged(tmp_path, monkeypatch):
     _install(monkeypatch)
     out = ea.error_analysis(

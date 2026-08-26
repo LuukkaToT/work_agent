@@ -117,6 +117,9 @@ python -m work_agent.cli eval-diagnose --case case_error_keyerror --strategy man
         ▼
 run_agent_loop                          ← 每步：invoke → tool → compress_observation
   ReActStep 列表                         ← 历史按 step 裁，system/goal 不裁
+  │   裁剪时（managed）：被压/被丢的 step 原文 → ContextArchive 落盘，
+  │   压缩消息挂 [原文 N 字符已归档，详见 artifact xxx] 引用；
+  │   整步丢弃的留一条 stub 占位。模型缺细节时用 fetch_archived_block 回读。
   AgentLoopResult.messages               ← 完整未裁历史
   AgentLoopResult.usage                  ← ReAct 各轮 token
         │
@@ -125,7 +128,7 @@ collect_observation_items               ← 每条 ToolMessage → 一个 Contex
 _managed_items                          ← 加上 goal(immutable) + 结论草稿(protected)
         │
         ▼
-ContextManager.render
+ContextManager.render                   ← 复用同一个 ContextArchive 实例
   select = normalize → dedup → rank → budget
   装得下 → render
   装不下 → compress(+archive 引用) → 再 select → 没救回的全部 archive
@@ -134,10 +137,25 @@ ContextManager.render
 _extract_structured(include_raw=True)   ← 二次抽取，token 并入总量
         │
         ▼
-DiagnosisResult                         ← context_text / chars / usage / selected_ids
+DiagnosisResult                         ← context_text / chars / usage / selected_ids / archived_n
 ```
 
 读代码时如果迷了，就问自己：我现在看的是 **ReAct 热路径** 还是 **抽取阶段一次性组装**。两套预算、两套压缩，不要混。
+
+### 1.6 归档回读闭环：裁掉 ≠ 丢掉
+
+`ContextArchive` 在 managed 策略下有两个写入时机，共享同一实例、同一目录：
+
+1. **ReAct 循环内**：`trim_steps` 压缩某个 step 时（`ReActStep.compact(archive=...)`），
+   该 step 的判断 + 观察全文先按 `react_<step_id>` 落盘，压缩消息末尾追加
+   `reference_note(ref)`；连摘要都装不下而整步丢弃时，留一条不带 tool_calls 的
+   stub AIMessage 指向 artifact。`store` 按 item_id 去重，`compose()` 每轮重算裁剪也幂等。
+2. **抽取阶段**：ContextManager 压缩/挤掉的块照旧归档（原有行为）。
+
+回读出口是只读工具 `fetch_archived_block(artifact_id)`（见 `diagnose_tools.py`，
+传了 `archive` 才注册；policy 表里已登记 read_only）。这样「原文移出上下文」之后
+模型仍有一条确定性的取回路径——摘要不够用时自己把原文要回来，而不是靠猜。
+legacy 全链路 archive 为 None：不归档、无第 7 个工具、行为与基线完全一致。
 
 ---
 

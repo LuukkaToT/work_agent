@@ -112,3 +112,44 @@ def test_budget_can_block():
         {"pipeline_id": handle.pipeline_id, "tail_lines": 200}
     )
     assert "budget exceeded" in second or len(second) <= 50 or "[truncated" in second
+
+
+def test_archive_registers_readback_tool(tmp_path):
+    """带 archive 构造：第 7 个工具出现且过自检；不带则保持 6 个。"""
+    from work_agent.graph.helpers.context_archive import ContextArchive
+
+    with_archive = build_diagnose_tools(scenario="case_error", archive=ContextArchive(tmp_path, run_id="t"))
+    assert "fetch_archived_block" in {t.name for t in with_archive}
+
+    without_archive = build_diagnose_tools(scenario="case_error")
+    assert "fetch_archived_block" not in {t.name for t in without_archive}
+
+
+def test_fetch_archived_block_reads_and_reports_missing(tmp_path):
+    """正常 id 回读原文；未知/不存在 id 返回错误字符串而不是抛异常。"""
+    from work_agent.graph.helpers.context_archive import ContextArchive
+
+    archive = ContextArchive(tmp_path, run_id="t")
+    tools = {t.name: t for t in build_diagnose_tools(scenario="case_error", archive=archive)}
+
+    missing = tools["fetch_archived_block"].invoke({"artifact_id": "no_such_artifact"})
+    assert "[fetch_archived_block error]" in missing
+
+    ref = archive.store(
+        _archived_item("obs-001-fetch_logs", "ERROR KeyError: 'antenna_map'\n" + "d" * 300)
+    )
+    got = tools["fetch_archived_block"].invoke({"artifact_id": ref.artifact_id})
+    assert "KeyError: 'antenna_map'" in got
+
+
+def _archived_item(item_id: str, text: str):
+    from work_agent.graph.helpers.context_selector import PIN_NORMAL, ContextItem
+
+    return ContextItem(
+        item_id=item_id,
+        kind="tool_result",
+        source="fetch_logs",
+        text=text,
+        priority=4,
+        pin=PIN_NORMAL,
+    )
