@@ -1,83 +1,386 @@
 {
-  "suite": "diagnose_v1",
-  "note": "离线 A/B 用的 golden set。期望值只放在这里，不复制进 eval_results.jsonl，避免同一份期望在两处漂移。expected_evidence_keys 是「必须活到最终 working context 的关键词」，取自 tools/mock/logs.py 各 scenario 的尾部特征行。",
+  "suite": "baseband_layered_benchmark_v1",
+  "note": "20 组分组件 synthetic 基带故障 golden set；expected_evidence_keys 必须存活到最终 working context。",
   "cases": [
     {
-      "case_id": "case_error_keyerror",
-      "scenario": "case_error",
-      "user_input": "CaseA_235T_nmimo 这条用例为什么报错了，是用例本身的问题还是环境问题？",
+      "case_id": "b01_comm_connection_refused",
+      "scenario": "bench01_comm_connection_refused",
+      "user_input": "小区 load fail，判断是 COMM、RAT 还是 BBL 根因。",
       "pipeline": {
-        "case_names": ["CaseA_235T_nmimo", "CaseB_128T_mmimo"],
+        "case_names": [
+          "NR_BENCH_001_COMM_REFUSED"
+        ],
         "version": "27B",
         "physical_env": "7.223.50.60"
       },
-      "expected_fail_kind": "case",
-      "expected_evidence_keys": ["KeyError", "antenna_map", "Traceback"]
+      "expected_fail_kind": "env",
+      "expected_root_component": "comm",
+      "expected_evidence_keys": [
+        "E-COMM-1102",
+        "Connection refused",
+        "probable_component=comm"
+      ]
     },
     {
-      "case_id": "version_fail_protocol_mismatch",
-      "scenario": "version_fail",
-      "user_input": "27B 版本这条流水线失败了，帮我看下是不是版本不兼容",
+      "case_id": "b02_comm_connect_timeout",
+      "scenario": "bench02_comm_connect_timeout",
+      "user_input": "COMM 一直 load fail 但不是 connection refused，帮我定位。",
       "pipeline": {
-        "case_names": ["HF_20B_PUSCH_1Cell_200M_hf_001", "CaseB_128T_mmimo"],
+        "case_names": [
+          "NR_BENCH_002_COMM_TIMEOUT"
+        ],
         "version": "27B",
         "physical_env": "7.223.50.61"
       },
-      "expected_fail_kind": "version",
-      "expected_evidence_keys": ["protocol mismatch", "incompatible", "27B"]
-    },
-    {
-      "case_id": "env_error_connection_refused",
-      "scenario": "env_error",
-      "user_input": "这条流水线一启动就失败，环境是不是挂了？",
-      "pipeline": {
-        "case_names": ["CaseC_64T_smimo"],
-        "version": "27B",
-        "physical_env": "7.223.50.60"
-      },
       "expected_fail_kind": "env",
-      "expected_evidence_keys": ["Connection refused", "7.223.50.60", "unreachable"]
+      "expected_root_component": "comm",
+      "expected_evidence_keys": [
+        "SYN timeout",
+        "retry=3/3",
+        "COMM_LOAD_FAIL"
+      ]
     },
     {
-      "case_id": "env_error_logic_topology",
-      "scenario": "env_error",
-      "user_input": "逻辑组网上跑的这条为什么全是 error？",
+      "case_id": "b03_comm_protocol_mismatch",
+      "scenario": "bench03_comm_protocol_mismatch",
+      "user_input": "TCP 已经连上了但小区仍失败，是版本问题吗？",
       "pipeline": {
-        "case_names": ["CaseD_32T_beamform", "CaseE_16T_baseline"],
-        "version": "26A",
-        "logic_env": "3BBL_86_1BBL86",
-        "logic_constraint": "85+86"
-      },
-      "expected_fail_kind": "env",
-      "expected_evidence_keys": ["Connection refused", "retries"]
-    },
-    {
-      "case_id": "all_pass_no_failure",
-      "scenario": "all_pass",
-      "user_input": "这条流水线有没有失败的用例？",
-      "pipeline": {
-        "case_names": ["CaseF_8T_sanity"],
+        "case_names": [
+          "NR_BENCH_003_PROTOCOL_MISMATCH"
+        ],
         "version": "27B",
         "physical_env": "7.223.50.62"
       },
-      "expected_fail_kind": "none",
-      "expected_evidence_keys": ["verdict=pass"]
+      "expected_fail_kind": "version",
+      "expected_root_component": "comm",
+      "expected_evidence_keys": [
+        "E-COMM-1107",
+        "client_protocol=27B.4",
+        "server_protocol=26A.9"
+      ]
     },
     {
-      "case_id": "case_error_multi_case",
-      "scenario": "case_error",
-      "user_input": "这批用例里只有第一条挂了，帮我定位根因并给建议",
+      "case_id": "b04_rat_invalid_bandwidth",
+      "scenario": "bench04_rat_invalid_bandwidth",
+      "user_input": "RAT load fail 后 BBL 报 cell setup fail，哪个是根因？",
       "pipeline": {
         "case_names": [
-          "CaseG_256T_downlink",
-          "CaseH_128T_uplink",
-          "CaseI_64T_mixed"
+          "NR_BENCH_004_INVALID_BANDWIDTH"
         ],
-        "version": "28A",
+        "version": "27B",
         "physical_env": "7.223.50.63"
       },
       "expected_fail_kind": "case",
-      "expected_evidence_keys": ["KeyError", "AssertionError"]
+      "expected_root_component": "rat",
+      "expected_evidence_keys": [
+        "E-RAT-1211",
+        "bandwidth_mhz=120",
+        "allowed=[20,40,50,60,80,100]"
+      ]
+    },
+    {
+      "case_id": "b05_rat_worker_not_ready",
+      "scenario": "bench05_rat_worker_not_ready",
+      "user_input": "配置校验都通过但 RAT 一直不 ready，请分析环境资源。",
+      "pipeline": {
+        "case_names": [
+          "NR_BENCH_005_RAT_WORKER_EXIT"
+        ],
+        "version": "27B",
+        "physical_env": "7.223.50.64"
+      },
+      "expected_fail_kind": "env",
+      "expected_root_component": "rat",
+      "expected_evidence_keys": [
+        "E-RAT-1218",
+        "hugepage_pool",
+        "worker_exit_code=137"
+      ]
+    },
+    {
+      "case_id": "b06_bbh_clock_unlocked",
+      "scenario": "bench06_bbh_clock_unlocked",
+      "user_input": "BBL 报 cell activation timeout，看看是不是 BBH 时钟导致。",
+      "pipeline": {
+        "case_names": [
+          "NR_BENCH_006_PTP_UNLOCK"
+        ],
+        "version": "27B",
+        "physical_env": "7.223.50.65"
+      },
+      "expected_fail_kind": "env",
+      "expected_root_component": "bbh",
+      "expected_evidence_keys": [
+        "E-BBH-2101",
+        "ptp_state=UNLOCKED",
+        "offset_ns=4870"
+      ]
+    },
+    {
+      "case_id": "b07_bbh_fronthaul_sequence_gap",
+      "scenario": "bench07_bbh_fronthaul_sequence_gap",
+      "user_input": "小区起来后 KPI 很差，检查 BBH 前传链路。",
+      "pipeline": {
+        "case_names": [
+          "NR_BENCH_007_ECPRI_SEQ_GAP"
+        ],
+        "version": "27B",
+        "physical_env": "7.223.50.66"
+      },
+      "expected_fail_kind": "env",
+      "expected_root_component": "bbh",
+      "expected_evidence_keys": [
+        "E-BBH-2407",
+        "expected_seq=18421",
+        "received_seq=18429"
+      ]
+    },
+    {
+      "case_id": "b08_rx_subscription_debug_stall",
+      "scenario": "bench08_rx_subscription_debug_stall",
+      "user_input": "没有明显 ERROR，但 cell load fail，检查 BBH/BBL 的 RX 订阅是否互通。",
+      "pipeline": {
+        "case_names": [
+          "NR_BENCH_008_RX_SUB_STALL"
+        ],
+        "version": "27B",
+        "physical_env": "7.223.50.67"
+      },
+      "expected_fail_kind": "env",
+      "expected_root_component": "bbh",
+      "expected_evidence_keys": [
+        "direction=RX",
+        "attempt=12",
+        "subscription_ack_missing"
+      ]
+    },
+    {
+      "case_id": "b09_tx_publication_debug_stall",
+      "scenario": "bench09_tx_publication_debug_stall",
+      "user_input": "BBH/BBL 没有 errorcode，但 TX 方向一直连不上，分析 debug 行为。",
+      "pipeline": {
+        "case_names": [
+          "NR_BENCH_009_TX_PUB_STALL"
+        ],
+        "version": "27B",
+        "physical_env": "7.223.50.68"
+      },
+      "expected_fail_kind": "env",
+      "expected_root_component": "bbl",
+      "expected_evidence_keys": [
+        "direction=TX",
+        "route_state=WAITING",
+        "subscriber_count=0"
+      ]
+    },
+    {
+      "case_id": "b10_bbl_duplicate_pci",
+      "scenario": "bench10_bbl_duplicate_pci",
+      "user_input": "两个小区都建立失败，看看是否是 PCI 配置冲突。",
+      "pipeline": {
+        "case_names": [
+          "NR_BENCH_010_DUPLICATE_PCI"
+        ],
+        "version": "27B",
+        "physical_env": "7.223.50.69"
+      },
+      "expected_fail_kind": "case",
+      "expected_root_component": "bbl",
+      "expected_evidence_keys": [
+        "E-BBL-3120",
+        "pci=101",
+        "cells=[NR_CELL_0,NR_CELL_1]"
+      ]
+    },
+    {
+      "case_id": "b11_bbl_context_pool_exhausted",
+      "scenario": "bench11_bbl_context_pool_exhausted",
+      "user_input": "同样用例换环境能过，本环境 cell context 分配失败。",
+      "pipeline": {
+        "case_names": [
+          "NR_BENCH_011_CONTEXT_POOL"
+        ],
+        "version": "27B",
+        "physical_env": "7.223.50.70"
+      },
+      "expected_fail_kind": "env",
+      "expected_root_component": "bbl",
+      "expected_evidence_keys": [
+        "E-BBL-3209",
+        "used=256",
+        "leaked_candidates=18"
+      ]
+    },
+    {
+      "case_id": "b12_vue_antenna_map_missing",
+      "scenario": "bench12_vue_antenna_map_missing",
+      "user_input": "VUE_CELL_SETUP_FAILED，结合 MARP 和 BBL 错误码找根因。",
+      "pipeline": {
+        "case_names": [
+          "NR_BENCH_012_VUE_ANTENNA_MAP"
+        ],
+        "version": "27B",
+        "physical_env": "7.223.50.71"
+      },
+      "expected_fail_kind": "case",
+      "expected_root_component": "marp",
+      "expected_evidence_keys": [
+        "E-MARP-4106",
+        "antenna_map",
+        "probable_component=marp"
+      ]
+    },
+    {
+      "case_id": "b13_vue_beam_calibration_mismatch",
+      "scenario": "bench13_vue_beam_calibration_mismatch",
+      "user_input": "VUE 建立失败，判断是 BBL 现象还是 MARP 校准版本根因。",
+      "pipeline": {
+        "case_names": [
+          "NR_BENCH_013_VUE_CALIBRATION"
+        ],
+        "version": "27B",
+        "physical_env": "7.223.50.72"
+      },
+      "expected_fail_kind": "version",
+      "expected_root_component": "marp",
+      "expected_evidence_keys": [
+        "E-MARP-4114",
+        "profile_revision=27B-r12",
+        "calibration_revision=26A-r8"
+      ]
+    },
+    {
+      "case_id": "b14_cell_load_cascade_from_rat",
+      "scenario": "bench14_cell_load_cascade_from_rat",
+      "user_input": "BBH 和 BBL 都报 errorcode，沿 cause chain 找最早根因。",
+      "pipeline": {
+        "case_names": [
+          "NR_BENCH_014_RAT_SCS_CASCADE"
+        ],
+        "version": "27B",
+        "physical_env": "7.223.50.73"
+      },
+      "expected_fail_kind": "case",
+      "expected_root_component": "rat",
+      "expected_evidence_keys": [
+        "field=scs_khz",
+        "value=15",
+        "probable_component=rat"
+      ]
+    },
+    {
+      "case_id": "b15_cell_activation_timeout_clock",
+      "scenario": "bench15_cell_activation_timeout_clock",
+      "user_input": "BBL 最后一条是 activation timeout，向前检查 BBH 时钟状态。",
+      "pipeline": {
+        "case_names": [
+          "NR_BENCH_015_CLOCK_HOLDOVER"
+        ],
+        "version": "27B",
+        "physical_env": "7.223.50.74"
+      },
+      "expected_fail_kind": "env",
+      "expected_root_component": "bbh",
+      "expected_evidence_keys": [
+        "holdover_ms=65000",
+        "source=SyncE",
+        "E-BBL-3112"
+      ]
+    },
+    {
+      "case_id": "b16_rach_timing_out_of_window",
+      "scenario": "bench16_rach_timing_out_of_window",
+      "user_input": "小区已经 UP，但 UE 随机接入反复失败，检查 PRACH timing。",
+      "pipeline": {
+        "case_names": [
+          "NR_BENCH_016_PRACH_TIMING"
+        ],
+        "version": "27B",
+        "physical_env": "7.223.50.75"
+      },
+      "expected_fail_kind": "env",
+      "expected_root_component": "bbh",
+      "expected_evidence_keys": [
+        "E-RAT-1231",
+        "measured_ta_samples=418",
+        "accepted=[-96,96]"
+      ]
+    },
+    {
+      "case_id": "b17_rrc_setup_incomplete",
+      "scenario": "bench17_rrc_setup_incomplete",
+      "user_input": "随机接入成功了但 UE 还是没接入，分析 RRC 阶段。",
+      "pipeline": {
+        "case_names": [
+          "NR_BENCH_017_RRC_INCOMPLETE"
+        ],
+        "version": "27B",
+        "physical_env": "7.223.50.76"
+      },
+      "expected_fail_kind": "env",
+      "expected_root_component": "bbl",
+      "expected_evidence_keys": [
+        "RACH_COMPLETE",
+        "RRCSetup sent",
+        "E-BBL-3306"
+      ]
+    },
+    {
+      "case_id": "b18_compare_schema_mismatch",
+      "scenario": "bench18_compare_schema_mismatch",
+      "user_input": "无线侧都通过，为什么 compare 阶段仍然失败？",
+      "pipeline": {
+        "case_names": [
+          "NR_BENCH_018_COMPARE_SCHEMA"
+        ],
+        "version": "27B",
+        "physical_env": "7.223.50.77"
+      },
+      "expected_fail_kind": "version",
+      "expected_root_component": "compare",
+      "expected_evidence_keys": [
+        "E-CMP-5110",
+        "result_schema=v5",
+        "baseline_schema=v4"
+      ]
+    },
+    {
+      "case_id": "b19_compare_kpi_from_fronthaul",
+      "scenario": "bench19_compare_kpi_from_fronthaul",
+      "user_input": "compare 报 KPI fail，判断是阈值问题还是上游链路故障。",
+      "pipeline": {
+        "case_names": [
+          "NR_BENCH_019_KPI_FRONTHAUL"
+        ],
+        "version": "27B",
+        "physical_env": "7.223.50.78"
+      },
+      "expected_fail_kind": "env",
+      "expected_root_component": "bbh",
+      "expected_evidence_keys": [
+        "packet_loss_burst=47",
+        "probable_component=bbh",
+        "dl_bler"
+      ]
+    },
+    {
+      "case_id": "b20_transient_subscription_recovered",
+      "scenario": "bench20_transient_subscription_recovered",
+      "user_input": "日志有订阅重试，确认这是可恢复瞬态还是环境故障。",
+      "pipeline": {
+        "case_names": [
+          "NR_BENCH_020_TRANSIENT_RECOVERY"
+        ],
+        "version": "27B",
+        "physical_env": "7.223.50.79"
+      },
+      "expected_fail_kind": "none",
+      "expected_root_component": "none",
+      "expected_evidence_keys": [
+        "subscription_state=ESTABLISHED",
+        "cell_state=ACTIVE",
+        "verdict=pass"
+      ]
     }
   ]
 }

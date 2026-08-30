@@ -52,6 +52,7 @@ _GOAL_MAX_CHARS = 2000
 
 _EXTRACT_SYSTEM = (
     "根据下列压缩上下文提取结构化字段。"
+    "root_component 填最可能的首个故障组件，而不是最后报级联错误的组件；"
     "evidence 必须来自工具摘录原文短摘；"
     "ruled_out 只保留已排除假设及一句话理由；"
     "没有的信息填 unknown/空列表。"
@@ -69,6 +70,11 @@ class ErrorAnalysisOut(BaseModel):
     """结构化归因结果（由第二次 LLM 从正文抽取）。"""
 
     fail_kind: str = Field(description="version | case | env | unknown | none")
+    root_component: str = Field(
+        default="unknown",
+        description="最可能根因组件，如 comm/rat/bbh/bbl/marp/compare/none/unknown"
+    )
+    root_cause: str = Field(default="unknown", description="一句话根因；证据不足时填 unknown")
     evidence: str = Field(description="从日志摘录的关键证据，原文短摘")
     conclusion: str = Field(description="一句话结论")
     suggestion: str = Field(description="下一步建议")
@@ -111,6 +117,11 @@ class DiagnosisResult:
     def fail_kind(self) -> str:
         """归因类型（version / case / env / unknown / none）。"""
         return str(self.structured.get("fail_kind") or "unknown")
+
+    @property
+    def root_component(self) -> str:
+        """最可能的首个故障组件。"""
+        return str(self.structured.get("root_component") or "unknown")
 
 
 def extract_tool_trace(messages: list) -> list[dict[str, Any]]:
@@ -342,7 +353,8 @@ def run_diagnosis(
 
     message = (
         f"归因结论：{structured.get('conclusion') or ''}；"
-        f"类型={structured.get('fail_kind')}。"
+        f"类型={structured.get('fail_kind')}，"
+        f"根因组件={structured.get('root_component') or 'unknown'}。"
         f"建议：{structured.get('suggestion') or ''}"
     )
     return DiagnosisResult(
@@ -487,8 +499,10 @@ def _extract_structured(
     """
     try:
         # Flow：纯字段抽取，非推理，用快模型
+        # method="function_calling"：OpenRouter 等网关对 json_schema/parse 透传不稳，
+        # 会把 markdown 围栏原样塞进 content 或改写字段名；工具调用协议则各端点一致。
         structured_llm = get_fast_model(temperature=0).with_structured_output(
-            ErrorAnalysisOut, include_raw=True
+            ErrorAnalysisOut, include_raw=True, method="function_calling"
         )
         raw = structured_llm.invoke(
             [
@@ -508,6 +522,8 @@ def _extract_structured(
     except Exception:  # noqa: BLE001
         return {
             "fail_kind": "unknown",
+            "root_component": "unknown",
+            "root_cause": "unknown",
             "evidence": "\n".join(obs_compressed)[:500],
             "conclusion": analysis_text[:200],
             "suggestion": "请人工查看流水线日志",
@@ -524,7 +540,7 @@ def _load_system_prompt() -> str:
         return (
             "你是测试失败归因助手。只用只读工具取证。"
             "禁止 create/start。不得编造未读到的日志。"
-            "最后用中文给出 fail_kind、证据、结论、建议、ruled_out。"
+            "最后用中文给出 fail_kind、root_component、root_cause、证据、结论、建议、ruled_out。"
         )
 
 

@@ -23,6 +23,7 @@ def _case(
     *,
     scenario: str = "case_error",
     expected: str = "case",
+    root: str = "",
     keys: list[str] | None = None,
 ) -> EvalCase:
     return EvalCase(
@@ -35,6 +36,7 @@ def _case(
             "physical_env": "7.223.50.60",
         },
         expected_fail_kind=expected,
+        expected_root_component=root,
         expected_evidence_keys=keys if keys is not None else ["KeyError"],
     )
 
@@ -44,7 +46,7 @@ def _fake_diagnose(**kwargs):
     strategy = kwargs.get("context_strategy")
     if strategy == "managed":
         return DiagnosisResult(
-            structured={"fail_kind": "case"},
+            structured={"fail_kind": "case", "root_component": "rat"},
             analysis_text="结论",
             message="msg",
             strategy="managed",
@@ -58,7 +60,7 @@ def _fake_diagnose(**kwargs):
             trimmed_steps=1,
         )
     return DiagnosisResult(
-        structured={"fail_kind": "case"},
+        structured={"fail_kind": "case", "root_component": "rat"},
         analysis_text="结论",
         message="msg",
         strategy="legacy",
@@ -106,6 +108,7 @@ def test_load_shipped_golden_set_is_valid():
     assert {"case", "version", "env", "none"} <= kinds
     for c in cases:
         assert c.pipeline.get("case_names"), f"{c.case_id} 缺 case_names"
+        assert c.expected_root_component, f"{c.case_id} 缺 expected_root_component"
         assert c.expected_evidence_keys, f"{c.case_id} 缺 expected_evidence_keys"
 
 
@@ -169,7 +172,22 @@ def test_run_suite_records_expected_metrics(tmp_path):
     assert managed["llm_calls"] > legacy["llm_calls"]
     # 期望值只留在 golden 文件里，不复制进结果行
     assert "expected_fail_kind" not in managed
+    assert "expected_root_component" not in managed
     assert "expected_evidence_keys" not in managed
+
+
+def test_run_suite_scores_root_component_without_copying_golden(tmp_path):
+    rows = run_suite(
+        cases=[_case("c1", root="rat")],
+        suite="t",
+        store_path=tmp_path / "root.jsonl",
+        diagnose=_fake_diagnose,
+    )
+    assert all(row["root_component"] == "rat" for row in rows)
+    assert all(row["root_component_correct"] is True for row in rows)
+    assert all(row["diagnosis_correct"] is True for row in rows)
+    summary = summarize(rows)
+    assert summary["managed"]["root_component_accuracy"] == 1.0
 
 
 def test_run_suite_marks_wrong_fail_kind_as_incorrect(tmp_path):

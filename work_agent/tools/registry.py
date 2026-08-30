@@ -51,7 +51,7 @@ def get_case_provider() -> CaseProvider:
     )
 
 
-@lru_cache(maxsize=1)
+@lru_cache(maxsize=32)
 def get_pipeline_tool(scenario: MockScenario = "all_pass") -> PipelineTool:
     """
     按 TOOL_BACKEND 返回流水线工具（lru_cache 复用）。
@@ -75,7 +75,7 @@ def get_pipeline_tool(scenario: MockScenario = "all_pass") -> PipelineTool:
     )
 
 
-@lru_cache(maxsize=8)
+@lru_cache(maxsize=32)
 def get_log_tool(scenario: MockScenario = "case_error") -> LogTool:
     """
     按 TOOL_BACKEND 返回日志工具实例（lru_cache 复用）。

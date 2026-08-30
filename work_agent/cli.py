@@ -525,6 +525,11 @@ def eval_diagnose(
     no_store: bool = typer.Option(
         False, "--no-store", help="不写 workspace/eval_results.jsonl，只打印"
     ),
+    pause: float = typer.Option(
+        0.0,
+        "--pause",
+        help="相邻两次诊断之间的停顿秒数（真 LLM 跑批防限流）；默认 0",
+    ),
 ) -> None:
     """
     在 golden set 上对比 legacy / managed 两种上下文策略（离线，会真调 LLM）。
@@ -533,6 +538,7 @@ def eval_diagnose(
         case: 只跑某条 case_id。
         strategy: 只跑某一种策略。
         no_store: 只打印不落盘。
+        pause: 相邻诊断间停顿秒数。
     """
     from work_agent.eval.runner import (
         DEFAULT_STRATEGIES,
@@ -578,6 +584,7 @@ def eval_diagnose(
             strategies=strategies,  # type: ignore[arg-type]
             store=not no_store,
             on_event=on_event,
+            pause_seconds=pause,
         )
     finally:
         bridge.stop()

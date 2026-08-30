@@ -55,10 +55,15 @@ def test_fast_and_reasoning_default_to_llm_model_when_unset(monkeypatch):
 
 
 def test_get_settings_env_fallback_to_llm_model(monkeypatch):
-    """config.py 层：未设两个新环境变量时，get_settings() 里两者都等于 llm_model。"""
+    """config.py 层：未设两个新环境变量时，get_settings() 里两者都等于 llm_model。
+
+    用「设为空串」而不是 delenv：get_settings() 内部每次都 load_dotenv，
+    删掉的环境变量会被 .env 值重新填回；空串在环境里算存在（dotenv 不覆盖），
+    且 ``os.getenv(...) or llm_model`` 视空串为未配置，正好走回退。
+    """
     get_settings.cache_clear()
-    monkeypatch.delenv("LLM_FAST_MODEL", raising=False)
-    monkeypatch.delenv("LLM_REASONING_MODEL", raising=False)
+    monkeypatch.setenv("LLM_FAST_MODEL", "")
+    monkeypatch.setenv("LLM_REASONING_MODEL", "")
     monkeypatch.setenv("LLM_MODEL", "gemini-test")
     try:
         settings = get_settings()
@@ -79,5 +84,3 @@ def test_get_settings_reads_fast_and_reasoning_env_vars(monkeypatch):
         assert settings.llm_reasoning_model == "gemini-test-reasoning"
     finally:
         get_settings.cache_clear()
-        monkeypatch.delenv("LLM_FAST_MODEL", raising=False)
-        monkeypatch.delenv("LLM_REASONING_MODEL", raising=False)

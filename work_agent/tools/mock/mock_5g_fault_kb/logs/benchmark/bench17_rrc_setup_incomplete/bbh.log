@@ -1,0 +1,1104 @@
+2026-08-09T10:00:00.000000 [BBH    ] [INFO ] [thread=main] pipeline_id={{PIPELINE_ID}} process_boot component=bbh build=mock-27B
+2026-08-09T10:00:00.005000 [BBH    ] [INFO ] [thread=main] pipeline_id={{PIPELINE_ID}} scenario=bench17_rrc_setup_incomplete synthetic=true
+2026-08-09T10:00:00.010000 [BBH    ] [DEBUG] [thread=main] pipeline_id={{PIPELINE_ID}} log_level=DEBUG structured_fields=enabled
+2026-08-09T10:00:00.100000 [BBH    ] [INFO ] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=90 source=PTP
+2026-08-09T10:00:00.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=100
+2026-08-09T10:00:00.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=7 capacity=4096 overrun=0
+2026-08-09T10:00:00.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10003 rx_late=0 rx_drop=0
+2026-08-09T10:00:00.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=21 source=PTP
+2026-08-09T10:00:00.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=100
+2026-08-09T10:00:00.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=35 capacity=4096 overrun=0
+2026-08-09T10:00:00.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10007 rx_late=0 rx_drop=0
+2026-08-09T10:00:00.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=49 source=PTP
+2026-08-09T10:00:01.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=100
+2026-08-09T10:00:01.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=63 capacity=4096 overrun=0
+2026-08-09T10:00:01.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10011 rx_late=0 rx_drop=0
+2026-08-09T10:00:01.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=77 source=PTP
+2026-08-09T10:00:01.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=100
+2026-08-09T10:00:01.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=91 capacity=4096 overrun=0
+2026-08-09T10:00:01.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10015 rx_late=0 rx_drop=0
+2026-08-09T10:00:01.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=8 source=PTP
+2026-08-09T10:00:01.800000 [BBH    ] [INFO ] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=100
+2026-08-09T10:00:01.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=22 capacity=4096 overrun=0
+2026-08-09T10:00:02.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10019 rx_late=0 rx_drop=0
+2026-08-09T10:00:02.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=36 source=PTP
+2026-08-09T10:00:02.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=100
+2026-08-09T10:00:02.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=50 capacity=4096 overrun=0
+2026-08-09T10:00:02.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10023 rx_late=0 rx_drop=0
+2026-08-09T10:00:02.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=64 source=PTP
+2026-08-09T10:00:02.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=101
+2026-08-09T10:00:02.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=78 capacity=4096 overrun=0
+2026-08-09T10:00:02.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10027 rx_late=0 rx_drop=0
+2026-08-09T10:00:02.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=92 source=PTP
+2026-08-09T10:00:03.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=101
+2026-08-09T10:00:03.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=9 capacity=4096 overrun=0
+2026-08-09T10:00:03.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10031 rx_late=0 rx_drop=0
+2026-08-09T10:00:03.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=23 source=PTP
+2026-08-09T10:00:03.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=101
+2026-08-09T10:00:03.500000 [BBH    ] [INFO ] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=37 capacity=4096 overrun=0
+2026-08-09T10:00:03.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10035 rx_late=0 rx_drop=0
+2026-08-09T10:00:03.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=51 source=PTP
+2026-08-09T10:00:03.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=101
+2026-08-09T10:00:03.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=65 capacity=4096 overrun=0
+2026-08-09T10:00:04.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10039 rx_late=0 rx_drop=0
+2026-08-09T10:00:04.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=79 source=PTP
+2026-08-09T10:00:04.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=101
+2026-08-09T10:00:04.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=93 capacity=4096 overrun=0
+2026-08-09T10:00:04.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10043 rx_late=0 rx_drop=0
+2026-08-09T10:00:04.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=10 source=PTP
+2026-08-09T10:00:04.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=101
+2026-08-09T10:00:04.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=24 capacity=4096 overrun=0
+2026-08-09T10:00:04.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10047 rx_late=0 rx_drop=0
+2026-08-09T10:00:04.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=38 source=PTP
+2026-08-09T10:00:05.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=101
+2026-08-09T10:00:05.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=52 capacity=4096 overrun=0
+2026-08-09T10:00:05.200000 [BBH    ] [INFO ] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10051 rx_late=0 rx_drop=0
+2026-08-09T10:00:05.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=66 source=PTP
+2026-08-09T10:00:05.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=102
+2026-08-09T10:00:05.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=80 capacity=4096 overrun=0
+2026-08-09T10:00:05.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10055 rx_late=0 rx_drop=0
+2026-08-09T10:00:05.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=94 source=PTP
+2026-08-09T10:00:05.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=102
+2026-08-09T10:00:05.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=11 capacity=4096 overrun=0
+2026-08-09T10:00:06.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10059 rx_late=0 rx_drop=0
+2026-08-09T10:00:06.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=25 source=PTP
+2026-08-09T10:00:06.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=102
+2026-08-09T10:00:06.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=39 capacity=4096 overrun=0
+2026-08-09T10:00:06.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10063 rx_late=0 rx_drop=0
+2026-08-09T10:00:06.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=53 source=PTP
+2026-08-09T10:00:06.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=102
+2026-08-09T10:00:06.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=67 capacity=4096 overrun=0
+2026-08-09T10:00:06.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10067 rx_late=0 rx_drop=0
+2026-08-09T10:00:06.900000 [BBH    ] [INFO ] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=81 source=PTP
+2026-08-09T10:00:07.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=102
+2026-08-09T10:00:07.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=95 capacity=4096 overrun=0
+2026-08-09T10:00:07.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10071 rx_late=0 rx_drop=0
+2026-08-09T10:00:07.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=12 source=PTP
+2026-08-09T10:00:07.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=102
+2026-08-09T10:00:07.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=26 capacity=4096 overrun=0
+2026-08-09T10:00:07.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10075 rx_late=0 rx_drop=0
+2026-08-09T10:00:07.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=40 source=PTP
+2026-08-09T10:00:07.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=103
+2026-08-09T10:00:07.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=54 capacity=4096 overrun=0
+2026-08-09T10:00:08.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10079 rx_late=0 rx_drop=0
+2026-08-09T10:00:08.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=68 source=PTP
+2026-08-09T10:00:08.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=103
+2026-08-09T10:00:08.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=82 capacity=4096 overrun=0
+2026-08-09T10:00:08.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10083 rx_late=0 rx_drop=0
+2026-08-09T10:00:08.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=96 source=PTP
+2026-08-09T10:00:08.600000 [BBH    ] [INFO ] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=103
+2026-08-09T10:00:08.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=13 capacity=4096 overrun=0
+2026-08-09T10:00:08.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10087 rx_late=0 rx_drop=0
+2026-08-09T10:00:08.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=27 source=PTP
+2026-08-09T10:00:09.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=103
+2026-08-09T10:00:09.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=41 capacity=4096 overrun=0
+2026-08-09T10:00:09.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10091 rx_late=0 rx_drop=0
+2026-08-09T10:00:09.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=55 source=PTP
+2026-08-09T10:00:09.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=103
+2026-08-09T10:00:09.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=69 capacity=4096 overrun=0
+2026-08-09T10:00:09.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10095 rx_late=0 rx_drop=0
+2026-08-09T10:00:09.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=83 source=PTP
+2026-08-09T10:00:09.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=103
+2026-08-09T10:00:09.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=0 capacity=4096 overrun=0
+2026-08-09T10:00:10.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10099 rx_late=0 rx_drop=0
+2026-08-09T10:00:10.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=14 source=PTP
+2026-08-09T10:00:10.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=104
+2026-08-09T10:00:10.300000 [BBH    ] [INFO ] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=28 capacity=4096 overrun=0
+2026-08-09T10:00:10.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10103 rx_late=0 rx_drop=0
+2026-08-09T10:00:10.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=42 source=PTP
+2026-08-09T10:00:10.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=104
+2026-08-09T10:00:10.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=56 capacity=4096 overrun=0
+2026-08-09T10:00:10.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10107 rx_late=0 rx_drop=0
+2026-08-09T10:00:10.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=70 source=PTP
+2026-08-09T10:00:11.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=104
+2026-08-09T10:00:11.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=84 capacity=4096 overrun=0
+2026-08-09T10:00:11.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10111 rx_late=0 rx_drop=0
+2026-08-09T10:00:11.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=1 source=PTP
+2026-08-09T10:00:11.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=104
+2026-08-09T10:00:11.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=15 capacity=4096 overrun=0
+2026-08-09T10:00:11.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10115 rx_late=0 rx_drop=0
+2026-08-09T10:00:11.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=29 source=PTP
+2026-08-09T10:00:11.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=104
+2026-08-09T10:00:11.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=43 capacity=4096 overrun=0
+2026-08-09T10:00:12.000000 [BBH    ] [INFO ] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10119 rx_late=0 rx_drop=0
+2026-08-09T10:00:12.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=57 source=PTP
+2026-08-09T10:00:12.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=104
+2026-08-09T10:00:12.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=71 capacity=4096 overrun=0
+2026-08-09T10:00:12.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10123 rx_late=0 rx_drop=0
+2026-08-09T10:00:12.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=85 source=PTP
+2026-08-09T10:00:12.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=105
+2026-08-09T10:00:12.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=2 capacity=4096 overrun=0
+2026-08-09T10:00:12.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10127 rx_late=0 rx_drop=0
+2026-08-09T10:00:12.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=16 source=PTP
+2026-08-09T10:00:13.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=105
+2026-08-09T10:00:13.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=30 capacity=4096 overrun=0
+2026-08-09T10:00:13.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10131 rx_late=0 rx_drop=0
+2026-08-09T10:00:13.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=44 source=PTP
+2026-08-09T10:00:13.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=105
+2026-08-09T10:00:13.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=58 capacity=4096 overrun=0
+2026-08-09T10:00:13.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10135 rx_late=0 rx_drop=0
+2026-08-09T10:00:13.700000 [BBH    ] [INFO ] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=72 source=PTP
+2026-08-09T10:00:13.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=105
+2026-08-09T10:00:13.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=86 capacity=4096 overrun=0
+2026-08-09T10:00:14.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10139 rx_late=0 rx_drop=0
+2026-08-09T10:00:14.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=3 source=PTP
+2026-08-09T10:00:14.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=105
+2026-08-09T10:00:14.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=17 capacity=4096 overrun=0
+2026-08-09T10:00:14.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10143 rx_late=0 rx_drop=0
+2026-08-09T10:00:14.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=31 source=PTP
+2026-08-09T10:00:14.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=105
+2026-08-09T10:00:14.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=45 capacity=4096 overrun=0
+2026-08-09T10:00:14.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10147 rx_late=0 rx_drop=0
+2026-08-09T10:00:14.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=59 source=PTP
+2026-08-09T10:00:15.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=105
+2026-08-09T10:00:15.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=73 capacity=4096 overrun=0
+2026-08-09T10:00:15.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10151 rx_late=0 rx_drop=0
+2026-08-09T10:00:15.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=87 source=PTP
+2026-08-09T10:00:15.400000 [BBH    ] [INFO ] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=106
+2026-08-09T10:00:15.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=4 capacity=4096 overrun=0
+2026-08-09T10:00:15.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10155 rx_late=0 rx_drop=0
+2026-08-09T10:00:15.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=18 source=PTP
+2026-08-09T10:00:15.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=106
+2026-08-09T10:00:15.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=32 capacity=4096 overrun=0
+2026-08-09T10:00:16.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10159 rx_late=0 rx_drop=0
+2026-08-09T10:00:16.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=46 source=PTP
+2026-08-09T10:00:16.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=106
+2026-08-09T10:00:16.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=60 capacity=4096 overrun=0
+2026-08-09T10:00:16.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10163 rx_late=0 rx_drop=0
+2026-08-09T10:00:16.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=74 source=PTP
+2026-08-09T10:00:16.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=106
+2026-08-09T10:00:16.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=88 capacity=4096 overrun=0
+2026-08-09T10:00:16.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10167 rx_late=0 rx_drop=0
+2026-08-09T10:00:16.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=5 source=PTP
+2026-08-09T10:00:17.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=106
+2026-08-09T10:00:17.100000 [BBH    ] [INFO ] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=19 capacity=4096 overrun=0
+2026-08-09T10:00:17.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10171 rx_late=0 rx_drop=0
+2026-08-09T10:00:17.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=33 source=PTP
+2026-08-09T10:00:17.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=106
+2026-08-09T10:00:17.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=47 capacity=4096 overrun=0
+2026-08-09T10:00:17.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10175 rx_late=0 rx_drop=0
+2026-08-09T10:00:17.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=61 source=PTP
+2026-08-09T10:00:17.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=107
+2026-08-09T10:00:17.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=75 capacity=4096 overrun=0
+2026-08-09T10:00:18.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10179 rx_late=0 rx_drop=0
+2026-08-09T10:00:18.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=89 source=PTP
+2026-08-09T10:00:18.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=107
+2026-08-09T10:00:18.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=6 capacity=4096 overrun=0
+2026-08-09T10:00:18.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10183 rx_late=0 rx_drop=0
+2026-08-09T10:00:18.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=20 source=PTP
+2026-08-09T10:00:18.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=107
+2026-08-09T10:00:18.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=34 capacity=4096 overrun=0
+2026-08-09T10:00:18.800000 [BBH    ] [INFO ] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10187 rx_late=0 rx_drop=0
+2026-08-09T10:00:18.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=48 source=PTP
+2026-08-09T10:00:19.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=107
+2026-08-09T10:00:19.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=62 capacity=4096 overrun=0
+2026-08-09T10:00:19.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10191 rx_late=0 rx_drop=0
+2026-08-09T10:00:19.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=76 source=PTP
+2026-08-09T10:00:19.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=107
+2026-08-09T10:00:19.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=90 capacity=4096 overrun=0
+2026-08-09T10:00:19.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10195 rx_late=0 rx_drop=0
+2026-08-09T10:00:19.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=7 source=PTP
+2026-08-09T10:00:19.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=107
+2026-08-09T10:00:19.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=21 capacity=4096 overrun=0
+2026-08-09T10:00:20.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10199 rx_late=0 rx_drop=0
+2026-08-09T10:00:20.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=35 source=PTP
+2026-08-09T10:00:20.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=108
+2026-08-09T10:00:20.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=49 capacity=4096 overrun=0
+2026-08-09T10:00:20.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10203 rx_late=0 rx_drop=0
+2026-08-09T10:00:20.500000 [BBH    ] [INFO ] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=63 source=PTP
+2026-08-09T10:00:20.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=108
+2026-08-09T10:00:20.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=77 capacity=4096 overrun=0
+2026-08-09T10:00:20.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10207 rx_late=0 rx_drop=0
+2026-08-09T10:00:20.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=91 source=PTP
+2026-08-09T10:00:21.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=108
+2026-08-09T10:00:21.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=8 capacity=4096 overrun=0
+2026-08-09T10:00:21.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10211 rx_late=0 rx_drop=0
+2026-08-09T10:00:21.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=22 source=PTP
+2026-08-09T10:00:21.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=108
+2026-08-09T10:00:21.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=36 capacity=4096 overrun=0
+2026-08-09T10:00:21.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10215 rx_late=0 rx_drop=0
+2026-08-09T10:00:21.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=50 source=PTP
+2026-08-09T10:00:21.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=108
+2026-08-09T10:00:21.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=64 capacity=4096 overrun=0
+2026-08-09T10:00:22.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10219 rx_late=0 rx_drop=0
+2026-08-09T10:00:22.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=78 source=PTP
+2026-08-09T10:00:22.200000 [BBH    ] [INFO ] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=108
+2026-08-09T10:00:22.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=92 capacity=4096 overrun=0
+2026-08-09T10:00:22.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10223 rx_late=0 rx_drop=0
+2026-08-09T10:00:22.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=9 source=PTP
+2026-08-09T10:00:22.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=109
+2026-08-09T10:00:22.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=23 capacity=4096 overrun=0
+2026-08-09T10:00:22.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10227 rx_late=0 rx_drop=0
+2026-08-09T10:00:22.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=37 source=PTP
+2026-08-09T10:00:23.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=109
+2026-08-09T10:00:23.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=51 capacity=4096 overrun=0
+2026-08-09T10:00:23.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10231 rx_late=0 rx_drop=0
+2026-08-09T10:00:23.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=65 source=PTP
+2026-08-09T10:00:23.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=109
+2026-08-09T10:00:23.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=79 capacity=4096 overrun=0
+2026-08-09T10:00:23.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10235 rx_late=0 rx_drop=0
+2026-08-09T10:00:23.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=93 source=PTP
+2026-08-09T10:00:23.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=109
+2026-08-09T10:00:23.900000 [BBH    ] [INFO ] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=10 capacity=4096 overrun=0
+2026-08-09T10:00:24.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10239 rx_late=0 rx_drop=0
+2026-08-09T10:00:24.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=24 source=PTP
+2026-08-09T10:00:24.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=109
+2026-08-09T10:00:24.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=38 capacity=4096 overrun=0
+2026-08-09T10:00:24.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10243 rx_late=0 rx_drop=0
+2026-08-09T10:00:24.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=52 source=PTP
+2026-08-09T10:00:24.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=109
+2026-08-09T10:00:24.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=66 capacity=4096 overrun=0
+2026-08-09T10:00:24.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10247 rx_late=0 rx_drop=0
+2026-08-09T10:00:24.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=80 source=PTP
+2026-08-09T10:00:25.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=109
+2026-08-09T10:00:25.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=94 capacity=4096 overrun=0
+2026-08-09T10:00:25.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10251 rx_late=0 rx_drop=0
+2026-08-09T10:00:25.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=11 source=PTP
+2026-08-09T10:00:25.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=110
+2026-08-09T10:00:25.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=25 capacity=4096 overrun=0
+2026-08-09T10:00:25.600000 [BBH    ] [INFO ] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10255 rx_late=0 rx_drop=0
+2026-08-09T10:00:25.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=39 source=PTP
+2026-08-09T10:00:25.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=110
+2026-08-09T10:00:25.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=53 capacity=4096 overrun=0
+2026-08-09T10:00:26.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10259 rx_late=0 rx_drop=0
+2026-08-09T10:00:26.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=67 source=PTP
+2026-08-09T10:00:26.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=110
+2026-08-09T10:00:26.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=81 capacity=4096 overrun=0
+2026-08-09T10:00:26.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10263 rx_late=0 rx_drop=0
+2026-08-09T10:00:26.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=95 source=PTP
+2026-08-09T10:00:26.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=110
+2026-08-09T10:00:26.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=12 capacity=4096 overrun=0
+2026-08-09T10:00:26.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10267 rx_late=0 rx_drop=0
+2026-08-09T10:00:26.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=26 source=PTP
+2026-08-09T10:00:27.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=110
+2026-08-09T10:00:27.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=40 capacity=4096 overrun=0
+2026-08-09T10:00:27.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10271 rx_late=0 rx_drop=0
+2026-08-09T10:00:27.300000 [BBH    ] [INFO ] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=54 source=PTP
+2026-08-09T10:00:27.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=110
+2026-08-09T10:00:27.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=68 capacity=4096 overrun=0
+2026-08-09T10:00:27.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10275 rx_late=0 rx_drop=0
+2026-08-09T10:00:27.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=82 source=PTP
+2026-08-09T10:00:27.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=111
+2026-08-09T10:00:27.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=96 capacity=4096 overrun=0
+2026-08-09T10:00:28.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10279 rx_late=0 rx_drop=0
+2026-08-09T10:00:28.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=13 source=PTP
+2026-08-09T10:00:28.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=111
+2026-08-09T10:00:28.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=27 capacity=4096 overrun=0
+2026-08-09T10:00:28.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10283 rx_late=0 rx_drop=0
+2026-08-09T10:00:28.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=41 source=PTP
+2026-08-09T10:00:28.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=111
+2026-08-09T10:00:28.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=55 capacity=4096 overrun=0
+2026-08-09T10:00:28.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10287 rx_late=0 rx_drop=0
+2026-08-09T10:00:28.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=69 source=PTP
+2026-08-09T10:00:29.000000 [BBH    ] [INFO ] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=111
+2026-08-09T10:00:29.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=83 capacity=4096 overrun=0
+2026-08-09T10:00:29.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10291 rx_late=0 rx_drop=0
+2026-08-09T10:00:29.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=0 source=PTP
+2026-08-09T10:00:29.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=111
+2026-08-09T10:00:29.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=14 capacity=4096 overrun=0
+2026-08-09T10:00:29.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10295 rx_late=0 rx_drop=0
+2026-08-09T10:00:29.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=28 source=PTP
+2026-08-09T10:00:29.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=111
+2026-08-09T10:00:29.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=42 capacity=4096 overrun=0
+2026-08-09T10:00:30.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10299 rx_late=0 rx_drop=0
+2026-08-09T10:00:30.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=56 source=PTP
+2026-08-09T10:00:30.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=112
+2026-08-09T10:00:30.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=70 capacity=4096 overrun=0
+2026-08-09T10:00:30.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10303 rx_late=0 rx_drop=0
+2026-08-09T10:00:30.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=84 source=PTP
+2026-08-09T10:00:30.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=112
+2026-08-09T10:00:30.700000 [BBH    ] [INFO ] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=1 capacity=4096 overrun=0
+2026-08-09T10:00:30.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10307 rx_late=0 rx_drop=0
+2026-08-09T10:00:30.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=15 source=PTP
+2026-08-09T10:00:31.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=112
+2026-08-09T10:00:31.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=29 capacity=4096 overrun=0
+2026-08-09T10:00:31.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10311 rx_late=0 rx_drop=0
+2026-08-09T10:00:31.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=43 source=PTP
+2026-08-09T10:00:31.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=112
+2026-08-09T10:00:31.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=57 capacity=4096 overrun=0
+2026-08-09T10:00:31.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10315 rx_late=0 rx_drop=0
+2026-08-09T10:00:31.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=71 source=PTP
+2026-08-09T10:00:31.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=112
+2026-08-09T10:00:31.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=85 capacity=4096 overrun=0
+2026-08-09T10:00:32.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10319 rx_late=0 rx_drop=0
+2026-08-09T10:00:32.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=2 source=PTP
+2026-08-09T10:00:32.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=112
+2026-08-09T10:00:32.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=16 capacity=4096 overrun=0
+2026-08-09T10:00:32.400000 [BBH    ] [INFO ] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10323 rx_late=0 rx_drop=0
+2026-08-09T10:00:32.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=30 source=PTP
+2026-08-09T10:00:32.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=113
+2026-08-09T10:00:32.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=44 capacity=4096 overrun=0
+2026-08-09T10:00:32.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10327 rx_late=0 rx_drop=0
+2026-08-09T10:00:32.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=58 source=PTP
+2026-08-09T10:00:33.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=113
+2026-08-09T10:00:33.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=72 capacity=4096 overrun=0
+2026-08-09T10:00:33.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10331 rx_late=0 rx_drop=0
+2026-08-09T10:00:33.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=86 source=PTP
+2026-08-09T10:00:33.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=113
+2026-08-09T10:00:33.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=3 capacity=4096 overrun=0
+2026-08-09T10:00:33.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10335 rx_late=0 rx_drop=0
+2026-08-09T10:00:33.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=17 source=PTP
+2026-08-09T10:00:33.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=113
+2026-08-09T10:00:33.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=31 capacity=4096 overrun=0
+2026-08-09T10:00:34.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10339 rx_late=0 rx_drop=0
+2026-08-09T10:00:34.100000 [BBH    ] [INFO ] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=45 source=PTP
+2026-08-09T10:00:34.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=113
+2026-08-09T10:00:34.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=59 capacity=4096 overrun=0
+2026-08-09T10:00:34.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10343 rx_late=0 rx_drop=0
+2026-08-09T10:00:34.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=73 source=PTP
+2026-08-09T10:00:34.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=113
+2026-08-09T10:00:34.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=87 capacity=4096 overrun=0
+2026-08-09T10:00:34.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10347 rx_late=0 rx_drop=0
+2026-08-09T10:00:34.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=4 source=PTP
+2026-08-09T10:00:35.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=113
+2026-08-09T10:00:35.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=18 capacity=4096 overrun=0
+2026-08-09T10:00:35.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10351 rx_late=0 rx_drop=0
+2026-08-09T10:00:35.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=32 source=PTP
+2026-08-09T10:00:35.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=114
+2026-08-09T10:00:35.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=46 capacity=4096 overrun=0
+2026-08-09T10:00:35.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10355 rx_late=0 rx_drop=0
+2026-08-09T10:00:35.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=60 source=PTP
+2026-08-09T10:00:35.800000 [BBH    ] [INFO ] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=114
+2026-08-09T10:00:35.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=74 capacity=4096 overrun=0
+2026-08-09T10:00:36.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10359 rx_late=0 rx_drop=0
+2026-08-09T10:00:36.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=88 source=PTP
+2026-08-09T10:00:36.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=114
+2026-08-09T10:00:36.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=5 capacity=4096 overrun=0
+2026-08-09T10:00:36.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10363 rx_late=0 rx_drop=0
+2026-08-09T10:00:36.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=19 source=PTP
+2026-08-09T10:00:36.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=114
+2026-08-09T10:00:36.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=33 capacity=4096 overrun=0
+2026-08-09T10:00:36.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10367 rx_late=0 rx_drop=0
+2026-08-09T10:00:36.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=47 source=PTP
+2026-08-09T10:00:37.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=114
+2026-08-09T10:00:37.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=61 capacity=4096 overrun=0
+2026-08-09T10:00:37.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10371 rx_late=0 rx_drop=0
+2026-08-09T10:00:37.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=75 source=PTP
+2026-08-09T10:00:37.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=114
+2026-08-09T10:00:37.500000 [BBH    ] [INFO ] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=89 capacity=4096 overrun=0
+2026-08-09T10:00:37.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10375 rx_late=0 rx_drop=0
+2026-08-09T10:00:37.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=6 source=PTP
+2026-08-09T10:00:37.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=115
+2026-08-09T10:00:37.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=20 capacity=4096 overrun=0
+2026-08-09T10:00:38.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10379 rx_late=0 rx_drop=0
+2026-08-09T10:00:38.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=34 source=PTP
+2026-08-09T10:00:38.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=115
+2026-08-09T10:00:38.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=48 capacity=4096 overrun=0
+2026-08-09T10:00:38.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10383 rx_late=0 rx_drop=0
+2026-08-09T10:00:38.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=62 source=PTP
+2026-08-09T10:00:38.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=115
+2026-08-09T10:00:38.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=76 capacity=4096 overrun=0
+2026-08-09T10:00:38.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10387 rx_late=0 rx_drop=0
+2026-08-09T10:00:38.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=90 source=PTP
+2026-08-09T10:00:39.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=115
+2026-08-09T10:00:39.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=7 capacity=4096 overrun=0
+2026-08-09T10:00:39.200000 [BBH    ] [INFO ] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10391 rx_late=0 rx_drop=0
+2026-08-09T10:00:39.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=21 source=PTP
+2026-08-09T10:00:39.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=115
+2026-08-09T10:00:39.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=35 capacity=4096 overrun=0
+2026-08-09T10:00:39.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10395 rx_late=0 rx_drop=0
+2026-08-09T10:00:39.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=49 source=PTP
+2026-08-09T10:00:39.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=115
+2026-08-09T10:00:39.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=63 capacity=4096 overrun=0
+2026-08-09T10:00:40.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10399 rx_late=0 rx_drop=0
+2026-08-09T10:00:40.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=77 source=PTP
+2026-08-09T10:00:40.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=116
+2026-08-09T10:00:40.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=91 capacity=4096 overrun=0
+2026-08-09T10:00:40.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10403 rx_late=0 rx_drop=0
+2026-08-09T10:00:40.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=8 source=PTP
+2026-08-09T10:00:40.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=116
+2026-08-09T10:00:40.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=22 capacity=4096 overrun=0
+2026-08-09T10:00:40.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10407 rx_late=0 rx_drop=0
+2026-08-09T10:00:40.900000 [BBH    ] [INFO ] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=36 source=PTP
+2026-08-09T10:00:41.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=116
+2026-08-09T10:00:41.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=50 capacity=4096 overrun=0
+2026-08-09T10:00:41.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10411 rx_late=0 rx_drop=0
+2026-08-09T10:00:41.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=64 source=PTP
+2026-08-09T10:00:41.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=116
+2026-08-09T10:00:41.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=78 capacity=4096 overrun=0
+2026-08-09T10:00:41.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10415 rx_late=0 rx_drop=0
+2026-08-09T10:00:41.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=92 source=PTP
+2026-08-09T10:00:41.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=116
+2026-08-09T10:00:41.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=9 capacity=4096 overrun=0
+2026-08-09T10:00:42.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10419 rx_late=0 rx_drop=0
+2026-08-09T10:00:42.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=23 source=PTP
+2026-08-09T10:00:42.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=116
+2026-08-09T10:00:42.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=37 capacity=4096 overrun=0
+2026-08-09T10:00:42.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10423 rx_late=0 rx_drop=0
+2026-08-09T10:00:42.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=51 source=PTP
+2026-08-09T10:00:42.600000 [BBH    ] [INFO ] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=117
+2026-08-09T10:00:42.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=65 capacity=4096 overrun=0
+2026-08-09T10:00:42.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10427 rx_late=0 rx_drop=0
+2026-08-09T10:00:42.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=79 source=PTP
+2026-08-09T10:00:43.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=117
+2026-08-09T10:00:43.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=93 capacity=4096 overrun=0
+2026-08-09T10:00:43.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10431 rx_late=0 rx_drop=0
+2026-08-09T10:00:43.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=10 source=PTP
+2026-08-09T10:00:43.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=117
+2026-08-09T10:00:43.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=24 capacity=4096 overrun=0
+2026-08-09T10:00:43.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10435 rx_late=0 rx_drop=0
+2026-08-09T10:00:43.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=38 source=PTP
+2026-08-09T10:00:43.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=117
+2026-08-09T10:00:43.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=52 capacity=4096 overrun=0
+2026-08-09T10:00:44.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10439 rx_late=0 rx_drop=0
+2026-08-09T10:00:44.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=66 source=PTP
+2026-08-09T10:00:44.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=117
+2026-08-09T10:00:44.300000 [BBH    ] [INFO ] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=80 capacity=4096 overrun=0
+2026-08-09T10:00:44.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10443 rx_late=0 rx_drop=0
+2026-08-09T10:00:44.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=94 source=PTP
+2026-08-09T10:00:44.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=117
+2026-08-09T10:00:44.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=11 capacity=4096 overrun=0
+2026-08-09T10:00:44.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10447 rx_late=0 rx_drop=0
+2026-08-09T10:00:44.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=25 source=PTP
+2026-08-09T10:00:45.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=117
+2026-08-09T10:00:45.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=39 capacity=4096 overrun=0
+2026-08-09T10:00:45.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10451 rx_late=0 rx_drop=0
+2026-08-09T10:00:45.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=53 source=PTP
+2026-08-09T10:00:45.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=118
+2026-08-09T10:00:45.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=67 capacity=4096 overrun=0
+2026-08-09T10:00:45.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10455 rx_late=0 rx_drop=0
+2026-08-09T10:00:45.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=81 source=PTP
+2026-08-09T10:00:45.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=118
+2026-08-09T10:00:45.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=95 capacity=4096 overrun=0
+2026-08-09T10:00:46.000000 [BBH    ] [INFO ] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10459 rx_late=0 rx_drop=0
+2026-08-09T10:00:46.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=12 source=PTP
+2026-08-09T10:00:46.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=118
+2026-08-09T10:00:46.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=26 capacity=4096 overrun=0
+2026-08-09T10:00:46.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10463 rx_late=0 rx_drop=0
+2026-08-09T10:00:46.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=40 source=PTP
+2026-08-09T10:00:46.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=118
+2026-08-09T10:00:46.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=54 capacity=4096 overrun=0
+2026-08-09T10:00:46.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10467 rx_late=0 rx_drop=0
+2026-08-09T10:00:46.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=68 source=PTP
+2026-08-09T10:00:47.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=118
+2026-08-09T10:00:47.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=82 capacity=4096 overrun=0
+2026-08-09T10:00:47.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10471 rx_late=0 rx_drop=0
+2026-08-09T10:00:47.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=96 source=PTP
+2026-08-09T10:00:47.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=118
+2026-08-09T10:00:47.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=13 capacity=4096 overrun=0
+2026-08-09T10:00:47.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10475 rx_late=0 rx_drop=0
+2026-08-09T10:00:47.700000 [BBH    ] [INFO ] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=27 source=PTP
+2026-08-09T10:00:47.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=119
+2026-08-09T10:00:47.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=41 capacity=4096 overrun=0
+2026-08-09T10:00:48.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10479 rx_late=0 rx_drop=0
+2026-08-09T10:00:48.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=55 source=PTP
+2026-08-09T10:00:48.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=119
+2026-08-09T10:00:48.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=69 capacity=4096 overrun=0
+2026-08-09T10:00:48.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10483 rx_late=0 rx_drop=0
+2026-08-09T10:00:48.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=83 source=PTP
+2026-08-09T10:00:48.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=119
+2026-08-09T10:00:48.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=0 capacity=4096 overrun=0
+2026-08-09T10:00:48.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10487 rx_late=0 rx_drop=0
+2026-08-09T10:00:48.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=14 source=PTP
+2026-08-09T10:00:49.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=119
+2026-08-09T10:00:49.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=28 capacity=4096 overrun=0
+2026-08-09T10:00:49.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10491 rx_late=0 rx_drop=0
+2026-08-09T10:00:49.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=42 source=PTP
+2026-08-09T10:00:49.400000 [BBH    ] [INFO ] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=119
+2026-08-09T10:00:49.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=56 capacity=4096 overrun=0
+2026-08-09T10:00:49.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10495 rx_late=0 rx_drop=0
+2026-08-09T10:00:49.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=70 source=PTP
+2026-08-09T10:00:49.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=119
+2026-08-09T10:00:49.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=84 capacity=4096 overrun=0
+2026-08-09T10:00:50.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10499 rx_late=0 rx_drop=0
+2026-08-09T10:00:50.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=1 source=PTP
+2026-08-09T10:00:50.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=120
+2026-08-09T10:00:50.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=15 capacity=4096 overrun=0
+2026-08-09T10:00:50.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10503 rx_late=0 rx_drop=0
+2026-08-09T10:00:50.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=29 source=PTP
+2026-08-09T10:00:50.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=120
+2026-08-09T10:00:50.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=43 capacity=4096 overrun=0
+2026-08-09T10:00:50.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10507 rx_late=0 rx_drop=0
+2026-08-09T10:00:50.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=57 source=PTP
+2026-08-09T10:00:51.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=120
+2026-08-09T10:00:51.100000 [BBH    ] [INFO ] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=71 capacity=4096 overrun=0
+2026-08-09T10:00:51.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10511 rx_late=0 rx_drop=0
+2026-08-09T10:00:51.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=85 source=PTP
+2026-08-09T10:00:51.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=120
+2026-08-09T10:00:51.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=2 capacity=4096 overrun=0
+2026-08-09T10:00:51.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10515 rx_late=0 rx_drop=0
+2026-08-09T10:00:51.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=16 source=PTP
+2026-08-09T10:00:51.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=120
+2026-08-09T10:00:51.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=30 capacity=4096 overrun=0
+2026-08-09T10:00:52.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10519 rx_late=0 rx_drop=0
+2026-08-09T10:00:52.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=44 source=PTP
+2026-08-09T10:00:52.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=120
+2026-08-09T10:00:52.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=58 capacity=4096 overrun=0
+2026-08-09T10:00:52.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10523 rx_late=0 rx_drop=0
+2026-08-09T10:00:52.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=72 source=PTP
+2026-08-09T10:00:52.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=121
+2026-08-09T10:00:52.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=86 capacity=4096 overrun=0
+2026-08-09T10:00:52.800000 [BBH    ] [INFO ] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10527 rx_late=0 rx_drop=0
+2026-08-09T10:00:52.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=3 source=PTP
+2026-08-09T10:00:53.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=121
+2026-08-09T10:00:53.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=17 capacity=4096 overrun=0
+2026-08-09T10:00:53.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10531 rx_late=0 rx_drop=0
+2026-08-09T10:00:53.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=31 source=PTP
+2026-08-09T10:00:53.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=121
+2026-08-09T10:00:53.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=45 capacity=4096 overrun=0
+2026-08-09T10:00:53.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10535 rx_late=0 rx_drop=0
+2026-08-09T10:00:53.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=59 source=PTP
+2026-08-09T10:00:53.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=121
+2026-08-09T10:00:53.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=73 capacity=4096 overrun=0
+2026-08-09T10:00:54.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10539 rx_late=0 rx_drop=0
+2026-08-09T10:00:54.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=87 source=PTP
+2026-08-09T10:00:54.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=121
+2026-08-09T10:00:54.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=4 capacity=4096 overrun=0
+2026-08-09T10:00:54.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10543 rx_late=0 rx_drop=0
+2026-08-09T10:00:54.500000 [BBH    ] [INFO ] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=18 source=PTP
+2026-08-09T10:00:54.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=121
+2026-08-09T10:00:54.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=32 capacity=4096 overrun=0
+2026-08-09T10:00:54.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10547 rx_late=0 rx_drop=0
+2026-08-09T10:00:54.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=46 source=PTP
+2026-08-09T10:00:55.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=121
+2026-08-09T10:00:55.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=60 capacity=4096 overrun=0
+2026-08-09T10:00:55.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10551 rx_late=0 rx_drop=0
+2026-08-09T10:00:55.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=74 source=PTP
+2026-08-09T10:00:55.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=122
+2026-08-09T10:00:55.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=88 capacity=4096 overrun=0
+2026-08-09T10:00:55.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10555 rx_late=0 rx_drop=0
+2026-08-09T10:00:55.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=5 source=PTP
+2026-08-09T10:00:55.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=122
+2026-08-09T10:00:55.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=19 capacity=4096 overrun=0
+2026-08-09T10:00:56.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10559 rx_late=0 rx_drop=0
+2026-08-09T10:00:56.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=33 source=PTP
+2026-08-09T10:00:56.200000 [BBH    ] [INFO ] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=122
+2026-08-09T10:00:56.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=47 capacity=4096 overrun=0
+2026-08-09T10:00:56.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10563 rx_late=0 rx_drop=0
+2026-08-09T10:00:56.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=61 source=PTP
+2026-08-09T10:00:56.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=122
+2026-08-09T10:00:56.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=75 capacity=4096 overrun=0
+2026-08-09T10:00:56.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10567 rx_late=0 rx_drop=0
+2026-08-09T10:00:56.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=89 source=PTP
+2026-08-09T10:00:57.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=122
+2026-08-09T10:00:57.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=6 capacity=4096 overrun=0
+2026-08-09T10:00:57.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10571 rx_late=0 rx_drop=0
+2026-08-09T10:00:57.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=20 source=PTP
+2026-08-09T10:00:57.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=122
+2026-08-09T10:00:57.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=34 capacity=4096 overrun=0
+2026-08-09T10:00:57.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10575 rx_late=0 rx_drop=0
+2026-08-09T10:00:57.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=48 source=PTP
+2026-08-09T10:00:57.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=123
+2026-08-09T10:00:57.900000 [BBH    ] [INFO ] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=62 capacity=4096 overrun=0
+2026-08-09T10:00:58.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10579 rx_late=0 rx_drop=0
+2026-08-09T10:00:58.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=76 source=PTP
+2026-08-09T10:00:58.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=123
+2026-08-09T10:00:58.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=90 capacity=4096 overrun=0
+2026-08-09T10:00:58.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10583 rx_late=0 rx_drop=0
+2026-08-09T10:00:58.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=7 source=PTP
+2026-08-09T10:00:58.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=123
+2026-08-09T10:00:58.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=21 capacity=4096 overrun=0
+2026-08-09T10:00:58.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10587 rx_late=0 rx_drop=0
+2026-08-09T10:00:58.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=35 source=PTP
+2026-08-09T10:00:59.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=123
+2026-08-09T10:00:59.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=49 capacity=4096 overrun=0
+2026-08-09T10:00:59.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10591 rx_late=0 rx_drop=0
+2026-08-09T10:00:59.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=63 source=PTP
+2026-08-09T10:00:59.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=123
+2026-08-09T10:00:59.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=77 capacity=4096 overrun=0
+2026-08-09T10:00:59.600000 [BBH    ] [INFO ] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10595 rx_late=0 rx_drop=0
+2026-08-09T10:00:59.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=91 source=PTP
+2026-08-09T10:00:59.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=123
+2026-08-09T10:00:59.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=8 capacity=4096 overrun=0
+2026-08-09T10:01:00.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10599 rx_late=0 rx_drop=0
+2026-08-09T10:01:00.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=22 source=PTP
+2026-08-09T10:01:00.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=124
+2026-08-09T10:01:00.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=36 capacity=4096 overrun=0
+2026-08-09T10:01:00.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10603 rx_late=0 rx_drop=0
+2026-08-09T10:01:00.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=50 source=PTP
+2026-08-09T10:01:00.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=124
+2026-08-09T10:01:00.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=64 capacity=4096 overrun=0
+2026-08-09T10:01:00.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10607 rx_late=0 rx_drop=0
+2026-08-09T10:01:00.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=78 source=PTP
+2026-08-09T10:01:01.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=124
+2026-08-09T10:01:01.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=92 capacity=4096 overrun=0
+2026-08-09T10:01:01.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10611 rx_late=0 rx_drop=0
+2026-08-09T10:01:01.300000 [BBH    ] [INFO ] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=9 source=PTP
+2026-08-09T10:01:01.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=124
+2026-08-09T10:01:01.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=23 capacity=4096 overrun=0
+2026-08-09T10:01:01.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10615 rx_late=0 rx_drop=0
+2026-08-09T10:01:01.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=37 source=PTP
+2026-08-09T10:01:01.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=124
+2026-08-09T10:01:01.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=51 capacity=4096 overrun=0
+2026-08-09T10:01:02.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10619 rx_late=0 rx_drop=0
+2026-08-09T10:01:02.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=65 source=PTP
+2026-08-09T10:01:02.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=124
+2026-08-09T10:01:02.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=79 capacity=4096 overrun=0
+2026-08-09T10:01:02.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10623 rx_late=0 rx_drop=0
+2026-08-09T10:01:02.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=93 source=PTP
+2026-08-09T10:01:02.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=125
+2026-08-09T10:01:02.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=10 capacity=4096 overrun=0
+2026-08-09T10:01:02.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10627 rx_late=0 rx_drop=0
+2026-08-09T10:01:02.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=24 source=PTP
+2026-08-09T10:01:03.000000 [BBH    ] [INFO ] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=125
+2026-08-09T10:01:03.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=38 capacity=4096 overrun=0
+2026-08-09T10:01:03.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10631 rx_late=0 rx_drop=0
+2026-08-09T10:01:03.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=52 source=PTP
+2026-08-09T10:01:03.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=125
+2026-08-09T10:01:03.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=66 capacity=4096 overrun=0
+2026-08-09T10:01:03.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10635 rx_late=0 rx_drop=0
+2026-08-09T10:01:03.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=80 source=PTP
+2026-08-09T10:01:03.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=125
+2026-08-09T10:01:03.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=94 capacity=4096 overrun=0
+2026-08-09T10:01:04.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10639 rx_late=0 rx_drop=0
+2026-08-09T10:01:04.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=11 source=PTP
+2026-08-09T10:01:04.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=125
+2026-08-09T10:01:04.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=25 capacity=4096 overrun=0
+2026-08-09T10:01:04.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10643 rx_late=0 rx_drop=0
+2026-08-09T10:01:04.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=39 source=PTP
+2026-08-09T10:01:04.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=125
+2026-08-09T10:01:04.700000 [BBH    ] [INFO ] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=53 capacity=4096 overrun=0
+2026-08-09T10:01:04.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10647 rx_late=0 rx_drop=0
+2026-08-09T10:01:04.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=67 source=PTP
+2026-08-09T10:01:05.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=125
+2026-08-09T10:01:05.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=81 capacity=4096 overrun=0
+2026-08-09T10:01:05.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10651 rx_late=0 rx_drop=0
+2026-08-09T10:01:05.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=95 source=PTP
+2026-08-09T10:01:05.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=126
+2026-08-09T10:01:05.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=12 capacity=4096 overrun=0
+2026-08-09T10:01:05.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10655 rx_late=0 rx_drop=0
+2026-08-09T10:01:05.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=26 source=PTP
+2026-08-09T10:01:05.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=126
+2026-08-09T10:01:05.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=40 capacity=4096 overrun=0
+2026-08-09T10:01:06.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10659 rx_late=0 rx_drop=0
+2026-08-09T10:01:06.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=54 source=PTP
+2026-08-09T10:01:06.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=126
+2026-08-09T10:01:06.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=68 capacity=4096 overrun=0
+2026-08-09T10:01:06.400000 [BBH    ] [INFO ] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10663 rx_late=0 rx_drop=0
+2026-08-09T10:01:06.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=82 source=PTP
+2026-08-09T10:01:06.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=126
+2026-08-09T10:01:06.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=96 capacity=4096 overrun=0
+2026-08-09T10:01:06.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10667 rx_late=0 rx_drop=0
+2026-08-09T10:01:06.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=13 source=PTP
+2026-08-09T10:01:07.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=126
+2026-08-09T10:01:07.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=27 capacity=4096 overrun=0
+2026-08-09T10:01:07.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10671 rx_late=0 rx_drop=0
+2026-08-09T10:01:07.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=41 source=PTP
+2026-08-09T10:01:07.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=126
+2026-08-09T10:01:07.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=55 capacity=4096 overrun=0
+2026-08-09T10:01:07.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10675 rx_late=0 rx_drop=0
+2026-08-09T10:01:07.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=69 source=PTP
+2026-08-09T10:01:07.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=127
+2026-08-09T10:01:07.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=83 capacity=4096 overrun=0
+2026-08-09T10:01:08.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10679 rx_late=0 rx_drop=0
+2026-08-09T10:01:08.100000 [BBH    ] [INFO ] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=0 source=PTP
+2026-08-09T10:01:08.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=127
+2026-08-09T10:01:08.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=14 capacity=4096 overrun=0
+2026-08-09T10:01:08.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10683 rx_late=0 rx_drop=0
+2026-08-09T10:01:08.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=28 source=PTP
+2026-08-09T10:01:08.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=127
+2026-08-09T10:01:08.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=42 capacity=4096 overrun=0
+2026-08-09T10:01:08.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10687 rx_late=0 rx_drop=0
+2026-08-09T10:01:08.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=56 source=PTP
+2026-08-09T10:01:09.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=127
+2026-08-09T10:01:09.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=70 capacity=4096 overrun=0
+2026-08-09T10:01:09.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10691 rx_late=0 rx_drop=0
+2026-08-09T10:01:09.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=84 source=PTP
+2026-08-09T10:01:09.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=127
+2026-08-09T10:01:09.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=1 capacity=4096 overrun=0
+2026-08-09T10:01:09.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10695 rx_late=0 rx_drop=0
+2026-08-09T10:01:09.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=15 source=PTP
+2026-08-09T10:01:09.800000 [BBH    ] [INFO ] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=127
+2026-08-09T10:01:09.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=29 capacity=4096 overrun=0
+2026-08-09T10:01:10.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10699 rx_late=0 rx_drop=0
+2026-08-09T10:01:10.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=43 source=PTP
+2026-08-09T10:01:10.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=128
+2026-08-09T10:01:10.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=57 capacity=4096 overrun=0
+2026-08-09T10:01:10.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10703 rx_late=0 rx_drop=0
+2026-08-09T10:01:10.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=71 source=PTP
+2026-08-09T10:01:10.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=128
+2026-08-09T10:01:10.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=85 capacity=4096 overrun=0
+2026-08-09T10:01:10.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10707 rx_late=0 rx_drop=0
+2026-08-09T10:01:10.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=2 source=PTP
+2026-08-09T10:01:11.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=128
+2026-08-09T10:01:11.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=16 capacity=4096 overrun=0
+2026-08-09T10:01:11.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10711 rx_late=0 rx_drop=0
+2026-08-09T10:01:11.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=30 source=PTP
+2026-08-09T10:01:11.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=128
+2026-08-09T10:01:11.500000 [BBH    ] [INFO ] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=44 capacity=4096 overrun=0
+2026-08-09T10:01:11.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10715 rx_late=0 rx_drop=0
+2026-08-09T10:01:11.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=58 source=PTP
+2026-08-09T10:01:11.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=128
+2026-08-09T10:01:11.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=72 capacity=4096 overrun=0
+2026-08-09T10:01:12.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10719 rx_late=0 rx_drop=0
+2026-08-09T10:01:12.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=86 source=PTP
+2026-08-09T10:01:12.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=128
+2026-08-09T10:01:12.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=3 capacity=4096 overrun=0
+2026-08-09T10:01:12.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10723 rx_late=0 rx_drop=0
+2026-08-09T10:01:12.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=17 source=PTP
+2026-08-09T10:01:12.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=129
+2026-08-09T10:01:12.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=31 capacity=4096 overrun=0
+2026-08-09T10:01:12.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10727 rx_late=0 rx_drop=0
+2026-08-09T10:01:12.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=45 source=PTP
+2026-08-09T10:01:13.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=129
+2026-08-09T10:01:13.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=59 capacity=4096 overrun=0
+2026-08-09T10:01:13.200000 [BBH    ] [INFO ] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10731 rx_late=0 rx_drop=0
+2026-08-09T10:01:13.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=73 source=PTP
+2026-08-09T10:01:13.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=129
+2026-08-09T10:01:13.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=87 capacity=4096 overrun=0
+2026-08-09T10:01:13.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10735 rx_late=0 rx_drop=0
+2026-08-09T10:01:13.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=4 source=PTP
+2026-08-09T10:01:13.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=129
+2026-08-09T10:01:13.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=18 capacity=4096 overrun=0
+2026-08-09T10:01:14.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10739 rx_late=0 rx_drop=0
+2026-08-09T10:01:14.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=32 source=PTP
+2026-08-09T10:01:14.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=129
+2026-08-09T10:01:14.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=46 capacity=4096 overrun=0
+2026-08-09T10:01:14.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10743 rx_late=0 rx_drop=0
+2026-08-09T10:01:14.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=60 source=PTP
+2026-08-09T10:01:14.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=129
+2026-08-09T10:01:14.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=74 capacity=4096 overrun=0
+2026-08-09T10:01:14.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10747 rx_late=0 rx_drop=0
+2026-08-09T10:01:14.900000 [BBH    ] [INFO ] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=88 source=PTP
+2026-08-09T10:01:15.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=129
+2026-08-09T10:01:15.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=5 capacity=4096 overrun=0
+2026-08-09T10:01:15.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10751 rx_late=0 rx_drop=0
+2026-08-09T10:01:15.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=19 source=PTP
+2026-08-09T10:01:15.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=130
+2026-08-09T10:01:15.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=33 capacity=4096 overrun=0
+2026-08-09T10:01:15.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10755 rx_late=0 rx_drop=0
+2026-08-09T10:01:15.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=47 source=PTP
+2026-08-09T10:01:15.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=130
+2026-08-09T10:01:15.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=61 capacity=4096 overrun=0
+2026-08-09T10:01:16.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10759 rx_late=0 rx_drop=0
+2026-08-09T10:01:16.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=75 source=PTP
+2026-08-09T10:01:16.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=130
+2026-08-09T10:01:16.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=89 capacity=4096 overrun=0
+2026-08-09T10:01:16.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10763 rx_late=0 rx_drop=0
+2026-08-09T10:01:16.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=6 source=PTP
+2026-08-09T10:01:16.600000 [BBH    ] [INFO ] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=130
+2026-08-09T10:01:16.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=20 capacity=4096 overrun=0
+2026-08-09T10:01:16.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10767 rx_late=0 rx_drop=0
+2026-08-09T10:01:16.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=34 source=PTP
+2026-08-09T10:01:17.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=130
+2026-08-09T10:01:17.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=48 capacity=4096 overrun=0
+2026-08-09T10:01:17.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10771 rx_late=0 rx_drop=0
+2026-08-09T10:01:17.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=62 source=PTP
+2026-08-09T10:01:17.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=130
+2026-08-09T10:01:17.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=76 capacity=4096 overrun=0
+2026-08-09T10:01:17.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10775 rx_late=0 rx_drop=0
+2026-08-09T10:01:17.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=90 source=PTP
+2026-08-09T10:01:17.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=131
+2026-08-09T10:01:17.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=7 capacity=4096 overrun=0
+2026-08-09T10:01:18.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10779 rx_late=0 rx_drop=0
+2026-08-09T10:01:18.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=21 source=PTP
+2026-08-09T10:01:18.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=131
+2026-08-09T10:01:18.300000 [BBH    ] [INFO ] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=35 capacity=4096 overrun=0
+2026-08-09T10:01:18.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10783 rx_late=0 rx_drop=0
+2026-08-09T10:01:18.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=49 source=PTP
+2026-08-09T10:01:18.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=131
+2026-08-09T10:01:18.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=63 capacity=4096 overrun=0
+2026-08-09T10:01:18.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10787 rx_late=0 rx_drop=0
+2026-08-09T10:01:18.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=77 source=PTP
+2026-08-09T10:01:19.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=131
+2026-08-09T10:01:19.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=91 capacity=4096 overrun=0
+2026-08-09T10:01:19.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10791 rx_late=0 rx_drop=0
+2026-08-09T10:01:19.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=8 source=PTP
+2026-08-09T10:01:19.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=131
+2026-08-09T10:01:19.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=22 capacity=4096 overrun=0
+2026-08-09T10:01:19.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10795 rx_late=0 rx_drop=0
+2026-08-09T10:01:19.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=36 source=PTP
+2026-08-09T10:01:19.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=131
+2026-08-09T10:01:19.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=50 capacity=4096 overrun=0
+2026-08-09T10:01:20.000000 [BBH    ] [INFO ] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10799 rx_late=0 rx_drop=0
+2026-08-09T10:01:20.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=64 source=PTP
+2026-08-09T10:01:20.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=132
+2026-08-09T10:01:20.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=78 capacity=4096 overrun=0
+2026-08-09T10:01:20.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10803 rx_late=0 rx_drop=0
+2026-08-09T10:01:20.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=92 source=PTP
+2026-08-09T10:01:20.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=132
+2026-08-09T10:01:20.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=9 capacity=4096 overrun=0
+2026-08-09T10:01:20.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10807 rx_late=0 rx_drop=0
+2026-08-09T10:01:20.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=23 source=PTP
+2026-08-09T10:01:21.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=132
+2026-08-09T10:01:21.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=37 capacity=4096 overrun=0
+2026-08-09T10:01:21.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10811 rx_late=0 rx_drop=0
+2026-08-09T10:01:21.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=51 source=PTP
+2026-08-09T10:01:21.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=132
+2026-08-09T10:01:21.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=65 capacity=4096 overrun=0
+2026-08-09T10:01:21.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10815 rx_late=0 rx_drop=0
+2026-08-09T10:01:21.700000 [BBH    ] [INFO ] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=79 source=PTP
+2026-08-09T10:01:21.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=132
+2026-08-09T10:01:21.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=93 capacity=4096 overrun=0
+2026-08-09T10:01:22.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10819 rx_late=0 rx_drop=0
+2026-08-09T10:01:22.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=10 source=PTP
+2026-08-09T10:01:22.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=132
+2026-08-09T10:01:22.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=24 capacity=4096 overrun=0
+2026-08-09T10:01:22.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10823 rx_late=0 rx_drop=0
+2026-08-09T10:01:22.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=38 source=PTP
+2026-08-09T10:01:22.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=133
+2026-08-09T10:01:22.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=52 capacity=4096 overrun=0
+2026-08-09T10:01:22.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10827 rx_late=0 rx_drop=0
+2026-08-09T10:01:22.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=66 source=PTP
+2026-08-09T10:01:23.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=133
+2026-08-09T10:01:23.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=80 capacity=4096 overrun=0
+2026-08-09T10:01:23.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10831 rx_late=0 rx_drop=0
+2026-08-09T10:01:23.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=94 source=PTP
+2026-08-09T10:01:23.400000 [BBH    ] [INFO ] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=133
+2026-08-09T10:01:23.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=11 capacity=4096 overrun=0
+2026-08-09T10:01:23.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10835 rx_late=0 rx_drop=0
+2026-08-09T10:01:23.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=25 source=PTP
+2026-08-09T10:01:23.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=133
+2026-08-09T10:01:23.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=39 capacity=4096 overrun=0
+2026-08-09T10:01:24.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10839 rx_late=0 rx_drop=0
+2026-08-09T10:01:24.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=53 source=PTP
+2026-08-09T10:01:24.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=133
+2026-08-09T10:01:24.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=67 capacity=4096 overrun=0
+2026-08-09T10:01:24.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10843 rx_late=0 rx_drop=0
+2026-08-09T10:01:24.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=81 source=PTP
+2026-08-09T10:01:24.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=133
+2026-08-09T10:01:24.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=95 capacity=4096 overrun=0
+2026-08-09T10:01:24.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10847 rx_late=0 rx_drop=0
+2026-08-09T10:01:24.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=12 source=PTP
+2026-08-09T10:01:25.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=133
+2026-08-09T10:01:25.100000 [BBH    ] [INFO ] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=26 capacity=4096 overrun=0
+2026-08-09T10:01:25.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10851 rx_late=0 rx_drop=0
+2026-08-09T10:01:25.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=40 source=PTP
+2026-08-09T10:01:25.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=134
+2026-08-09T10:01:25.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=54 capacity=4096 overrun=0
+2026-08-09T10:01:25.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10855 rx_late=0 rx_drop=0
+2026-08-09T10:01:25.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=68 source=PTP
+2026-08-09T10:01:25.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=134
+2026-08-09T10:01:25.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=82 capacity=4096 overrun=0
+2026-08-09T10:01:26.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10859 rx_late=0 rx_drop=0
+2026-08-09T10:01:26.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=96 source=PTP
+2026-08-09T10:01:26.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=134
+2026-08-09T10:01:26.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=13 capacity=4096 overrun=0
+2026-08-09T10:01:26.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10863 rx_late=0 rx_drop=0
+2026-08-09T10:01:26.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=27 source=PTP
+2026-08-09T10:01:26.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=134
+2026-08-09T10:01:26.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=41 capacity=4096 overrun=0
+2026-08-09T10:01:26.800000 [BBH    ] [INFO ] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10867 rx_late=0 rx_drop=0
+2026-08-09T10:01:26.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=55 source=PTP
+2026-08-09T10:01:27.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=134
+2026-08-09T10:01:27.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=69 capacity=4096 overrun=0
+2026-08-09T10:01:27.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10871 rx_late=0 rx_drop=0
+2026-08-09T10:01:27.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=83 source=PTP
+2026-08-09T10:01:27.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=134
+2026-08-09T10:01:27.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=0 capacity=4096 overrun=0
+2026-08-09T10:01:27.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10875 rx_late=0 rx_drop=0
+2026-08-09T10:01:27.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=14 source=PTP
+2026-08-09T10:01:27.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=135
+2026-08-09T10:01:27.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=28 capacity=4096 overrun=0
+2026-08-09T10:01:28.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10879 rx_late=0 rx_drop=0
+2026-08-09T10:01:28.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=42 source=PTP
+2026-08-09T10:01:28.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=135
+2026-08-09T10:01:28.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=56 capacity=4096 overrun=0
+2026-08-09T10:01:28.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10883 rx_late=0 rx_drop=0
+2026-08-09T10:01:28.500000 [BBH    ] [INFO ] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=70 source=PTP
+2026-08-09T10:01:28.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=135
+2026-08-09T10:01:28.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=84 capacity=4096 overrun=0
+2026-08-09T10:01:28.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10887 rx_late=0 rx_drop=0
+2026-08-09T10:01:28.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=1 source=PTP
+2026-08-09T10:01:29.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=135
+2026-08-09T10:01:29.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=15 capacity=4096 overrun=0
+2026-08-09T10:01:29.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10891 rx_late=0 rx_drop=0
+2026-08-09T10:01:29.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=29 source=PTP
+2026-08-09T10:01:29.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=135
+2026-08-09T10:01:29.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=43 capacity=4096 overrun=0
+2026-08-09T10:01:29.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10895 rx_late=0 rx_drop=0
+2026-08-09T10:01:29.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=57 source=PTP
+2026-08-09T10:01:29.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=135
+2026-08-09T10:01:29.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=71 capacity=4096 overrun=0
+2026-08-09T10:01:30.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10899 rx_late=0 rx_drop=0
+2026-08-09T10:01:30.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=85 source=PTP
+2026-08-09T10:01:30.200000 [BBH    ] [INFO ] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=136
+2026-08-09T10:01:30.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=2 capacity=4096 overrun=0
+2026-08-09T10:01:30.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10903 rx_late=0 rx_drop=0
+2026-08-09T10:01:30.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=16 source=PTP
+2026-08-09T10:01:30.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=136
+2026-08-09T10:01:30.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=30 capacity=4096 overrun=0
+2026-08-09T10:01:30.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10907 rx_late=0 rx_drop=0
+2026-08-09T10:01:30.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=44 source=PTP
+2026-08-09T10:01:31.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=136
+2026-08-09T10:01:31.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=58 capacity=4096 overrun=0
+2026-08-09T10:01:31.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10911 rx_late=0 rx_drop=0
+2026-08-09T10:01:31.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=72 source=PTP
+2026-08-09T10:01:31.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=136
+2026-08-09T10:01:31.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=86 capacity=4096 overrun=0
+2026-08-09T10:01:31.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10915 rx_late=0 rx_drop=0
+2026-08-09T10:01:31.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=3 source=PTP
+2026-08-09T10:01:31.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=136
+2026-08-09T10:01:31.900000 [BBH    ] [INFO ] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=17 capacity=4096 overrun=0
+2026-08-09T10:01:32.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10919 rx_late=0 rx_drop=0
+2026-08-09T10:01:32.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=31 source=PTP
+2026-08-09T10:01:32.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=136
+2026-08-09T10:01:32.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=45 capacity=4096 overrun=0
+2026-08-09T10:01:32.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10923 rx_late=0 rx_drop=0
+2026-08-09T10:01:32.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=59 source=PTP
+2026-08-09T10:01:32.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=137
+2026-08-09T10:01:32.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=73 capacity=4096 overrun=0
+2026-08-09T10:01:32.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10927 rx_late=0 rx_drop=0
+2026-08-09T10:01:32.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=87 source=PTP
+2026-08-09T10:01:33.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=137
+2026-08-09T10:01:33.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=4 capacity=4096 overrun=0
+2026-08-09T10:01:33.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10931 rx_late=0 rx_drop=0
+2026-08-09T10:01:33.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=18 source=PTP
+2026-08-09T10:01:33.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=137
+2026-08-09T10:01:33.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=32 capacity=4096 overrun=0
+2026-08-09T10:01:33.600000 [BBH    ] [INFO ] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10935 rx_late=0 rx_drop=0
+2026-08-09T10:01:33.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=46 source=PTP
+2026-08-09T10:01:33.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=137
+2026-08-09T10:01:33.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=60 capacity=4096 overrun=0
+2026-08-09T10:01:34.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10939 rx_late=0 rx_drop=0
+2026-08-09T10:01:34.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=74 source=PTP
+2026-08-09T10:01:34.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=137
+2026-08-09T10:01:34.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=88 capacity=4096 overrun=0
+2026-08-09T10:01:34.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10943 rx_late=0 rx_drop=0
+2026-08-09T10:01:34.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=5 source=PTP
+2026-08-09T10:01:34.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=137
+2026-08-09T10:01:34.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=19 capacity=4096 overrun=0
+2026-08-09T10:01:34.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10947 rx_late=0 rx_drop=0
+2026-08-09T10:01:34.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=33 source=PTP
+2026-08-09T10:01:35.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=137
+2026-08-09T10:01:35.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=47 capacity=4096 overrun=0
+2026-08-09T10:01:35.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10951 rx_late=0 rx_drop=0
+2026-08-09T10:01:35.300000 [BBH    ] [INFO ] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=61 source=PTP
+2026-08-09T10:01:35.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=138
+2026-08-09T10:01:35.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=75 capacity=4096 overrun=0
+2026-08-09T10:01:35.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10955 rx_late=0 rx_drop=0
+2026-08-09T10:01:35.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=89 source=PTP
+2026-08-09T10:01:35.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=138
+2026-08-09T10:01:35.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=6 capacity=4096 overrun=0
+2026-08-09T10:01:36.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10959 rx_late=0 rx_drop=0
+2026-08-09T10:01:36.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=20 source=PTP
+2026-08-09T10:01:36.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=138
+2026-08-09T10:01:36.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=34 capacity=4096 overrun=0
+2026-08-09T10:01:36.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10963 rx_late=0 rx_drop=0
+2026-08-09T10:01:36.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=48 source=PTP
+2026-08-09T10:01:36.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=138
+2026-08-09T10:01:36.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=62 capacity=4096 overrun=0
+2026-08-09T10:01:36.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10967 rx_late=0 rx_drop=0
+2026-08-09T10:01:36.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=76 source=PTP
+2026-08-09T10:01:37.000000 [BBH    ] [INFO ] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=138
+2026-08-09T10:01:37.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=90 capacity=4096 overrun=0
+2026-08-09T10:01:37.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10971 rx_late=0 rx_drop=0
+2026-08-09T10:01:37.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=7 source=PTP
+2026-08-09T10:01:37.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=138
+2026-08-09T10:01:37.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=21 capacity=4096 overrun=0
+2026-08-09T10:01:37.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10975 rx_late=0 rx_drop=0
+2026-08-09T10:01:37.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=35 source=PTP
+2026-08-09T10:01:37.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=139
+2026-08-09T10:01:37.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=49 capacity=4096 overrun=0
+2026-08-09T10:01:38.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10979 rx_late=0 rx_drop=0
+2026-08-09T10:01:38.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=63 source=PTP
+2026-08-09T10:01:38.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=139
+2026-08-09T10:01:38.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=77 capacity=4096 overrun=0
+2026-08-09T10:01:38.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=10983 rx_late=0 rx_drop=0
+2026-08-09T10:01:38.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=91 source=PTP
+2026-08-09T10:01:38.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=139
+2026-08-09T10:01:38.700000 [BBH    ] [INFO ] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=8 capacity=4096 overrun=0
+2026-08-09T10:01:38.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=10987 rx_late=0 rx_drop=0
+2026-08-09T10:01:38.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=22 source=PTP
+2026-08-09T10:01:39.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=139
+2026-08-09T10:01:39.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=36 capacity=4096 overrun=0
+2026-08-09T10:01:39.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=10991 rx_late=0 rx_drop=0
+2026-08-09T10:01:39.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=50 source=PTP
+2026-08-09T10:01:39.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=139
+2026-08-09T10:01:39.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=64 capacity=4096 overrun=0
+2026-08-09T10:01:39.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=10995 rx_late=0 rx_drop=0
+2026-08-09T10:01:39.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=78 source=PTP
+2026-08-09T10:01:39.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=139
+2026-08-09T10:01:39.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=92 capacity=4096 overrun=0
+2026-08-09T10:01:40.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=10999 rx_late=0 rx_drop=0
+2026-08-09T10:01:40.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=9 source=PTP
+2026-08-09T10:01:40.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=140
+2026-08-09T10:01:40.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=23 capacity=4096 overrun=0
+2026-08-09T10:01:40.400000 [BBH    ] [INFO ] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=11003 rx_late=0 rx_drop=0
+2026-08-09T10:01:40.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=37 source=PTP
+2026-08-09T10:01:40.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=140
+2026-08-09T10:01:40.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=51 capacity=4096 overrun=0
+2026-08-09T10:01:40.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=11007 rx_late=0 rx_drop=0
+2026-08-09T10:01:40.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=65 source=PTP
+2026-08-09T10:01:41.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=140
+2026-08-09T10:01:41.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=79 capacity=4096 overrun=0
+2026-08-09T10:01:41.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=11011 rx_late=0 rx_drop=0
+2026-08-09T10:01:41.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=93 source=PTP
+2026-08-09T10:01:41.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=140
+2026-08-09T10:01:41.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=10 capacity=4096 overrun=0
+2026-08-09T10:01:41.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=11015 rx_late=0 rx_drop=0
+2026-08-09T10:01:41.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=24 source=PTP
+2026-08-09T10:01:41.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=140
+2026-08-09T10:01:41.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=38 capacity=4096 overrun=0
+2026-08-09T10:01:42.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=11019 rx_late=0 rx_drop=0
+2026-08-09T10:01:42.100000 [BBH    ] [INFO ] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=52 source=PTP
+2026-08-09T10:01:42.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=140
+2026-08-09T10:01:42.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=66 capacity=4096 overrun=0
+2026-08-09T10:01:42.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=11023 rx_late=0 rx_drop=0
+2026-08-09T10:01:42.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=80 source=PTP
+2026-08-09T10:01:42.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=141
+2026-08-09T10:01:42.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=94 capacity=4096 overrun=0
+2026-08-09T10:01:42.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=11027 rx_late=0 rx_drop=0
+2026-08-09T10:01:42.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=11 source=PTP
+2026-08-09T10:01:43.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=141
+2026-08-09T10:01:43.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=25 capacity=4096 overrun=0
+2026-08-09T10:01:43.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=11031 rx_late=0 rx_drop=0
+2026-08-09T10:01:43.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=39 source=PTP
+2026-08-09T10:01:43.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=141
+2026-08-09T10:01:43.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=53 capacity=4096 overrun=0
+2026-08-09T10:01:43.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=11035 rx_late=0 rx_drop=0
+2026-08-09T10:01:43.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=67 source=PTP
+2026-08-09T10:01:43.800000 [BBH    ] [INFO ] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=141
+2026-08-09T10:01:43.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=81 capacity=4096 overrun=0
+2026-08-09T10:01:44.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=11039 rx_late=0 rx_drop=0
+2026-08-09T10:01:44.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=95 source=PTP
+2026-08-09T10:01:44.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=141
+2026-08-09T10:01:44.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=12 capacity=4096 overrun=0
+2026-08-09T10:01:44.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=11043 rx_late=0 rx_drop=0
+2026-08-09T10:01:44.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=26 source=PTP
+2026-08-09T10:01:44.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=141
+2026-08-09T10:01:44.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=40 capacity=4096 overrun=0
+2026-08-09T10:01:44.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=11047 rx_late=0 rx_drop=0
+2026-08-09T10:01:44.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=54 source=PTP
+2026-08-09T10:01:45.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=141
+2026-08-09T10:01:45.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=68 capacity=4096 overrun=0
+2026-08-09T10:01:45.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=11051 rx_late=0 rx_drop=0
+2026-08-09T10:01:45.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=82 source=PTP
+2026-08-09T10:01:45.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=142
+2026-08-09T10:01:45.500000 [BBH    ] [INFO ] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=96 capacity=4096 overrun=0
+2026-08-09T10:01:45.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=11055 rx_late=0 rx_drop=0
+2026-08-09T10:01:45.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=13 source=PTP
+2026-08-09T10:01:45.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=142
+2026-08-09T10:01:45.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=27 capacity=4096 overrun=0
+2026-08-09T10:01:46.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=11059 rx_late=0 rx_drop=0
+2026-08-09T10:01:46.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=41 source=PTP
+2026-08-09T10:01:46.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=142
+2026-08-09T10:01:46.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=55 capacity=4096 overrun=0
+2026-08-09T10:01:46.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=11063 rx_late=0 rx_drop=0
+2026-08-09T10:01:46.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=69 source=PTP
+2026-08-09T10:01:46.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=142
+2026-08-09T10:01:46.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=83 capacity=4096 overrun=0
+2026-08-09T10:01:46.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=11067 rx_late=0 rx_drop=0
+2026-08-09T10:01:46.900000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=0 source=PTP
+2026-08-09T10:01:47.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=142
+2026-08-09T10:01:47.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=14 capacity=4096 overrun=0
+2026-08-09T10:01:47.200000 [BBH    ] [INFO ] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=11071 rx_late=0 rx_drop=0
+2026-08-09T10:01:47.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=28 source=PTP
+2026-08-09T10:01:47.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=142
+2026-08-09T10:01:47.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=42 capacity=4096 overrun=0
+2026-08-09T10:01:47.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=11075 rx_late=0 rx_drop=0
+2026-08-09T10:01:47.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=56 source=PTP
+2026-08-09T10:01:47.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=143
+2026-08-09T10:01:47.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=70 capacity=4096 overrun=0
+2026-08-09T10:01:48.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=11079 rx_late=0 rx_drop=0
+2026-08-09T10:01:48.100000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=84 source=PTP
+2026-08-09T10:01:48.200000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=143
+2026-08-09T10:01:48.300000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=1 capacity=4096 overrun=0
+2026-08-09T10:01:48.400000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=0 rx_on_time=11083 rx_late=0 rx_drop=0
+2026-08-09T10:01:48.500000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=15 source=PTP
+2026-08-09T10:01:48.600000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=143
+2026-08-09T10:01:48.700000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=29 capacity=4096 overrun=0
+2026-08-09T10:01:48.800000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=4 rx_on_time=11087 rx_late=0 rx_drop=0
+2026-08-09T10:01:48.900000 [BBH    ] [INFO ] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=43 source=PTP
+2026-08-09T10:01:49.000000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=143
+2026-08-09T10:01:49.100000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=57 capacity=4096 overrun=0
+2026-08-09T10:01:49.200000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=8 rx_on_time=11091 rx_late=0 rx_drop=0
+2026-08-09T10:01:49.300000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=71 source=PTP
+2026-08-09T10:01:49.400000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=143
+2026-08-09T10:01:49.500000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=85 capacity=4096 overrun=0
+2026-08-09T10:01:49.600000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=2 rx_on_time=11095 rx_late=0 rx_drop=0
+2026-08-09T10:01:49.700000 [BBH    ] [DEBUG] [thread=bbh-0] pipeline_id={{PIPELINE_ID}} clock_sample ptp_state=LOCKED offset_ns=2 source=PTP
+2026-08-09T10:01:49.800000 [BBH    ] [DEBUG] [thread=bbh-1] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbl RX=ESTABLISHED TX=ESTABLISHED generation=143
+2026-08-09T10:01:49.900000 [BBH    ] [DEBUG] [thread=bbh-2] pipeline_id={{PIPELINE_ID}} symbol_ring direction=RX used=16 capacity=4096 overrun=0
+2026-08-09T10:01:50.000000 [BBH    ] [DEBUG] [thread=bbh-3] pipeline_id={{PIPELINE_ID}} ecpri_counter flow=6 rx_on_time=11099 rx_late=0 rx_drop=0
+2026-08-09T10:01:59.000000 [BBH    ] [DEBUG] [thread=main] pipeline_id={{PIPELINE_ID}} diagnostic_snapshot component=bbh flush=complete

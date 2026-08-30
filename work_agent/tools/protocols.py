@@ -110,13 +110,18 @@ class PipelineTool(Protocol):
 
 @runtime_checkable
 class LogTool(Protocol):
-    """只读拉日志 / 检索日志；供 error_analysis ReAct 使用。"""
+    """只读列举、拉取、检索分组件日志；供 error_analysis ReAct 使用。"""
+
+    def list_logs(self, pipeline_id: str) -> str:
+        """列出可读取的日志文件、组件、行数和大小。"""
+        ...
 
     def fetch_logs(
         self,
         pipeline_id: str,
         *,
         tail_lines: int | None = 200,
+        component: str | None = None,
     ) -> str:
         """
         拉取流水线日志文本。
@@ -124,6 +129,7 @@ class LogTool(Protocol):
         参数:
             pipeline_id: 流水线 id。
             tail_lines: None 返回全文；否则只返回尾部 N 行。
+            component: 可选组件名；None 表示合并时间线。
 
         返回:
             日志文本；建议首行带 ``[log meta]``。
@@ -137,6 +143,7 @@ class LogTool(Protocol):
         *,
         context_lines: int = 3,
         max_matches: int = 20,
+        component: str | None = None,
     ) -> str:
         """
         在全文上按正则/关键词检索，带上下文行。
@@ -146,10 +153,15 @@ class LogTool(Protocol):
             pattern: 检索模式（实现可按正则或子串）。
             context_lines: 匹配行前后保留的上下文行数。
             max_matches: 最多返回多少处匹配。
+            component: 可选组件名；None 表示检索所有组件。
 
         返回:
             可读检索结果文本。
         """
+        ...
+
+    def lookup_error_code(self, code: str) -> str:
+        """按错误码或摘要关键词查询可能组件和下一步检查。"""
         ...
 
 

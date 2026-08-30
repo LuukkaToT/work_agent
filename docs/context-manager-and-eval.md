@@ -277,16 +277,9 @@ OpenAI 兼容端点的协议约束：每条带 `tool_calls` 的 assistant 消息
 
 ### 3.2 Golden set 里有什么
 
-`config/eval_cases.json`，6 条，覆盖 `case` / `version` / `env` / `none`：
-
-| case_id | scenario | 期望 fail_kind | 必须活到最终上下文的 key |
-|---------|----------|----------------|--------------------------|
-| `case_error_keyerror` | `case_error` | case | `KeyError`, `antenna_map`, `Traceback` |
-| `version_fail_protocol_mismatch` | `version_fail` | version | `protocol mismatch`, `incompatible`, `27B` |
-| `env_error_connection_refused` | `env_error` | env | `Connection refused`, `7.223.50.60`, `unreachable` |
-| `env_error_logic_topology` | `env_error` | env | `Connection refused`, `retries` |
-| `all_pass_no_failure` | `all_pass` | none | `verdict=pass` |
-| `case_error_multi_case` | `case_error` | case | `KeyError`, `AssertionError` |
+`config/eval_cases.json` 有 20 条，覆盖 `case` / `version` / `env` / `none`，
+每条对应 COMM、RAT、BBH、BBL、MARP、COMPARE 六个日志文件。完整场景矩阵和分布见
+[baseband-mock-benchmark.md](baseband-mock-benchmark.md)。
 
 `expected_evidence_keys` 的语义是：**最终 working context 里还在**，不是「曾经在某一轮 ToolMessage 里出现过」。证据被压缩掉、被去重掉、被预算挤掉，都算没保住。
 
@@ -326,9 +319,9 @@ recall = 命中的 expected_evidence_keys 数 / 总 key 数
 
 #### `accuracy` / `correct`（趋势参考，不是统计结论）
 
-`correct = (预测 fail_kind == expected_fail_kind)`。`summarize` 里的 accuracy 是该策略所有行的均值。
+`correct = (预测 fail_kind == expected_fail_kind)`。`summarize` 里的 accuracy 是该策略所有行的均值；另有 `root_component_accuracy` 和两者同时正确的 `diagnosis_accuracy`。
 
-golden set 只有 6 条。面试里不要说「准确率提升了 X%」。它只能回答「这两种策略会不会把 case 判成 env」这种方向性问题。样本量不够支撑统计结论。
+golden set 虽扩到 20 条，但仍是 synthetic 开发集。面试里不要说「生产准确率提升了 X%」。它适合发现策略回归，样本量和数据分布仍不足以支撑生产统计结论。
 
 #### `latency_ms`
 
@@ -351,10 +344,10 @@ ReAct 期间模型发起的工具调用次数（`type=="call"` 的 trace 条数�
 `summarize` + `format_report` 会打出类似：
 
 ```text
-strategy     n  accuracy  evid_recall  ctx_chars   tokens      ms  tools  err
+strategy     n  kind_acc  root_acc  evid_recall  ctx_chars   tokens      ms  tools  err
 ------------------------------------------------------------------------------
-legacy       6      0.83         1.00       4200     8100     420    3.2    0
-managed      6      0.83         1.00       3100     8400     480    3.2    0
+legacy      20      0.80      0.70         0.90       4200     8100     420    3.2    0
+managed     20      0.85      0.80         0.95       3100     8400     480    3.2    0
 
 managed 相对 legacy 的 context_chars 变化：-26.2%
 证据留存 1.00 → 1.00，token 8100 → 8400
@@ -365,7 +358,7 @@ managed 相对 legacy 的 context_chars 变化：-26.2%
 - `evidence_recall` 不下降（最好持平或升）；
 - `context_chars` 下降；
 - `token_total` 可能略升（摘要开销），这是诚实的；
-- `accuracy` 在 6 条上差不多，不要过度解读。
+- `accuracy` / `root_acc` 在 20 条 synthetic 样本上仍不要过度解读。
 
 不健康的信号：
 
@@ -394,7 +387,7 @@ managed 相对 legacy 的 context_chars 变化：-26.2%
 
 我拆成两层。ReAct 热路径按 `ReActStep` 原子裁剪，AIMessage 和它的 ToolMessage 整对保留或整对压成一条不带 `tool_calls` 的摘要，热路径不调 LLM。抽取只发生一次，走 ContextManager：Selector 纯函数做去重和打分，装得下就直接渲染；装不下才调 fast model 摘要，原文归档到 workspace，working context 只留一句引用。Pin 分三级，pinned 不等于绕过预算。
 
-为了证明不是自我感觉良好，诊断内核抽成 `run_diagnosis(strategy)`，同一 golden set 上 legacy 和 managed 各跑一遍。盯三个硬指标：最终上下文字符数、证据关键词留存率、全部 LLM token（含摘要自己烧的）。准确率只有 6 条样本，我只当趋势，不当统计结论。
+为了证明不是自我感觉良好，诊断内核抽成 `run_diagnosis(strategy)`，同一 golden set 上 legacy 和 managed 各跑一遍。盯三个硬指标：最终上下文字符数、证据关键词留存率、全部 LLM token（含摘要自己烧的）。准确率来自 20 条 synthetic 样本，我只当开发期趋势，不当生产统计结论。
 
 ### 4.2 面试官可能怎么问
 
@@ -492,7 +485,7 @@ Prompt 明确要求保留报错关键词原文、不要下结论。LLM 失败或
 
 - `context_chars`：最终 working context 大小；
 - `evidence_recall`：golden 里声明的 key 有多少活到最终上下文；
-- 准确率降级为 6 条样本的趋势参考。
+- 准确率降级为 20 条 synthetic 样本的开发期趋势。
 
 `evidence_recall` 必须打在 `context_text`（抽取器真正看到的那份）上，不能打在「历史中曾经出现过」。否则只要第一轮 fetch 到了 KeyError，后面全裁光 recall 仍是 1.0，指标就废了。所以 `DiagnosisResult` 专门留了 `context_text` 字段。
 
@@ -551,7 +544,7 @@ Prompt 明确要求保留报错关键词原文、不要下结论。LLM 失败或
 | 别说 | 改成 |
 |------|------|
 | 「我们做了一个智能上下文压缩」 | 「按 step 原子裁 ReAct 历史，抽取阶段超预算才摘要」 |
-| 「准确率提升了」 | 「6 条样本上看 fail_kind 没掉；硬指标是字符数和证据留存」 |
+| 「准确率提升了」 | 「20 条 synthetic 样本上看 fail kind/root component 没掉；硬指标是字符数和证据留存」 |
 | 「每一步都是纯函数」 | 「Selector 是纯函数；Compressor / Archive 有副作用，Manager 只编排」 |
 | 「pinned 的永远不裁」 | 「immutable 不可改，protected 不可删但可压；pinned 仍占预算」 |
 | 「信息删掉了」 | 「原文归档，working context 只留引用」 |

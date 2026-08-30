@@ -109,7 +109,7 @@ class _FakeFast:
         self.structured = _FakeStructured()
         self.compress_calls = 0
 
-    def with_structured_output(self, schema, include_raw: bool = False):  # noqa: ANN001
+    def with_structured_output(self, schema, include_raw: bool = False, method: str = ""):  # noqa: ANN001
         assert include_raw, "抽取必须用 include_raw=True，否则这次调用的 token 统计不到"
         return self.structured
 

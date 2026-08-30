@@ -233,7 +233,7 @@
 
 打满预算的 A/B **不是** `eval-diagnose` 默认行为（默认真 LLM 自己决定调几次工具）。当时是：注入 8 步脚本模型 + 真实 `run_diagnosis`，对 `config/eval_cases.json` 跑 `run_suite`。脚本用完已删，要复现就按 §2.3 / §2.4 把轨迹和假模型接回去。
 
-**版本说明（归档回读闭环）**：managed 自本次改动起在 ReAct 循环内也归档——被压缩/整步丢弃的 step 原文落盘并挂 artifact 引用，模型可用只读工具 `fetch_archived_block` 回读；eval 长表新增 `archived_n` / `readback_calls` 两列。§3 / §5 的数字出自该功能之前的跑批，未重跑刷新；下次真 LLM 跑批后一并更新。
+**版本说明（归档回读闭环）**：managed 自本次改动起在 ReAct 循环内也归档——被压缩/整步丢弃的 step 原文落盘并挂 artifact 引用，模型可用只读工具 `fetch_archived_block` 回读；eval 长表新增 `archived_n` / `readback_calls` 两列。§3 / §5 的数字出自该功能之前的跑批，未重跑刷新；真 LLM 实测数字见 [real-llm-eval-oxalpha.md](real-llm-eval-oxalpha.md)。
 
 ```text
 # 锁住留尾截断 + 长日志形态

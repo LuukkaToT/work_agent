@@ -1,0 +1,1107 @@
+2026-08-09T10:00:00.000000 [BBL    ] [INFO ] [thread=main] pipeline_id={{PIPELINE_ID}} process_boot component=bbl build=mock-27B
+2026-08-09T10:00:00.005000 [BBL    ] [INFO ] [thread=main] pipeline_id={{PIPELINE_ID}} scenario=bench17_rrc_setup_incomplete synthetic=true
+2026-08-09T10:00:00.010000 [BBL    ] [DEBUG] [thread=main] pipeline_id={{PIPELINE_ID}} log_level=DEBUG structured_fields=enabled
+2026-08-09T10:00:00.100000 [BBL    ] [INFO ] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=100
+2026-08-09T10:00:00.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10001 nack=8 dtx=0
+2026-08-09T10:00:00.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=7 capacity=256 gc_pending=0
+2026-08-09T10:00:00.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=0 slot=3
+2026-08-09T10:00:00.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=100
+2026-08-09T10:00:00.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10005 nack=2 dtx=0
+2026-08-09T10:00:00.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=35 capacity=256 gc_pending=0
+2026-08-09T10:00:00.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=0 slot=7
+2026-08-09T10:00:00.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=100
+2026-08-09T10:00:01.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10009 nack=6 dtx=0
+2026-08-09T10:00:01.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=63 capacity=256 gc_pending=0
+2026-08-09T10:00:01.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=1 slot=11
+2026-08-09T10:00:01.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=100
+2026-08-09T10:00:01.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10013 nack=0 dtx=0
+2026-08-09T10:00:01.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=91 capacity=256 gc_pending=0
+2026-08-09T10:00:01.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=1 slot=15
+2026-08-09T10:00:01.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=100
+2026-08-09T10:00:01.800000 [BBL    ] [INFO ] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10017 nack=4 dtx=0
+2026-08-09T10:00:01.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=22 capacity=256 gc_pending=0
+2026-08-09T10:00:02.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=1 slot=19
+2026-08-09T10:00:02.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=100
+2026-08-09T10:00:02.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10021 nack=8 dtx=0
+2026-08-09T10:00:02.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=50 capacity=256 gc_pending=0
+2026-08-09T10:00:02.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=2 slot=3
+2026-08-09T10:00:02.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=100
+2026-08-09T10:00:02.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10025 nack=2 dtx=0
+2026-08-09T10:00:02.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=78 capacity=256 gc_pending=0
+2026-08-09T10:00:02.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=2 slot=7
+2026-08-09T10:00:02.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=101
+2026-08-09T10:00:03.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10029 nack=6 dtx=0
+2026-08-09T10:00:03.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=9 capacity=256 gc_pending=0
+2026-08-09T10:00:03.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=3 slot=11
+2026-08-09T10:00:03.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=101
+2026-08-09T10:00:03.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10033 nack=0 dtx=0
+2026-08-09T10:00:03.500000 [BBL    ] [INFO ] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=37 capacity=256 gc_pending=0
+2026-08-09T10:00:03.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=3 slot=15
+2026-08-09T10:00:03.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=101
+2026-08-09T10:00:03.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10037 nack=4 dtx=0
+2026-08-09T10:00:03.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=65 capacity=256 gc_pending=0
+2026-08-09T10:00:04.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=3 slot=19
+2026-08-09T10:00:04.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=101
+2026-08-09T10:00:04.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10041 nack=8 dtx=0
+2026-08-09T10:00:04.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=93 capacity=256 gc_pending=0
+2026-08-09T10:00:04.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=4 slot=3
+2026-08-09T10:00:04.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=101
+2026-08-09T10:00:04.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10045 nack=2 dtx=0
+2026-08-09T10:00:04.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=24 capacity=256 gc_pending=0
+2026-08-09T10:00:04.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=4 slot=7
+2026-08-09T10:00:04.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=101
+2026-08-09T10:00:05.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10049 nack=6 dtx=0
+2026-08-09T10:00:05.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=52 capacity=256 gc_pending=0
+2026-08-09T10:00:05.200000 [BBL    ] [INFO ] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=5 slot=11
+2026-08-09T10:00:05.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=102
+2026-08-09T10:00:05.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10053 nack=0 dtx=0
+2026-08-09T10:00:05.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=80 capacity=256 gc_pending=0
+2026-08-09T10:00:05.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=5 slot=15
+2026-08-09T10:00:05.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=102
+2026-08-09T10:00:05.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10057 nack=4 dtx=0
+2026-08-09T10:00:05.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=11 capacity=256 gc_pending=0
+2026-08-09T10:00:06.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=5 slot=19
+2026-08-09T10:00:06.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=102
+2026-08-09T10:00:06.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10061 nack=8 dtx=0
+2026-08-09T10:00:06.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=39 capacity=256 gc_pending=0
+2026-08-09T10:00:06.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=6 slot=3
+2026-08-09T10:00:06.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=102
+2026-08-09T10:00:06.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10065 nack=2 dtx=0
+2026-08-09T10:00:06.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=67 capacity=256 gc_pending=0
+2026-08-09T10:00:06.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=6 slot=7
+2026-08-09T10:00:06.900000 [BBL    ] [INFO ] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=102
+2026-08-09T10:00:07.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10069 nack=6 dtx=0
+2026-08-09T10:00:07.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=95 capacity=256 gc_pending=0
+2026-08-09T10:00:07.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=7 slot=11
+2026-08-09T10:00:07.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=102
+2026-08-09T10:00:07.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10073 nack=0 dtx=0
+2026-08-09T10:00:07.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=26 capacity=256 gc_pending=0
+2026-08-09T10:00:07.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=7 slot=15
+2026-08-09T10:00:07.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=103
+2026-08-09T10:00:07.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10077 nack=4 dtx=0
+2026-08-09T10:00:07.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=54 capacity=256 gc_pending=0
+2026-08-09T10:00:08.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=7 slot=19
+2026-08-09T10:00:08.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=103
+2026-08-09T10:00:08.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10081 nack=8 dtx=0
+2026-08-09T10:00:08.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=82 capacity=256 gc_pending=0
+2026-08-09T10:00:08.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=8 slot=3
+2026-08-09T10:00:08.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=103
+2026-08-09T10:00:08.600000 [BBL    ] [INFO ] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10085 nack=2 dtx=0
+2026-08-09T10:00:08.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=13 capacity=256 gc_pending=0
+2026-08-09T10:00:08.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=8 slot=7
+2026-08-09T10:00:08.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=103
+2026-08-09T10:00:09.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10089 nack=6 dtx=0
+2026-08-09T10:00:09.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=41 capacity=256 gc_pending=0
+2026-08-09T10:00:09.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=9 slot=11
+2026-08-09T10:00:09.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=103
+2026-08-09T10:00:09.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10093 nack=0 dtx=0
+2026-08-09T10:00:09.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=69 capacity=256 gc_pending=0
+2026-08-09T10:00:09.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=9 slot=15
+2026-08-09T10:00:09.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=103
+2026-08-09T10:00:09.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10097 nack=4 dtx=0
+2026-08-09T10:00:09.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=0 capacity=256 gc_pending=0
+2026-08-09T10:00:10.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=9 slot=19
+2026-08-09T10:00:10.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=104
+2026-08-09T10:00:10.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10101 nack=8 dtx=0
+2026-08-09T10:00:10.300000 [BBL    ] [INFO ] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=28 capacity=256 gc_pending=0
+2026-08-09T10:00:10.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=10 slot=3
+2026-08-09T10:00:10.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=104
+2026-08-09T10:00:10.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10105 nack=2 dtx=0
+2026-08-09T10:00:10.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=56 capacity=256 gc_pending=0
+2026-08-09T10:00:10.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=10 slot=7
+2026-08-09T10:00:10.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=104
+2026-08-09T10:00:11.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10109 nack=6 dtx=0
+2026-08-09T10:00:11.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=84 capacity=256 gc_pending=0
+2026-08-09T10:00:11.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=11 slot=11
+2026-08-09T10:00:11.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=104
+2026-08-09T10:00:11.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10113 nack=0 dtx=0
+2026-08-09T10:00:11.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=15 capacity=256 gc_pending=0
+2026-08-09T10:00:11.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=11 slot=15
+2026-08-09T10:00:11.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=104
+2026-08-09T10:00:11.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10117 nack=4 dtx=0
+2026-08-09T10:00:11.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=43 capacity=256 gc_pending=0
+2026-08-09T10:00:12.000000 [BBL    ] [INFO ] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=11 slot=19
+2026-08-09T10:00:12.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=104
+2026-08-09T10:00:12.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10121 nack=8 dtx=0
+2026-08-09T10:00:12.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=71 capacity=256 gc_pending=0
+2026-08-09T10:00:12.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=12 slot=3
+2026-08-09T10:00:12.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=104
+2026-08-09T10:00:12.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10125 nack=2 dtx=0
+2026-08-09T10:00:12.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=2 capacity=256 gc_pending=0
+2026-08-09T10:00:12.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=12 slot=7
+2026-08-09T10:00:12.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=105
+2026-08-09T10:00:13.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10129 nack=6 dtx=0
+2026-08-09T10:00:13.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=30 capacity=256 gc_pending=0
+2026-08-09T10:00:13.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=13 slot=11
+2026-08-09T10:00:13.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=105
+2026-08-09T10:00:13.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10133 nack=0 dtx=0
+2026-08-09T10:00:13.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=58 capacity=256 gc_pending=0
+2026-08-09T10:00:13.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=13 slot=15
+2026-08-09T10:00:13.700000 [BBL    ] [INFO ] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=105
+2026-08-09T10:00:13.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10137 nack=4 dtx=0
+2026-08-09T10:00:13.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=86 capacity=256 gc_pending=0
+2026-08-09T10:00:14.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=13 slot=19
+2026-08-09T10:00:14.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=105
+2026-08-09T10:00:14.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10141 nack=8 dtx=0
+2026-08-09T10:00:14.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=17 capacity=256 gc_pending=0
+2026-08-09T10:00:14.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=14 slot=3
+2026-08-09T10:00:14.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=105
+2026-08-09T10:00:14.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10145 nack=2 dtx=0
+2026-08-09T10:00:14.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=45 capacity=256 gc_pending=0
+2026-08-09T10:00:14.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=14 slot=7
+2026-08-09T10:00:14.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=105
+2026-08-09T10:00:15.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10149 nack=6 dtx=0
+2026-08-09T10:00:15.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=73 capacity=256 gc_pending=0
+2026-08-09T10:00:15.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=15 slot=11
+2026-08-09T10:00:15.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=106
+2026-08-09T10:00:15.400000 [BBL    ] [INFO ] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10153 nack=0 dtx=0
+2026-08-09T10:00:15.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=4 capacity=256 gc_pending=0
+2026-08-09T10:00:15.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=15 slot=15
+2026-08-09T10:00:15.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=106
+2026-08-09T10:00:15.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10157 nack=4 dtx=0
+2026-08-09T10:00:15.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=32 capacity=256 gc_pending=0
+2026-08-09T10:00:16.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=15 slot=19
+2026-08-09T10:00:16.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=106
+2026-08-09T10:00:16.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10161 nack=8 dtx=0
+2026-08-09T10:00:16.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=60 capacity=256 gc_pending=0
+2026-08-09T10:00:16.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=16 slot=3
+2026-08-09T10:00:16.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=106
+2026-08-09T10:00:16.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10165 nack=2 dtx=0
+2026-08-09T10:00:16.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=88 capacity=256 gc_pending=0
+2026-08-09T10:00:16.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=16 slot=7
+2026-08-09T10:00:16.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=106
+2026-08-09T10:00:17.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10169 nack=6 dtx=0
+2026-08-09T10:00:17.100000 [BBL    ] [INFO ] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=19 capacity=256 gc_pending=0
+2026-08-09T10:00:17.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=17 slot=11
+2026-08-09T10:00:17.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=106
+2026-08-09T10:00:17.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10173 nack=0 dtx=0
+2026-08-09T10:00:17.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=47 capacity=256 gc_pending=0
+2026-08-09T10:00:17.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=17 slot=15
+2026-08-09T10:00:17.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=107
+2026-08-09T10:00:17.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10177 nack=4 dtx=0
+2026-08-09T10:00:17.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=75 capacity=256 gc_pending=0
+2026-08-09T10:00:18.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=17 slot=19
+2026-08-09T10:00:18.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=107
+2026-08-09T10:00:18.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10181 nack=8 dtx=0
+2026-08-09T10:00:18.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=6 capacity=256 gc_pending=0
+2026-08-09T10:00:18.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=18 slot=3
+2026-08-09T10:00:18.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=107
+2026-08-09T10:00:18.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10185 nack=2 dtx=0
+2026-08-09T10:00:18.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=34 capacity=256 gc_pending=0
+2026-08-09T10:00:18.800000 [BBL    ] [INFO ] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=18 slot=7
+2026-08-09T10:00:18.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=107
+2026-08-09T10:00:19.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10189 nack=6 dtx=0
+2026-08-09T10:00:19.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=62 capacity=256 gc_pending=0
+2026-08-09T10:00:19.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=19 slot=11
+2026-08-09T10:00:19.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=107
+2026-08-09T10:00:19.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10193 nack=0 dtx=0
+2026-08-09T10:00:19.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=90 capacity=256 gc_pending=0
+2026-08-09T10:00:19.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=19 slot=15
+2026-08-09T10:00:19.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=107
+2026-08-09T10:00:19.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10197 nack=4 dtx=0
+2026-08-09T10:00:19.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=21 capacity=256 gc_pending=0
+2026-08-09T10:00:20.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=19 slot=19
+2026-08-09T10:00:20.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=108
+2026-08-09T10:00:20.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10201 nack=8 dtx=0
+2026-08-09T10:00:20.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=49 capacity=256 gc_pending=0
+2026-08-09T10:00:20.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=20 slot=3
+2026-08-09T10:00:20.500000 [BBL    ] [INFO ] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=108
+2026-08-09T10:00:20.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10205 nack=2 dtx=0
+2026-08-09T10:00:20.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=77 capacity=256 gc_pending=0
+2026-08-09T10:00:20.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=20 slot=7
+2026-08-09T10:00:20.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=108
+2026-08-09T10:00:21.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10209 nack=6 dtx=0
+2026-08-09T10:00:21.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=8 capacity=256 gc_pending=0
+2026-08-09T10:00:21.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=21 slot=11
+2026-08-09T10:00:21.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=108
+2026-08-09T10:00:21.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10213 nack=0 dtx=0
+2026-08-09T10:00:21.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=36 capacity=256 gc_pending=0
+2026-08-09T10:00:21.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=21 slot=15
+2026-08-09T10:00:21.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=108
+2026-08-09T10:00:21.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10217 nack=4 dtx=0
+2026-08-09T10:00:21.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=64 capacity=256 gc_pending=0
+2026-08-09T10:00:22.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=21 slot=19
+2026-08-09T10:00:22.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=108
+2026-08-09T10:00:22.200000 [BBL    ] [INFO ] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10221 nack=8 dtx=0
+2026-08-09T10:00:22.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=92 capacity=256 gc_pending=0
+2026-08-09T10:00:22.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=22 slot=3
+2026-08-09T10:00:22.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=108
+2026-08-09T10:00:22.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10225 nack=2 dtx=0
+2026-08-09T10:00:22.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=23 capacity=256 gc_pending=0
+2026-08-09T10:00:22.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=22 slot=7
+2026-08-09T10:00:22.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=109
+2026-08-09T10:00:23.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10229 nack=6 dtx=0
+2026-08-09T10:00:23.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=51 capacity=256 gc_pending=0
+2026-08-09T10:00:23.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=23 slot=11
+2026-08-09T10:00:23.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=109
+2026-08-09T10:00:23.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10233 nack=0 dtx=0
+2026-08-09T10:00:23.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=79 capacity=256 gc_pending=0
+2026-08-09T10:00:23.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=23 slot=15
+2026-08-09T10:00:23.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=109
+2026-08-09T10:00:23.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10237 nack=4 dtx=0
+2026-08-09T10:00:23.900000 [BBL    ] [INFO ] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=10 capacity=256 gc_pending=0
+2026-08-09T10:00:24.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=23 slot=19
+2026-08-09T10:00:24.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=109
+2026-08-09T10:00:24.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10241 nack=8 dtx=0
+2026-08-09T10:00:24.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=38 capacity=256 gc_pending=0
+2026-08-09T10:00:24.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=24 slot=3
+2026-08-09T10:00:24.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=109
+2026-08-09T10:00:24.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10245 nack=2 dtx=0
+2026-08-09T10:00:24.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=66 capacity=256 gc_pending=0
+2026-08-09T10:00:24.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=24 slot=7
+2026-08-09T10:00:24.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=109
+2026-08-09T10:00:25.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10249 nack=6 dtx=0
+2026-08-09T10:00:25.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=94 capacity=256 gc_pending=0
+2026-08-09T10:00:25.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=25 slot=11
+2026-08-09T10:00:25.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=110
+2026-08-09T10:00:25.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10253 nack=0 dtx=0
+2026-08-09T10:00:25.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=25 capacity=256 gc_pending=0
+2026-08-09T10:00:25.600000 [BBL    ] [INFO ] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=25 slot=15
+2026-08-09T10:00:25.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=110
+2026-08-09T10:00:25.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10257 nack=4 dtx=0
+2026-08-09T10:00:25.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=53 capacity=256 gc_pending=0
+2026-08-09T10:00:26.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=25 slot=19
+2026-08-09T10:00:26.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=110
+2026-08-09T10:00:26.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10261 nack=8 dtx=0
+2026-08-09T10:00:26.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=81 capacity=256 gc_pending=0
+2026-08-09T10:00:26.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=26 slot=3
+2026-08-09T10:00:26.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=110
+2026-08-09T10:00:26.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10265 nack=2 dtx=0
+2026-08-09T10:00:26.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=12 capacity=256 gc_pending=0
+2026-08-09T10:00:26.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=26 slot=7
+2026-08-09T10:00:26.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=110
+2026-08-09T10:00:27.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10269 nack=6 dtx=0
+2026-08-09T10:00:27.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=40 capacity=256 gc_pending=0
+2026-08-09T10:00:27.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=27 slot=11
+2026-08-09T10:00:27.300000 [BBL    ] [INFO ] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=110
+2026-08-09T10:00:27.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10273 nack=0 dtx=0
+2026-08-09T10:00:27.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=68 capacity=256 gc_pending=0
+2026-08-09T10:00:27.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=27 slot=15
+2026-08-09T10:00:27.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=111
+2026-08-09T10:00:27.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10277 nack=4 dtx=0
+2026-08-09T10:00:27.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=96 capacity=256 gc_pending=0
+2026-08-09T10:00:28.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=27 slot=19
+2026-08-09T10:00:28.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=111
+2026-08-09T10:00:28.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10281 nack=8 dtx=0
+2026-08-09T10:00:28.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=27 capacity=256 gc_pending=0
+2026-08-09T10:00:28.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=28 slot=3
+2026-08-09T10:00:28.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=111
+2026-08-09T10:00:28.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10285 nack=2 dtx=0
+2026-08-09T10:00:28.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=55 capacity=256 gc_pending=0
+2026-08-09T10:00:28.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=28 slot=7
+2026-08-09T10:00:28.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=111
+2026-08-09T10:00:29.000000 [BBL    ] [INFO ] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10289 nack=6 dtx=0
+2026-08-09T10:00:29.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=83 capacity=256 gc_pending=0
+2026-08-09T10:00:29.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=29 slot=11
+2026-08-09T10:00:29.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=111
+2026-08-09T10:00:29.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10293 nack=0 dtx=0
+2026-08-09T10:00:29.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=14 capacity=256 gc_pending=0
+2026-08-09T10:00:29.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=29 slot=15
+2026-08-09T10:00:29.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=111
+2026-08-09T10:00:29.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10297 nack=4 dtx=0
+2026-08-09T10:00:29.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=42 capacity=256 gc_pending=0
+2026-08-09T10:00:30.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=29 slot=19
+2026-08-09T10:00:30.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=112
+2026-08-09T10:00:30.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10301 nack=8 dtx=0
+2026-08-09T10:00:30.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=70 capacity=256 gc_pending=0
+2026-08-09T10:00:30.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=30 slot=3
+2026-08-09T10:00:30.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=112
+2026-08-09T10:00:30.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10305 nack=2 dtx=0
+2026-08-09T10:00:30.700000 [BBL    ] [INFO ] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=1 capacity=256 gc_pending=0
+2026-08-09T10:00:30.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=30 slot=7
+2026-08-09T10:00:30.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=112
+2026-08-09T10:00:31.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10309 nack=6 dtx=0
+2026-08-09T10:00:31.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=29 capacity=256 gc_pending=0
+2026-08-09T10:00:31.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=31 slot=11
+2026-08-09T10:00:31.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=112
+2026-08-09T10:00:31.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10313 nack=0 dtx=0
+2026-08-09T10:00:31.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=57 capacity=256 gc_pending=0
+2026-08-09T10:00:31.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=31 slot=15
+2026-08-09T10:00:31.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=112
+2026-08-09T10:00:31.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10317 nack=4 dtx=0
+2026-08-09T10:00:31.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=85 capacity=256 gc_pending=0
+2026-08-09T10:00:32.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=31 slot=19
+2026-08-09T10:00:32.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=112
+2026-08-09T10:00:32.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10321 nack=8 dtx=0
+2026-08-09T10:00:32.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=16 capacity=256 gc_pending=0
+2026-08-09T10:00:32.400000 [BBL    ] [INFO ] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=32 slot=3
+2026-08-09T10:00:32.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=112
+2026-08-09T10:00:32.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10325 nack=2 dtx=0
+2026-08-09T10:00:32.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=44 capacity=256 gc_pending=0
+2026-08-09T10:00:32.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=32 slot=7
+2026-08-09T10:00:32.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=113
+2026-08-09T10:00:33.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10329 nack=6 dtx=0
+2026-08-09T10:00:33.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=72 capacity=256 gc_pending=0
+2026-08-09T10:00:33.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=33 slot=11
+2026-08-09T10:00:33.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=113
+2026-08-09T10:00:33.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10333 nack=0 dtx=0
+2026-08-09T10:00:33.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=3 capacity=256 gc_pending=0
+2026-08-09T10:00:33.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=33 slot=15
+2026-08-09T10:00:33.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=113
+2026-08-09T10:00:33.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10337 nack=4 dtx=0
+2026-08-09T10:00:33.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=31 capacity=256 gc_pending=0
+2026-08-09T10:00:34.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=33 slot=19
+2026-08-09T10:00:34.100000 [BBL    ] [INFO ] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=113
+2026-08-09T10:00:34.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10341 nack=8 dtx=0
+2026-08-09T10:00:34.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=59 capacity=256 gc_pending=0
+2026-08-09T10:00:34.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=34 slot=3
+2026-08-09T10:00:34.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=113
+2026-08-09T10:00:34.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10345 nack=2 dtx=0
+2026-08-09T10:00:34.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=87 capacity=256 gc_pending=0
+2026-08-09T10:00:34.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=34 slot=7
+2026-08-09T10:00:34.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=113
+2026-08-09T10:00:35.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10349 nack=6 dtx=0
+2026-08-09T10:00:35.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=18 capacity=256 gc_pending=0
+2026-08-09T10:00:35.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=35 slot=11
+2026-08-09T10:00:35.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=114
+2026-08-09T10:00:35.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10353 nack=0 dtx=0
+2026-08-09T10:00:35.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=46 capacity=256 gc_pending=0
+2026-08-09T10:00:35.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=35 slot=15
+2026-08-09T10:00:35.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=114
+2026-08-09T10:00:35.800000 [BBL    ] [INFO ] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10357 nack=4 dtx=0
+2026-08-09T10:00:35.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=74 capacity=256 gc_pending=0
+2026-08-09T10:00:36.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=35 slot=19
+2026-08-09T10:00:36.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=114
+2026-08-09T10:00:36.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10361 nack=8 dtx=0
+2026-08-09T10:00:36.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=5 capacity=256 gc_pending=0
+2026-08-09T10:00:36.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=36 slot=3
+2026-08-09T10:00:36.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=114
+2026-08-09T10:00:36.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10365 nack=2 dtx=0
+2026-08-09T10:00:36.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=33 capacity=256 gc_pending=0
+2026-08-09T10:00:36.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=36 slot=7
+2026-08-09T10:00:36.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=114
+2026-08-09T10:00:37.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10369 nack=6 dtx=0
+2026-08-09T10:00:37.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=61 capacity=256 gc_pending=0
+2026-08-09T10:00:37.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=37 slot=11
+2026-08-09T10:00:37.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=114
+2026-08-09T10:00:37.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10373 nack=0 dtx=0
+2026-08-09T10:00:37.500000 [BBL    ] [INFO ] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=89 capacity=256 gc_pending=0
+2026-08-09T10:00:37.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=37 slot=15
+2026-08-09T10:00:37.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=115
+2026-08-09T10:00:37.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10377 nack=4 dtx=0
+2026-08-09T10:00:37.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=20 capacity=256 gc_pending=0
+2026-08-09T10:00:38.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=37 slot=19
+2026-08-09T10:00:38.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=115
+2026-08-09T10:00:38.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10381 nack=8 dtx=0
+2026-08-09T10:00:38.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=48 capacity=256 gc_pending=0
+2026-08-09T10:00:38.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=38 slot=3
+2026-08-09T10:00:38.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=115
+2026-08-09T10:00:38.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10385 nack=2 dtx=0
+2026-08-09T10:00:38.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=76 capacity=256 gc_pending=0
+2026-08-09T10:00:38.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=38 slot=7
+2026-08-09T10:00:38.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=115
+2026-08-09T10:00:39.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10389 nack=6 dtx=0
+2026-08-09T10:00:39.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=7 capacity=256 gc_pending=0
+2026-08-09T10:00:39.200000 [BBL    ] [INFO ] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=39 slot=11
+2026-08-09T10:00:39.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=115
+2026-08-09T10:00:39.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10393 nack=0 dtx=0
+2026-08-09T10:00:39.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=35 capacity=256 gc_pending=0
+2026-08-09T10:00:39.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=39 slot=15
+2026-08-09T10:00:39.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=115
+2026-08-09T10:00:39.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10397 nack=4 dtx=0
+2026-08-09T10:00:39.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=63 capacity=256 gc_pending=0
+2026-08-09T10:00:40.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=39 slot=19
+2026-08-09T10:00:40.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=116
+2026-08-09T10:00:40.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10401 nack=8 dtx=0
+2026-08-09T10:00:40.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=91 capacity=256 gc_pending=0
+2026-08-09T10:00:40.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=40 slot=3
+2026-08-09T10:00:40.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=116
+2026-08-09T10:00:40.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10405 nack=2 dtx=0
+2026-08-09T10:00:40.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=22 capacity=256 gc_pending=0
+2026-08-09T10:00:40.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=40 slot=7
+2026-08-09T10:00:40.900000 [BBL    ] [INFO ] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=116
+2026-08-09T10:00:41.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10409 nack=6 dtx=0
+2026-08-09T10:00:41.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=50 capacity=256 gc_pending=0
+2026-08-09T10:00:41.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=41 slot=11
+2026-08-09T10:00:41.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=116
+2026-08-09T10:00:41.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10413 nack=0 dtx=0
+2026-08-09T10:00:41.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=78 capacity=256 gc_pending=0
+2026-08-09T10:00:41.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=41 slot=15
+2026-08-09T10:00:41.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=116
+2026-08-09T10:00:41.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10417 nack=4 dtx=0
+2026-08-09T10:00:41.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=9 capacity=256 gc_pending=0
+2026-08-09T10:00:42.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=41 slot=19
+2026-08-09T10:00:42.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=116
+2026-08-09T10:00:42.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10421 nack=8 dtx=0
+2026-08-09T10:00:42.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=37 capacity=256 gc_pending=0
+2026-08-09T10:00:42.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=42 slot=3
+2026-08-09T10:00:42.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=116
+2026-08-09T10:00:42.600000 [BBL    ] [INFO ] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10425 nack=2 dtx=0
+2026-08-09T10:00:42.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=65 capacity=256 gc_pending=0
+2026-08-09T10:00:42.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=42 slot=7
+2026-08-09T10:00:42.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=117
+2026-08-09T10:00:43.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10429 nack=6 dtx=0
+2026-08-09T10:00:43.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=93 capacity=256 gc_pending=0
+2026-08-09T10:00:43.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=43 slot=11
+2026-08-09T10:00:43.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=117
+2026-08-09T10:00:43.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10433 nack=0 dtx=0
+2026-08-09T10:00:43.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=24 capacity=256 gc_pending=0
+2026-08-09T10:00:43.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=43 slot=15
+2026-08-09T10:00:43.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=117
+2026-08-09T10:00:43.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10437 nack=4 dtx=0
+2026-08-09T10:00:43.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=52 capacity=256 gc_pending=0
+2026-08-09T10:00:44.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=43 slot=19
+2026-08-09T10:00:44.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=117
+2026-08-09T10:00:44.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10441 nack=8 dtx=0
+2026-08-09T10:00:44.300000 [BBL    ] [INFO ] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=80 capacity=256 gc_pending=0
+2026-08-09T10:00:44.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=44 slot=3
+2026-08-09T10:00:44.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=117
+2026-08-09T10:00:44.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10445 nack=2 dtx=0
+2026-08-09T10:00:44.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=11 capacity=256 gc_pending=0
+2026-08-09T10:00:44.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=44 slot=7
+2026-08-09T10:00:44.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=117
+2026-08-09T10:00:45.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10449 nack=6 dtx=0
+2026-08-09T10:00:45.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=39 capacity=256 gc_pending=0
+2026-08-09T10:00:45.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=45 slot=11
+2026-08-09T10:00:45.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=118
+2026-08-09T10:00:45.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10453 nack=0 dtx=0
+2026-08-09T10:00:45.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=67 capacity=256 gc_pending=0
+2026-08-09T10:00:45.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=45 slot=15
+2026-08-09T10:00:45.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=118
+2026-08-09T10:00:45.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10457 nack=4 dtx=0
+2026-08-09T10:00:45.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=95 capacity=256 gc_pending=0
+2026-08-09T10:00:46.000000 [BBL    ] [INFO ] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=45 slot=19
+2026-08-09T10:00:46.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=118
+2026-08-09T10:00:46.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10461 nack=8 dtx=0
+2026-08-09T10:00:46.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=26 capacity=256 gc_pending=0
+2026-08-09T10:00:46.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=46 slot=3
+2026-08-09T10:00:46.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=118
+2026-08-09T10:00:46.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10465 nack=2 dtx=0
+2026-08-09T10:00:46.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=54 capacity=256 gc_pending=0
+2026-08-09T10:00:46.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=46 slot=7
+2026-08-09T10:00:46.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=118
+2026-08-09T10:00:47.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10469 nack=6 dtx=0
+2026-08-09T10:00:47.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=82 capacity=256 gc_pending=0
+2026-08-09T10:00:47.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=47 slot=11
+2026-08-09T10:00:47.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=118
+2026-08-09T10:00:47.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10473 nack=0 dtx=0
+2026-08-09T10:00:47.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=13 capacity=256 gc_pending=0
+2026-08-09T10:00:47.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=47 slot=15
+2026-08-09T10:00:47.700000 [BBL    ] [INFO ] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=119
+2026-08-09T10:00:47.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10477 nack=4 dtx=0
+2026-08-09T10:00:47.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=41 capacity=256 gc_pending=0
+2026-08-09T10:00:48.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=47 slot=19
+2026-08-09T10:00:48.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=119
+2026-08-09T10:00:48.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10481 nack=8 dtx=0
+2026-08-09T10:00:48.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=69 capacity=256 gc_pending=0
+2026-08-09T10:00:48.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=48 slot=3
+2026-08-09T10:00:48.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=119
+2026-08-09T10:00:48.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10485 nack=2 dtx=0
+2026-08-09T10:00:48.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=0 capacity=256 gc_pending=0
+2026-08-09T10:00:48.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=48 slot=7
+2026-08-09T10:00:48.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=119
+2026-08-09T10:00:49.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10489 nack=6 dtx=0
+2026-08-09T10:00:49.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=28 capacity=256 gc_pending=0
+2026-08-09T10:00:49.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=49 slot=11
+2026-08-09T10:00:49.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=119
+2026-08-09T10:00:49.400000 [BBL    ] [INFO ] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10493 nack=0 dtx=0
+2026-08-09T10:00:49.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=56 capacity=256 gc_pending=0
+2026-08-09T10:00:49.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=49 slot=15
+2026-08-09T10:00:49.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=119
+2026-08-09T10:00:49.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10497 nack=4 dtx=0
+2026-08-09T10:00:49.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=84 capacity=256 gc_pending=0
+2026-08-09T10:00:50.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=49 slot=19
+2026-08-09T10:00:50.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=120
+2026-08-09T10:00:50.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10501 nack=8 dtx=0
+2026-08-09T10:00:50.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=15 capacity=256 gc_pending=0
+2026-08-09T10:00:50.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=50 slot=3
+2026-08-09T10:00:50.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=120
+2026-08-09T10:00:50.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10505 nack=2 dtx=0
+2026-08-09T10:00:50.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=43 capacity=256 gc_pending=0
+2026-08-09T10:00:50.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=50 slot=7
+2026-08-09T10:00:50.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=120
+2026-08-09T10:00:51.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10509 nack=6 dtx=0
+2026-08-09T10:00:51.100000 [BBL    ] [INFO ] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=71 capacity=256 gc_pending=0
+2026-08-09T10:00:51.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=51 slot=11
+2026-08-09T10:00:51.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=120
+2026-08-09T10:00:51.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10513 nack=0 dtx=0
+2026-08-09T10:00:51.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=2 capacity=256 gc_pending=0
+2026-08-09T10:00:51.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=51 slot=15
+2026-08-09T10:00:51.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=120
+2026-08-09T10:00:51.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10517 nack=4 dtx=0
+2026-08-09T10:00:51.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=30 capacity=256 gc_pending=0
+2026-08-09T10:00:52.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=51 slot=19
+2026-08-09T10:00:52.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=120
+2026-08-09T10:00:52.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10521 nack=8 dtx=0
+2026-08-09T10:00:52.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=58 capacity=256 gc_pending=0
+2026-08-09T10:00:52.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=52 slot=3
+2026-08-09T10:00:52.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=120
+2026-08-09T10:00:52.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10525 nack=2 dtx=0
+2026-08-09T10:00:52.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=86 capacity=256 gc_pending=0
+2026-08-09T10:00:52.800000 [BBL    ] [INFO ] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=52 slot=7
+2026-08-09T10:00:52.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=121
+2026-08-09T10:00:53.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10529 nack=6 dtx=0
+2026-08-09T10:00:53.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=17 capacity=256 gc_pending=0
+2026-08-09T10:00:53.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=53 slot=11
+2026-08-09T10:00:53.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=121
+2026-08-09T10:00:53.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10533 nack=0 dtx=0
+2026-08-09T10:00:53.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=45 capacity=256 gc_pending=0
+2026-08-09T10:00:53.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=53 slot=15
+2026-08-09T10:00:53.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=121
+2026-08-09T10:00:53.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10537 nack=4 dtx=0
+2026-08-09T10:00:53.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=73 capacity=256 gc_pending=0
+2026-08-09T10:00:54.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=53 slot=19
+2026-08-09T10:00:54.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=121
+2026-08-09T10:00:54.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10541 nack=8 dtx=0
+2026-08-09T10:00:54.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=4 capacity=256 gc_pending=0
+2026-08-09T10:00:54.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=54 slot=3
+2026-08-09T10:00:54.500000 [BBL    ] [INFO ] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=121
+2026-08-09T10:00:54.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10545 nack=2 dtx=0
+2026-08-09T10:00:54.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=32 capacity=256 gc_pending=0
+2026-08-09T10:00:54.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=54 slot=7
+2026-08-09T10:00:54.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=121
+2026-08-09T10:00:55.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10549 nack=6 dtx=0
+2026-08-09T10:00:55.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=60 capacity=256 gc_pending=0
+2026-08-09T10:00:55.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=55 slot=11
+2026-08-09T10:00:55.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=122
+2026-08-09T10:00:55.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10553 nack=0 dtx=0
+2026-08-09T10:00:55.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=88 capacity=256 gc_pending=0
+2026-08-09T10:00:55.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=55 slot=15
+2026-08-09T10:00:55.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=122
+2026-08-09T10:00:55.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10557 nack=4 dtx=0
+2026-08-09T10:00:55.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=19 capacity=256 gc_pending=0
+2026-08-09T10:00:56.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=55 slot=19
+2026-08-09T10:00:56.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=122
+2026-08-09T10:00:56.200000 [BBL    ] [INFO ] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10561 nack=8 dtx=0
+2026-08-09T10:00:56.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=47 capacity=256 gc_pending=0
+2026-08-09T10:00:56.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=56 slot=3
+2026-08-09T10:00:56.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=122
+2026-08-09T10:00:56.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10565 nack=2 dtx=0
+2026-08-09T10:00:56.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=75 capacity=256 gc_pending=0
+2026-08-09T10:00:56.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=56 slot=7
+2026-08-09T10:00:56.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=122
+2026-08-09T10:00:57.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10569 nack=6 dtx=0
+2026-08-09T10:00:57.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=6 capacity=256 gc_pending=0
+2026-08-09T10:00:57.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=57 slot=11
+2026-08-09T10:00:57.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=122
+2026-08-09T10:00:57.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10573 nack=0 dtx=0
+2026-08-09T10:00:57.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=34 capacity=256 gc_pending=0
+2026-08-09T10:00:57.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=57 slot=15
+2026-08-09T10:00:57.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=123
+2026-08-09T10:00:57.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10577 nack=4 dtx=0
+2026-08-09T10:00:57.900000 [BBL    ] [INFO ] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=62 capacity=256 gc_pending=0
+2026-08-09T10:00:58.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=57 slot=19
+2026-08-09T10:00:58.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=123
+2026-08-09T10:00:58.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10581 nack=8 dtx=0
+2026-08-09T10:00:58.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=90 capacity=256 gc_pending=0
+2026-08-09T10:00:58.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=58 slot=3
+2026-08-09T10:00:58.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=123
+2026-08-09T10:00:58.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10585 nack=2 dtx=0
+2026-08-09T10:00:58.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=21 capacity=256 gc_pending=0
+2026-08-09T10:00:58.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=58 slot=7
+2026-08-09T10:00:58.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=123
+2026-08-09T10:00:59.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10589 nack=6 dtx=0
+2026-08-09T10:00:59.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=49 capacity=256 gc_pending=0
+2026-08-09T10:00:59.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=59 slot=11
+2026-08-09T10:00:59.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=123
+2026-08-09T10:00:59.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10593 nack=0 dtx=0
+2026-08-09T10:00:59.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=77 capacity=256 gc_pending=0
+2026-08-09T10:00:59.600000 [BBL    ] [INFO ] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=59 slot=15
+2026-08-09T10:00:59.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=123
+2026-08-09T10:00:59.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10597 nack=4 dtx=0
+2026-08-09T10:00:59.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=8 capacity=256 gc_pending=0
+2026-08-09T10:01:00.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=59 slot=19
+2026-08-09T10:01:00.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=124
+2026-08-09T10:01:00.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10601 nack=8 dtx=0
+2026-08-09T10:01:00.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=36 capacity=256 gc_pending=0
+2026-08-09T10:01:00.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=60 slot=3
+2026-08-09T10:01:00.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=124
+2026-08-09T10:01:00.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10605 nack=2 dtx=0
+2026-08-09T10:01:00.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=64 capacity=256 gc_pending=0
+2026-08-09T10:01:00.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=60 slot=7
+2026-08-09T10:01:00.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=124
+2026-08-09T10:01:01.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10609 nack=6 dtx=0
+2026-08-09T10:01:01.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=92 capacity=256 gc_pending=0
+2026-08-09T10:01:01.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=61 slot=11
+2026-08-09T10:01:01.300000 [BBL    ] [INFO ] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=124
+2026-08-09T10:01:01.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10613 nack=0 dtx=0
+2026-08-09T10:01:01.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=23 capacity=256 gc_pending=0
+2026-08-09T10:01:01.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=61 slot=15
+2026-08-09T10:01:01.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=124
+2026-08-09T10:01:01.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10617 nack=4 dtx=0
+2026-08-09T10:01:01.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=51 capacity=256 gc_pending=0
+2026-08-09T10:01:02.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=61 slot=19
+2026-08-09T10:01:02.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=124
+2026-08-09T10:01:02.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10621 nack=8 dtx=0
+2026-08-09T10:01:02.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=79 capacity=256 gc_pending=0
+2026-08-09T10:01:02.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=62 slot=3
+2026-08-09T10:01:02.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=124
+2026-08-09T10:01:02.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10625 nack=2 dtx=0
+2026-08-09T10:01:02.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=10 capacity=256 gc_pending=0
+2026-08-09T10:01:02.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=62 slot=7
+2026-08-09T10:01:02.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=125
+2026-08-09T10:01:03.000000 [BBL    ] [INFO ] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10629 nack=6 dtx=0
+2026-08-09T10:01:03.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=38 capacity=256 gc_pending=0
+2026-08-09T10:01:03.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=63 slot=11
+2026-08-09T10:01:03.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=125
+2026-08-09T10:01:03.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10633 nack=0 dtx=0
+2026-08-09T10:01:03.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=66 capacity=256 gc_pending=0
+2026-08-09T10:01:03.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=63 slot=15
+2026-08-09T10:01:03.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=125
+2026-08-09T10:01:03.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10637 nack=4 dtx=0
+2026-08-09T10:01:03.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=94 capacity=256 gc_pending=0
+2026-08-09T10:01:04.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=63 slot=19
+2026-08-09T10:01:04.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=125
+2026-08-09T10:01:04.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10641 nack=8 dtx=0
+2026-08-09T10:01:04.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=25 capacity=256 gc_pending=0
+2026-08-09T10:01:04.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=64 slot=3
+2026-08-09T10:01:04.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=125
+2026-08-09T10:01:04.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10645 nack=2 dtx=0
+2026-08-09T10:01:04.700000 [BBL    ] [INFO ] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=53 capacity=256 gc_pending=0
+2026-08-09T10:01:04.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=64 slot=7
+2026-08-09T10:01:04.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=125
+2026-08-09T10:01:05.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10649 nack=6 dtx=0
+2026-08-09T10:01:05.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=81 capacity=256 gc_pending=0
+2026-08-09T10:01:05.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=65 slot=11
+2026-08-09T10:01:05.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=126
+2026-08-09T10:01:05.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10653 nack=0 dtx=0
+2026-08-09T10:01:05.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=12 capacity=256 gc_pending=0
+2026-08-09T10:01:05.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=65 slot=15
+2026-08-09T10:01:05.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=126
+2026-08-09T10:01:05.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10657 nack=4 dtx=0
+2026-08-09T10:01:05.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=40 capacity=256 gc_pending=0
+2026-08-09T10:01:06.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=65 slot=19
+2026-08-09T10:01:06.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=126
+2026-08-09T10:01:06.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10661 nack=8 dtx=0
+2026-08-09T10:01:06.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=68 capacity=256 gc_pending=0
+2026-08-09T10:01:06.400000 [BBL    ] [INFO ] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=66 slot=3
+2026-08-09T10:01:06.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=126
+2026-08-09T10:01:06.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10665 nack=2 dtx=0
+2026-08-09T10:01:06.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=96 capacity=256 gc_pending=0
+2026-08-09T10:01:06.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=66 slot=7
+2026-08-09T10:01:06.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=126
+2026-08-09T10:01:07.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10669 nack=6 dtx=0
+2026-08-09T10:01:07.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=27 capacity=256 gc_pending=0
+2026-08-09T10:01:07.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=67 slot=11
+2026-08-09T10:01:07.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=126
+2026-08-09T10:01:07.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10673 nack=0 dtx=0
+2026-08-09T10:01:07.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=55 capacity=256 gc_pending=0
+2026-08-09T10:01:07.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=67 slot=15
+2026-08-09T10:01:07.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=127
+2026-08-09T10:01:07.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10677 nack=4 dtx=0
+2026-08-09T10:01:07.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=83 capacity=256 gc_pending=0
+2026-08-09T10:01:08.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=67 slot=19
+2026-08-09T10:01:08.100000 [BBL    ] [INFO ] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=127
+2026-08-09T10:01:08.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10681 nack=8 dtx=0
+2026-08-09T10:01:08.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=14 capacity=256 gc_pending=0
+2026-08-09T10:01:08.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=68 slot=3
+2026-08-09T10:01:08.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=127
+2026-08-09T10:01:08.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10685 nack=2 dtx=0
+2026-08-09T10:01:08.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=42 capacity=256 gc_pending=0
+2026-08-09T10:01:08.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=68 slot=7
+2026-08-09T10:01:08.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=127
+2026-08-09T10:01:09.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10689 nack=6 dtx=0
+2026-08-09T10:01:09.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=70 capacity=256 gc_pending=0
+2026-08-09T10:01:09.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=69 slot=11
+2026-08-09T10:01:09.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=127
+2026-08-09T10:01:09.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10693 nack=0 dtx=0
+2026-08-09T10:01:09.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=1 capacity=256 gc_pending=0
+2026-08-09T10:01:09.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=69 slot=15
+2026-08-09T10:01:09.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=127
+2026-08-09T10:01:09.800000 [BBL    ] [INFO ] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10697 nack=4 dtx=0
+2026-08-09T10:01:09.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=29 capacity=256 gc_pending=0
+2026-08-09T10:01:10.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=69 slot=19
+2026-08-09T10:01:10.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=128
+2026-08-09T10:01:10.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10701 nack=8 dtx=0
+2026-08-09T10:01:10.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=57 capacity=256 gc_pending=0
+2026-08-09T10:01:10.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=70 slot=3
+2026-08-09T10:01:10.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=128
+2026-08-09T10:01:10.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10705 nack=2 dtx=0
+2026-08-09T10:01:10.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=85 capacity=256 gc_pending=0
+2026-08-09T10:01:10.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=70 slot=7
+2026-08-09T10:01:10.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=128
+2026-08-09T10:01:11.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10709 nack=6 dtx=0
+2026-08-09T10:01:11.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=16 capacity=256 gc_pending=0
+2026-08-09T10:01:11.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=71 slot=11
+2026-08-09T10:01:11.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=128
+2026-08-09T10:01:11.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10713 nack=0 dtx=0
+2026-08-09T10:01:11.500000 [BBL    ] [INFO ] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=44 capacity=256 gc_pending=0
+2026-08-09T10:01:11.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=71 slot=15
+2026-08-09T10:01:11.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=128
+2026-08-09T10:01:11.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10717 nack=4 dtx=0
+2026-08-09T10:01:11.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=72 capacity=256 gc_pending=0
+2026-08-09T10:01:12.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=71 slot=19
+2026-08-09T10:01:12.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=128
+2026-08-09T10:01:12.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10721 nack=8 dtx=0
+2026-08-09T10:01:12.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=3 capacity=256 gc_pending=0
+2026-08-09T10:01:12.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=72 slot=3
+2026-08-09T10:01:12.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=128
+2026-08-09T10:01:12.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10725 nack=2 dtx=0
+2026-08-09T10:01:12.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=31 capacity=256 gc_pending=0
+2026-08-09T10:01:12.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=72 slot=7
+2026-08-09T10:01:12.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=129
+2026-08-09T10:01:13.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10729 nack=6 dtx=0
+2026-08-09T10:01:13.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=59 capacity=256 gc_pending=0
+2026-08-09T10:01:13.200000 [BBL    ] [INFO ] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=73 slot=11
+2026-08-09T10:01:13.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=129
+2026-08-09T10:01:13.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10733 nack=0 dtx=0
+2026-08-09T10:01:13.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=87 capacity=256 gc_pending=0
+2026-08-09T10:01:13.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=73 slot=15
+2026-08-09T10:01:13.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=129
+2026-08-09T10:01:13.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10737 nack=4 dtx=0
+2026-08-09T10:01:13.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=18 capacity=256 gc_pending=0
+2026-08-09T10:01:14.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=73 slot=19
+2026-08-09T10:01:14.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=129
+2026-08-09T10:01:14.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10741 nack=8 dtx=0
+2026-08-09T10:01:14.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=46 capacity=256 gc_pending=0
+2026-08-09T10:01:14.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=74 slot=3
+2026-08-09T10:01:14.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=129
+2026-08-09T10:01:14.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10745 nack=2 dtx=0
+2026-08-09T10:01:14.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=74 capacity=256 gc_pending=0
+2026-08-09T10:01:14.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=74 slot=7
+2026-08-09T10:01:14.900000 [BBL    ] [INFO ] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=129
+2026-08-09T10:01:15.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10749 nack=6 dtx=0
+2026-08-09T10:01:15.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=5 capacity=256 gc_pending=0
+2026-08-09T10:01:15.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=75 slot=11
+2026-08-09T10:01:15.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=130
+2026-08-09T10:01:15.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10753 nack=0 dtx=0
+2026-08-09T10:01:15.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=33 capacity=256 gc_pending=0
+2026-08-09T10:01:15.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=75 slot=15
+2026-08-09T10:01:15.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=130
+2026-08-09T10:01:15.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10757 nack=4 dtx=0
+2026-08-09T10:01:15.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=61 capacity=256 gc_pending=0
+2026-08-09T10:01:16.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=75 slot=19
+2026-08-09T10:01:16.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=130
+2026-08-09T10:01:16.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10761 nack=8 dtx=0
+2026-08-09T10:01:16.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=89 capacity=256 gc_pending=0
+2026-08-09T10:01:16.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=76 slot=3
+2026-08-09T10:01:16.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=130
+2026-08-09T10:01:16.600000 [BBL    ] [INFO ] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10765 nack=2 dtx=0
+2026-08-09T10:01:16.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=20 capacity=256 gc_pending=0
+2026-08-09T10:01:16.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=76 slot=7
+2026-08-09T10:01:16.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=130
+2026-08-09T10:01:17.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10769 nack=6 dtx=0
+2026-08-09T10:01:17.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=48 capacity=256 gc_pending=0
+2026-08-09T10:01:17.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=77 slot=11
+2026-08-09T10:01:17.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=130
+2026-08-09T10:01:17.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10773 nack=0 dtx=0
+2026-08-09T10:01:17.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=76 capacity=256 gc_pending=0
+2026-08-09T10:01:17.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=77 slot=15
+2026-08-09T10:01:17.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=131
+2026-08-09T10:01:17.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10777 nack=4 dtx=0
+2026-08-09T10:01:17.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=7 capacity=256 gc_pending=0
+2026-08-09T10:01:18.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=77 slot=19
+2026-08-09T10:01:18.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=131
+2026-08-09T10:01:18.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10781 nack=8 dtx=0
+2026-08-09T10:01:18.300000 [BBL    ] [INFO ] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=35 capacity=256 gc_pending=0
+2026-08-09T10:01:18.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=78 slot=3
+2026-08-09T10:01:18.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=131
+2026-08-09T10:01:18.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10785 nack=2 dtx=0
+2026-08-09T10:01:18.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=63 capacity=256 gc_pending=0
+2026-08-09T10:01:18.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=78 slot=7
+2026-08-09T10:01:18.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=131
+2026-08-09T10:01:19.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10789 nack=6 dtx=0
+2026-08-09T10:01:19.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=91 capacity=256 gc_pending=0
+2026-08-09T10:01:19.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=79 slot=11
+2026-08-09T10:01:19.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=131
+2026-08-09T10:01:19.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10793 nack=0 dtx=0
+2026-08-09T10:01:19.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=22 capacity=256 gc_pending=0
+2026-08-09T10:01:19.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=79 slot=15
+2026-08-09T10:01:19.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=131
+2026-08-09T10:01:19.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10797 nack=4 dtx=0
+2026-08-09T10:01:19.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=50 capacity=256 gc_pending=0
+2026-08-09T10:01:20.000000 [BBL    ] [INFO ] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=79 slot=19
+2026-08-09T10:01:20.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=132
+2026-08-09T10:01:20.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10801 nack=8 dtx=0
+2026-08-09T10:01:20.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=78 capacity=256 gc_pending=0
+2026-08-09T10:01:20.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=80 slot=3
+2026-08-09T10:01:20.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=132
+2026-08-09T10:01:20.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10805 nack=2 dtx=0
+2026-08-09T10:01:20.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=9 capacity=256 gc_pending=0
+2026-08-09T10:01:20.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=80 slot=7
+2026-08-09T10:01:20.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=132
+2026-08-09T10:01:21.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10809 nack=6 dtx=0
+2026-08-09T10:01:21.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=37 capacity=256 gc_pending=0
+2026-08-09T10:01:21.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=81 slot=11
+2026-08-09T10:01:21.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=132
+2026-08-09T10:01:21.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10813 nack=0 dtx=0
+2026-08-09T10:01:21.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=65 capacity=256 gc_pending=0
+2026-08-09T10:01:21.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=81 slot=15
+2026-08-09T10:01:21.700000 [BBL    ] [INFO ] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=132
+2026-08-09T10:01:21.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10817 nack=4 dtx=0
+2026-08-09T10:01:21.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=93 capacity=256 gc_pending=0
+2026-08-09T10:01:22.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=81 slot=19
+2026-08-09T10:01:22.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=132
+2026-08-09T10:01:22.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10821 nack=8 dtx=0
+2026-08-09T10:01:22.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=24 capacity=256 gc_pending=0
+2026-08-09T10:01:22.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=82 slot=3
+2026-08-09T10:01:22.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=132
+2026-08-09T10:01:22.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10825 nack=2 dtx=0
+2026-08-09T10:01:22.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=52 capacity=256 gc_pending=0
+2026-08-09T10:01:22.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=82 slot=7
+2026-08-09T10:01:22.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=133
+2026-08-09T10:01:23.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10829 nack=6 dtx=0
+2026-08-09T10:01:23.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=80 capacity=256 gc_pending=0
+2026-08-09T10:01:23.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=83 slot=11
+2026-08-09T10:01:23.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=133
+2026-08-09T10:01:23.400000 [BBL    ] [INFO ] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10833 nack=0 dtx=0
+2026-08-09T10:01:23.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=11 capacity=256 gc_pending=0
+2026-08-09T10:01:23.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=83 slot=15
+2026-08-09T10:01:23.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=133
+2026-08-09T10:01:23.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10837 nack=4 dtx=0
+2026-08-09T10:01:23.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=39 capacity=256 gc_pending=0
+2026-08-09T10:01:24.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=83 slot=19
+2026-08-09T10:01:24.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=133
+2026-08-09T10:01:24.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10841 nack=8 dtx=0
+2026-08-09T10:01:24.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=67 capacity=256 gc_pending=0
+2026-08-09T10:01:24.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=84 slot=3
+2026-08-09T10:01:24.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=133
+2026-08-09T10:01:24.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10845 nack=2 dtx=0
+2026-08-09T10:01:24.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=95 capacity=256 gc_pending=0
+2026-08-09T10:01:24.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=84 slot=7
+2026-08-09T10:01:24.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=133
+2026-08-09T10:01:25.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10849 nack=6 dtx=0
+2026-08-09T10:01:25.100000 [BBL    ] [INFO ] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=26 capacity=256 gc_pending=0
+2026-08-09T10:01:25.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=85 slot=11
+2026-08-09T10:01:25.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=134
+2026-08-09T10:01:25.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10853 nack=0 dtx=0
+2026-08-09T10:01:25.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=54 capacity=256 gc_pending=0
+2026-08-09T10:01:25.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=85 slot=15
+2026-08-09T10:01:25.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=134
+2026-08-09T10:01:25.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10857 nack=4 dtx=0
+2026-08-09T10:01:25.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=82 capacity=256 gc_pending=0
+2026-08-09T10:01:26.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=85 slot=19
+2026-08-09T10:01:26.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=134
+2026-08-09T10:01:26.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10861 nack=8 dtx=0
+2026-08-09T10:01:26.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=13 capacity=256 gc_pending=0
+2026-08-09T10:01:26.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=86 slot=3
+2026-08-09T10:01:26.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=134
+2026-08-09T10:01:26.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10865 nack=2 dtx=0
+2026-08-09T10:01:26.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=41 capacity=256 gc_pending=0
+2026-08-09T10:01:26.800000 [BBL    ] [INFO ] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=86 slot=7
+2026-08-09T10:01:26.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=134
+2026-08-09T10:01:27.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10869 nack=6 dtx=0
+2026-08-09T10:01:27.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=69 capacity=256 gc_pending=0
+2026-08-09T10:01:27.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=87 slot=11
+2026-08-09T10:01:27.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=134
+2026-08-09T10:01:27.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10873 nack=0 dtx=0
+2026-08-09T10:01:27.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=0 capacity=256 gc_pending=0
+2026-08-09T10:01:27.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=87 slot=15
+2026-08-09T10:01:27.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=135
+2026-08-09T10:01:27.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10877 nack=4 dtx=0
+2026-08-09T10:01:27.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=28 capacity=256 gc_pending=0
+2026-08-09T10:01:28.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=87 slot=19
+2026-08-09T10:01:28.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=135
+2026-08-09T10:01:28.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10881 nack=8 dtx=0
+2026-08-09T10:01:28.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=56 capacity=256 gc_pending=0
+2026-08-09T10:01:28.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=88 slot=3
+2026-08-09T10:01:28.500000 [BBL    ] [INFO ] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=135
+2026-08-09T10:01:28.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10885 nack=2 dtx=0
+2026-08-09T10:01:28.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=84 capacity=256 gc_pending=0
+2026-08-09T10:01:28.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=88 slot=7
+2026-08-09T10:01:28.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=135
+2026-08-09T10:01:29.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10889 nack=6 dtx=0
+2026-08-09T10:01:29.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=15 capacity=256 gc_pending=0
+2026-08-09T10:01:29.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=89 slot=11
+2026-08-09T10:01:29.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=135
+2026-08-09T10:01:29.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10893 nack=0 dtx=0
+2026-08-09T10:01:29.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=43 capacity=256 gc_pending=0
+2026-08-09T10:01:29.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=89 slot=15
+2026-08-09T10:01:29.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=135
+2026-08-09T10:01:29.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10897 nack=4 dtx=0
+2026-08-09T10:01:29.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=71 capacity=256 gc_pending=0
+2026-08-09T10:01:30.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=89 slot=19
+2026-08-09T10:01:30.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=136
+2026-08-09T10:01:30.200000 [BBL    ] [INFO ] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10901 nack=8 dtx=0
+2026-08-09T10:01:30.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=2 capacity=256 gc_pending=0
+2026-08-09T10:01:30.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=90 slot=3
+2026-08-09T10:01:30.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=136
+2026-08-09T10:01:30.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10905 nack=2 dtx=0
+2026-08-09T10:01:30.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=30 capacity=256 gc_pending=0
+2026-08-09T10:01:30.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=90 slot=7
+2026-08-09T10:01:30.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=136
+2026-08-09T10:01:31.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10909 nack=6 dtx=0
+2026-08-09T10:01:31.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=58 capacity=256 gc_pending=0
+2026-08-09T10:01:31.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=91 slot=11
+2026-08-09T10:01:31.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=136
+2026-08-09T10:01:31.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10913 nack=0 dtx=0
+2026-08-09T10:01:31.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=86 capacity=256 gc_pending=0
+2026-08-09T10:01:31.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=91 slot=15
+2026-08-09T10:01:31.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=136
+2026-08-09T10:01:31.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10917 nack=4 dtx=0
+2026-08-09T10:01:31.900000 [BBL    ] [INFO ] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=17 capacity=256 gc_pending=0
+2026-08-09T10:01:32.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=91 slot=19
+2026-08-09T10:01:32.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=136
+2026-08-09T10:01:32.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10921 nack=8 dtx=0
+2026-08-09T10:01:32.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=45 capacity=256 gc_pending=0
+2026-08-09T10:01:32.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=92 slot=3
+2026-08-09T10:01:32.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=136
+2026-08-09T10:01:32.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10925 nack=2 dtx=0
+2026-08-09T10:01:32.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=73 capacity=256 gc_pending=0
+2026-08-09T10:01:32.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=92 slot=7
+2026-08-09T10:01:32.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=137
+2026-08-09T10:01:33.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10929 nack=6 dtx=0
+2026-08-09T10:01:33.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=4 capacity=256 gc_pending=0
+2026-08-09T10:01:33.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=93 slot=11
+2026-08-09T10:01:33.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=137
+2026-08-09T10:01:33.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10933 nack=0 dtx=0
+2026-08-09T10:01:33.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=32 capacity=256 gc_pending=0
+2026-08-09T10:01:33.600000 [BBL    ] [INFO ] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=93 slot=15
+2026-08-09T10:01:33.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=137
+2026-08-09T10:01:33.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10937 nack=4 dtx=0
+2026-08-09T10:01:33.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=60 capacity=256 gc_pending=0
+2026-08-09T10:01:34.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=93 slot=19
+2026-08-09T10:01:34.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=137
+2026-08-09T10:01:34.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10941 nack=8 dtx=0
+2026-08-09T10:01:34.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=88 capacity=256 gc_pending=0
+2026-08-09T10:01:34.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=94 slot=3
+2026-08-09T10:01:34.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=137
+2026-08-09T10:01:34.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10945 nack=2 dtx=0
+2026-08-09T10:01:34.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=19 capacity=256 gc_pending=0
+2026-08-09T10:01:34.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=94 slot=7
+2026-08-09T10:01:34.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=137
+2026-08-09T10:01:35.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10949 nack=6 dtx=0
+2026-08-09T10:01:35.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=47 capacity=256 gc_pending=0
+2026-08-09T10:01:35.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=95 slot=11
+2026-08-09T10:01:35.300000 [BBL    ] [INFO ] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=138
+2026-08-09T10:01:35.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10953 nack=0 dtx=0
+2026-08-09T10:01:35.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=75 capacity=256 gc_pending=0
+2026-08-09T10:01:35.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=95 slot=15
+2026-08-09T10:01:35.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=138
+2026-08-09T10:01:35.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10957 nack=4 dtx=0
+2026-08-09T10:01:35.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=6 capacity=256 gc_pending=0
+2026-08-09T10:01:36.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=95 slot=19
+2026-08-09T10:01:36.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=138
+2026-08-09T10:01:36.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10961 nack=8 dtx=0
+2026-08-09T10:01:36.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=34 capacity=256 gc_pending=0
+2026-08-09T10:01:36.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=96 slot=3
+2026-08-09T10:01:36.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=138
+2026-08-09T10:01:36.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10965 nack=2 dtx=0
+2026-08-09T10:01:36.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=62 capacity=256 gc_pending=0
+2026-08-09T10:01:36.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=96 slot=7
+2026-08-09T10:01:36.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=138
+2026-08-09T10:01:37.000000 [BBL    ] [INFO ] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10969 nack=6 dtx=0
+2026-08-09T10:01:37.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=90 capacity=256 gc_pending=0
+2026-08-09T10:01:37.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=97 slot=11
+2026-08-09T10:01:37.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=138
+2026-08-09T10:01:37.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10973 nack=0 dtx=0
+2026-08-09T10:01:37.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=21 capacity=256 gc_pending=0
+2026-08-09T10:01:37.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=97 slot=15
+2026-08-09T10:01:37.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=139
+2026-08-09T10:01:37.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10977 nack=4 dtx=0
+2026-08-09T10:01:37.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=49 capacity=256 gc_pending=0
+2026-08-09T10:01:38.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=97 slot=19
+2026-08-09T10:01:38.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=139
+2026-08-09T10:01:38.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10981 nack=8 dtx=0
+2026-08-09T10:01:38.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=77 capacity=256 gc_pending=0
+2026-08-09T10:01:38.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=98 slot=3
+2026-08-09T10:01:38.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=139
+2026-08-09T10:01:38.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10985 nack=2 dtx=0
+2026-08-09T10:01:38.700000 [BBL    ] [INFO ] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=8 capacity=256 gc_pending=0
+2026-08-09T10:01:38.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=98 slot=7
+2026-08-09T10:01:38.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=139
+2026-08-09T10:01:39.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10989 nack=6 dtx=0
+2026-08-09T10:01:39.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=36 capacity=256 gc_pending=0
+2026-08-09T10:01:39.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=99 slot=11
+2026-08-09T10:01:39.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=139
+2026-08-09T10:01:39.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10993 nack=0 dtx=0
+2026-08-09T10:01:39.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=64 capacity=256 gc_pending=0
+2026-08-09T10:01:39.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=99 slot=15
+2026-08-09T10:01:39.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=139
+2026-08-09T10:01:39.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=10997 nack=4 dtx=0
+2026-08-09T10:01:39.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=92 capacity=256 gc_pending=0
+2026-08-09T10:01:40.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=99 slot=19
+2026-08-09T10:01:40.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=140
+2026-08-09T10:01:40.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11001 nack=8 dtx=0
+2026-08-09T10:01:40.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=23 capacity=256 gc_pending=0
+2026-08-09T10:01:40.400000 [BBL    ] [INFO ] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=100 slot=3
+2026-08-09T10:01:40.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=140
+2026-08-09T10:01:40.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11005 nack=2 dtx=0
+2026-08-09T10:01:40.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=51 capacity=256 gc_pending=0
+2026-08-09T10:01:40.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=100 slot=7
+2026-08-09T10:01:40.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=140
+2026-08-09T10:01:41.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11009 nack=6 dtx=0
+2026-08-09T10:01:41.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=79 capacity=256 gc_pending=0
+2026-08-09T10:01:41.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=101 slot=11
+2026-08-09T10:01:41.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=140
+2026-08-09T10:01:41.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11013 nack=0 dtx=0
+2026-08-09T10:01:41.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=10 capacity=256 gc_pending=0
+2026-08-09T10:01:41.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=101 slot=15
+2026-08-09T10:01:41.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=140
+2026-08-09T10:01:41.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11017 nack=4 dtx=0
+2026-08-09T10:01:41.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=38 capacity=256 gc_pending=0
+2026-08-09T10:01:42.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=101 slot=19
+2026-08-09T10:01:42.100000 [BBL    ] [INFO ] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=140
+2026-08-09T10:01:42.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11021 nack=8 dtx=0
+2026-08-09T10:01:42.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=66 capacity=256 gc_pending=0
+2026-08-09T10:01:42.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=102 slot=3
+2026-08-09T10:01:42.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=140
+2026-08-09T10:01:42.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11025 nack=2 dtx=0
+2026-08-09T10:01:42.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=94 capacity=256 gc_pending=0
+2026-08-09T10:01:42.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=102 slot=7
+2026-08-09T10:01:42.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=141
+2026-08-09T10:01:43.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11029 nack=6 dtx=0
+2026-08-09T10:01:43.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=25 capacity=256 gc_pending=0
+2026-08-09T10:01:43.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=103 slot=11
+2026-08-09T10:01:43.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=141
+2026-08-09T10:01:43.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11033 nack=0 dtx=0
+2026-08-09T10:01:43.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=53 capacity=256 gc_pending=0
+2026-08-09T10:01:43.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=103 slot=15
+2026-08-09T10:01:43.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=141
+2026-08-09T10:01:43.800000 [BBL    ] [INFO ] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11037 nack=4 dtx=0
+2026-08-09T10:01:43.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=81 capacity=256 gc_pending=0
+2026-08-09T10:01:44.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=103 slot=19
+2026-08-09T10:01:44.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=141
+2026-08-09T10:01:44.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11041 nack=8 dtx=0
+2026-08-09T10:01:44.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=12 capacity=256 gc_pending=0
+2026-08-09T10:01:44.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=104 slot=3
+2026-08-09T10:01:44.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=141
+2026-08-09T10:01:44.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11045 nack=2 dtx=0
+2026-08-09T10:01:44.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=40 capacity=256 gc_pending=0
+2026-08-09T10:01:44.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=104 slot=7
+2026-08-09T10:01:44.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=141
+2026-08-09T10:01:45.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11049 nack=6 dtx=0
+2026-08-09T10:01:45.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=68 capacity=256 gc_pending=0
+2026-08-09T10:01:45.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=105 slot=11
+2026-08-09T10:01:45.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=142
+2026-08-09T10:01:45.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11053 nack=0 dtx=0
+2026-08-09T10:01:45.500000 [BBL    ] [INFO ] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=96 capacity=256 gc_pending=0
+2026-08-09T10:01:45.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=105 slot=15
+2026-08-09T10:01:45.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=142
+2026-08-09T10:01:45.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11057 nack=4 dtx=0
+2026-08-09T10:01:45.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=27 capacity=256 gc_pending=0
+2026-08-09T10:01:46.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=105 slot=19
+2026-08-09T10:01:46.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=142
+2026-08-09T10:01:46.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11061 nack=8 dtx=0
+2026-08-09T10:01:46.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=55 capacity=256 gc_pending=0
+2026-08-09T10:01:46.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=106 slot=3
+2026-08-09T10:01:46.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=142
+2026-08-09T10:01:46.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11065 nack=2 dtx=0
+2026-08-09T10:01:46.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=83 capacity=256 gc_pending=0
+2026-08-09T10:01:46.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=106 slot=7
+2026-08-09T10:01:46.900000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=142
+2026-08-09T10:01:47.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11069 nack=6 dtx=0
+2026-08-09T10:01:47.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=14 capacity=256 gc_pending=0
+2026-08-09T10:01:47.200000 [BBL    ] [INFO ] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=107 slot=11
+2026-08-09T10:01:47.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=142
+2026-08-09T10:01:47.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11073 nack=0 dtx=0
+2026-08-09T10:01:47.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=42 capacity=256 gc_pending=0
+2026-08-09T10:01:47.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=107 slot=15
+2026-08-09T10:01:47.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=143
+2026-08-09T10:01:47.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11077 nack=4 dtx=0
+2026-08-09T10:01:47.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=70 capacity=256 gc_pending=0
+2026-08-09T10:01:48.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=107 slot=19
+2026-08-09T10:01:48.100000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=143
+2026-08-09T10:01:48.200000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11081 nack=8 dtx=0
+2026-08-09T10:01:48.300000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=1 capacity=256 gc_pending=0
+2026-08-09T10:01:48.400000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=108 slot=3
+2026-08-09T10:01:48.500000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=143
+2026-08-09T10:01:48.600000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11085 nack=2 dtx=0
+2026-08-09T10:01:48.700000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=29 capacity=256 gc_pending=0
+2026-08-09T10:01:48.800000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=108 slot=7
+2026-08-09T10:01:48.900000 [BBL    ] [INFO ] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=143
+2026-08-09T10:01:49.000000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11089 nack=6 dtx=0
+2026-08-09T10:01:49.100000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=57 capacity=256 gc_pending=0
+2026-08-09T10:01:49.200000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=109 slot=11
+2026-08-09T10:01:49.300000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=143
+2026-08-09T10:01:49.400000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11093 nack=0 dtx=0
+2026-08-09T10:01:49.500000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=85 capacity=256 gc_pending=0
+2026-08-09T10:01:49.600000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=109 slot=15
+2026-08-09T10:01:49.700000 [BBL    ] [DEBUG] [thread=bbl-0] pipeline_id={{PIPELINE_ID}} subscription_health peer=bbh RX=ESTABLISHED TX=ESTABLISHED generation=143
+2026-08-09T10:01:49.800000 [BBL    ] [DEBUG] [thread=bbl-1] pipeline_id={{PIPELINE_ID}} harq_window cell=NR_CELL_0 ack=11097 nack=4 dtx=0
+2026-08-09T10:01:49.900000 [BBL    ] [DEBUG] [thread=bbl-2] pipeline_id={{PIPELINE_ID}} context_pool used=16 capacity=256 gc_pending=0
+2026-08-09T10:01:50.000000 [BBL    ] [DEBUG] [thread=bbl-3] pipeline_id={{PIPELINE_ID}} cell_tick cell=NR_CELL_0 state=ACTIVE sfn=109 slot=19
+2026-08-09T10:01:52.000000 [BBL    ] [INFO ] [thread=bbl-fault] pipeline_id={{PIPELINE_ID}} RRCSetup sent cell=NR_CELL_0 rnti=0x4601 transaction_id=2 srb0_bytes=164
+2026-08-09T10:01:54.000000 [BBL    ] [DEBUG] [thread=bbl-fault] pipeline_id={{PIPELINE_ID}} rrc_transaction transaction_id=2 state=WAIT_SETUP_COMPLETE elapsed_ms=2000 ul_ccch_rx=0
+2026-08-09T10:01:56.000000 [BBL    ] [ERROR] [thread=bbl-fault] pipeline_id={{PIPELINE_ID}} RRC_SETUP_INCOMPLETE errorcode=E-BBL-3306 rnti=0x4601 transaction_id=2 timeout_ms=4000 probable_component=ue_or_radio_link
+2026-08-09T10:01:59.000000 [BBL    ] [DEBUG] [thread=main] pipeline_id={{PIPELINE_ID}} diagnostic_snapshot component=bbl flush=complete

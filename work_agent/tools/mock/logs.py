@@ -1,25 +1,30 @@
-"""Mock 日志 tool：按 scenario 生成可判别的长日志。"""
+"""Mock 日志工具：兼容旧长日志，并支持六组件分层 benchmark。"""
 
 from __future__ import annotations
 
+import json
 import random
 import re
-from typing import Literal
+from functools import lru_cache
 
-MockScenario = Literal["all_pass", "version_fail", "case_error", "env_error"]
+from work_agent.tools.mock.scenarios import (
+    LOG_COMPONENTS,
+    MockScenario,
+    benchmark_logs_root,
+    error_codes_path,
+    get_benchmark_scenario,
+    scenario_fail_kind,
+)
 
-# 默认拉到数千行，模拟真实流水线日志。INFO 噪声占绝大多数；失败场景在
-# 特征证据 *之前* 插入足够多的 ERROR 噪声，把单次观察撑到
-# react_observation_max_chars（4000）附近，好让 8 步 ReAct 顶满
-# react_history_max_chars（20K），多份去重后的大块再顶满抽取预算（12K）触发 Compressor。
-# 观察截断改为留尾，根因行在文件末尾，不会被噪声从头部挤掉。
+# 旧四场景继续生成 8000 行，避免破坏上下文压缩回归测试。20 组 benchmark 则从
+# 仓库内的 120 个 .log 文件读取，每组约 6600 行。
 _DEFAULT_TOTAL_LINES = 8000
-# 约 80 * 80 字 ≈ 6.4K keyed，压缩到 4000 时留尾部（含特征证据）。
 _ERROR_NOISE_LINES = 80
+_PIPELINE_PLACEHOLDER = "{{PIPELINE_ID}}"
 
 
 class MockLogTool:
-    """实现 LogTool：按 scenario 生成可 grep 的假日志。"""
+    """按 scenario 提供可列举、分组件拉取、跨组件 grep 的只读日志。"""
 
     def __init__(
         self,
@@ -28,44 +33,79 @@ class MockLogTool:
         total_lines: int = _DEFAULT_TOTAL_LINES,
         error_noise_lines: int = _ERROR_NOISE_LINES,
     ) -> None:
-        """
-        参数:
-            scenario: 决定尾部错误特征。
-            total_lines: 生成日志总行数；INFO 噪声填满额度，特征行占尾部。
-            error_noise_lines: 失败场景在特征证据前插入的 ERROR 噪声行数；
-                ``all_pass`` 忽略此项，避免尾部出现 ERROR。
-        """
+        scenario_fail_kind(scenario)  # 构造期校验名称。
         self.scenario = scenario
         self.total_lines = max(50, total_lines)
         self.error_noise_lines = max(0, error_noise_lines)
+
+    @property
+    def is_layered(self) -> bool:
+        """当前是否为六组件 benchmark 场景。"""
+        return get_benchmark_scenario(self.scenario) is not None
+
+    def list_logs(self, pipeline_id: str) -> str:
+        """列出可用日志文件、组件、行数与 UTF-8 字节数。"""
+        pid = (pipeline_id or "").strip() or "(empty)"
+        if not self.is_layered:
+            lines = self._legacy_lines(pid)
+            payload = {
+                "pipeline_id": pid,
+                "scenario": self.scenario,
+                "layered": False,
+                "files": [
+                    {
+                        "file": "pipeline.log",
+                        "component": "all",
+                        "lines": len(lines),
+                        "bytes": len("\n".join(lines).encode("utf-8")),
+                    }
+                ],
+            }
+            return json.dumps(payload, ensure_ascii=False, indent=2)
+
+        files = []
+        for component in LOG_COMPONENTS:
+            template = _read_component_template(self.scenario, component)
+            files.append(
+                {
+                    "file": f"{component}.log",
+                    "component": component,
+                    "lines": len(template),
+                    "bytes": len(("\n".join(template) + "\n").encode("utf-8")),
+                }
+            )
+        payload = {
+            "pipeline_id": pid,
+            "scenario": self.scenario,
+            "layered": True,
+            "components": list(LOG_COMPONENTS),
+            "files": files,
+        }
+        return json.dumps(payload, ensure_ascii=False, indent=2)
 
     def fetch_logs(
         self,
         pipeline_id: str,
         *,
         tail_lines: int | None = 200,
+        component: str | None = None,
     ) -> str:
-        """
-        拉取日志（可截尾）。
-
-        参数:
-            pipeline_id: 流水线 id（参与确定性随机种子）。
-            tail_lines: None 返回全文；否则尾部 N 行。
-
-        返回:
-            带 ``[log meta]`` 首行的日志文本。
-        """
-        lines = self._full_lines(pipeline_id)
+        """拉取单组件日志或六组件按时间排序后的合并时间线。"""
+        pid = (pipeline_id or "").strip() or "(empty)"
+        selected = self._normalize_component(component)
+        lines = self._full_lines(pid, selected)
         total = len(lines)
         if tail_lines is None or tail_lines >= total:
             body = lines
             truncated = False
         else:
-            body = lines[-tail_lines:]
+            count = max(0, tail_lines)
+            body = lines[-count:] if count else ()
             truncated = True
+        label = selected or ("all" if self.is_layered else "pipeline")
         meta = (
-            f"[log meta] pipeline_id={pipeline_id or '(empty)'} "
-            f"total_lines={total} returned_lines={len(body)} "
+            f"[log meta] pipeline_id={pid} scenario={self.scenario} "
+            f"component={label} total_lines={total} returned_lines={len(body)} "
             f"truncated={str(truncated).lower()}"
         )
         return meta + "\n" + "\n".join(body)
@@ -77,72 +117,115 @@ class MockLogTool:
         *,
         context_lines: int = 3,
         max_matches: int = 20,
+        component: str | None = None,
     ) -> str:
-        """
-        在全文上按正则检索，带上下文。
-
-        参数:
-            pipeline_id: 流水线 id。
-            pattern: 正则；非法时返回错误说明。
-            context_lines: 命中行前后保留行数。
-            max_matches: 最多命中数。
-
-        返回:
-            可读 grep 结果文本。
-        """
-        lines = self._full_lines(pipeline_id)
+        """在单组件或合并时间线上按正则检索，返回命中及上下文。"""
+        pid = (pipeline_id or "").strip() or "(empty)"
+        selected = self._normalize_component(component)
+        lines = self._full_lines(pid, selected)
         try:
             rx = re.compile(pattern, re.IGNORECASE)
         except re.error as exc:
             return f"[grep error] 非法正则: {exc}"
 
+        limit = max(1, max_matches)
         hits: list[int] = []
-        for i, line in enumerate(lines):
+        for index, line in enumerate(lines):
             if rx.search(line):
-                hits.append(i)
-            if len(hits) >= max_matches:
+                hits.append(index)
+            if len(hits) >= limit:
                 break
 
+        label = selected or ("all" if self.is_layered else "pipeline")
         if not hits:
-            return f"[grep] pattern={pattern!r} matches=0"
+            return f"[grep] component={label} pattern={pattern!r} matches=0"
 
-        blocks: list[str] = [
-            f"[grep] pattern={pattern!r} matches={len(hits)}"
-            + (" (truncated)" if len(hits) >= max_matches else "")
+        blocks = [
+            f"[grep] component={label} pattern={pattern!r} matches={len(hits)}"
+            + (" (truncated)" if len(hits) >= limit else "")
         ]
         ctx = max(0, context_lines)
-        for idx in hits:
-            start = max(0, idx - ctx)
-            end = min(len(lines), idx + ctx + 1)
-            blocks.append(f"--- match at line {idx + 1} ---")
-            for j in range(start, end):
-                mark = ">" if j == idx else " "
-                blocks.append(f"{mark} {j + 1}: {lines[j]}")
+        for index in hits:
+            start = max(0, index - ctx)
+            end = min(len(lines), index + ctx + 1)
+            blocks.append(f"--- match at line {index + 1} ---")
+            for line_index in range(start, end):
+                mark = ">" if line_index == index else " "
+                blocks.append(f"{mark} {line_index + 1}: {lines[line_index]}")
         return "\n".join(blocks)
 
-    def _full_lines(self, pipeline_id: str) -> list[str]:
-        """按 pipeline_id+scenario 生成确定性假日志全文。"""
-        pid = (pipeline_id or "").strip() or "(empty)"
-        seed = hash(f"{pid}:{self.scenario}") % (2**32)
-        rng = random.Random(seed)
+    def lookup_error_code(self, code: str) -> str:
+        """按完整错误码或摘要关键词查询 synthetic 错误码目录。"""
+        query = (code or "").strip().lower()
+        if not query:
+            return "[error-code] empty query"
+        matches = []
+        for item in _read_error_codes():
+            haystack = " ".join(
+                [
+                    str(item.get("code") or ""),
+                    str(item.get("summary") or ""),
+                    " ".join(str(value) for value in item.get("probable_components") or []),
+                ]
+            ).lower()
+            if query in haystack:
+                matches.append(item)
+        if not matches:
+            return f"[error-code] query={code!r} matches=0"
+        return json.dumps(
+            {"query": code, "matches": len(matches), "codes": matches[:10]},
+            ensure_ascii=False,
+            indent=2,
+        )
 
-        signature = _signature_lines(self.scenario)
+    def _normalize_component(self, component: str | None) -> str | None:
+        value = (component or "").strip().lower()
+        if not value or value in {"all", "*", "merged"}:
+            return None
+        if not self.is_layered:
+            raise ValueError("旧 mock 场景只有 pipeline.log，不支持 component 参数")
+        if value not in LOG_COMPONENTS:
+            raise ValueError(
+                f"未知日志组件 {component!r}；可选: {', '.join(LOG_COMPONENTS)}"
+            )
+        return value
+
+    @lru_cache(maxsize=64)
+    def _full_lines(self, pipeline_id: str, component: str | None) -> tuple[str, ...]:
+        """返回替换过 pipeline_id 的确定性日志；合并模式按时间戳排序。"""
+        if not self.is_layered:
+            return tuple(self._legacy_lines(pipeline_id))
+
+        components = (component,) if component else LOG_COMPONENTS
+        lines: list[str] = []
+        for name in components:
+            template = _read_component_template(self.scenario, name)
+            lines.extend(line.replace(_PIPELINE_PLACEHOLDER, pipeline_id) for line in template)
+        if component is None:
+            # 所有行都以 ISO 时间戳开头；整行排序也会自然用组件字段打破同毫秒并列。
+            lines.sort()
+        return tuple(lines)
+
+    def _legacy_lines(self, pipeline_id: str) -> list[str]:
+        """保留旧四场景的 8000 行生成逻辑。"""
+        seed = _stable_seed(f"{pipeline_id}:{self.scenario}")
+        rng = random.Random(seed)
+        signature = _legacy_signature_lines(self.scenario)
         error_noise = (
             []
             if self.scenario == "all_pass"
             else _error_noise_lines(rng, self.error_noise_lines)
         )
         header = [
-            f"[mock-log] pipeline_id={pid} scenario={self.scenario}",
+            f"[mock-log] pipeline_id={pipeline_id} scenario={self.scenario}",
             "2026-08-09 10:00:00 INFO runner boot ok",
             "2026-08-09 10:00:01 INFO start case CaseA_235T_nmimo",
         ]
         reserved = len(header) + len(error_noise) + len(signature)
         info_n = max(0, self.total_lines - reserved)
-
-        lines: list[str] = list(header)
-        for i in range(info_n):
-            sec = 2 + (i % 50)
+        lines = list(header)
+        for index in range(info_n):
+            sec = 2 + (index % 50)
             kind = rng.choice(["INFO", "INFO", "INFO", "DEBUG", "WARN"])
             msg = rng.choice(
                 [
@@ -153,16 +236,36 @@ class MockLogTool:
                     "wait slot grant",
                 ]
             )
-            lines.append(f"2026-08-09 10:00:{sec:02d} {kind} {msg} seq={i}")
-
-        # 特征证据必须在文件最末：tail_lines=80 的单测和默认 tail=200 都要能看到。
+            lines.append(f"2026-08-09 10:00:{sec:02d} {kind} {msg} seq={index}")
         lines.extend(error_noise)
         lines.extend(signature)
         return lines
 
 
-def _signature_lines(scenario: MockScenario) -> list[str]:
-    """场景可判别的尾部特征。eval 的 expected_evidence_keys 绑在这些行上。"""
+@lru_cache(maxsize=128)
+def _read_component_template(scenario: str, component: str) -> tuple[str, ...]:
+    path = benchmark_logs_root() / scenario / f"{component}.log"
+    if not path.is_file():
+        raise FileNotFoundError(f"benchmark 分层日志不存在: {path}")
+    return tuple(path.read_text(encoding="utf-8").splitlines())
+
+
+@lru_cache(maxsize=1)
+def _read_error_codes() -> tuple[dict[str, object], ...]:
+    raw = json.loads(error_codes_path().read_text(encoding="utf-8"))
+    return tuple(dict(item) for item in raw.get("codes") or [])
+
+
+def _stable_seed(value: str) -> int:
+    """不用进程随机化的 hash()，保证跨进程生成完全一致。"""
+    out = 2166136261
+    for char in value:
+        out ^= ord(char)
+        out = (out * 16777619) & 0xFFFFFFFF
+    return out
+
+
+def _legacy_signature_lines(scenario: MockScenario) -> list[str]:
     if scenario == "all_pass":
         return [
             "2026-08-09 10:05:01 INFO assert kpi=0.995 threshold=0.99",
@@ -191,22 +294,15 @@ def _signature_lines(scenario: MockScenario) -> list[str]:
 
 
 def _error_noise_lines(rng: random.Random, n: int) -> list[str]:
-    """
-    失败场景的 ERROR 噪声。
-
-    故意不用场景特征词（KeyError / mismatch / refused / antenna_map 等），
-    避免污染 evidence_recall；但仍带 ERROR，好让 compress_observation 当成
-    证据行留下来，把单次观察撑到数千字符。
-    """
-    out: list[str] = []
-    msgs = (
+    """旧场景的非根因 ERROR 噪声；避免出现任何 golden 关键词。"""
+    out = []
+    messages = (
         "queue backpressure",
         "slot grant delayed",
         "kpi sample dropped",
         "sync slice lag",
         "buffer occupancy high",
     )
-    # 不得出现根因特征词，避免和 evidence_recall 抢窗口；ERROR 本身要保留。
     forbidden = (
         "fail",
         "exception",
@@ -217,9 +313,9 @@ def _error_noise_lines(rng: random.Random, n: int) -> list[str]:
         "keyerror",
         "mismatch",
     )
-    for i in range(n):
-        msg = rng.choice(msgs)
-        line = f"2026-08-09 10:04:{i % 60:02d} ERROR {msg} noise_seq={i}"
-        assert not any(k in line.lower() for k in forbidden), line
+    for index in range(n):
+        message = rng.choice(messages)
+        line = f"2026-08-09 10:04:{index % 60:02d} ERROR {message} noise_seq={index}"
+        assert not any(key in line.lower() for key in forbidden), line
         out.append(line)
     return out

@@ -8,12 +8,15 @@ from __future__ import annotations
 import re
 import uuid
 from dataclasses import dataclass, field
-from typing import Any, Literal
+from typing import Any
 
 from work_agent.tools.create_mode import resolve_create_env
+from work_agent.tools.mock.scenarios import (
+    MockScenario,
+    get_benchmark_scenario,
+    scenario_fail_kind,
+)
 from work_agent.tools.models import CaseResult, PipelineHandle, PipelineResult
-
-MockScenario = Literal["all_pass", "version_fail", "case_error", "env_error"]
 
 _CASE_NAME_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_-]{7,}$")
 
@@ -34,7 +37,7 @@ class _PipelineRecord:
 
 class MockPipelineTool:
     """
-    假流水线。四场景：all_pass / version_fail / case_error / env_error。
+    假流水线。兼容四个旧场景，并支持受版本控制的 20 组 benchmark。
     ticks_to_finish：query 被调用几次后才变 finished。
     """
 
@@ -45,9 +48,11 @@ class MockPipelineTool:
     ) -> None:
         """
         参数:
-            scenario: 预置故障/通过场景。
+            scenario: 预置故障/通过场景或 benchmark scenario 名。
             ticks_to_finish: 启动后需几次 query 才 finished。
         """
+        # 构造期校验，避免直到日志工具调用时才发现 scenario 拼错。
+        scenario_fail_kind(scenario)
         self.scenario = scenario
         self.ticks_to_finish = max(1, ticks_to_finish)
         self._runs: dict[str, _PipelineRecord] = {}
@@ -118,6 +123,14 @@ class MockPipelineTool:
         rec = self._require(pipeline_id)
         if rec.started:
             return True
+        benchmark = get_benchmark_scenario(self.scenario)
+        if benchmark is not None:
+            # benchmark 表示一份已经采集完成的离线诊断样本；状态只暴露通用
+            # 成败，不泄露 golden fail_kind/root_component。
+            rec.started = True
+            rec.finished = True
+            rec.results = self._build_results(rec.handle)
+            return True
         if self.scenario == "env_error":
             rec.started = True
             rec.finished = True
@@ -142,6 +155,22 @@ class MockPipelineTool:
                 pipeline_id=pipeline_id,
                 phase="created",
                 message="流水线已创建，尚未启动",
+            )
+
+        benchmark = get_benchmark_scenario(self.scenario)
+        if benchmark is not None:
+            if not rec.results:
+                rec.results = self._build_results(rec.handle)
+            passed = benchmark.fail_kind == "none"
+            return PipelineResult(
+                pipeline_id=pipeline_id,
+                phase="finished" if passed else "failed",
+                results=list(rec.results),
+                message=(
+                    "执行完成，断言通过"
+                    if passed
+                    else "流水线执行失败，请结合分组件日志定位根因"
+                ),
             )
 
         if self.scenario == "env_error":
@@ -200,6 +229,30 @@ class MockPipelineTool:
             out = [CaseResult(head, "error", "case", "用例脚本抛异常: KeyError")]
             out.extend(CaseResult(n, "pass", "none", "ok") for n in tail)
             return out
-        return [
-            CaseResult(n, "error", "env", "环境不可用，未真正执行") for n in names
+        if self.scenario == "env_error":
+            return [
+                CaseResult(n, "error", "env", "环境不可用，未真正执行") for n in names
+            ]
+
+        benchmark = get_benchmark_scenario(self.scenario)
+        if benchmark is None:  # __init__ 已校验；保留防御分支。
+            raise ValueError(f"未知 mock scenario: {self.scenario!r}")
+        if benchmark.fail_kind == "none":
+            return [
+                CaseResult(n, "pass", "none", "分层日志无持续故障，瞬态重试已恢复")
+                for n in names
+            ]
+        head, *tail = names
+        out = [
+            CaseResult(
+                head,
+                "error",
+                "unknown",
+                "用例执行失败，状态接口未提供根因，请分析分组件日志",
+            )
         ]
+        out.extend(
+            CaseResult(n, "error", "unknown", "前序用例失败，未提供根因")
+            for n in tail
+        )
+        return out

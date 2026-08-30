@@ -46,8 +46,14 @@ POLICIES: dict[str, ActionPolicy] = {
     "fetch_logs": ActionPolicy(
         "fetch_logs", read_only=True, requires_confirmation=False
     ),
+    "list_log_files": ActionPolicy(
+        "list_log_files", read_only=True, requires_confirmation=False
+    ),
     "grep_logs": ActionPolicy(
         "grep_logs", read_only=True, requires_confirmation=False
+    ),
+    "lookup_error_code": ActionPolicy(
+        "lookup_error_code", read_only=True, requires_confirmation=False
     ),
     "find_case_history": ActionPolicy(
         "find_case_history", read_only=True, requires_confirmation=False

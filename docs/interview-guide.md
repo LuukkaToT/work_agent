@@ -50,7 +50,171 @@
 
 1-8 是最初跑通的核心链路（单用户 CLI）；9-11 是后续加的 Agent Gateway / 多租户 / 权限层，面试官往深处问基本都落在这几个文件。其余（`cli.py` / `llm.py` / `skills.py` / `checkpoint.py` / `core/user_config.py`）属于工程外围，扫一眼即可。
 
-### 3. 跑起来看一遍
+更新后的故障诊断与 benchmark 再按下面顺序读，不要混进主图第一遍阅读：
+
+| 顺序 | 文件 | 看什么 |
+| --- | --- | --- |
+| 1 | [work_agent/graph/nodes/error_analysis.py](../work_agent/graph/nodes/error_analysis.py) | `run_diagnosis` 总编排、ReAct 与二次结构化抽取、最终度量字段 |
+| 2 | [work_agent/graph/helpers/agent_loop.py](../work_agent/graph/helpers/agent_loop.py) | 显式 model→tool→observation 循环，以及按完整 step 裁历史 |
+| 3 | [work_agent/graph/helpers/diagnose_tools.py](../work_agent/graph/helpers/diagnose_tools.py) | 诊断只读白名单；分组件日志、错误码和归档回读如何包装成 tool |
+| 4 | [work_agent/tools/mock/logs.py](../work_agent/tools/mock/logs.py) | 旧四场景与新六组件日志如何兼容；单组件读取、合并时间线和 grep |
+| 5 | [work_agent/tools/mock/scenarios.py](../work_agent/tools/mock/scenarios.py) | 20 组场景的共享数据契约和 fail kind 映射 |
+| 6 | [work_agent/eval/runner.py](../work_agent/eval/runner.py) | `case × strategy` 长表、证据留存、根因组件准确率与逐行落盘 |
+| 7 | [config/eval_cases.json](../config/eval_cases.json) | 20 组 golden 输入；注意期望标签不会进入 ReAct prompt |
+| 8 | [baseband-mock-benchmark.md](baseband-mock-benchmark.md) | 场景矩阵、日志规模、指标口径和运行命令 |
+
+### 3. 快速精通：不要通读，要完成四轮闭环
+
+“看懂”这个项目的最快方式不是从 `cli.py` 第一行读到最后一行，而是每轮都完成
+“画图 → 跑一次 → 改一个点 → 用测试证明”的闭环。建议用半天完成四轮；面试前时间紧，
+至少做完前两轮和最后的闭卷自测。
+
+#### 第一轮：15 分钟建立全局地图
+
+只回答三个问题：请求从哪里进、状态放在哪里、最后从哪里出。
+
+1. 看 `graph/state.py`，把字段手写分成“会话级”和“任务级”。
+2. 看 `graph/main_graph.py`，只找 `add_node`、`add_edge`、`add_conditional_edges`，不要读节点内部。
+3. 看 `router.py` 和 `respond.py`，确认入口如何分流、所有分支如何回到统一出口。
+
+辅助命令：
+
+```powershell
+rg -n "class TestFlowState|append_audit" work_agent/graph/state.py
+rg -n "add_node|add_edge|add_conditional_edges" work_agent/graph/main_graph.py
+rg -n "def route_|def respond" work_agent/graph/nodes
+```
+
+这一轮结束时，关掉代码，用一张纸画出：
+
+```text
+intake → router → analysis / execute / pipeline_ops / chat → respond → memory
+```
+
+画不出来就不要继续钻节点细节。
+
+#### 第二轮：30 分钟追一条执行请求
+
+用这句话作为固定样本：
+
+```text
+在 7.223.50.60 上用 27B 跑 HF_20B_PUSCH_1Cell_200M_hf_001
+```
+
+沿代码回答下面六个问题，并把答案写在自己的笔记里：
+
+1. `intake` 写入了哪些本轮字段，清空了哪些旧字段？
+2. `router` 为什么进入 execute，而不是 analysis？
+3. `exec_params` 怎样形成结构化计划，缺参数时在哪里暂停？
+4. 哪个节点触发人工确认，`Command(resume)` 从哪里回来？
+5. 为什么 create 超时不能直接重试，而 start 可以按同一个 id 重试？
+6. 临时 `local-*` 记录什么时候写，什么时候替换成服务端 `pipeline_id`？
+
+对应练习测试：
+
+```powershell
+python -m pytest `
+  tests/test_create_pipelines.py `
+  tests/test_exec_routes.py `
+  tests/test_hitl_ask_env.py `
+  tests/test_ledger.py -q
+```
+
+不要只看测试通过；任选一个测试，在纸上先预测它应该断言什么，再打开测试代码核对。
+
+#### 第三轮：45 分钟追一条故障诊断请求
+
+固定使用 `b08_rx_subscription_debug_stall`，因为它没有 ERROR，不能靠关键词猜答案。
+
+先离线检查分层日志，不调用 LLM：
+
+```powershell
+python -c "from work_agent.tools.mock.logs import MockLogTool; t=MockLogTool('bench08_rx_subscription_debug_stall'); print(t.list_logs('demo')); print(t.grep_logs('demo', 'request_subscribe|subscribe_ack', component='bbh'))"
+```
+
+然后按调用链阅读：
+
+```text
+error_analysis.run_diagnosis
+→ build_diagnose_tools
+→ run_agent_loop
+→ list_log_files / fetch_logs / grep_logs / lookup_error_code
+→ ContextManager
+→ ErrorAnalysisOut
+→ eval.runner 评分
+```
+
+必须能解释这四件事：
+
+- 为什么 `get_pipeline_status` 故意返回 `fail_kind=unknown`；
+- 为什么重复 `request_subscribe` 且没有 ACK 可以成为 DEBUG-only 故障证据；
+- 为什么 `probable_component` 只是下一步查找提示，不是根因标签；
+- 为什么最终同时看 kind accuracy、root-component accuracy 和 evidence recall。
+
+离线回归：
+
+```powershell
+python -m pytest `
+  tests/test_layered_mock_benchmark.py `
+  tests/test_diagnose_tools.py `
+  tests/test_run_diagnosis_strategies.py -q
+```
+
+配置好模型后再跑一次真实单 case；这条命令会调用 LLM：
+
+```powershell
+python -m work_agent.cli eval-diagnose `
+  --case b08_rx_subscription_debug_stall `
+  --strategy managed `
+  --no-store
+```
+
+#### 第四轮：60 分钟用小改动检验是否真正理解
+
+按难度做三个练习，每次都要求“先写失败测试，再改实现”：
+
+1. **入门：新增一个错误码。** 在错误码目录加入一个 synthetic code，让
+   `lookup_error_code` 能查到，同时补一条工具测试。练的是数据契约和只读 tool。
+2. **进阶：新增第 21 个场景。** 先把场景数量校验暂时改成允许 21，增加六个日志文件、
+   golden 证据和分类，再验证所有 evidence key 都能从日志中找到。练的是数据、mock、eval 三层一致性。
+3. **高阶：新增一个需要确认的写操作。** 先在 Policy 注册，再接 HITL 和审计；故意尝试把它
+   放进诊断白名单，确认构造期自检会拒绝。练的是权限边界，而不是业务功能本身。
+
+练习完成后用 `git diff` 逐行回答：改动影响了哪个状态字段、哪条图边、哪个 Protocol、
+哪项 Policy、哪些测试。如果只能说“我加了个功能”，还不算掌握架构。
+
+#### 每读一个函数都固定问四句话
+
+这是减少无效阅读最实用的模板：
+
+1. 输入来自哪个 state/tool/API 字段？
+2. 输出会被哪个下游节点消费？
+3. 有没有副作用，失败后能否重试？
+4. 哪个测试证明了它的边界？
+
+例如读 `create_pipelines` 时，不要复述代码，而要回答：“输入是已确认的执行计划；输出是
+pipeline handles 和审计；副作用是远端创建与台账写入；create 超时不能盲重试；对应测试注入
+TimeoutError 验证不会双建。”这才是面试需要的掌握程度。
+
+#### 闭卷自测：十分钟能答完才算会了
+
+关闭编辑器，口头回答：
+
+1. 为什么主流程用确定性 Graph，只有失败归因用 ReAct？
+2. 为什么状态要分会话级和任务级，谁负责每轮归零？
+3. `interrupt` 暂停后，CLI 和 HTTP 分别怎样恢复？
+4. create timeout、start timeout 的重试策略为什么不同？
+5. Protocol/mock/real 三层如何让公司 SDK 接入时不改图？
+6. 为什么 ReAct 历史必须按完整 step 裁，不能按单条 message 裁？
+7. managed 为什么可能字符更少但 LLM calls 更多？
+8. 无 ERROR 的 BBH/BBL 订阅故障怎样建立证据链？
+9. benchmark 怎样防止把 golden 标签泄漏给模型？
+10. 20 条 synthetic 数据能证明什么，不能证明什么？
+
+每题控制在 30-60 秒，并指出至少一个具体文件或测试。不会的题直接回到相应调用链，
+不要继续扩大阅读范围。
+
+### 4. 跑起来看一遍
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest tests -q          # 不碰库的单测会跑；台账/配置/checkpoint 连 POSTGRES_TEST_DSN，未配则 skip
@@ -69,7 +233,7 @@ REPL 里依次输入，能覆盖主图五条分支中的四条（`chat` 靠随�
 
 
 
-### 4. 整体数据流
+### 5. 整体数据流
 
 ```mermaid
 flowchart TD
@@ -106,9 +270,9 @@ flowchart TD
 
 
 
-### 5. 规模速记
+### 6. 规模速记
 
-约 6800 行业务代码 + 2700 行测试，208 个测试用例。分层：`core`（配置/LLM 路由/台账/checkpoint/身份/用户配置/权限表/skill）、`graph`（state/节点/子图）、`tools`（契约/mock/real 预留）、`api`（Agent Gateway）、`cli`。
+约 9,687 行业务 Python + 4,510 行测试，pytest 收集 339 个测试。另有 20 组分层日志 benchmark：120 个 `.log`、132,579 行、18.57 MiB。分层：`core`（配置/LLM 路由/台账/checkpoint/身份/用户配置/权限表/skill）、`graph`（state/节点/子图）、`tools`（契约/mock/real 预留）、`api`（Agent Gateway）、`cli`。
 
 ---
 
@@ -191,9 +355,9 @@ ReAct 式 Agent 让模型自己决定调哪个 tool、调几次，对「执行�
 
 **追问：你怎么证明这套改造真的有用，而不是自我感觉良好？**
 
-这是我特意补的一块。`error_analysis` 的核心抽成了 `run_diagnosis(context_strategy="legacy"|"managed")`，同一个 case 能按改造前和改造后各跑一遍，`python -m work_agent.cli eval-diagnose` 在 `config/eval_cases.json`（6 条，覆盖 case/version/env/none）上对比，每个 `case × strategy` 落一行长表 jsonl。
+这是我特意补的一块。`error_analysis` 的核心抽成了 `run_diagnosis(context_strategy="legacy"|"managed")`，同一个 case 能按改造前和改造后各跑一遍，`python -m work_agent.cli eval-diagnose` 在 `config/eval_cases.json`（20 条、六组件分层日志，覆盖 case/version/env/none）上对比，每个 `case × strategy` 落一行长表 jsonl。除 fail kind 外还评估根因组件准确率；详细数字见 [interview-benchmark-data.md](interview-benchmark-data.md)。
 
-指标要分清可信度：`context_chars`、`token_total`（含摘要开销）、`evidence_recall` 是确定性计算的硬指标；`accuracy` 只有 6 条样本，只能当趋势参考，我不会拿它说「准确率提升了 X%」。`evidence_recall` 是最该盯的一个——golden set 里每条声明了 `expected_evidence_keys`，即必须活到最终 working context 的关键词，省字符很容易，把根因证据一起省掉就是净损失，所以它必须和 `context_chars` 一起看。反过来 `context_chars` 单独变小也不一定好：`legacy` 把每条观察无脑压到 400 字符，字符数很低，但那正是「还没判断有没有余量就先丢证据」这个问题本身。
+指标要分清可信度：`context_chars`、`token_total`（含摘要开销）、`evidence_recall` 是确定性计算的硬指标；`accuracy` 即使扩到 20 条也仍只能当开发期趋势，我不会拿它说「生产准确率提升了 X%」。`evidence_recall` 是最该盯的一个——golden set 里每条声明了 `expected_evidence_keys`，即必须活到最终 working context 的关键词，省字符很容易，把根因证据一起省掉就是净损失，所以它必须和 `context_chars` 一起看。反过来 `context_chars` 单独变小也不一定好：`legacy` 把每条观察无脑压到 400 字符，字符数很低，但那正是「还没判断有没有余量就先丢证据」这个问题本身。
 
 评测结果落 jsonl 而不是 Postgres 也是个有意识的选择：台账和 checkpoint 进库是因为它们是运行时多租户状态，评测结果是离线开发产物，没有并发写也没有租户隔离需求，为它建表加 repository 属于过度设计。长表而不是 `baseline_result`/`new_result` 宽表，是为了加第三种策略时不用改 schema。
 
@@ -358,7 +522,7 @@ checkpoint 不是缓存，是断点续跑的**唯一权威数据源**——`inte
 | MCP 仅 Client 规划   | 已实现 `RealKnowledgeSearchTool` + `work_agent/mcp/w3_client.py`；未配置时返回提示字符串 | 配置 `W3_MCP_*` 指向公司 w3_search |
 | 摘要质量依赖 LLM       | 压缩可能丢细节                        | 关键事实已落台账，摘要只影响指代消解；必要时改成结构化摘要                   |
 | 可观测性缺失（见 Q21） | 线上侧仍没接 Prometheus/Grafana、没有告警和分布式 tracing。但诊断链路已经有了自己的度量：`audit` 里带 `context_chars` / `token_usage` / `latency_ms` / `trimmed_steps` / `selected_context_ids`，另有离线 A/B（`eval-diagnose`）在固定 golden set 上对比两种上下文策略 | `audit` 已经是结构化事件流，加个 sink 写 Kafka/落一张 events 表即可抽取失败率、重试次数、耗时等指标，不需要重新埋点 |
-| 评测样本量小 | golden set 只有 6 条，`accuracy` 只能当趋势参考，不是统计结论 | `context_chars` / `token_total` / `evidence_recall` 是确定性计算的硬指标，不受样本量影响；接真实日志后再扩 golden set |
+| 评测仍是 synthetic 小样本 | golden set 已扩到 20 条、120 个分组件日志，但仍不足以代表生产分布 | 同时报告 kind/root-component accuracy、evidence recall、成本和延迟；接脱敏真实日志后再分层扩集并给置信区间 |
 
 
 ---

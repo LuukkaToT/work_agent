@@ -10,14 +10,16 @@ def test_build_diagnose_tools_passes_policy_self_check():
     build_diagnose_tools()
 
 
-def test_build_returns_six_readonly_tools():
+def test_build_returns_eight_readonly_tools():
     tools = build_diagnose_tools(scenario="case_error")
     names = sorted(t.name for t in tools)
     assert names == sorted(
         [
             "get_pipeline_status",
+            "list_log_files",
             "fetch_logs",
             "grep_logs",
+            "lookup_error_code",
             "find_case_history",
             "get_case_spec",
             "search_knowledge",
@@ -43,6 +45,31 @@ def test_fetch_logs_and_status_callable():
     )
     assert "phase" in status or "pipeline_id" in status
     assert "[log meta]" in logs or "ERROR" in logs or "KeyError" in logs
+
+
+def test_layered_log_tools_can_list_filter_and_lookup_codes():
+    scenario = "bench12_vue_antenna_map_missing"
+    pipe = get_pipeline_tool(scenario=scenario)
+    handle = pipe.create(
+        case_names=["NR_BENCH_012_VUE_ANTENNA_MAP"],
+        version="27B",
+        physical_env="7.223.50.71",
+    )
+    pipe.start(handle.pipeline_id)
+    tools = {t.name: t for t in build_diagnose_tools(scenario=scenario)}
+
+    listed = tools["list_log_files"].invoke({"pipeline_id": handle.pipeline_id})
+    assert all(f'"{name}"' in listed for name in ("comm", "rat", "bbh", "bbl", "marp", "compare"))
+
+    marp = tools["fetch_logs"].invoke(
+        {"pipeline_id": handle.pipeline_id, "tail_lines": 30, "component": "marp"}
+    )
+    assert "E-MARP-4106" in marp
+    assert "[MARP" in marp
+    assert "[BBL" not in marp
+
+    code = tools["lookup_error_code"].invoke({"code": "E-MARP-4106"})
+    assert "ANTENNA_MAP_MISSING" in code
 
 
 def test_search_knowledge_hits():
@@ -115,7 +142,7 @@ def test_budget_can_block():
 
 
 def test_archive_registers_readback_tool(tmp_path):
-    """带 archive 构造：第 7 个工具出现且过自检；不带则保持 6 个。"""
+    """带 archive 构造：额外回读工具出现且过自检。"""
     from work_agent.graph.helpers.context_archive import ContextArchive
 
     with_archive = build_diagnose_tools(scenario="case_error", archive=ContextArchive(tmp_path, run_id="t"))

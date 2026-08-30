@@ -1,0 +1,1105 @@
+2026-08-09T10:00:00.000000 [RAT    ] [INFO ] [thread=main] pipeline_id={{PIPELINE_ID}} process_boot component=rat build=mock-27B
+2026-08-09T10:00:00.005000 [RAT    ] [INFO ] [thread=main] pipeline_id={{PIPELINE_ID}} scenario=bench14_cell_load_cascade_from_rat synthetic=true
+2026-08-09T10:00:00.010000 [RAT    ] [DEBUG] [thread=main] pipeline_id={{PIPELINE_ID}} log_level=DEBUG structured_fields=enabled
+2026-08-09T10:00:00.100000 [RAT    ] [INFO ] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=100 hit=true
+2026-08-09T10:00:00.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=64 ul_pool=55 state=NORMAL
+2026-08-09T10:00:00.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=71
+2026-08-09T10:00:00.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=0 slot=3 status=READY
+2026-08-09T10:00:00.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=100 hit=true
+2026-08-09T10:00:00.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=92 ul_pool=18 state=NORMAL
+2026-08-09T10:00:00.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=2
+2026-08-09T10:00:00.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=0 slot=7 status=READY
+2026-08-09T10:00:00.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=100 hit=true
+2026-08-09T10:00:01.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=23 ul_pool=70 state=NORMAL
+2026-08-09T10:00:01.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=30
+2026-08-09T10:00:01.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=1 slot=11 status=READY
+2026-08-09T10:00:01.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=100 hit=true
+2026-08-09T10:00:01.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=51 ul_pool=33 state=NORMAL
+2026-08-09T10:00:01.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=58
+2026-08-09T10:00:01.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=1 slot=15 status=READY
+2026-08-09T10:00:01.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=100 hit=true
+2026-08-09T10:00:01.800000 [RAT    ] [INFO ] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=79 ul_pool=85 state=NORMAL
+2026-08-09T10:00:01.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=86
+2026-08-09T10:00:02.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=1 slot=19 status=READY
+2026-08-09T10:00:02.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=100 hit=true
+2026-08-09T10:00:02.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=10 ul_pool=48 state=NORMAL
+2026-08-09T10:00:02.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=17
+2026-08-09T10:00:02.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=2 slot=3 status=READY
+2026-08-09T10:00:02.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=100 hit=true
+2026-08-09T10:00:02.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=38 ul_pool=11 state=NORMAL
+2026-08-09T10:00:02.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=45
+2026-08-09T10:00:02.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=2 slot=7 status=READY
+2026-08-09T10:00:02.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=101 hit=true
+2026-08-09T10:00:03.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=66 ul_pool=63 state=NORMAL
+2026-08-09T10:00:03.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=73
+2026-08-09T10:00:03.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=3 slot=11 status=READY
+2026-08-09T10:00:03.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=101 hit=true
+2026-08-09T10:00:03.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=94 ul_pool=26 state=NORMAL
+2026-08-09T10:00:03.500000 [RAT    ] [INFO ] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=4
+2026-08-09T10:00:03.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=3 slot=15 status=READY
+2026-08-09T10:00:03.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=101 hit=true
+2026-08-09T10:00:03.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=25 ul_pool=78 state=NORMAL
+2026-08-09T10:00:03.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=32
+2026-08-09T10:00:04.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=3 slot=19 status=READY
+2026-08-09T10:00:04.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=101 hit=true
+2026-08-09T10:00:04.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=53 ul_pool=41 state=NORMAL
+2026-08-09T10:00:04.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=60
+2026-08-09T10:00:04.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=4 slot=3 status=READY
+2026-08-09T10:00:04.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=101 hit=true
+2026-08-09T10:00:04.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=81 ul_pool=4 state=NORMAL
+2026-08-09T10:00:04.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=88
+2026-08-09T10:00:04.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=4 slot=7 status=READY
+2026-08-09T10:00:04.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=101 hit=true
+2026-08-09T10:00:05.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=12 ul_pool=56 state=NORMAL
+2026-08-09T10:00:05.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=19
+2026-08-09T10:00:05.200000 [RAT    ] [INFO ] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=5 slot=11 status=READY
+2026-08-09T10:00:05.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=102 hit=true
+2026-08-09T10:00:05.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=40 ul_pool=19 state=NORMAL
+2026-08-09T10:00:05.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=47
+2026-08-09T10:00:05.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=5 slot=15 status=READY
+2026-08-09T10:00:05.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=102 hit=true
+2026-08-09T10:00:05.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=68 ul_pool=71 state=NORMAL
+2026-08-09T10:00:05.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=75
+2026-08-09T10:00:06.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=5 slot=19 status=READY
+2026-08-09T10:00:06.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=102 hit=true
+2026-08-09T10:00:06.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=96 ul_pool=34 state=NORMAL
+2026-08-09T10:00:06.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=6
+2026-08-09T10:00:06.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=6 slot=3 status=READY
+2026-08-09T10:00:06.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=102 hit=true
+2026-08-09T10:00:06.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=27 ul_pool=86 state=NORMAL
+2026-08-09T10:00:06.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=34
+2026-08-09T10:00:06.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=6 slot=7 status=READY
+2026-08-09T10:00:06.900000 [RAT    ] [INFO ] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=102 hit=true
+2026-08-09T10:00:07.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=55 ul_pool=49 state=NORMAL
+2026-08-09T10:00:07.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=62
+2026-08-09T10:00:07.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=7 slot=11 status=READY
+2026-08-09T10:00:07.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=102 hit=true
+2026-08-09T10:00:07.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=83 ul_pool=12 state=NORMAL
+2026-08-09T10:00:07.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=90
+2026-08-09T10:00:07.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=7 slot=15 status=READY
+2026-08-09T10:00:07.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=103 hit=true
+2026-08-09T10:00:07.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=14 ul_pool=64 state=NORMAL
+2026-08-09T10:00:07.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=21
+2026-08-09T10:00:08.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=7 slot=19 status=READY
+2026-08-09T10:00:08.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=103 hit=true
+2026-08-09T10:00:08.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=42 ul_pool=27 state=NORMAL
+2026-08-09T10:00:08.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=49
+2026-08-09T10:00:08.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=8 slot=3 status=READY
+2026-08-09T10:00:08.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=103 hit=true
+2026-08-09T10:00:08.600000 [RAT    ] [INFO ] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=70 ul_pool=79 state=NORMAL
+2026-08-09T10:00:08.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=77
+2026-08-09T10:00:08.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=8 slot=7 status=READY
+2026-08-09T10:00:08.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=103 hit=true
+2026-08-09T10:00:09.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=1 ul_pool=42 state=NORMAL
+2026-08-09T10:00:09.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=8
+2026-08-09T10:00:09.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=9 slot=11 status=READY
+2026-08-09T10:00:09.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=103 hit=true
+2026-08-09T10:00:09.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=29 ul_pool=5 state=NORMAL
+2026-08-09T10:00:09.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=36
+2026-08-09T10:00:09.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=9 slot=15 status=READY
+2026-08-09T10:00:09.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=103 hit=true
+2026-08-09T10:00:09.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=57 ul_pool=57 state=NORMAL
+2026-08-09T10:00:09.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=64
+2026-08-09T10:00:10.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=9 slot=19 status=READY
+2026-08-09T10:00:10.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=104 hit=true
+2026-08-09T10:00:10.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=85 ul_pool=20 state=NORMAL
+2026-08-09T10:00:10.300000 [RAT    ] [INFO ] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=92
+2026-08-09T10:00:10.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=10 slot=3 status=READY
+2026-08-09T10:00:10.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=104 hit=true
+2026-08-09T10:00:10.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=16 ul_pool=72 state=NORMAL
+2026-08-09T10:00:10.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=23
+2026-08-09T10:00:10.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=10 slot=7 status=READY
+2026-08-09T10:00:10.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=104 hit=true
+2026-08-09T10:00:11.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=44 ul_pool=35 state=NORMAL
+2026-08-09T10:00:11.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=51
+2026-08-09T10:00:11.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=11 slot=11 status=READY
+2026-08-09T10:00:11.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=104 hit=true
+2026-08-09T10:00:11.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=72 ul_pool=87 state=NORMAL
+2026-08-09T10:00:11.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=79
+2026-08-09T10:00:11.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=11 slot=15 status=READY
+2026-08-09T10:00:11.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=104 hit=true
+2026-08-09T10:00:11.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=3 ul_pool=50 state=NORMAL
+2026-08-09T10:00:11.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=10
+2026-08-09T10:00:12.000000 [RAT    ] [INFO ] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=11 slot=19 status=READY
+2026-08-09T10:00:12.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=104 hit=true
+2026-08-09T10:00:12.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=31 ul_pool=13 state=NORMAL
+2026-08-09T10:00:12.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=38
+2026-08-09T10:00:12.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=12 slot=3 status=READY
+2026-08-09T10:00:12.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=104 hit=true
+2026-08-09T10:00:12.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=59 ul_pool=65 state=NORMAL
+2026-08-09T10:00:12.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=66
+2026-08-09T10:00:12.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=12 slot=7 status=READY
+2026-08-09T10:00:12.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=105 hit=true
+2026-08-09T10:00:13.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=87 ul_pool=28 state=NORMAL
+2026-08-09T10:00:13.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=94
+2026-08-09T10:00:13.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=13 slot=11 status=READY
+2026-08-09T10:00:13.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=105 hit=true
+2026-08-09T10:00:13.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=18 ul_pool=80 state=NORMAL
+2026-08-09T10:00:13.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=25
+2026-08-09T10:00:13.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=13 slot=15 status=READY
+2026-08-09T10:00:13.700000 [RAT    ] [INFO ] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=105 hit=true
+2026-08-09T10:00:13.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=46 ul_pool=43 state=NORMAL
+2026-08-09T10:00:13.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=53
+2026-08-09T10:00:14.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=13 slot=19 status=READY
+2026-08-09T10:00:14.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=105 hit=true
+2026-08-09T10:00:14.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=74 ul_pool=6 state=NORMAL
+2026-08-09T10:00:14.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=81
+2026-08-09T10:00:14.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=14 slot=3 status=READY
+2026-08-09T10:00:14.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=105 hit=true
+2026-08-09T10:00:14.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=5 ul_pool=58 state=NORMAL
+2026-08-09T10:00:14.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=12
+2026-08-09T10:00:14.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=14 slot=7 status=READY
+2026-08-09T10:00:14.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=105 hit=true
+2026-08-09T10:00:15.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=33 ul_pool=21 state=NORMAL
+2026-08-09T10:00:15.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=40
+2026-08-09T10:00:15.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=15 slot=11 status=READY
+2026-08-09T10:00:15.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=106 hit=true
+2026-08-09T10:00:15.400000 [RAT    ] [INFO ] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=61 ul_pool=73 state=NORMAL
+2026-08-09T10:00:15.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=68
+2026-08-09T10:00:15.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=15 slot=15 status=READY
+2026-08-09T10:00:15.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=106 hit=true
+2026-08-09T10:00:15.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=89 ul_pool=36 state=NORMAL
+2026-08-09T10:00:15.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=96
+2026-08-09T10:00:16.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=15 slot=19 status=READY
+2026-08-09T10:00:16.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=106 hit=true
+2026-08-09T10:00:16.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=20 ul_pool=88 state=NORMAL
+2026-08-09T10:00:16.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=27
+2026-08-09T10:00:16.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=16 slot=3 status=READY
+2026-08-09T10:00:16.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=106 hit=true
+2026-08-09T10:00:16.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=48 ul_pool=51 state=NORMAL
+2026-08-09T10:00:16.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=55
+2026-08-09T10:00:16.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=16 slot=7 status=READY
+2026-08-09T10:00:16.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=106 hit=true
+2026-08-09T10:00:17.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=76 ul_pool=14 state=NORMAL
+2026-08-09T10:00:17.100000 [RAT    ] [INFO ] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=83
+2026-08-09T10:00:17.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=17 slot=11 status=READY
+2026-08-09T10:00:17.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=106 hit=true
+2026-08-09T10:00:17.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=7 ul_pool=66 state=NORMAL
+2026-08-09T10:00:17.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=14
+2026-08-09T10:00:17.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=17 slot=15 status=READY
+2026-08-09T10:00:17.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=107 hit=true
+2026-08-09T10:00:17.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=35 ul_pool=29 state=NORMAL
+2026-08-09T10:00:17.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=42
+2026-08-09T10:00:18.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=17 slot=19 status=READY
+2026-08-09T10:00:18.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=107 hit=true
+2026-08-09T10:00:18.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=63 ul_pool=81 state=NORMAL
+2026-08-09T10:00:18.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=70
+2026-08-09T10:00:18.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=18 slot=3 status=READY
+2026-08-09T10:00:18.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=107 hit=true
+2026-08-09T10:00:18.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=91 ul_pool=44 state=NORMAL
+2026-08-09T10:00:18.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=1
+2026-08-09T10:00:18.800000 [RAT    ] [INFO ] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=18 slot=7 status=READY
+2026-08-09T10:00:18.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=107 hit=true
+2026-08-09T10:00:19.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=22 ul_pool=7 state=NORMAL
+2026-08-09T10:00:19.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=29
+2026-08-09T10:00:19.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=19 slot=11 status=READY
+2026-08-09T10:00:19.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=107 hit=true
+2026-08-09T10:00:19.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=50 ul_pool=59 state=NORMAL
+2026-08-09T10:00:19.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=57
+2026-08-09T10:00:19.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=19 slot=15 status=READY
+2026-08-09T10:00:19.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=107 hit=true
+2026-08-09T10:00:19.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=78 ul_pool=22 state=NORMAL
+2026-08-09T10:00:19.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=85
+2026-08-09T10:00:20.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=19 slot=19 status=READY
+2026-08-09T10:00:20.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=108 hit=true
+2026-08-09T10:00:20.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=9 ul_pool=74 state=NORMAL
+2026-08-09T10:00:20.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=16
+2026-08-09T10:00:20.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=20 slot=3 status=READY
+2026-08-09T10:00:20.500000 [RAT    ] [INFO ] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=108 hit=true
+2026-08-09T10:00:20.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=37 ul_pool=37 state=NORMAL
+2026-08-09T10:00:20.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=44
+2026-08-09T10:00:20.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=20 slot=7 status=READY
+2026-08-09T10:00:20.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=108 hit=true
+2026-08-09T10:00:21.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=65 ul_pool=0 state=NORMAL
+2026-08-09T10:00:21.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=72
+2026-08-09T10:00:21.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=21 slot=11 status=READY
+2026-08-09T10:00:21.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=108 hit=true
+2026-08-09T10:00:21.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=93 ul_pool=52 state=NORMAL
+2026-08-09T10:00:21.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=3
+2026-08-09T10:00:21.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=21 slot=15 status=READY
+2026-08-09T10:00:21.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=108 hit=true
+2026-08-09T10:00:21.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=24 ul_pool=15 state=NORMAL
+2026-08-09T10:00:21.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=31
+2026-08-09T10:00:22.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=21 slot=19 status=READY
+2026-08-09T10:00:22.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=108 hit=true
+2026-08-09T10:00:22.200000 [RAT    ] [INFO ] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=52 ul_pool=67 state=NORMAL
+2026-08-09T10:00:22.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=59
+2026-08-09T10:00:22.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=22 slot=3 status=READY
+2026-08-09T10:00:22.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=108 hit=true
+2026-08-09T10:00:22.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=80 ul_pool=30 state=NORMAL
+2026-08-09T10:00:22.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=87
+2026-08-09T10:00:22.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=22 slot=7 status=READY
+2026-08-09T10:00:22.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=109 hit=true
+2026-08-09T10:00:23.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=11 ul_pool=82 state=NORMAL
+2026-08-09T10:00:23.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=18
+2026-08-09T10:00:23.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=23 slot=11 status=READY
+2026-08-09T10:00:23.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=109 hit=true
+2026-08-09T10:00:23.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=39 ul_pool=45 state=NORMAL
+2026-08-09T10:00:23.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=46
+2026-08-09T10:00:23.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=23 slot=15 status=READY
+2026-08-09T10:00:23.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=109 hit=true
+2026-08-09T10:00:23.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=67 ul_pool=8 state=NORMAL
+2026-08-09T10:00:23.900000 [RAT    ] [INFO ] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=74
+2026-08-09T10:00:24.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=23 slot=19 status=READY
+2026-08-09T10:00:24.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=109 hit=true
+2026-08-09T10:00:24.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=95 ul_pool=60 state=NORMAL
+2026-08-09T10:00:24.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=5
+2026-08-09T10:00:24.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=24 slot=3 status=READY
+2026-08-09T10:00:24.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=109 hit=true
+2026-08-09T10:00:24.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=26 ul_pool=23 state=NORMAL
+2026-08-09T10:00:24.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=33
+2026-08-09T10:00:24.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=24 slot=7 status=READY
+2026-08-09T10:00:24.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=109 hit=true
+2026-08-09T10:00:25.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=54 ul_pool=75 state=NORMAL
+2026-08-09T10:00:25.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=61
+2026-08-09T10:00:25.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=25 slot=11 status=READY
+2026-08-09T10:00:25.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=110 hit=true
+2026-08-09T10:00:25.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=82 ul_pool=38 state=NORMAL
+2026-08-09T10:00:25.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=89
+2026-08-09T10:00:25.600000 [RAT    ] [INFO ] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=25 slot=15 status=READY
+2026-08-09T10:00:25.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=110 hit=true
+2026-08-09T10:00:25.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=13 ul_pool=1 state=NORMAL
+2026-08-09T10:00:25.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=20
+2026-08-09T10:00:26.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=25 slot=19 status=READY
+2026-08-09T10:00:26.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=110 hit=true
+2026-08-09T10:00:26.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=41 ul_pool=53 state=NORMAL
+2026-08-09T10:00:26.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=48
+2026-08-09T10:00:26.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=26 slot=3 status=READY
+2026-08-09T10:00:26.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=110 hit=true
+2026-08-09T10:00:26.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=69 ul_pool=16 state=NORMAL
+2026-08-09T10:00:26.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=76
+2026-08-09T10:00:26.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=26 slot=7 status=READY
+2026-08-09T10:00:26.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=110 hit=true
+2026-08-09T10:00:27.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=0 ul_pool=68 state=NORMAL
+2026-08-09T10:00:27.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=7
+2026-08-09T10:00:27.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=27 slot=11 status=READY
+2026-08-09T10:00:27.300000 [RAT    ] [INFO ] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=110 hit=true
+2026-08-09T10:00:27.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=28 ul_pool=31 state=NORMAL
+2026-08-09T10:00:27.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=35
+2026-08-09T10:00:27.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=27 slot=15 status=READY
+2026-08-09T10:00:27.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=111 hit=true
+2026-08-09T10:00:27.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=56 ul_pool=83 state=NORMAL
+2026-08-09T10:00:27.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=63
+2026-08-09T10:00:28.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=27 slot=19 status=READY
+2026-08-09T10:00:28.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=111 hit=true
+2026-08-09T10:00:28.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=84 ul_pool=46 state=NORMAL
+2026-08-09T10:00:28.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=91
+2026-08-09T10:00:28.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=28 slot=3 status=READY
+2026-08-09T10:00:28.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=111 hit=true
+2026-08-09T10:00:28.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=15 ul_pool=9 state=NORMAL
+2026-08-09T10:00:28.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=22
+2026-08-09T10:00:28.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=28 slot=7 status=READY
+2026-08-09T10:00:28.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=111 hit=true
+2026-08-09T10:00:29.000000 [RAT    ] [INFO ] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=43 ul_pool=61 state=NORMAL
+2026-08-09T10:00:29.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=50
+2026-08-09T10:00:29.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=29 slot=11 status=READY
+2026-08-09T10:00:29.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=111 hit=true
+2026-08-09T10:00:29.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=71 ul_pool=24 state=NORMAL
+2026-08-09T10:00:29.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=78
+2026-08-09T10:00:29.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=29 slot=15 status=READY
+2026-08-09T10:00:29.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=111 hit=true
+2026-08-09T10:00:29.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=2 ul_pool=76 state=NORMAL
+2026-08-09T10:00:29.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=9
+2026-08-09T10:00:30.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=29 slot=19 status=READY
+2026-08-09T10:00:30.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=112 hit=true
+2026-08-09T10:00:30.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=30 ul_pool=39 state=NORMAL
+2026-08-09T10:00:30.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=37
+2026-08-09T10:00:30.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=30 slot=3 status=READY
+2026-08-09T10:00:30.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=112 hit=true
+2026-08-09T10:00:30.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=58 ul_pool=2 state=NORMAL
+2026-08-09T10:00:30.700000 [RAT    ] [INFO ] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=65
+2026-08-09T10:00:30.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=30 slot=7 status=READY
+2026-08-09T10:00:30.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=112 hit=true
+2026-08-09T10:00:31.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=86 ul_pool=54 state=NORMAL
+2026-08-09T10:00:31.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=93
+2026-08-09T10:00:31.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=31 slot=11 status=READY
+2026-08-09T10:00:31.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=112 hit=true
+2026-08-09T10:00:31.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=17 ul_pool=17 state=NORMAL
+2026-08-09T10:00:31.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=24
+2026-08-09T10:00:31.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=31 slot=15 status=READY
+2026-08-09T10:00:31.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=112 hit=true
+2026-08-09T10:00:31.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=45 ul_pool=69 state=NORMAL
+2026-08-09T10:00:31.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=52
+2026-08-09T10:00:32.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=31 slot=19 status=READY
+2026-08-09T10:00:32.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=112 hit=true
+2026-08-09T10:00:32.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=73 ul_pool=32 state=NORMAL
+2026-08-09T10:00:32.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=80
+2026-08-09T10:00:32.400000 [RAT    ] [INFO ] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=32 slot=3 status=READY
+2026-08-09T10:00:32.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=112 hit=true
+2026-08-09T10:00:32.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=4 ul_pool=84 state=NORMAL
+2026-08-09T10:00:32.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=11
+2026-08-09T10:00:32.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=32 slot=7 status=READY
+2026-08-09T10:00:32.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=113 hit=true
+2026-08-09T10:00:33.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=32 ul_pool=47 state=NORMAL
+2026-08-09T10:00:33.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=39
+2026-08-09T10:00:33.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=33 slot=11 status=READY
+2026-08-09T10:00:33.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=113 hit=true
+2026-08-09T10:00:33.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=60 ul_pool=10 state=NORMAL
+2026-08-09T10:00:33.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=67
+2026-08-09T10:00:33.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=33 slot=15 status=READY
+2026-08-09T10:00:33.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=113 hit=true
+2026-08-09T10:00:33.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=88 ul_pool=62 state=NORMAL
+2026-08-09T10:00:33.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=95
+2026-08-09T10:00:34.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=33 slot=19 status=READY
+2026-08-09T10:00:34.100000 [RAT    ] [INFO ] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=113 hit=true
+2026-08-09T10:00:34.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=19 ul_pool=25 state=NORMAL
+2026-08-09T10:00:34.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=26
+2026-08-09T10:00:34.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=34 slot=3 status=READY
+2026-08-09T10:00:34.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=113 hit=true
+2026-08-09T10:00:34.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=47 ul_pool=77 state=NORMAL
+2026-08-09T10:00:34.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=54
+2026-08-09T10:00:34.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=34 slot=7 status=READY
+2026-08-09T10:00:34.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=113 hit=true
+2026-08-09T10:00:35.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=75 ul_pool=40 state=NORMAL
+2026-08-09T10:00:35.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=82
+2026-08-09T10:00:35.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=35 slot=11 status=READY
+2026-08-09T10:00:35.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=114 hit=true
+2026-08-09T10:00:35.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=6 ul_pool=3 state=NORMAL
+2026-08-09T10:00:35.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=13
+2026-08-09T10:00:35.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=35 slot=15 status=READY
+2026-08-09T10:00:35.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=114 hit=true
+2026-08-09T10:00:35.800000 [RAT    ] [INFO ] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=34 ul_pool=55 state=NORMAL
+2026-08-09T10:00:35.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=41
+2026-08-09T10:00:36.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=35 slot=19 status=READY
+2026-08-09T10:00:36.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=114 hit=true
+2026-08-09T10:00:36.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=62 ul_pool=18 state=NORMAL
+2026-08-09T10:00:36.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=69
+2026-08-09T10:00:36.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=36 slot=3 status=READY
+2026-08-09T10:00:36.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=114 hit=true
+2026-08-09T10:00:36.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=90 ul_pool=70 state=NORMAL
+2026-08-09T10:00:36.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=0
+2026-08-09T10:00:36.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=36 slot=7 status=READY
+2026-08-09T10:00:36.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=114 hit=true
+2026-08-09T10:00:37.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=21 ul_pool=33 state=NORMAL
+2026-08-09T10:00:37.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=28
+2026-08-09T10:00:37.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=37 slot=11 status=READY
+2026-08-09T10:00:37.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=114 hit=true
+2026-08-09T10:00:37.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=49 ul_pool=85 state=NORMAL
+2026-08-09T10:00:37.500000 [RAT    ] [INFO ] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=56
+2026-08-09T10:00:37.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=37 slot=15 status=READY
+2026-08-09T10:00:37.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=115 hit=true
+2026-08-09T10:00:37.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=77 ul_pool=48 state=NORMAL
+2026-08-09T10:00:37.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=84
+2026-08-09T10:00:38.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=37 slot=19 status=READY
+2026-08-09T10:00:38.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=115 hit=true
+2026-08-09T10:00:38.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=8 ul_pool=11 state=NORMAL
+2026-08-09T10:00:38.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=15
+2026-08-09T10:00:38.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=38 slot=3 status=READY
+2026-08-09T10:00:38.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=115 hit=true
+2026-08-09T10:00:38.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=36 ul_pool=63 state=NORMAL
+2026-08-09T10:00:38.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=43
+2026-08-09T10:00:38.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=38 slot=7 status=READY
+2026-08-09T10:00:38.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=115 hit=true
+2026-08-09T10:00:39.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=64 ul_pool=26 state=NORMAL
+2026-08-09T10:00:39.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=71
+2026-08-09T10:00:39.200000 [RAT    ] [INFO ] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=39 slot=11 status=READY
+2026-08-09T10:00:39.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=115 hit=true
+2026-08-09T10:00:39.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=92 ul_pool=78 state=NORMAL
+2026-08-09T10:00:39.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=2
+2026-08-09T10:00:39.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=39 slot=15 status=READY
+2026-08-09T10:00:39.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=115 hit=true
+2026-08-09T10:00:39.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=23 ul_pool=41 state=NORMAL
+2026-08-09T10:00:39.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=30
+2026-08-09T10:00:40.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=39 slot=19 status=READY
+2026-08-09T10:00:40.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=116 hit=true
+2026-08-09T10:00:40.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=51 ul_pool=4 state=NORMAL
+2026-08-09T10:00:40.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=58
+2026-08-09T10:00:40.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=40 slot=3 status=READY
+2026-08-09T10:00:40.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=116 hit=true
+2026-08-09T10:00:40.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=79 ul_pool=56 state=NORMAL
+2026-08-09T10:00:40.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=86
+2026-08-09T10:00:40.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=40 slot=7 status=READY
+2026-08-09T10:00:40.900000 [RAT    ] [INFO ] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=116 hit=true
+2026-08-09T10:00:41.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=10 ul_pool=19 state=NORMAL
+2026-08-09T10:00:41.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=17
+2026-08-09T10:00:41.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=41 slot=11 status=READY
+2026-08-09T10:00:41.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=116 hit=true
+2026-08-09T10:00:41.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=38 ul_pool=71 state=NORMAL
+2026-08-09T10:00:41.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=45
+2026-08-09T10:00:41.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=41 slot=15 status=READY
+2026-08-09T10:00:41.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=116 hit=true
+2026-08-09T10:00:41.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=66 ul_pool=34 state=NORMAL
+2026-08-09T10:00:41.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=73
+2026-08-09T10:00:42.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=41 slot=19 status=READY
+2026-08-09T10:00:42.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=116 hit=true
+2026-08-09T10:00:42.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=94 ul_pool=86 state=NORMAL
+2026-08-09T10:00:42.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=4
+2026-08-09T10:00:42.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=42 slot=3 status=READY
+2026-08-09T10:00:42.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=116 hit=true
+2026-08-09T10:00:42.600000 [RAT    ] [INFO ] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=25 ul_pool=49 state=NORMAL
+2026-08-09T10:00:42.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=32
+2026-08-09T10:00:42.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=42 slot=7 status=READY
+2026-08-09T10:00:42.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=117 hit=true
+2026-08-09T10:00:43.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=53 ul_pool=12 state=NORMAL
+2026-08-09T10:00:43.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=60
+2026-08-09T10:00:43.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=43 slot=11 status=READY
+2026-08-09T10:00:43.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=117 hit=true
+2026-08-09T10:00:43.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=81 ul_pool=64 state=NORMAL
+2026-08-09T10:00:43.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=88
+2026-08-09T10:00:43.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=43 slot=15 status=READY
+2026-08-09T10:00:43.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=117 hit=true
+2026-08-09T10:00:43.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=12 ul_pool=27 state=NORMAL
+2026-08-09T10:00:43.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=19
+2026-08-09T10:00:44.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=43 slot=19 status=READY
+2026-08-09T10:00:44.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=117 hit=true
+2026-08-09T10:00:44.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=40 ul_pool=79 state=NORMAL
+2026-08-09T10:00:44.300000 [RAT    ] [INFO ] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=47
+2026-08-09T10:00:44.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=44 slot=3 status=READY
+2026-08-09T10:00:44.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=117 hit=true
+2026-08-09T10:00:44.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=68 ul_pool=42 state=NORMAL
+2026-08-09T10:00:44.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=75
+2026-08-09T10:00:44.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=44 slot=7 status=READY
+2026-08-09T10:00:44.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=117 hit=true
+2026-08-09T10:00:45.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=96 ul_pool=5 state=NORMAL
+2026-08-09T10:00:45.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=6
+2026-08-09T10:00:45.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=45 slot=11 status=READY
+2026-08-09T10:00:45.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=118 hit=true
+2026-08-09T10:00:45.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=27 ul_pool=57 state=NORMAL
+2026-08-09T10:00:45.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=34
+2026-08-09T10:00:45.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=45 slot=15 status=READY
+2026-08-09T10:00:45.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=118 hit=true
+2026-08-09T10:00:45.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=55 ul_pool=20 state=NORMAL
+2026-08-09T10:00:45.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=62
+2026-08-09T10:00:46.000000 [RAT    ] [INFO ] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=45 slot=19 status=READY
+2026-08-09T10:00:46.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=118 hit=true
+2026-08-09T10:00:46.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=83 ul_pool=72 state=NORMAL
+2026-08-09T10:00:46.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=90
+2026-08-09T10:00:46.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=46 slot=3 status=READY
+2026-08-09T10:00:46.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=118 hit=true
+2026-08-09T10:00:46.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=14 ul_pool=35 state=NORMAL
+2026-08-09T10:00:46.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=21
+2026-08-09T10:00:46.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=46 slot=7 status=READY
+2026-08-09T10:00:46.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=118 hit=true
+2026-08-09T10:00:47.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=42 ul_pool=87 state=NORMAL
+2026-08-09T10:00:47.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=49
+2026-08-09T10:00:47.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=47 slot=11 status=READY
+2026-08-09T10:00:47.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=118 hit=true
+2026-08-09T10:00:47.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=70 ul_pool=50 state=NORMAL
+2026-08-09T10:00:47.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=77
+2026-08-09T10:00:47.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=47 slot=15 status=READY
+2026-08-09T10:00:47.700000 [RAT    ] [INFO ] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=119 hit=true
+2026-08-09T10:00:47.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=1 ul_pool=13 state=NORMAL
+2026-08-09T10:00:47.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=8
+2026-08-09T10:00:48.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=47 slot=19 status=READY
+2026-08-09T10:00:48.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=119 hit=true
+2026-08-09T10:00:48.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=29 ul_pool=65 state=NORMAL
+2026-08-09T10:00:48.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=36
+2026-08-09T10:00:48.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=48 slot=3 status=READY
+2026-08-09T10:00:48.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=119 hit=true
+2026-08-09T10:00:48.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=57 ul_pool=28 state=NORMAL
+2026-08-09T10:00:48.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=64
+2026-08-09T10:00:48.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=48 slot=7 status=READY
+2026-08-09T10:00:48.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=119 hit=true
+2026-08-09T10:00:49.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=85 ul_pool=80 state=NORMAL
+2026-08-09T10:00:49.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=92
+2026-08-09T10:00:49.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=49 slot=11 status=READY
+2026-08-09T10:00:49.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=119 hit=true
+2026-08-09T10:00:49.400000 [RAT    ] [INFO ] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=16 ul_pool=43 state=NORMAL
+2026-08-09T10:00:49.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=23
+2026-08-09T10:00:49.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=49 slot=15 status=READY
+2026-08-09T10:00:49.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=119 hit=true
+2026-08-09T10:00:49.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=44 ul_pool=6 state=NORMAL
+2026-08-09T10:00:49.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=51
+2026-08-09T10:00:50.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=49 slot=19 status=READY
+2026-08-09T10:00:50.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=120 hit=true
+2026-08-09T10:00:50.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=72 ul_pool=58 state=NORMAL
+2026-08-09T10:00:50.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=79
+2026-08-09T10:00:50.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=50 slot=3 status=READY
+2026-08-09T10:00:50.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=120 hit=true
+2026-08-09T10:00:50.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=3 ul_pool=21 state=NORMAL
+2026-08-09T10:00:50.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=10
+2026-08-09T10:00:50.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=50 slot=7 status=READY
+2026-08-09T10:00:50.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=120 hit=true
+2026-08-09T10:00:51.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=31 ul_pool=73 state=NORMAL
+2026-08-09T10:00:51.100000 [RAT    ] [INFO ] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=38
+2026-08-09T10:00:51.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=51 slot=11 status=READY
+2026-08-09T10:00:51.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=120 hit=true
+2026-08-09T10:00:51.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=59 ul_pool=36 state=NORMAL
+2026-08-09T10:00:51.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=66
+2026-08-09T10:00:51.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=51 slot=15 status=READY
+2026-08-09T10:00:51.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=120 hit=true
+2026-08-09T10:00:51.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=87 ul_pool=88 state=NORMAL
+2026-08-09T10:00:51.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=94
+2026-08-09T10:00:52.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=51 slot=19 status=READY
+2026-08-09T10:00:52.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=120 hit=true
+2026-08-09T10:00:52.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=18 ul_pool=51 state=NORMAL
+2026-08-09T10:00:52.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=25
+2026-08-09T10:00:52.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=52 slot=3 status=READY
+2026-08-09T10:00:52.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=120 hit=true
+2026-08-09T10:00:52.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=46 ul_pool=14 state=NORMAL
+2026-08-09T10:00:52.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=53
+2026-08-09T10:00:52.800000 [RAT    ] [INFO ] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=52 slot=7 status=READY
+2026-08-09T10:00:52.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=121 hit=true
+2026-08-09T10:00:53.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=74 ul_pool=66 state=NORMAL
+2026-08-09T10:00:53.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=81
+2026-08-09T10:00:53.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=53 slot=11 status=READY
+2026-08-09T10:00:53.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=121 hit=true
+2026-08-09T10:00:53.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=5 ul_pool=29 state=NORMAL
+2026-08-09T10:00:53.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=12
+2026-08-09T10:00:53.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=53 slot=15 status=READY
+2026-08-09T10:00:53.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=121 hit=true
+2026-08-09T10:00:53.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=33 ul_pool=81 state=NORMAL
+2026-08-09T10:00:53.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=40
+2026-08-09T10:00:54.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=53 slot=19 status=READY
+2026-08-09T10:00:54.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=121 hit=true
+2026-08-09T10:00:54.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=61 ul_pool=44 state=NORMAL
+2026-08-09T10:00:54.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=68
+2026-08-09T10:00:54.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=54 slot=3 status=READY
+2026-08-09T10:00:54.500000 [RAT    ] [INFO ] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=121 hit=true
+2026-08-09T10:00:54.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=89 ul_pool=7 state=NORMAL
+2026-08-09T10:00:54.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=96
+2026-08-09T10:00:54.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=54 slot=7 status=READY
+2026-08-09T10:00:54.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=121 hit=true
+2026-08-09T10:00:55.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=20 ul_pool=59 state=NORMAL
+2026-08-09T10:00:55.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=27
+2026-08-09T10:00:55.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=55 slot=11 status=READY
+2026-08-09T10:00:55.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=122 hit=true
+2026-08-09T10:00:55.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=48 ul_pool=22 state=NORMAL
+2026-08-09T10:00:55.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=55
+2026-08-09T10:00:55.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=55 slot=15 status=READY
+2026-08-09T10:00:55.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=122 hit=true
+2026-08-09T10:00:55.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=76 ul_pool=74 state=NORMAL
+2026-08-09T10:00:55.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=83
+2026-08-09T10:00:56.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=55 slot=19 status=READY
+2026-08-09T10:00:56.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=122 hit=true
+2026-08-09T10:00:56.200000 [RAT    ] [INFO ] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=7 ul_pool=37 state=NORMAL
+2026-08-09T10:00:56.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=14
+2026-08-09T10:00:56.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=56 slot=3 status=READY
+2026-08-09T10:00:56.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=122 hit=true
+2026-08-09T10:00:56.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=35 ul_pool=0 state=NORMAL
+2026-08-09T10:00:56.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=42
+2026-08-09T10:00:56.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=56 slot=7 status=READY
+2026-08-09T10:00:56.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=122 hit=true
+2026-08-09T10:00:57.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=63 ul_pool=52 state=NORMAL
+2026-08-09T10:00:57.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=70
+2026-08-09T10:00:57.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=57 slot=11 status=READY
+2026-08-09T10:00:57.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=122 hit=true
+2026-08-09T10:00:57.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=91 ul_pool=15 state=NORMAL
+2026-08-09T10:00:57.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=1
+2026-08-09T10:00:57.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=57 slot=15 status=READY
+2026-08-09T10:00:57.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=123 hit=true
+2026-08-09T10:00:57.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=22 ul_pool=67 state=NORMAL
+2026-08-09T10:00:57.900000 [RAT    ] [INFO ] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=29
+2026-08-09T10:00:58.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=57 slot=19 status=READY
+2026-08-09T10:00:58.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=123 hit=true
+2026-08-09T10:00:58.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=50 ul_pool=30 state=NORMAL
+2026-08-09T10:00:58.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=57
+2026-08-09T10:00:58.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=58 slot=3 status=READY
+2026-08-09T10:00:58.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=123 hit=true
+2026-08-09T10:00:58.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=78 ul_pool=82 state=NORMAL
+2026-08-09T10:00:58.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=85
+2026-08-09T10:00:58.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=58 slot=7 status=READY
+2026-08-09T10:00:58.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=123 hit=true
+2026-08-09T10:00:59.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=9 ul_pool=45 state=NORMAL
+2026-08-09T10:00:59.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=16
+2026-08-09T10:00:59.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=59 slot=11 status=READY
+2026-08-09T10:00:59.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=123 hit=true
+2026-08-09T10:00:59.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=37 ul_pool=8 state=NORMAL
+2026-08-09T10:00:59.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=44
+2026-08-09T10:00:59.600000 [RAT    ] [INFO ] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=59 slot=15 status=READY
+2026-08-09T10:00:59.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=123 hit=true
+2026-08-09T10:00:59.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=65 ul_pool=60 state=NORMAL
+2026-08-09T10:00:59.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=72
+2026-08-09T10:01:00.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=59 slot=19 status=READY
+2026-08-09T10:01:00.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=124 hit=true
+2026-08-09T10:01:00.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=93 ul_pool=23 state=NORMAL
+2026-08-09T10:01:00.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=3
+2026-08-09T10:01:00.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=60 slot=3 status=READY
+2026-08-09T10:01:00.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=124 hit=true
+2026-08-09T10:01:00.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=24 ul_pool=75 state=NORMAL
+2026-08-09T10:01:00.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=31
+2026-08-09T10:01:00.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=60 slot=7 status=READY
+2026-08-09T10:01:00.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=124 hit=true
+2026-08-09T10:01:01.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=52 ul_pool=38 state=NORMAL
+2026-08-09T10:01:01.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=59
+2026-08-09T10:01:01.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=61 slot=11 status=READY
+2026-08-09T10:01:01.300000 [RAT    ] [INFO ] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=124 hit=true
+2026-08-09T10:01:01.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=80 ul_pool=1 state=NORMAL
+2026-08-09T10:01:01.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=87
+2026-08-09T10:01:01.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=61 slot=15 status=READY
+2026-08-09T10:01:01.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=124 hit=true
+2026-08-09T10:01:01.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=11 ul_pool=53 state=NORMAL
+2026-08-09T10:01:01.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=18
+2026-08-09T10:01:02.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=61 slot=19 status=READY
+2026-08-09T10:01:02.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=124 hit=true
+2026-08-09T10:01:02.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=39 ul_pool=16 state=NORMAL
+2026-08-09T10:01:02.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=46
+2026-08-09T10:01:02.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=62 slot=3 status=READY
+2026-08-09T10:01:02.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=124 hit=true
+2026-08-09T10:01:02.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=67 ul_pool=68 state=NORMAL
+2026-08-09T10:01:02.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=74
+2026-08-09T10:01:02.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=62 slot=7 status=READY
+2026-08-09T10:01:02.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=125 hit=true
+2026-08-09T10:01:03.000000 [RAT    ] [INFO ] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=95 ul_pool=31 state=NORMAL
+2026-08-09T10:01:03.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=5
+2026-08-09T10:01:03.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=63 slot=11 status=READY
+2026-08-09T10:01:03.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=125 hit=true
+2026-08-09T10:01:03.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=26 ul_pool=83 state=NORMAL
+2026-08-09T10:01:03.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=33
+2026-08-09T10:01:03.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=63 slot=15 status=READY
+2026-08-09T10:01:03.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=125 hit=true
+2026-08-09T10:01:03.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=54 ul_pool=46 state=NORMAL
+2026-08-09T10:01:03.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=61
+2026-08-09T10:01:04.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=63 slot=19 status=READY
+2026-08-09T10:01:04.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=125 hit=true
+2026-08-09T10:01:04.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=82 ul_pool=9 state=NORMAL
+2026-08-09T10:01:04.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=89
+2026-08-09T10:01:04.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=64 slot=3 status=READY
+2026-08-09T10:01:04.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=125 hit=true
+2026-08-09T10:01:04.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=13 ul_pool=61 state=NORMAL
+2026-08-09T10:01:04.700000 [RAT    ] [INFO ] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=20
+2026-08-09T10:01:04.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=64 slot=7 status=READY
+2026-08-09T10:01:04.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=125 hit=true
+2026-08-09T10:01:05.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=41 ul_pool=24 state=NORMAL
+2026-08-09T10:01:05.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=48
+2026-08-09T10:01:05.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=65 slot=11 status=READY
+2026-08-09T10:01:05.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=126 hit=true
+2026-08-09T10:01:05.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=69 ul_pool=76 state=NORMAL
+2026-08-09T10:01:05.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=76
+2026-08-09T10:01:05.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=65 slot=15 status=READY
+2026-08-09T10:01:05.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=126 hit=true
+2026-08-09T10:01:05.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=0 ul_pool=39 state=NORMAL
+2026-08-09T10:01:05.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=7
+2026-08-09T10:01:06.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=65 slot=19 status=READY
+2026-08-09T10:01:06.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=126 hit=true
+2026-08-09T10:01:06.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=28 ul_pool=2 state=NORMAL
+2026-08-09T10:01:06.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=35
+2026-08-09T10:01:06.400000 [RAT    ] [INFO ] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=66 slot=3 status=READY
+2026-08-09T10:01:06.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=126 hit=true
+2026-08-09T10:01:06.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=56 ul_pool=54 state=NORMAL
+2026-08-09T10:01:06.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=63
+2026-08-09T10:01:06.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=66 slot=7 status=READY
+2026-08-09T10:01:06.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=126 hit=true
+2026-08-09T10:01:07.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=84 ul_pool=17 state=NORMAL
+2026-08-09T10:01:07.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=91
+2026-08-09T10:01:07.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=67 slot=11 status=READY
+2026-08-09T10:01:07.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=126 hit=true
+2026-08-09T10:01:07.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=15 ul_pool=69 state=NORMAL
+2026-08-09T10:01:07.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=22
+2026-08-09T10:01:07.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=67 slot=15 status=READY
+2026-08-09T10:01:07.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=127 hit=true
+2026-08-09T10:01:07.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=43 ul_pool=32 state=NORMAL
+2026-08-09T10:01:07.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=50
+2026-08-09T10:01:08.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=67 slot=19 status=READY
+2026-08-09T10:01:08.100000 [RAT    ] [INFO ] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=127 hit=true
+2026-08-09T10:01:08.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=71 ul_pool=84 state=NORMAL
+2026-08-09T10:01:08.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=78
+2026-08-09T10:01:08.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=68 slot=3 status=READY
+2026-08-09T10:01:08.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=127 hit=true
+2026-08-09T10:01:08.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=2 ul_pool=47 state=NORMAL
+2026-08-09T10:01:08.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=9
+2026-08-09T10:01:08.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=68 slot=7 status=READY
+2026-08-09T10:01:08.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=127 hit=true
+2026-08-09T10:01:09.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=30 ul_pool=10 state=NORMAL
+2026-08-09T10:01:09.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=37
+2026-08-09T10:01:09.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=69 slot=11 status=READY
+2026-08-09T10:01:09.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=127 hit=true
+2026-08-09T10:01:09.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=58 ul_pool=62 state=NORMAL
+2026-08-09T10:01:09.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=65
+2026-08-09T10:01:09.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=69 slot=15 status=READY
+2026-08-09T10:01:09.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=127 hit=true
+2026-08-09T10:01:09.800000 [RAT    ] [INFO ] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=86 ul_pool=25 state=NORMAL
+2026-08-09T10:01:09.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=93
+2026-08-09T10:01:10.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=69 slot=19 status=READY
+2026-08-09T10:01:10.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=128 hit=true
+2026-08-09T10:01:10.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=17 ul_pool=77 state=NORMAL
+2026-08-09T10:01:10.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=24
+2026-08-09T10:01:10.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=70 slot=3 status=READY
+2026-08-09T10:01:10.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=128 hit=true
+2026-08-09T10:01:10.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=45 ul_pool=40 state=NORMAL
+2026-08-09T10:01:10.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=52
+2026-08-09T10:01:10.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=70 slot=7 status=READY
+2026-08-09T10:01:10.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=128 hit=true
+2026-08-09T10:01:11.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=73 ul_pool=3 state=NORMAL
+2026-08-09T10:01:11.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=80
+2026-08-09T10:01:11.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=71 slot=11 status=READY
+2026-08-09T10:01:11.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=128 hit=true
+2026-08-09T10:01:11.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=4 ul_pool=55 state=NORMAL
+2026-08-09T10:01:11.500000 [RAT    ] [INFO ] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=11
+2026-08-09T10:01:11.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=71 slot=15 status=READY
+2026-08-09T10:01:11.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=128 hit=true
+2026-08-09T10:01:11.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=32 ul_pool=18 state=NORMAL
+2026-08-09T10:01:11.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=39
+2026-08-09T10:01:12.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=71 slot=19 status=READY
+2026-08-09T10:01:12.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=128 hit=true
+2026-08-09T10:01:12.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=60 ul_pool=70 state=NORMAL
+2026-08-09T10:01:12.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=67
+2026-08-09T10:01:12.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=72 slot=3 status=READY
+2026-08-09T10:01:12.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=128 hit=true
+2026-08-09T10:01:12.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=88 ul_pool=33 state=NORMAL
+2026-08-09T10:01:12.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=95
+2026-08-09T10:01:12.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=72 slot=7 status=READY
+2026-08-09T10:01:12.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=129 hit=true
+2026-08-09T10:01:13.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=19 ul_pool=85 state=NORMAL
+2026-08-09T10:01:13.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=26
+2026-08-09T10:01:13.200000 [RAT    ] [INFO ] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=73 slot=11 status=READY
+2026-08-09T10:01:13.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=129 hit=true
+2026-08-09T10:01:13.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=47 ul_pool=48 state=NORMAL
+2026-08-09T10:01:13.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=54
+2026-08-09T10:01:13.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=73 slot=15 status=READY
+2026-08-09T10:01:13.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=129 hit=true
+2026-08-09T10:01:13.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=75 ul_pool=11 state=NORMAL
+2026-08-09T10:01:13.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=82
+2026-08-09T10:01:14.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=73 slot=19 status=READY
+2026-08-09T10:01:14.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=129 hit=true
+2026-08-09T10:01:14.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=6 ul_pool=63 state=NORMAL
+2026-08-09T10:01:14.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=13
+2026-08-09T10:01:14.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=74 slot=3 status=READY
+2026-08-09T10:01:14.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=129 hit=true
+2026-08-09T10:01:14.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=34 ul_pool=26 state=NORMAL
+2026-08-09T10:01:14.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=41
+2026-08-09T10:01:14.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=74 slot=7 status=READY
+2026-08-09T10:01:14.900000 [RAT    ] [INFO ] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=129 hit=true
+2026-08-09T10:01:15.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=62 ul_pool=78 state=NORMAL
+2026-08-09T10:01:15.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=69
+2026-08-09T10:01:15.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=75 slot=11 status=READY
+2026-08-09T10:01:15.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=130 hit=true
+2026-08-09T10:01:15.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=90 ul_pool=41 state=NORMAL
+2026-08-09T10:01:15.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=0
+2026-08-09T10:01:15.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=75 slot=15 status=READY
+2026-08-09T10:01:15.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=130 hit=true
+2026-08-09T10:01:15.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=21 ul_pool=4 state=NORMAL
+2026-08-09T10:01:15.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=28
+2026-08-09T10:01:16.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=75 slot=19 status=READY
+2026-08-09T10:01:16.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=130 hit=true
+2026-08-09T10:01:16.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=49 ul_pool=56 state=NORMAL
+2026-08-09T10:01:16.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=56
+2026-08-09T10:01:16.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=76 slot=3 status=READY
+2026-08-09T10:01:16.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=130 hit=true
+2026-08-09T10:01:16.600000 [RAT    ] [INFO ] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=77 ul_pool=19 state=NORMAL
+2026-08-09T10:01:16.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=84
+2026-08-09T10:01:16.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=76 slot=7 status=READY
+2026-08-09T10:01:16.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=130 hit=true
+2026-08-09T10:01:17.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=8 ul_pool=71 state=NORMAL
+2026-08-09T10:01:17.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=15
+2026-08-09T10:01:17.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=77 slot=11 status=READY
+2026-08-09T10:01:17.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=130 hit=true
+2026-08-09T10:01:17.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=36 ul_pool=34 state=NORMAL
+2026-08-09T10:01:17.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=43
+2026-08-09T10:01:17.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=77 slot=15 status=READY
+2026-08-09T10:01:17.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=131 hit=true
+2026-08-09T10:01:17.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=64 ul_pool=86 state=NORMAL
+2026-08-09T10:01:17.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=71
+2026-08-09T10:01:18.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=77 slot=19 status=READY
+2026-08-09T10:01:18.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=131 hit=true
+2026-08-09T10:01:18.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=92 ul_pool=49 state=NORMAL
+2026-08-09T10:01:18.300000 [RAT    ] [INFO ] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=2
+2026-08-09T10:01:18.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=78 slot=3 status=READY
+2026-08-09T10:01:18.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=131 hit=true
+2026-08-09T10:01:18.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=23 ul_pool=12 state=NORMAL
+2026-08-09T10:01:18.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=30
+2026-08-09T10:01:18.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=78 slot=7 status=READY
+2026-08-09T10:01:18.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=131 hit=true
+2026-08-09T10:01:19.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=51 ul_pool=64 state=NORMAL
+2026-08-09T10:01:19.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=58
+2026-08-09T10:01:19.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=79 slot=11 status=READY
+2026-08-09T10:01:19.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=131 hit=true
+2026-08-09T10:01:19.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=79 ul_pool=27 state=NORMAL
+2026-08-09T10:01:19.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=86
+2026-08-09T10:01:19.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=79 slot=15 status=READY
+2026-08-09T10:01:19.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=131 hit=true
+2026-08-09T10:01:19.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=10 ul_pool=79 state=NORMAL
+2026-08-09T10:01:19.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=17
+2026-08-09T10:01:20.000000 [RAT    ] [INFO ] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=79 slot=19 status=READY
+2026-08-09T10:01:20.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=132 hit=true
+2026-08-09T10:01:20.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=38 ul_pool=42 state=NORMAL
+2026-08-09T10:01:20.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=45
+2026-08-09T10:01:20.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=80 slot=3 status=READY
+2026-08-09T10:01:20.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=132 hit=true
+2026-08-09T10:01:20.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=66 ul_pool=5 state=NORMAL
+2026-08-09T10:01:20.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=73
+2026-08-09T10:01:20.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=80 slot=7 status=READY
+2026-08-09T10:01:20.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=132 hit=true
+2026-08-09T10:01:21.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=94 ul_pool=57 state=NORMAL
+2026-08-09T10:01:21.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=4
+2026-08-09T10:01:21.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=81 slot=11 status=READY
+2026-08-09T10:01:21.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=132 hit=true
+2026-08-09T10:01:21.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=25 ul_pool=20 state=NORMAL
+2026-08-09T10:01:21.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=32
+2026-08-09T10:01:21.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=81 slot=15 status=READY
+2026-08-09T10:01:21.700000 [RAT    ] [INFO ] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=132 hit=true
+2026-08-09T10:01:21.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=53 ul_pool=72 state=NORMAL
+2026-08-09T10:01:21.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=60
+2026-08-09T10:01:22.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=81 slot=19 status=READY
+2026-08-09T10:01:22.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=132 hit=true
+2026-08-09T10:01:22.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=81 ul_pool=35 state=NORMAL
+2026-08-09T10:01:22.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=88
+2026-08-09T10:01:22.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=82 slot=3 status=READY
+2026-08-09T10:01:22.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=132 hit=true
+2026-08-09T10:01:22.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=12 ul_pool=87 state=NORMAL
+2026-08-09T10:01:22.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=19
+2026-08-09T10:01:22.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=82 slot=7 status=READY
+2026-08-09T10:01:22.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=133 hit=true
+2026-08-09T10:01:23.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=40 ul_pool=50 state=NORMAL
+2026-08-09T10:01:23.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=47
+2026-08-09T10:01:23.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=83 slot=11 status=READY
+2026-08-09T10:01:23.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=133 hit=true
+2026-08-09T10:01:23.400000 [RAT    ] [INFO ] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=68 ul_pool=13 state=NORMAL
+2026-08-09T10:01:23.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=75
+2026-08-09T10:01:23.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=83 slot=15 status=READY
+2026-08-09T10:01:23.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=133 hit=true
+2026-08-09T10:01:23.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=96 ul_pool=65 state=NORMAL
+2026-08-09T10:01:23.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=6
+2026-08-09T10:01:24.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=83 slot=19 status=READY
+2026-08-09T10:01:24.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=133 hit=true
+2026-08-09T10:01:24.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=27 ul_pool=28 state=NORMAL
+2026-08-09T10:01:24.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=34
+2026-08-09T10:01:24.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=84 slot=3 status=READY
+2026-08-09T10:01:24.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=133 hit=true
+2026-08-09T10:01:24.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=55 ul_pool=80 state=NORMAL
+2026-08-09T10:01:24.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=62
+2026-08-09T10:01:24.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=84 slot=7 status=READY
+2026-08-09T10:01:24.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=133 hit=true
+2026-08-09T10:01:25.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=83 ul_pool=43 state=NORMAL
+2026-08-09T10:01:25.100000 [RAT    ] [INFO ] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=90
+2026-08-09T10:01:25.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=85 slot=11 status=READY
+2026-08-09T10:01:25.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=134 hit=true
+2026-08-09T10:01:25.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=14 ul_pool=6 state=NORMAL
+2026-08-09T10:01:25.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=21
+2026-08-09T10:01:25.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=85 slot=15 status=READY
+2026-08-09T10:01:25.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=134 hit=true
+2026-08-09T10:01:25.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=42 ul_pool=58 state=NORMAL
+2026-08-09T10:01:25.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=49
+2026-08-09T10:01:26.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=85 slot=19 status=READY
+2026-08-09T10:01:26.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=134 hit=true
+2026-08-09T10:01:26.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=70 ul_pool=21 state=NORMAL
+2026-08-09T10:01:26.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=77
+2026-08-09T10:01:26.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=86 slot=3 status=READY
+2026-08-09T10:01:26.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=134 hit=true
+2026-08-09T10:01:26.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=1 ul_pool=73 state=NORMAL
+2026-08-09T10:01:26.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=8
+2026-08-09T10:01:26.800000 [RAT    ] [INFO ] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=86 slot=7 status=READY
+2026-08-09T10:01:26.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=134 hit=true
+2026-08-09T10:01:27.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=29 ul_pool=36 state=NORMAL
+2026-08-09T10:01:27.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=36
+2026-08-09T10:01:27.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=87 slot=11 status=READY
+2026-08-09T10:01:27.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=134 hit=true
+2026-08-09T10:01:27.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=57 ul_pool=88 state=NORMAL
+2026-08-09T10:01:27.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=64
+2026-08-09T10:01:27.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=87 slot=15 status=READY
+2026-08-09T10:01:27.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=135 hit=true
+2026-08-09T10:01:27.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=85 ul_pool=51 state=NORMAL
+2026-08-09T10:01:27.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=92
+2026-08-09T10:01:28.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=87 slot=19 status=READY
+2026-08-09T10:01:28.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=135 hit=true
+2026-08-09T10:01:28.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=16 ul_pool=14 state=NORMAL
+2026-08-09T10:01:28.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=23
+2026-08-09T10:01:28.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=88 slot=3 status=READY
+2026-08-09T10:01:28.500000 [RAT    ] [INFO ] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=135 hit=true
+2026-08-09T10:01:28.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=44 ul_pool=66 state=NORMAL
+2026-08-09T10:01:28.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=51
+2026-08-09T10:01:28.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=88 slot=7 status=READY
+2026-08-09T10:01:28.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=135 hit=true
+2026-08-09T10:01:29.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=72 ul_pool=29 state=NORMAL
+2026-08-09T10:01:29.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=79
+2026-08-09T10:01:29.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=89 slot=11 status=READY
+2026-08-09T10:01:29.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=135 hit=true
+2026-08-09T10:01:29.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=3 ul_pool=81 state=NORMAL
+2026-08-09T10:01:29.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=10
+2026-08-09T10:01:29.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=89 slot=15 status=READY
+2026-08-09T10:01:29.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=135 hit=true
+2026-08-09T10:01:29.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=31 ul_pool=44 state=NORMAL
+2026-08-09T10:01:29.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=38
+2026-08-09T10:01:30.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=89 slot=19 status=READY
+2026-08-09T10:01:30.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=136 hit=true
+2026-08-09T10:01:30.200000 [RAT    ] [INFO ] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=59 ul_pool=7 state=NORMAL
+2026-08-09T10:01:30.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=66
+2026-08-09T10:01:30.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=90 slot=3 status=READY
+2026-08-09T10:01:30.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=136 hit=true
+2026-08-09T10:01:30.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=87 ul_pool=59 state=NORMAL
+2026-08-09T10:01:30.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=94
+2026-08-09T10:01:30.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=90 slot=7 status=READY
+2026-08-09T10:01:30.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=136 hit=true
+2026-08-09T10:01:31.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=18 ul_pool=22 state=NORMAL
+2026-08-09T10:01:31.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=25
+2026-08-09T10:01:31.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=91 slot=11 status=READY
+2026-08-09T10:01:31.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=136 hit=true
+2026-08-09T10:01:31.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=46 ul_pool=74 state=NORMAL
+2026-08-09T10:01:31.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=53
+2026-08-09T10:01:31.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=91 slot=15 status=READY
+2026-08-09T10:01:31.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=136 hit=true
+2026-08-09T10:01:31.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=74 ul_pool=37 state=NORMAL
+2026-08-09T10:01:31.900000 [RAT    ] [INFO ] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=81
+2026-08-09T10:01:32.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=91 slot=19 status=READY
+2026-08-09T10:01:32.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=136 hit=true
+2026-08-09T10:01:32.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=5 ul_pool=0 state=NORMAL
+2026-08-09T10:01:32.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=12
+2026-08-09T10:01:32.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=92 slot=3 status=READY
+2026-08-09T10:01:32.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=136 hit=true
+2026-08-09T10:01:32.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=33 ul_pool=52 state=NORMAL
+2026-08-09T10:01:32.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=40
+2026-08-09T10:01:32.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=92 slot=7 status=READY
+2026-08-09T10:01:32.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=137 hit=true
+2026-08-09T10:01:33.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=61 ul_pool=15 state=NORMAL
+2026-08-09T10:01:33.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=68
+2026-08-09T10:01:33.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=93 slot=11 status=READY
+2026-08-09T10:01:33.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=137 hit=true
+2026-08-09T10:01:33.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=89 ul_pool=67 state=NORMAL
+2026-08-09T10:01:33.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=96
+2026-08-09T10:01:33.600000 [RAT    ] [INFO ] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=93 slot=15 status=READY
+2026-08-09T10:01:33.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=137 hit=true
+2026-08-09T10:01:33.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=20 ul_pool=30 state=NORMAL
+2026-08-09T10:01:33.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=27
+2026-08-09T10:01:34.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=93 slot=19 status=READY
+2026-08-09T10:01:34.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=137 hit=true
+2026-08-09T10:01:34.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=48 ul_pool=82 state=NORMAL
+2026-08-09T10:01:34.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=55
+2026-08-09T10:01:34.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=94 slot=3 status=READY
+2026-08-09T10:01:34.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=137 hit=true
+2026-08-09T10:01:34.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=76 ul_pool=45 state=NORMAL
+2026-08-09T10:01:34.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=83
+2026-08-09T10:01:34.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=94 slot=7 status=READY
+2026-08-09T10:01:34.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=137 hit=true
+2026-08-09T10:01:35.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=7 ul_pool=8 state=NORMAL
+2026-08-09T10:01:35.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=14
+2026-08-09T10:01:35.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=95 slot=11 status=READY
+2026-08-09T10:01:35.300000 [RAT    ] [INFO ] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=138 hit=true
+2026-08-09T10:01:35.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=35 ul_pool=60 state=NORMAL
+2026-08-09T10:01:35.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=42
+2026-08-09T10:01:35.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=95 slot=15 status=READY
+2026-08-09T10:01:35.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=138 hit=true
+2026-08-09T10:01:35.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=63 ul_pool=23 state=NORMAL
+2026-08-09T10:01:35.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=70
+2026-08-09T10:01:36.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=95 slot=19 status=READY
+2026-08-09T10:01:36.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=138 hit=true
+2026-08-09T10:01:36.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=91 ul_pool=75 state=NORMAL
+2026-08-09T10:01:36.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=1
+2026-08-09T10:01:36.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=96 slot=3 status=READY
+2026-08-09T10:01:36.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=138 hit=true
+2026-08-09T10:01:36.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=22 ul_pool=38 state=NORMAL
+2026-08-09T10:01:36.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=29
+2026-08-09T10:01:36.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=96 slot=7 status=READY
+2026-08-09T10:01:36.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=138 hit=true
+2026-08-09T10:01:37.000000 [RAT    ] [INFO ] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=50 ul_pool=1 state=NORMAL
+2026-08-09T10:01:37.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=57
+2026-08-09T10:01:37.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=97 slot=11 status=READY
+2026-08-09T10:01:37.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=138 hit=true
+2026-08-09T10:01:37.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=78 ul_pool=53 state=NORMAL
+2026-08-09T10:01:37.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=85
+2026-08-09T10:01:37.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=97 slot=15 status=READY
+2026-08-09T10:01:37.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=139 hit=true
+2026-08-09T10:01:37.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=9 ul_pool=16 state=NORMAL
+2026-08-09T10:01:37.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=16
+2026-08-09T10:01:38.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=97 slot=19 status=READY
+2026-08-09T10:01:38.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=139 hit=true
+2026-08-09T10:01:38.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=37 ul_pool=68 state=NORMAL
+2026-08-09T10:01:38.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=44
+2026-08-09T10:01:38.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=98 slot=3 status=READY
+2026-08-09T10:01:38.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=139 hit=true
+2026-08-09T10:01:38.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=65 ul_pool=31 state=NORMAL
+2026-08-09T10:01:38.700000 [RAT    ] [INFO ] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=72
+2026-08-09T10:01:38.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=98 slot=7 status=READY
+2026-08-09T10:01:38.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=139 hit=true
+2026-08-09T10:01:39.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=93 ul_pool=83 state=NORMAL
+2026-08-09T10:01:39.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=3
+2026-08-09T10:01:39.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=99 slot=11 status=READY
+2026-08-09T10:01:39.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=139 hit=true
+2026-08-09T10:01:39.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=24 ul_pool=46 state=NORMAL
+2026-08-09T10:01:39.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=31
+2026-08-09T10:01:39.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=99 slot=15 status=READY
+2026-08-09T10:01:39.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=139 hit=true
+2026-08-09T10:01:39.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=52 ul_pool=9 state=NORMAL
+2026-08-09T10:01:39.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=59
+2026-08-09T10:01:40.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=99 slot=19 status=READY
+2026-08-09T10:01:40.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=140 hit=true
+2026-08-09T10:01:40.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=80 ul_pool=61 state=NORMAL
+2026-08-09T10:01:40.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=87
+2026-08-09T10:01:40.400000 [RAT    ] [INFO ] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=100 slot=3 status=READY
+2026-08-09T10:01:40.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=140 hit=true
+2026-08-09T10:01:40.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=11 ul_pool=24 state=NORMAL
+2026-08-09T10:01:40.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=18
+2026-08-09T10:01:40.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=100 slot=7 status=READY
+2026-08-09T10:01:40.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=140 hit=true
+2026-08-09T10:01:41.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=39 ul_pool=76 state=NORMAL
+2026-08-09T10:01:41.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=46
+2026-08-09T10:01:41.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=101 slot=11 status=READY
+2026-08-09T10:01:41.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=140 hit=true
+2026-08-09T10:01:41.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=67 ul_pool=39 state=NORMAL
+2026-08-09T10:01:41.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=74
+2026-08-09T10:01:41.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=101 slot=15 status=READY
+2026-08-09T10:01:41.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=140 hit=true
+2026-08-09T10:01:41.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=95 ul_pool=2 state=NORMAL
+2026-08-09T10:01:41.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=5
+2026-08-09T10:01:42.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=101 slot=19 status=READY
+2026-08-09T10:01:42.100000 [RAT    ] [INFO ] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=140 hit=true
+2026-08-09T10:01:42.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=26 ul_pool=54 state=NORMAL
+2026-08-09T10:01:42.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=33
+2026-08-09T10:01:42.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=102 slot=3 status=READY
+2026-08-09T10:01:42.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=140 hit=true
+2026-08-09T10:01:42.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=54 ul_pool=17 state=NORMAL
+2026-08-09T10:01:42.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=61
+2026-08-09T10:01:42.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=102 slot=7 status=READY
+2026-08-09T10:01:42.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=141 hit=true
+2026-08-09T10:01:43.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=82 ul_pool=69 state=NORMAL
+2026-08-09T10:01:43.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=89
+2026-08-09T10:01:43.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=103 slot=11 status=READY
+2026-08-09T10:01:43.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=141 hit=true
+2026-08-09T10:01:43.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=13 ul_pool=32 state=NORMAL
+2026-08-09T10:01:43.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=20
+2026-08-09T10:01:43.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=103 slot=15 status=READY
+2026-08-09T10:01:43.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=141 hit=true
+2026-08-09T10:01:43.800000 [RAT    ] [INFO ] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=41 ul_pool=84 state=NORMAL
+2026-08-09T10:01:43.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=48
+2026-08-09T10:01:44.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=103 slot=19 status=READY
+2026-08-09T10:01:44.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=141 hit=true
+2026-08-09T10:01:44.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=69 ul_pool=47 state=NORMAL
+2026-08-09T10:01:44.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=76
+2026-08-09T10:01:44.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=104 slot=3 status=READY
+2026-08-09T10:01:44.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=141 hit=true
+2026-08-09T10:01:44.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=0 ul_pool=10 state=NORMAL
+2026-08-09T10:01:44.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=7
+2026-08-09T10:01:44.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=104 slot=7 status=READY
+2026-08-09T10:01:44.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=141 hit=true
+2026-08-09T10:01:45.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=28 ul_pool=62 state=NORMAL
+2026-08-09T10:01:45.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=35
+2026-08-09T10:01:45.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=105 slot=11 status=READY
+2026-08-09T10:01:45.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=142 hit=true
+2026-08-09T10:01:45.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=56 ul_pool=25 state=NORMAL
+2026-08-09T10:01:45.500000 [RAT    ] [INFO ] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=63
+2026-08-09T10:01:45.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=105 slot=15 status=READY
+2026-08-09T10:01:45.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=142 hit=true
+2026-08-09T10:01:45.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=84 ul_pool=77 state=NORMAL
+2026-08-09T10:01:45.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=91
+2026-08-09T10:01:46.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=105 slot=19 status=READY
+2026-08-09T10:01:46.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=142 hit=true
+2026-08-09T10:01:46.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=15 ul_pool=40 state=NORMAL
+2026-08-09T10:01:46.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=22
+2026-08-09T10:01:46.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=106 slot=3 status=READY
+2026-08-09T10:01:46.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=142 hit=true
+2026-08-09T10:01:46.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=43 ul_pool=3 state=NORMAL
+2026-08-09T10:01:46.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=50
+2026-08-09T10:01:46.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=106 slot=7 status=READY
+2026-08-09T10:01:46.900000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=142 hit=true
+2026-08-09T10:01:47.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=71 ul_pool=55 state=NORMAL
+2026-08-09T10:01:47.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=78
+2026-08-09T10:01:47.200000 [RAT    ] [INFO ] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=107 slot=11 status=READY
+2026-08-09T10:01:47.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=142 hit=true
+2026-08-09T10:01:47.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=2 ul_pool=18 state=NORMAL
+2026-08-09T10:01:47.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=9
+2026-08-09T10:01:47.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=107 slot=15 status=READY
+2026-08-09T10:01:47.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=143 hit=true
+2026-08-09T10:01:47.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=30 ul_pool=70 state=NORMAL
+2026-08-09T10:01:47.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=37
+2026-08-09T10:01:48.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=107 slot=19 status=READY
+2026-08-09T10:01:48.100000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=143 hit=true
+2026-08-09T10:01:48.200000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=58 ul_pool=33 state=NORMAL
+2026-08-09T10:01:48.300000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-6 state=RUNNING queue_depth=65
+2026-08-09T10:01:48.400000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=108 slot=3 status=READY
+2026-08-09T10:01:48.500000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=143 hit=true
+2026-08-09T10:01:48.600000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=86 ul_pool=85 state=NORMAL
+2026-08-09T10:01:48.700000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-0 state=RUNNING queue_depth=93
+2026-08-09T10:01:48.800000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=108 slot=7 status=READY
+2026-08-09T10:01:48.900000 [RAT    ] [INFO ] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=143 hit=true
+2026-08-09T10:01:49.000000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=17 ul_pool=48 state=NORMAL
+2026-08-09T10:01:49.100000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-4 state=RUNNING queue_depth=24
+2026-08-09T10:01:49.200000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=109 slot=11 status=READY
+2026-08-09T10:01:49.300000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=143 hit=true
+2026-08-09T10:01:49.400000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=45 ul_pool=11 state=NORMAL
+2026-08-09T10:01:49.500000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-8 state=RUNNING queue_depth=52
+2026-08-09T10:01:49.600000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=109 slot=15 status=READY
+2026-08-09T10:01:49.700000 [RAT    ] [DEBUG] [thread=rat-0] pipeline_id={{PIPELINE_ID}} profile_cache band=n78 scs_khz=30 revision=143 hit=true
+2026-08-09T10:01:49.800000 [RAT    ] [DEBUG] [thread=rat-1] pipeline_id={{PIPELINE_ID}} resource_sample dl_pool=73 ul_pool=63 state=NORMAL
+2026-08-09T10:01:49.900000 [RAT    ] [DEBUG] [thread=rat-2] pipeline_id={{PIPELINE_ID}} worker_heartbeat worker=scheduler-2 state=RUNNING queue_depth=80
+2026-08-09T10:01:50.000000 [RAT    ] [DEBUG] [thread=rat-3] pipeline_id={{PIPELINE_ID}} slot_plan cell=NR_CELL_0 sfn=109 slot=19 status=READY
+2026-08-09T10:01:51.500000 [RAT    ] [ERROR] [thread=rat-fault] pipeline_id={{PIPELINE_ID}} RAT_PROFILE_REJECTED errorcode=E-RAT-1211 field=scs_khz value=15 allowed=[30,60] band=n78 bandwidth_mhz=100
+2026-08-09T10:01:59.000000 [RAT    ] [DEBUG] [thread=main] pipeline_id={{PIPELINE_ID}} diagnostic_snapshot component=rat flush=complete

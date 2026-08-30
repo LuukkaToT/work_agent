@@ -507,7 +507,7 @@ CLI 的 `run_turn`/`resume_pending` 是阻塞的：遇到 `interrupt` 就在进�
 
 改上下文策略最容易犯的错是「感觉变好了」。所以 `error_analysis` 的核心逻辑抽成了 `run_diagnosis(context_strategy=...)`，同一个 case 可以分别按 `legacy`（改造前行为：历史不裁剪、抽取上下文按整块丢弃）和 `managed`（ReAct 历史按 step 裁剪 + ContextManager）跑一遍，直接比数。节点自己走 `managed`，`summary` / `audit` 的形状不变。
 
-golden set 在 `config/eval_cases.json`（6 条，覆盖 case / version / env / none 四类归因）。每条除了 `expected_fail_kind` 还有 `expected_evidence_keys`——那些**必须活到最终 working context** 的关键词，取自 `tools/mock/logs.py` 各 scenario 的尾部特征行。期望值只存在 golden 文件里，不复制进结果行，避免同一份期望在两处漂移。
+golden set 在 `config/eval_cases.json`（20 条、120 个分组件日志，覆盖 case / version / env / none 四类归因）。每条除了 `expected_fail_kind`、`expected_root_component` 还有 `expected_evidence_keys`——那些**必须活到最终 working context** 的关键词。期望值只存在 golden 文件里，不复制进结果行，避免同一份期望在两处漂移。数据规模与场景矩阵见 [baseband-mock-benchmark.md](baseband-mock-benchmark.md)。
 
 `python -m work_agent.cli eval-diagnose` 跑整套（`--case` / `--strategy` / `--no-store`）。
 
@@ -524,7 +524,8 @@ golden set 在 `config/eval_cases.json`（6 条，覆盖 case / version / env / 
 | `context_chars` | 最终 working context 字符数 | 硬指标 |
 | `token_total` | 本次诊断全部 LLM 调用的 token（**含摘要自身开销**） | 硬指标 |
 | `evidence_recall` | `expected_evidence_keys` 有多少活到最终上下文 | 硬指标 |
-| `accuracy` | `fail_kind` 是否等于期望 | 6 条样本的趋势参考，不是统计结论 |
+| `accuracy` | `fail_kind` 是否等于期望 | 20 条 synthetic 样本的开发期趋势 |
+| `root_component_accuracy` | 是否越过级联错误找到期望根因组件 | 20 条 synthetic 样本的开发期趋势 |
 | `latency_ms` / `tool_calls` | 耗时与工具调用次数 | 受网络抖动影响，看趋势 |
 
 `evidence_recall` 是这里最该被盯住的指标：省字符很容易，把根因证据一起省掉就是净损失。反过来 `context_chars` 单独变小也不一定是好事——`legacy` 把每条观察无脑压到 400 字符，字符数很低但那正是「还没判断有没有余量就先丢证据」这个问题本身。两个指标必须一起看。

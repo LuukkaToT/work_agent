@@ -1,0 +1,1105 @@
+2026-08-09T10:00:00.000000 [COMPARE] [INFO ] [thread=main] pipeline_id={{PIPELINE_ID}} process_boot component=compare build=mock-27B
+2026-08-09T10:00:00.005000 [COMPARE] [INFO ] [thread=main] pipeline_id={{PIPELINE_ID}} scenario=bench10_bbl_duplicate_pci synthetic=true
+2026-08-09T10:00:00.010000 [COMPARE] [DEBUG] [thread=main] pipeline_id={{PIPELINE_ID}} log_level=DEBUG structured_fields=enabled
+2026-08-09T10:00:00.100000 [COMPARE] [INFO ] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=13 status=ALIGNED
+2026-08-09T10:00:00.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10001 state=RUNNING
+2026-08-09T10:00:00.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=100
+2026-08-09T10:00:00.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=100
+2026-08-09T10:00:00.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=41 status=ALIGNED
+2026-08-09T10:00:00.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10005 state=RUNNING
+2026-08-09T10:00:00.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=100
+2026-08-09T10:00:00.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=100
+2026-08-09T10:00:00.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=69 status=ALIGNED
+2026-08-09T10:00:01.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10009 state=RUNNING
+2026-08-09T10:00:01.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=100
+2026-08-09T10:00:01.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=100
+2026-08-09T10:00:01.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=0 status=ALIGNED
+2026-08-09T10:00:01.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10013 state=RUNNING
+2026-08-09T10:00:01.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=100
+2026-08-09T10:00:01.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=100
+2026-08-09T10:00:01.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=28 status=ALIGNED
+2026-08-09T10:00:01.800000 [COMPARE] [INFO ] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10017 state=RUNNING
+2026-08-09T10:00:01.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=100
+2026-08-09T10:00:02.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=100
+2026-08-09T10:00:02.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=56 status=ALIGNED
+2026-08-09T10:00:02.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10021 state=RUNNING
+2026-08-09T10:00:02.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=100
+2026-08-09T10:00:02.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=100
+2026-08-09T10:00:02.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=84 status=ALIGNED
+2026-08-09T10:00:02.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10025 state=RUNNING
+2026-08-09T10:00:02.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=101
+2026-08-09T10:00:02.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=101
+2026-08-09T10:00:02.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=15 status=ALIGNED
+2026-08-09T10:00:03.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10029 state=RUNNING
+2026-08-09T10:00:03.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=101
+2026-08-09T10:00:03.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=101
+2026-08-09T10:00:03.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=43 status=ALIGNED
+2026-08-09T10:00:03.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10033 state=RUNNING
+2026-08-09T10:00:03.500000 [COMPARE] [INFO ] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=101
+2026-08-09T10:00:03.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=101
+2026-08-09T10:00:03.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=71 status=ALIGNED
+2026-08-09T10:00:03.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10037 state=RUNNING
+2026-08-09T10:00:03.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=101
+2026-08-09T10:00:04.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=101
+2026-08-09T10:00:04.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=2 status=ALIGNED
+2026-08-09T10:00:04.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10041 state=RUNNING
+2026-08-09T10:00:04.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=101
+2026-08-09T10:00:04.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=101
+2026-08-09T10:00:04.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=30 status=ALIGNED
+2026-08-09T10:00:04.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10045 state=RUNNING
+2026-08-09T10:00:04.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=101
+2026-08-09T10:00:04.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=101
+2026-08-09T10:00:04.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=58 status=ALIGNED
+2026-08-09T10:00:05.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10049 state=RUNNING
+2026-08-09T10:00:05.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=102
+2026-08-09T10:00:05.200000 [COMPARE] [INFO ] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=102
+2026-08-09T10:00:05.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=86 status=ALIGNED
+2026-08-09T10:00:05.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10053 state=RUNNING
+2026-08-09T10:00:05.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=102
+2026-08-09T10:00:05.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=102
+2026-08-09T10:00:05.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=17 status=ALIGNED
+2026-08-09T10:00:05.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10057 state=RUNNING
+2026-08-09T10:00:05.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=102
+2026-08-09T10:00:06.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=102
+2026-08-09T10:00:06.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=45 status=ALIGNED
+2026-08-09T10:00:06.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10061 state=RUNNING
+2026-08-09T10:00:06.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=102
+2026-08-09T10:00:06.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=102
+2026-08-09T10:00:06.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=73 status=ALIGNED
+2026-08-09T10:00:06.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10065 state=RUNNING
+2026-08-09T10:00:06.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=102
+2026-08-09T10:00:06.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=102
+2026-08-09T10:00:06.900000 [COMPARE] [INFO ] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=4 status=ALIGNED
+2026-08-09T10:00:07.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10069 state=RUNNING
+2026-08-09T10:00:07.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=102
+2026-08-09T10:00:07.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=102
+2026-08-09T10:00:07.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=32 status=ALIGNED
+2026-08-09T10:00:07.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10073 state=RUNNING
+2026-08-09T10:00:07.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=102
+2026-08-09T10:00:07.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=103
+2026-08-09T10:00:07.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=60 status=ALIGNED
+2026-08-09T10:00:07.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10077 state=RUNNING
+2026-08-09T10:00:07.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=103
+2026-08-09T10:00:08.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=103
+2026-08-09T10:00:08.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=88 status=ALIGNED
+2026-08-09T10:00:08.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10081 state=RUNNING
+2026-08-09T10:00:08.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=103
+2026-08-09T10:00:08.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=103
+2026-08-09T10:00:08.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=19 status=ALIGNED
+2026-08-09T10:00:08.600000 [COMPARE] [INFO ] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10085 state=RUNNING
+2026-08-09T10:00:08.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=103
+2026-08-09T10:00:08.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=103
+2026-08-09T10:00:08.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=47 status=ALIGNED
+2026-08-09T10:00:09.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10089 state=RUNNING
+2026-08-09T10:00:09.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=103
+2026-08-09T10:00:09.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=103
+2026-08-09T10:00:09.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=75 status=ALIGNED
+2026-08-09T10:00:09.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10093 state=RUNNING
+2026-08-09T10:00:09.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=103
+2026-08-09T10:00:09.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=103
+2026-08-09T10:00:09.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=6 status=ALIGNED
+2026-08-09T10:00:09.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10097 state=RUNNING
+2026-08-09T10:00:09.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=103
+2026-08-09T10:00:10.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=103
+2026-08-09T10:00:10.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=34 status=ALIGNED
+2026-08-09T10:00:10.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10101 state=RUNNING
+2026-08-09T10:00:10.300000 [COMPARE] [INFO ] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=104
+2026-08-09T10:00:10.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=104
+2026-08-09T10:00:10.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=62 status=ALIGNED
+2026-08-09T10:00:10.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10105 state=RUNNING
+2026-08-09T10:00:10.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=104
+2026-08-09T10:00:10.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=104
+2026-08-09T10:00:10.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=90 status=ALIGNED
+2026-08-09T10:00:11.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10109 state=RUNNING
+2026-08-09T10:00:11.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=104
+2026-08-09T10:00:11.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=104
+2026-08-09T10:00:11.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=21 status=ALIGNED
+2026-08-09T10:00:11.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10113 state=RUNNING
+2026-08-09T10:00:11.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=104
+2026-08-09T10:00:11.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=104
+2026-08-09T10:00:11.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=49 status=ALIGNED
+2026-08-09T10:00:11.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10117 state=RUNNING
+2026-08-09T10:00:11.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=104
+2026-08-09T10:00:12.000000 [COMPARE] [INFO ] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=104
+2026-08-09T10:00:12.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=77 status=ALIGNED
+2026-08-09T10:00:12.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10121 state=RUNNING
+2026-08-09T10:00:12.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=104
+2026-08-09T10:00:12.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=104
+2026-08-09T10:00:12.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=8 status=ALIGNED
+2026-08-09T10:00:12.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10125 state=RUNNING
+2026-08-09T10:00:12.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=105
+2026-08-09T10:00:12.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=105
+2026-08-09T10:00:12.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=36 status=ALIGNED
+2026-08-09T10:00:13.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10129 state=RUNNING
+2026-08-09T10:00:13.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=105
+2026-08-09T10:00:13.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=105
+2026-08-09T10:00:13.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=64 status=ALIGNED
+2026-08-09T10:00:13.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10133 state=RUNNING
+2026-08-09T10:00:13.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=105
+2026-08-09T10:00:13.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=105
+2026-08-09T10:00:13.700000 [COMPARE] [INFO ] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=92 status=ALIGNED
+2026-08-09T10:00:13.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10137 state=RUNNING
+2026-08-09T10:00:13.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=105
+2026-08-09T10:00:14.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=105
+2026-08-09T10:00:14.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=23 status=ALIGNED
+2026-08-09T10:00:14.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10141 state=RUNNING
+2026-08-09T10:00:14.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=105
+2026-08-09T10:00:14.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=105
+2026-08-09T10:00:14.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=51 status=ALIGNED
+2026-08-09T10:00:14.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10145 state=RUNNING
+2026-08-09T10:00:14.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=105
+2026-08-09T10:00:14.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=105
+2026-08-09T10:00:14.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=79 status=ALIGNED
+2026-08-09T10:00:15.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10149 state=RUNNING
+2026-08-09T10:00:15.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=106
+2026-08-09T10:00:15.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=106
+2026-08-09T10:00:15.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=10 status=ALIGNED
+2026-08-09T10:00:15.400000 [COMPARE] [INFO ] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10153 state=RUNNING
+2026-08-09T10:00:15.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=106
+2026-08-09T10:00:15.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=106
+2026-08-09T10:00:15.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=38 status=ALIGNED
+2026-08-09T10:00:15.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10157 state=RUNNING
+2026-08-09T10:00:15.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=106
+2026-08-09T10:00:16.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=106
+2026-08-09T10:00:16.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=66 status=ALIGNED
+2026-08-09T10:00:16.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10161 state=RUNNING
+2026-08-09T10:00:16.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=106
+2026-08-09T10:00:16.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=106
+2026-08-09T10:00:16.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=94 status=ALIGNED
+2026-08-09T10:00:16.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10165 state=RUNNING
+2026-08-09T10:00:16.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=106
+2026-08-09T10:00:16.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=106
+2026-08-09T10:00:16.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=25 status=ALIGNED
+2026-08-09T10:00:17.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10169 state=RUNNING
+2026-08-09T10:00:17.100000 [COMPARE] [INFO ] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=106
+2026-08-09T10:00:17.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=106
+2026-08-09T10:00:17.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=53 status=ALIGNED
+2026-08-09T10:00:17.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10173 state=RUNNING
+2026-08-09T10:00:17.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=106
+2026-08-09T10:00:17.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=107
+2026-08-09T10:00:17.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=81 status=ALIGNED
+2026-08-09T10:00:17.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10177 state=RUNNING
+2026-08-09T10:00:17.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=107
+2026-08-09T10:00:18.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=107
+2026-08-09T10:00:18.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=12 status=ALIGNED
+2026-08-09T10:00:18.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10181 state=RUNNING
+2026-08-09T10:00:18.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=107
+2026-08-09T10:00:18.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=107
+2026-08-09T10:00:18.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=40 status=ALIGNED
+2026-08-09T10:00:18.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10185 state=RUNNING
+2026-08-09T10:00:18.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=107
+2026-08-09T10:00:18.800000 [COMPARE] [INFO ] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=107
+2026-08-09T10:00:18.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=68 status=ALIGNED
+2026-08-09T10:00:19.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10189 state=RUNNING
+2026-08-09T10:00:19.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=107
+2026-08-09T10:00:19.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=107
+2026-08-09T10:00:19.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=96 status=ALIGNED
+2026-08-09T10:00:19.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10193 state=RUNNING
+2026-08-09T10:00:19.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=107
+2026-08-09T10:00:19.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=107
+2026-08-09T10:00:19.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=27 status=ALIGNED
+2026-08-09T10:00:19.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10197 state=RUNNING
+2026-08-09T10:00:19.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=107
+2026-08-09T10:00:20.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=107
+2026-08-09T10:00:20.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=55 status=ALIGNED
+2026-08-09T10:00:20.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10201 state=RUNNING
+2026-08-09T10:00:20.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=108
+2026-08-09T10:00:20.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=108
+2026-08-09T10:00:20.500000 [COMPARE] [INFO ] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=83 status=ALIGNED
+2026-08-09T10:00:20.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10205 state=RUNNING
+2026-08-09T10:00:20.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=108
+2026-08-09T10:00:20.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=108
+2026-08-09T10:00:20.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=14 status=ALIGNED
+2026-08-09T10:00:21.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10209 state=RUNNING
+2026-08-09T10:00:21.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=108
+2026-08-09T10:00:21.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=108
+2026-08-09T10:00:21.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=42 status=ALIGNED
+2026-08-09T10:00:21.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10213 state=RUNNING
+2026-08-09T10:00:21.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=108
+2026-08-09T10:00:21.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=108
+2026-08-09T10:00:21.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=70 status=ALIGNED
+2026-08-09T10:00:21.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10217 state=RUNNING
+2026-08-09T10:00:21.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=108
+2026-08-09T10:00:22.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=108
+2026-08-09T10:00:22.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=1 status=ALIGNED
+2026-08-09T10:00:22.200000 [COMPARE] [INFO ] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10221 state=RUNNING
+2026-08-09T10:00:22.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=108
+2026-08-09T10:00:22.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=108
+2026-08-09T10:00:22.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=29 status=ALIGNED
+2026-08-09T10:00:22.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10225 state=RUNNING
+2026-08-09T10:00:22.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=109
+2026-08-09T10:00:22.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=109
+2026-08-09T10:00:22.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=57 status=ALIGNED
+2026-08-09T10:00:23.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10229 state=RUNNING
+2026-08-09T10:00:23.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=109
+2026-08-09T10:00:23.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=109
+2026-08-09T10:00:23.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=85 status=ALIGNED
+2026-08-09T10:00:23.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10233 state=RUNNING
+2026-08-09T10:00:23.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=109
+2026-08-09T10:00:23.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=109
+2026-08-09T10:00:23.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=16 status=ALIGNED
+2026-08-09T10:00:23.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10237 state=RUNNING
+2026-08-09T10:00:23.900000 [COMPARE] [INFO ] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=109
+2026-08-09T10:00:24.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=109
+2026-08-09T10:00:24.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=44 status=ALIGNED
+2026-08-09T10:00:24.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10241 state=RUNNING
+2026-08-09T10:00:24.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=109
+2026-08-09T10:00:24.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=109
+2026-08-09T10:00:24.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=72 status=ALIGNED
+2026-08-09T10:00:24.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10245 state=RUNNING
+2026-08-09T10:00:24.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=109
+2026-08-09T10:00:24.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=109
+2026-08-09T10:00:24.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=3 status=ALIGNED
+2026-08-09T10:00:25.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10249 state=RUNNING
+2026-08-09T10:00:25.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=110
+2026-08-09T10:00:25.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=110
+2026-08-09T10:00:25.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=31 status=ALIGNED
+2026-08-09T10:00:25.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10253 state=RUNNING
+2026-08-09T10:00:25.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=110
+2026-08-09T10:00:25.600000 [COMPARE] [INFO ] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=110
+2026-08-09T10:00:25.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=59 status=ALIGNED
+2026-08-09T10:00:25.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10257 state=RUNNING
+2026-08-09T10:00:25.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=110
+2026-08-09T10:00:26.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=110
+2026-08-09T10:00:26.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=87 status=ALIGNED
+2026-08-09T10:00:26.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10261 state=RUNNING
+2026-08-09T10:00:26.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=110
+2026-08-09T10:00:26.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=110
+2026-08-09T10:00:26.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=18 status=ALIGNED
+2026-08-09T10:00:26.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10265 state=RUNNING
+2026-08-09T10:00:26.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=110
+2026-08-09T10:00:26.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=110
+2026-08-09T10:00:26.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=46 status=ALIGNED
+2026-08-09T10:00:27.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10269 state=RUNNING
+2026-08-09T10:00:27.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=110
+2026-08-09T10:00:27.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=110
+2026-08-09T10:00:27.300000 [COMPARE] [INFO ] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=74 status=ALIGNED
+2026-08-09T10:00:27.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10273 state=RUNNING
+2026-08-09T10:00:27.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=110
+2026-08-09T10:00:27.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=111
+2026-08-09T10:00:27.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=5 status=ALIGNED
+2026-08-09T10:00:27.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10277 state=RUNNING
+2026-08-09T10:00:27.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=111
+2026-08-09T10:00:28.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=111
+2026-08-09T10:00:28.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=33 status=ALIGNED
+2026-08-09T10:00:28.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10281 state=RUNNING
+2026-08-09T10:00:28.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=111
+2026-08-09T10:00:28.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=111
+2026-08-09T10:00:28.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=61 status=ALIGNED
+2026-08-09T10:00:28.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10285 state=RUNNING
+2026-08-09T10:00:28.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=111
+2026-08-09T10:00:28.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=111
+2026-08-09T10:00:28.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=89 status=ALIGNED
+2026-08-09T10:00:29.000000 [COMPARE] [INFO ] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10289 state=RUNNING
+2026-08-09T10:00:29.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=111
+2026-08-09T10:00:29.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=111
+2026-08-09T10:00:29.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=20 status=ALIGNED
+2026-08-09T10:00:29.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10293 state=RUNNING
+2026-08-09T10:00:29.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=111
+2026-08-09T10:00:29.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=111
+2026-08-09T10:00:29.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=48 status=ALIGNED
+2026-08-09T10:00:29.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10297 state=RUNNING
+2026-08-09T10:00:29.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=111
+2026-08-09T10:00:30.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=111
+2026-08-09T10:00:30.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=76 status=ALIGNED
+2026-08-09T10:00:30.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10301 state=RUNNING
+2026-08-09T10:00:30.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=112
+2026-08-09T10:00:30.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=112
+2026-08-09T10:00:30.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=7 status=ALIGNED
+2026-08-09T10:00:30.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10305 state=RUNNING
+2026-08-09T10:00:30.700000 [COMPARE] [INFO ] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=112
+2026-08-09T10:00:30.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=112
+2026-08-09T10:00:30.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=35 status=ALIGNED
+2026-08-09T10:00:31.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10309 state=RUNNING
+2026-08-09T10:00:31.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=112
+2026-08-09T10:00:31.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=112
+2026-08-09T10:00:31.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=63 status=ALIGNED
+2026-08-09T10:00:31.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10313 state=RUNNING
+2026-08-09T10:00:31.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=112
+2026-08-09T10:00:31.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=112
+2026-08-09T10:00:31.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=91 status=ALIGNED
+2026-08-09T10:00:31.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10317 state=RUNNING
+2026-08-09T10:00:31.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=112
+2026-08-09T10:00:32.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=112
+2026-08-09T10:00:32.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=22 status=ALIGNED
+2026-08-09T10:00:32.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10321 state=RUNNING
+2026-08-09T10:00:32.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=112
+2026-08-09T10:00:32.400000 [COMPARE] [INFO ] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=112
+2026-08-09T10:00:32.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=50 status=ALIGNED
+2026-08-09T10:00:32.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10325 state=RUNNING
+2026-08-09T10:00:32.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=113
+2026-08-09T10:00:32.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=113
+2026-08-09T10:00:32.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=78 status=ALIGNED
+2026-08-09T10:00:33.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10329 state=RUNNING
+2026-08-09T10:00:33.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=113
+2026-08-09T10:00:33.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=113
+2026-08-09T10:00:33.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=9 status=ALIGNED
+2026-08-09T10:00:33.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10333 state=RUNNING
+2026-08-09T10:00:33.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=113
+2026-08-09T10:00:33.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=113
+2026-08-09T10:00:33.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=37 status=ALIGNED
+2026-08-09T10:00:33.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10337 state=RUNNING
+2026-08-09T10:00:33.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=113
+2026-08-09T10:00:34.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=113
+2026-08-09T10:00:34.100000 [COMPARE] [INFO ] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=65 status=ALIGNED
+2026-08-09T10:00:34.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10341 state=RUNNING
+2026-08-09T10:00:34.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=113
+2026-08-09T10:00:34.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=113
+2026-08-09T10:00:34.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=93 status=ALIGNED
+2026-08-09T10:00:34.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10345 state=RUNNING
+2026-08-09T10:00:34.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=113
+2026-08-09T10:00:34.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=113
+2026-08-09T10:00:34.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=24 status=ALIGNED
+2026-08-09T10:00:35.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10349 state=RUNNING
+2026-08-09T10:00:35.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=114
+2026-08-09T10:00:35.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=114
+2026-08-09T10:00:35.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=52 status=ALIGNED
+2026-08-09T10:00:35.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10353 state=RUNNING
+2026-08-09T10:00:35.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=114
+2026-08-09T10:00:35.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=114
+2026-08-09T10:00:35.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=80 status=ALIGNED
+2026-08-09T10:00:35.800000 [COMPARE] [INFO ] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10357 state=RUNNING
+2026-08-09T10:00:35.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=114
+2026-08-09T10:00:36.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=114
+2026-08-09T10:00:36.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=11 status=ALIGNED
+2026-08-09T10:00:36.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10361 state=RUNNING
+2026-08-09T10:00:36.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=114
+2026-08-09T10:00:36.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=114
+2026-08-09T10:00:36.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=39 status=ALIGNED
+2026-08-09T10:00:36.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10365 state=RUNNING
+2026-08-09T10:00:36.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=114
+2026-08-09T10:00:36.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=114
+2026-08-09T10:00:36.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=67 status=ALIGNED
+2026-08-09T10:00:37.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10369 state=RUNNING
+2026-08-09T10:00:37.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=114
+2026-08-09T10:00:37.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=114
+2026-08-09T10:00:37.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=95 status=ALIGNED
+2026-08-09T10:00:37.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10373 state=RUNNING
+2026-08-09T10:00:37.500000 [COMPARE] [INFO ] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=114
+2026-08-09T10:00:37.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=115
+2026-08-09T10:00:37.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=26 status=ALIGNED
+2026-08-09T10:00:37.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10377 state=RUNNING
+2026-08-09T10:00:37.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=115
+2026-08-09T10:00:38.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=115
+2026-08-09T10:00:38.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=54 status=ALIGNED
+2026-08-09T10:00:38.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10381 state=RUNNING
+2026-08-09T10:00:38.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=115
+2026-08-09T10:00:38.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=115
+2026-08-09T10:00:38.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=82 status=ALIGNED
+2026-08-09T10:00:38.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10385 state=RUNNING
+2026-08-09T10:00:38.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=115
+2026-08-09T10:00:38.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=115
+2026-08-09T10:00:38.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=13 status=ALIGNED
+2026-08-09T10:00:39.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10389 state=RUNNING
+2026-08-09T10:00:39.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=115
+2026-08-09T10:00:39.200000 [COMPARE] [INFO ] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=115
+2026-08-09T10:00:39.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=41 status=ALIGNED
+2026-08-09T10:00:39.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10393 state=RUNNING
+2026-08-09T10:00:39.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=115
+2026-08-09T10:00:39.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=115
+2026-08-09T10:00:39.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=69 status=ALIGNED
+2026-08-09T10:00:39.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10397 state=RUNNING
+2026-08-09T10:00:39.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=115
+2026-08-09T10:00:40.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=115
+2026-08-09T10:00:40.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=0 status=ALIGNED
+2026-08-09T10:00:40.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10401 state=RUNNING
+2026-08-09T10:00:40.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=116
+2026-08-09T10:00:40.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=116
+2026-08-09T10:00:40.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=28 status=ALIGNED
+2026-08-09T10:00:40.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10405 state=RUNNING
+2026-08-09T10:00:40.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=116
+2026-08-09T10:00:40.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=116
+2026-08-09T10:00:40.900000 [COMPARE] [INFO ] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=56 status=ALIGNED
+2026-08-09T10:00:41.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10409 state=RUNNING
+2026-08-09T10:00:41.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=116
+2026-08-09T10:00:41.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=116
+2026-08-09T10:00:41.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=84 status=ALIGNED
+2026-08-09T10:00:41.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10413 state=RUNNING
+2026-08-09T10:00:41.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=116
+2026-08-09T10:00:41.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=116
+2026-08-09T10:00:41.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=15 status=ALIGNED
+2026-08-09T10:00:41.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10417 state=RUNNING
+2026-08-09T10:00:41.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=116
+2026-08-09T10:00:42.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=116
+2026-08-09T10:00:42.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=43 status=ALIGNED
+2026-08-09T10:00:42.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10421 state=RUNNING
+2026-08-09T10:00:42.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=116
+2026-08-09T10:00:42.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=116
+2026-08-09T10:00:42.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=71 status=ALIGNED
+2026-08-09T10:00:42.600000 [COMPARE] [INFO ] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10425 state=RUNNING
+2026-08-09T10:00:42.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=117
+2026-08-09T10:00:42.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=117
+2026-08-09T10:00:42.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=2 status=ALIGNED
+2026-08-09T10:00:43.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10429 state=RUNNING
+2026-08-09T10:00:43.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=117
+2026-08-09T10:00:43.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=117
+2026-08-09T10:00:43.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=30 status=ALIGNED
+2026-08-09T10:00:43.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10433 state=RUNNING
+2026-08-09T10:00:43.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=117
+2026-08-09T10:00:43.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=117
+2026-08-09T10:00:43.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=58 status=ALIGNED
+2026-08-09T10:00:43.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10437 state=RUNNING
+2026-08-09T10:00:43.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=117
+2026-08-09T10:00:44.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=117
+2026-08-09T10:00:44.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=86 status=ALIGNED
+2026-08-09T10:00:44.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10441 state=RUNNING
+2026-08-09T10:00:44.300000 [COMPARE] [INFO ] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=117
+2026-08-09T10:00:44.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=117
+2026-08-09T10:00:44.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=17 status=ALIGNED
+2026-08-09T10:00:44.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10445 state=RUNNING
+2026-08-09T10:00:44.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=117
+2026-08-09T10:00:44.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=117
+2026-08-09T10:00:44.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=45 status=ALIGNED
+2026-08-09T10:00:45.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10449 state=RUNNING
+2026-08-09T10:00:45.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=118
+2026-08-09T10:00:45.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=118
+2026-08-09T10:00:45.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=73 status=ALIGNED
+2026-08-09T10:00:45.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10453 state=RUNNING
+2026-08-09T10:00:45.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=118
+2026-08-09T10:00:45.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=118
+2026-08-09T10:00:45.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=4 status=ALIGNED
+2026-08-09T10:00:45.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10457 state=RUNNING
+2026-08-09T10:00:45.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=118
+2026-08-09T10:00:46.000000 [COMPARE] [INFO ] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=118
+2026-08-09T10:00:46.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=32 status=ALIGNED
+2026-08-09T10:00:46.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10461 state=RUNNING
+2026-08-09T10:00:46.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=118
+2026-08-09T10:00:46.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=118
+2026-08-09T10:00:46.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=60 status=ALIGNED
+2026-08-09T10:00:46.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10465 state=RUNNING
+2026-08-09T10:00:46.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=118
+2026-08-09T10:00:46.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=118
+2026-08-09T10:00:46.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=88 status=ALIGNED
+2026-08-09T10:00:47.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10469 state=RUNNING
+2026-08-09T10:00:47.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=118
+2026-08-09T10:00:47.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=118
+2026-08-09T10:00:47.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=19 status=ALIGNED
+2026-08-09T10:00:47.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10473 state=RUNNING
+2026-08-09T10:00:47.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=118
+2026-08-09T10:00:47.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=119
+2026-08-09T10:00:47.700000 [COMPARE] [INFO ] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=47 status=ALIGNED
+2026-08-09T10:00:47.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10477 state=RUNNING
+2026-08-09T10:00:47.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=119
+2026-08-09T10:00:48.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=119
+2026-08-09T10:00:48.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=75 status=ALIGNED
+2026-08-09T10:00:48.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10481 state=RUNNING
+2026-08-09T10:00:48.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=119
+2026-08-09T10:00:48.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=119
+2026-08-09T10:00:48.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=6 status=ALIGNED
+2026-08-09T10:00:48.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10485 state=RUNNING
+2026-08-09T10:00:48.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=119
+2026-08-09T10:00:48.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=119
+2026-08-09T10:00:48.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=34 status=ALIGNED
+2026-08-09T10:00:49.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10489 state=RUNNING
+2026-08-09T10:00:49.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=119
+2026-08-09T10:00:49.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=119
+2026-08-09T10:00:49.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=62 status=ALIGNED
+2026-08-09T10:00:49.400000 [COMPARE] [INFO ] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10493 state=RUNNING
+2026-08-09T10:00:49.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=119
+2026-08-09T10:00:49.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=119
+2026-08-09T10:00:49.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=90 status=ALIGNED
+2026-08-09T10:00:49.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10497 state=RUNNING
+2026-08-09T10:00:49.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=119
+2026-08-09T10:00:50.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=119
+2026-08-09T10:00:50.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=21 status=ALIGNED
+2026-08-09T10:00:50.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10501 state=RUNNING
+2026-08-09T10:00:50.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=120
+2026-08-09T10:00:50.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=120
+2026-08-09T10:00:50.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=49 status=ALIGNED
+2026-08-09T10:00:50.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10505 state=RUNNING
+2026-08-09T10:00:50.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=120
+2026-08-09T10:00:50.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=120
+2026-08-09T10:00:50.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=77 status=ALIGNED
+2026-08-09T10:00:51.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10509 state=RUNNING
+2026-08-09T10:00:51.100000 [COMPARE] [INFO ] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=120
+2026-08-09T10:00:51.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=120
+2026-08-09T10:00:51.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=8 status=ALIGNED
+2026-08-09T10:00:51.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10513 state=RUNNING
+2026-08-09T10:00:51.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=120
+2026-08-09T10:00:51.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=120
+2026-08-09T10:00:51.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=36 status=ALIGNED
+2026-08-09T10:00:51.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10517 state=RUNNING
+2026-08-09T10:00:51.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=120
+2026-08-09T10:00:52.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=120
+2026-08-09T10:00:52.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=64 status=ALIGNED
+2026-08-09T10:00:52.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10521 state=RUNNING
+2026-08-09T10:00:52.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=120
+2026-08-09T10:00:52.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=120
+2026-08-09T10:00:52.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=92 status=ALIGNED
+2026-08-09T10:00:52.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10525 state=RUNNING
+2026-08-09T10:00:52.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=121
+2026-08-09T10:00:52.800000 [COMPARE] [INFO ] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=121
+2026-08-09T10:00:52.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=23 status=ALIGNED
+2026-08-09T10:00:53.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10529 state=RUNNING
+2026-08-09T10:00:53.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=121
+2026-08-09T10:00:53.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=121
+2026-08-09T10:00:53.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=51 status=ALIGNED
+2026-08-09T10:00:53.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10533 state=RUNNING
+2026-08-09T10:00:53.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=121
+2026-08-09T10:00:53.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=121
+2026-08-09T10:00:53.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=79 status=ALIGNED
+2026-08-09T10:00:53.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10537 state=RUNNING
+2026-08-09T10:00:53.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=121
+2026-08-09T10:00:54.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=121
+2026-08-09T10:00:54.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=10 status=ALIGNED
+2026-08-09T10:00:54.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10541 state=RUNNING
+2026-08-09T10:00:54.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=121
+2026-08-09T10:00:54.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=121
+2026-08-09T10:00:54.500000 [COMPARE] [INFO ] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=38 status=ALIGNED
+2026-08-09T10:00:54.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10545 state=RUNNING
+2026-08-09T10:00:54.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=121
+2026-08-09T10:00:54.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=121
+2026-08-09T10:00:54.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=66 status=ALIGNED
+2026-08-09T10:00:55.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10549 state=RUNNING
+2026-08-09T10:00:55.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=122
+2026-08-09T10:00:55.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=122
+2026-08-09T10:00:55.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=94 status=ALIGNED
+2026-08-09T10:00:55.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10553 state=RUNNING
+2026-08-09T10:00:55.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=122
+2026-08-09T10:00:55.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=122
+2026-08-09T10:00:55.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=25 status=ALIGNED
+2026-08-09T10:00:55.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10557 state=RUNNING
+2026-08-09T10:00:55.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=122
+2026-08-09T10:00:56.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=122
+2026-08-09T10:00:56.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=53 status=ALIGNED
+2026-08-09T10:00:56.200000 [COMPARE] [INFO ] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10561 state=RUNNING
+2026-08-09T10:00:56.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=122
+2026-08-09T10:00:56.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=122
+2026-08-09T10:00:56.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=81 status=ALIGNED
+2026-08-09T10:00:56.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10565 state=RUNNING
+2026-08-09T10:00:56.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=122
+2026-08-09T10:00:56.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=122
+2026-08-09T10:00:56.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=12 status=ALIGNED
+2026-08-09T10:00:57.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10569 state=RUNNING
+2026-08-09T10:00:57.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=122
+2026-08-09T10:00:57.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=122
+2026-08-09T10:00:57.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=40 status=ALIGNED
+2026-08-09T10:00:57.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10573 state=RUNNING
+2026-08-09T10:00:57.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=122
+2026-08-09T10:00:57.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=123
+2026-08-09T10:00:57.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=68 status=ALIGNED
+2026-08-09T10:00:57.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10577 state=RUNNING
+2026-08-09T10:00:57.900000 [COMPARE] [INFO ] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=123
+2026-08-09T10:00:58.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=123
+2026-08-09T10:00:58.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=96 status=ALIGNED
+2026-08-09T10:00:58.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10581 state=RUNNING
+2026-08-09T10:00:58.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=123
+2026-08-09T10:00:58.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=123
+2026-08-09T10:00:58.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=27 status=ALIGNED
+2026-08-09T10:00:58.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10585 state=RUNNING
+2026-08-09T10:00:58.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=123
+2026-08-09T10:00:58.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=123
+2026-08-09T10:00:58.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=55 status=ALIGNED
+2026-08-09T10:00:59.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10589 state=RUNNING
+2026-08-09T10:00:59.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=123
+2026-08-09T10:00:59.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=123
+2026-08-09T10:00:59.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=83 status=ALIGNED
+2026-08-09T10:00:59.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10593 state=RUNNING
+2026-08-09T10:00:59.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=123
+2026-08-09T10:00:59.600000 [COMPARE] [INFO ] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=123
+2026-08-09T10:00:59.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=14 status=ALIGNED
+2026-08-09T10:00:59.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10597 state=RUNNING
+2026-08-09T10:00:59.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=123
+2026-08-09T10:01:00.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=123
+2026-08-09T10:01:00.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=42 status=ALIGNED
+2026-08-09T10:01:00.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10601 state=RUNNING
+2026-08-09T10:01:00.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=124
+2026-08-09T10:01:00.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=124
+2026-08-09T10:01:00.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=70 status=ALIGNED
+2026-08-09T10:01:00.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10605 state=RUNNING
+2026-08-09T10:01:00.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=124
+2026-08-09T10:01:00.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=124
+2026-08-09T10:01:00.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=1 status=ALIGNED
+2026-08-09T10:01:01.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10609 state=RUNNING
+2026-08-09T10:01:01.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=124
+2026-08-09T10:01:01.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=124
+2026-08-09T10:01:01.300000 [COMPARE] [INFO ] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=29 status=ALIGNED
+2026-08-09T10:01:01.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10613 state=RUNNING
+2026-08-09T10:01:01.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=124
+2026-08-09T10:01:01.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=124
+2026-08-09T10:01:01.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=57 status=ALIGNED
+2026-08-09T10:01:01.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10617 state=RUNNING
+2026-08-09T10:01:01.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=124
+2026-08-09T10:01:02.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=124
+2026-08-09T10:01:02.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=85 status=ALIGNED
+2026-08-09T10:01:02.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10621 state=RUNNING
+2026-08-09T10:01:02.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=124
+2026-08-09T10:01:02.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=124
+2026-08-09T10:01:02.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=16 status=ALIGNED
+2026-08-09T10:01:02.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10625 state=RUNNING
+2026-08-09T10:01:02.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=125
+2026-08-09T10:01:02.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=125
+2026-08-09T10:01:02.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=44 status=ALIGNED
+2026-08-09T10:01:03.000000 [COMPARE] [INFO ] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10629 state=RUNNING
+2026-08-09T10:01:03.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=125
+2026-08-09T10:01:03.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=125
+2026-08-09T10:01:03.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=72 status=ALIGNED
+2026-08-09T10:01:03.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10633 state=RUNNING
+2026-08-09T10:01:03.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=125
+2026-08-09T10:01:03.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=125
+2026-08-09T10:01:03.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=3 status=ALIGNED
+2026-08-09T10:01:03.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10637 state=RUNNING
+2026-08-09T10:01:03.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=125
+2026-08-09T10:01:04.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=125
+2026-08-09T10:01:04.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=31 status=ALIGNED
+2026-08-09T10:01:04.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10641 state=RUNNING
+2026-08-09T10:01:04.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=125
+2026-08-09T10:01:04.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=125
+2026-08-09T10:01:04.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=59 status=ALIGNED
+2026-08-09T10:01:04.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10645 state=RUNNING
+2026-08-09T10:01:04.700000 [COMPARE] [INFO ] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=125
+2026-08-09T10:01:04.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=125
+2026-08-09T10:01:04.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=87 status=ALIGNED
+2026-08-09T10:01:05.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10649 state=RUNNING
+2026-08-09T10:01:05.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=126
+2026-08-09T10:01:05.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=126
+2026-08-09T10:01:05.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=18 status=ALIGNED
+2026-08-09T10:01:05.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10653 state=RUNNING
+2026-08-09T10:01:05.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=126
+2026-08-09T10:01:05.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=126
+2026-08-09T10:01:05.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=46 status=ALIGNED
+2026-08-09T10:01:05.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10657 state=RUNNING
+2026-08-09T10:01:05.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=126
+2026-08-09T10:01:06.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=126
+2026-08-09T10:01:06.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=74 status=ALIGNED
+2026-08-09T10:01:06.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10661 state=RUNNING
+2026-08-09T10:01:06.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=126
+2026-08-09T10:01:06.400000 [COMPARE] [INFO ] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=126
+2026-08-09T10:01:06.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=5 status=ALIGNED
+2026-08-09T10:01:06.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10665 state=RUNNING
+2026-08-09T10:01:06.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=126
+2026-08-09T10:01:06.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=126
+2026-08-09T10:01:06.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=33 status=ALIGNED
+2026-08-09T10:01:07.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10669 state=RUNNING
+2026-08-09T10:01:07.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=126
+2026-08-09T10:01:07.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=126
+2026-08-09T10:01:07.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=61 status=ALIGNED
+2026-08-09T10:01:07.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10673 state=RUNNING
+2026-08-09T10:01:07.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=126
+2026-08-09T10:01:07.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=127
+2026-08-09T10:01:07.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=89 status=ALIGNED
+2026-08-09T10:01:07.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10677 state=RUNNING
+2026-08-09T10:01:07.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=127
+2026-08-09T10:01:08.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=127
+2026-08-09T10:01:08.100000 [COMPARE] [INFO ] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=20 status=ALIGNED
+2026-08-09T10:01:08.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10681 state=RUNNING
+2026-08-09T10:01:08.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=127
+2026-08-09T10:01:08.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=127
+2026-08-09T10:01:08.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=48 status=ALIGNED
+2026-08-09T10:01:08.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10685 state=RUNNING
+2026-08-09T10:01:08.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=127
+2026-08-09T10:01:08.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=127
+2026-08-09T10:01:08.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=76 status=ALIGNED
+2026-08-09T10:01:09.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10689 state=RUNNING
+2026-08-09T10:01:09.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=127
+2026-08-09T10:01:09.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=127
+2026-08-09T10:01:09.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=7 status=ALIGNED
+2026-08-09T10:01:09.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10693 state=RUNNING
+2026-08-09T10:01:09.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=127
+2026-08-09T10:01:09.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=127
+2026-08-09T10:01:09.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=35 status=ALIGNED
+2026-08-09T10:01:09.800000 [COMPARE] [INFO ] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10697 state=RUNNING
+2026-08-09T10:01:09.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=127
+2026-08-09T10:01:10.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=127
+2026-08-09T10:01:10.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=63 status=ALIGNED
+2026-08-09T10:01:10.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10701 state=RUNNING
+2026-08-09T10:01:10.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=128
+2026-08-09T10:01:10.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=128
+2026-08-09T10:01:10.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=91 status=ALIGNED
+2026-08-09T10:01:10.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10705 state=RUNNING
+2026-08-09T10:01:10.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=128
+2026-08-09T10:01:10.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=128
+2026-08-09T10:01:10.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=22 status=ALIGNED
+2026-08-09T10:01:11.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10709 state=RUNNING
+2026-08-09T10:01:11.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=128
+2026-08-09T10:01:11.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=128
+2026-08-09T10:01:11.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=50 status=ALIGNED
+2026-08-09T10:01:11.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10713 state=RUNNING
+2026-08-09T10:01:11.500000 [COMPARE] [INFO ] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=128
+2026-08-09T10:01:11.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=128
+2026-08-09T10:01:11.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=78 status=ALIGNED
+2026-08-09T10:01:11.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10717 state=RUNNING
+2026-08-09T10:01:11.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=128
+2026-08-09T10:01:12.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=128
+2026-08-09T10:01:12.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=9 status=ALIGNED
+2026-08-09T10:01:12.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10721 state=RUNNING
+2026-08-09T10:01:12.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=128
+2026-08-09T10:01:12.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=128
+2026-08-09T10:01:12.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=37 status=ALIGNED
+2026-08-09T10:01:12.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10725 state=RUNNING
+2026-08-09T10:01:12.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=129
+2026-08-09T10:01:12.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=129
+2026-08-09T10:01:12.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=65 status=ALIGNED
+2026-08-09T10:01:13.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10729 state=RUNNING
+2026-08-09T10:01:13.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=129
+2026-08-09T10:01:13.200000 [COMPARE] [INFO ] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=129
+2026-08-09T10:01:13.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=93 status=ALIGNED
+2026-08-09T10:01:13.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10733 state=RUNNING
+2026-08-09T10:01:13.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=129
+2026-08-09T10:01:13.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=129
+2026-08-09T10:01:13.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=24 status=ALIGNED
+2026-08-09T10:01:13.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10737 state=RUNNING
+2026-08-09T10:01:13.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=129
+2026-08-09T10:01:14.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=129
+2026-08-09T10:01:14.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=52 status=ALIGNED
+2026-08-09T10:01:14.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10741 state=RUNNING
+2026-08-09T10:01:14.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=129
+2026-08-09T10:01:14.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=129
+2026-08-09T10:01:14.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=80 status=ALIGNED
+2026-08-09T10:01:14.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10745 state=RUNNING
+2026-08-09T10:01:14.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=129
+2026-08-09T10:01:14.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=129
+2026-08-09T10:01:14.900000 [COMPARE] [INFO ] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=11 status=ALIGNED
+2026-08-09T10:01:15.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10749 state=RUNNING
+2026-08-09T10:01:15.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=130
+2026-08-09T10:01:15.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=130
+2026-08-09T10:01:15.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=39 status=ALIGNED
+2026-08-09T10:01:15.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10753 state=RUNNING
+2026-08-09T10:01:15.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=130
+2026-08-09T10:01:15.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=130
+2026-08-09T10:01:15.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=67 status=ALIGNED
+2026-08-09T10:01:15.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10757 state=RUNNING
+2026-08-09T10:01:15.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=130
+2026-08-09T10:01:16.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=130
+2026-08-09T10:01:16.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=95 status=ALIGNED
+2026-08-09T10:01:16.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10761 state=RUNNING
+2026-08-09T10:01:16.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=130
+2026-08-09T10:01:16.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=130
+2026-08-09T10:01:16.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=26 status=ALIGNED
+2026-08-09T10:01:16.600000 [COMPARE] [INFO ] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10765 state=RUNNING
+2026-08-09T10:01:16.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=130
+2026-08-09T10:01:16.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=130
+2026-08-09T10:01:16.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=54 status=ALIGNED
+2026-08-09T10:01:17.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10769 state=RUNNING
+2026-08-09T10:01:17.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=130
+2026-08-09T10:01:17.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=130
+2026-08-09T10:01:17.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=82 status=ALIGNED
+2026-08-09T10:01:17.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10773 state=RUNNING
+2026-08-09T10:01:17.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=130
+2026-08-09T10:01:17.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=131
+2026-08-09T10:01:17.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=13 status=ALIGNED
+2026-08-09T10:01:17.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10777 state=RUNNING
+2026-08-09T10:01:17.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=131
+2026-08-09T10:01:18.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=131
+2026-08-09T10:01:18.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=41 status=ALIGNED
+2026-08-09T10:01:18.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10781 state=RUNNING
+2026-08-09T10:01:18.300000 [COMPARE] [INFO ] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=131
+2026-08-09T10:01:18.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=131
+2026-08-09T10:01:18.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=69 status=ALIGNED
+2026-08-09T10:01:18.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10785 state=RUNNING
+2026-08-09T10:01:18.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=131
+2026-08-09T10:01:18.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=131
+2026-08-09T10:01:18.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=0 status=ALIGNED
+2026-08-09T10:01:19.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10789 state=RUNNING
+2026-08-09T10:01:19.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=131
+2026-08-09T10:01:19.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=131
+2026-08-09T10:01:19.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=28 status=ALIGNED
+2026-08-09T10:01:19.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10793 state=RUNNING
+2026-08-09T10:01:19.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=131
+2026-08-09T10:01:19.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=131
+2026-08-09T10:01:19.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=56 status=ALIGNED
+2026-08-09T10:01:19.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10797 state=RUNNING
+2026-08-09T10:01:19.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=131
+2026-08-09T10:01:20.000000 [COMPARE] [INFO ] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=131
+2026-08-09T10:01:20.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=84 status=ALIGNED
+2026-08-09T10:01:20.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10801 state=RUNNING
+2026-08-09T10:01:20.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=132
+2026-08-09T10:01:20.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=132
+2026-08-09T10:01:20.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=15 status=ALIGNED
+2026-08-09T10:01:20.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10805 state=RUNNING
+2026-08-09T10:01:20.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=132
+2026-08-09T10:01:20.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=132
+2026-08-09T10:01:20.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=43 status=ALIGNED
+2026-08-09T10:01:21.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10809 state=RUNNING
+2026-08-09T10:01:21.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=132
+2026-08-09T10:01:21.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=132
+2026-08-09T10:01:21.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=71 status=ALIGNED
+2026-08-09T10:01:21.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10813 state=RUNNING
+2026-08-09T10:01:21.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=132
+2026-08-09T10:01:21.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=132
+2026-08-09T10:01:21.700000 [COMPARE] [INFO ] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=2 status=ALIGNED
+2026-08-09T10:01:21.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10817 state=RUNNING
+2026-08-09T10:01:21.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=132
+2026-08-09T10:01:22.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=132
+2026-08-09T10:01:22.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=30 status=ALIGNED
+2026-08-09T10:01:22.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10821 state=RUNNING
+2026-08-09T10:01:22.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=132
+2026-08-09T10:01:22.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=132
+2026-08-09T10:01:22.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=58 status=ALIGNED
+2026-08-09T10:01:22.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10825 state=RUNNING
+2026-08-09T10:01:22.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=133
+2026-08-09T10:01:22.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=133
+2026-08-09T10:01:22.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=86 status=ALIGNED
+2026-08-09T10:01:23.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10829 state=RUNNING
+2026-08-09T10:01:23.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=133
+2026-08-09T10:01:23.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=133
+2026-08-09T10:01:23.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=17 status=ALIGNED
+2026-08-09T10:01:23.400000 [COMPARE] [INFO ] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10833 state=RUNNING
+2026-08-09T10:01:23.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=133
+2026-08-09T10:01:23.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=133
+2026-08-09T10:01:23.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=45 status=ALIGNED
+2026-08-09T10:01:23.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10837 state=RUNNING
+2026-08-09T10:01:23.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=133
+2026-08-09T10:01:24.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=133
+2026-08-09T10:01:24.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=73 status=ALIGNED
+2026-08-09T10:01:24.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10841 state=RUNNING
+2026-08-09T10:01:24.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=133
+2026-08-09T10:01:24.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=133
+2026-08-09T10:01:24.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=4 status=ALIGNED
+2026-08-09T10:01:24.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10845 state=RUNNING
+2026-08-09T10:01:24.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=133
+2026-08-09T10:01:24.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=133
+2026-08-09T10:01:24.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=32 status=ALIGNED
+2026-08-09T10:01:25.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10849 state=RUNNING
+2026-08-09T10:01:25.100000 [COMPARE] [INFO ] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=134
+2026-08-09T10:01:25.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=134
+2026-08-09T10:01:25.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=60 status=ALIGNED
+2026-08-09T10:01:25.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10853 state=RUNNING
+2026-08-09T10:01:25.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=134
+2026-08-09T10:01:25.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=134
+2026-08-09T10:01:25.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=88 status=ALIGNED
+2026-08-09T10:01:25.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10857 state=RUNNING
+2026-08-09T10:01:25.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=134
+2026-08-09T10:01:26.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=134
+2026-08-09T10:01:26.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=19 status=ALIGNED
+2026-08-09T10:01:26.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10861 state=RUNNING
+2026-08-09T10:01:26.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=134
+2026-08-09T10:01:26.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=134
+2026-08-09T10:01:26.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=47 status=ALIGNED
+2026-08-09T10:01:26.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10865 state=RUNNING
+2026-08-09T10:01:26.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=134
+2026-08-09T10:01:26.800000 [COMPARE] [INFO ] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=134
+2026-08-09T10:01:26.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=75 status=ALIGNED
+2026-08-09T10:01:27.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10869 state=RUNNING
+2026-08-09T10:01:27.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=134
+2026-08-09T10:01:27.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=134
+2026-08-09T10:01:27.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=6 status=ALIGNED
+2026-08-09T10:01:27.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10873 state=RUNNING
+2026-08-09T10:01:27.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=134
+2026-08-09T10:01:27.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=135
+2026-08-09T10:01:27.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=34 status=ALIGNED
+2026-08-09T10:01:27.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10877 state=RUNNING
+2026-08-09T10:01:27.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=135
+2026-08-09T10:01:28.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=135
+2026-08-09T10:01:28.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=62 status=ALIGNED
+2026-08-09T10:01:28.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10881 state=RUNNING
+2026-08-09T10:01:28.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=135
+2026-08-09T10:01:28.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=135
+2026-08-09T10:01:28.500000 [COMPARE] [INFO ] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=90 status=ALIGNED
+2026-08-09T10:01:28.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10885 state=RUNNING
+2026-08-09T10:01:28.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=135
+2026-08-09T10:01:28.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=135
+2026-08-09T10:01:28.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=21 status=ALIGNED
+2026-08-09T10:01:29.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10889 state=RUNNING
+2026-08-09T10:01:29.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=135
+2026-08-09T10:01:29.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=135
+2026-08-09T10:01:29.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=49 status=ALIGNED
+2026-08-09T10:01:29.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10893 state=RUNNING
+2026-08-09T10:01:29.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=135
+2026-08-09T10:01:29.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=135
+2026-08-09T10:01:29.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=77 status=ALIGNED
+2026-08-09T10:01:29.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10897 state=RUNNING
+2026-08-09T10:01:29.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=135
+2026-08-09T10:01:30.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=135
+2026-08-09T10:01:30.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=8 status=ALIGNED
+2026-08-09T10:01:30.200000 [COMPARE] [INFO ] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10901 state=RUNNING
+2026-08-09T10:01:30.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=136
+2026-08-09T10:01:30.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=136
+2026-08-09T10:01:30.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=36 status=ALIGNED
+2026-08-09T10:01:30.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10905 state=RUNNING
+2026-08-09T10:01:30.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=136
+2026-08-09T10:01:30.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=136
+2026-08-09T10:01:30.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=64 status=ALIGNED
+2026-08-09T10:01:31.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10909 state=RUNNING
+2026-08-09T10:01:31.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=136
+2026-08-09T10:01:31.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=136
+2026-08-09T10:01:31.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=92 status=ALIGNED
+2026-08-09T10:01:31.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10913 state=RUNNING
+2026-08-09T10:01:31.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=136
+2026-08-09T10:01:31.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=136
+2026-08-09T10:01:31.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=23 status=ALIGNED
+2026-08-09T10:01:31.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10917 state=RUNNING
+2026-08-09T10:01:31.900000 [COMPARE] [INFO ] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=136
+2026-08-09T10:01:32.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=136
+2026-08-09T10:01:32.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=51 status=ALIGNED
+2026-08-09T10:01:32.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10921 state=RUNNING
+2026-08-09T10:01:32.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=136
+2026-08-09T10:01:32.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=136
+2026-08-09T10:01:32.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=79 status=ALIGNED
+2026-08-09T10:01:32.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10925 state=RUNNING
+2026-08-09T10:01:32.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=137
+2026-08-09T10:01:32.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=137
+2026-08-09T10:01:32.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=10 status=ALIGNED
+2026-08-09T10:01:33.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10929 state=RUNNING
+2026-08-09T10:01:33.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=137
+2026-08-09T10:01:33.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=137
+2026-08-09T10:01:33.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=38 status=ALIGNED
+2026-08-09T10:01:33.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10933 state=RUNNING
+2026-08-09T10:01:33.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=137
+2026-08-09T10:01:33.600000 [COMPARE] [INFO ] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=137
+2026-08-09T10:01:33.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=66 status=ALIGNED
+2026-08-09T10:01:33.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10937 state=RUNNING
+2026-08-09T10:01:33.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=137
+2026-08-09T10:01:34.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=137
+2026-08-09T10:01:34.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=94 status=ALIGNED
+2026-08-09T10:01:34.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10941 state=RUNNING
+2026-08-09T10:01:34.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=137
+2026-08-09T10:01:34.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=137
+2026-08-09T10:01:34.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=25 status=ALIGNED
+2026-08-09T10:01:34.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10945 state=RUNNING
+2026-08-09T10:01:34.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=137
+2026-08-09T10:01:34.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=137
+2026-08-09T10:01:34.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=53 status=ALIGNED
+2026-08-09T10:01:35.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10949 state=RUNNING
+2026-08-09T10:01:35.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=138
+2026-08-09T10:01:35.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=138
+2026-08-09T10:01:35.300000 [COMPARE] [INFO ] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=81 status=ALIGNED
+2026-08-09T10:01:35.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10953 state=RUNNING
+2026-08-09T10:01:35.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=138
+2026-08-09T10:01:35.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=138
+2026-08-09T10:01:35.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=12 status=ALIGNED
+2026-08-09T10:01:35.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10957 state=RUNNING
+2026-08-09T10:01:35.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=138
+2026-08-09T10:01:36.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=138
+2026-08-09T10:01:36.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=40 status=ALIGNED
+2026-08-09T10:01:36.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10961 state=RUNNING
+2026-08-09T10:01:36.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=138
+2026-08-09T10:01:36.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=138
+2026-08-09T10:01:36.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=68 status=ALIGNED
+2026-08-09T10:01:36.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10965 state=RUNNING
+2026-08-09T10:01:36.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=138
+2026-08-09T10:01:36.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=138
+2026-08-09T10:01:36.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=96 status=ALIGNED
+2026-08-09T10:01:37.000000 [COMPARE] [INFO ] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10969 state=RUNNING
+2026-08-09T10:01:37.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=138
+2026-08-09T10:01:37.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=138
+2026-08-09T10:01:37.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=27 status=ALIGNED
+2026-08-09T10:01:37.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10973 state=RUNNING
+2026-08-09T10:01:37.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=138
+2026-08-09T10:01:37.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=139
+2026-08-09T10:01:37.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=55 status=ALIGNED
+2026-08-09T10:01:37.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10977 state=RUNNING
+2026-08-09T10:01:37.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=139
+2026-08-09T10:01:38.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=139
+2026-08-09T10:01:38.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=83 status=ALIGNED
+2026-08-09T10:01:38.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=10981 state=RUNNING
+2026-08-09T10:01:38.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=139
+2026-08-09T10:01:38.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=139
+2026-08-09T10:01:38.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=14 status=ALIGNED
+2026-08-09T10:01:38.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=10985 state=RUNNING
+2026-08-09T10:01:38.700000 [COMPARE] [INFO ] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=139
+2026-08-09T10:01:38.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=139
+2026-08-09T10:01:38.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=42 status=ALIGNED
+2026-08-09T10:01:39.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=10989 state=RUNNING
+2026-08-09T10:01:39.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=139
+2026-08-09T10:01:39.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=139
+2026-08-09T10:01:39.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=70 status=ALIGNED
+2026-08-09T10:01:39.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=10993 state=RUNNING
+2026-08-09T10:01:39.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=139
+2026-08-09T10:01:39.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=139
+2026-08-09T10:01:39.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=1 status=ALIGNED
+2026-08-09T10:01:39.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=10997 state=RUNNING
+2026-08-09T10:01:39.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=139
+2026-08-09T10:01:40.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=139
+2026-08-09T10:01:40.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=29 status=ALIGNED
+2026-08-09T10:01:40.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=11001 state=RUNNING
+2026-08-09T10:01:40.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=140
+2026-08-09T10:01:40.400000 [COMPARE] [INFO ] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=140
+2026-08-09T10:01:40.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=57 status=ALIGNED
+2026-08-09T10:01:40.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=11005 state=RUNNING
+2026-08-09T10:01:40.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=140
+2026-08-09T10:01:40.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=140
+2026-08-09T10:01:40.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=85 status=ALIGNED
+2026-08-09T10:01:41.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=11009 state=RUNNING
+2026-08-09T10:01:41.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=140
+2026-08-09T10:01:41.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=140
+2026-08-09T10:01:41.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=16 status=ALIGNED
+2026-08-09T10:01:41.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=11013 state=RUNNING
+2026-08-09T10:01:41.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=140
+2026-08-09T10:01:41.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=140
+2026-08-09T10:01:41.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=44 status=ALIGNED
+2026-08-09T10:01:41.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=11017 state=RUNNING
+2026-08-09T10:01:41.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=140
+2026-08-09T10:01:42.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=140
+2026-08-09T10:01:42.100000 [COMPARE] [INFO ] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=72 status=ALIGNED
+2026-08-09T10:01:42.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=11021 state=RUNNING
+2026-08-09T10:01:42.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=140
+2026-08-09T10:01:42.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=140
+2026-08-09T10:01:42.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=3 status=ALIGNED
+2026-08-09T10:01:42.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=11025 state=RUNNING
+2026-08-09T10:01:42.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=141
+2026-08-09T10:01:42.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=141
+2026-08-09T10:01:42.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=31 status=ALIGNED
+2026-08-09T10:01:43.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=11029 state=RUNNING
+2026-08-09T10:01:43.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=141
+2026-08-09T10:01:43.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=141
+2026-08-09T10:01:43.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=59 status=ALIGNED
+2026-08-09T10:01:43.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=11033 state=RUNNING
+2026-08-09T10:01:43.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=141
+2026-08-09T10:01:43.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=141
+2026-08-09T10:01:43.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=87 status=ALIGNED
+2026-08-09T10:01:43.800000 [COMPARE] [INFO ] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=11037 state=RUNNING
+2026-08-09T10:01:43.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=141
+2026-08-09T10:01:44.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=141
+2026-08-09T10:01:44.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=18 status=ALIGNED
+2026-08-09T10:01:44.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=11041 state=RUNNING
+2026-08-09T10:01:44.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=141
+2026-08-09T10:01:44.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=141
+2026-08-09T10:01:44.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=46 status=ALIGNED
+2026-08-09T10:01:44.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=11045 state=RUNNING
+2026-08-09T10:01:44.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=141
+2026-08-09T10:01:44.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=141
+2026-08-09T10:01:44.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=74 status=ALIGNED
+2026-08-09T10:01:45.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=11049 state=RUNNING
+2026-08-09T10:01:45.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=142
+2026-08-09T10:01:45.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=142
+2026-08-09T10:01:45.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=5 status=ALIGNED
+2026-08-09T10:01:45.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=11053 state=RUNNING
+2026-08-09T10:01:45.500000 [COMPARE] [INFO ] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=142
+2026-08-09T10:01:45.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=142
+2026-08-09T10:01:45.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=33 status=ALIGNED
+2026-08-09T10:01:45.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=11057 state=RUNNING
+2026-08-09T10:01:45.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=142
+2026-08-09T10:01:46.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=142
+2026-08-09T10:01:46.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=61 status=ALIGNED
+2026-08-09T10:01:46.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=11061 state=RUNNING
+2026-08-09T10:01:46.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=142
+2026-08-09T10:01:46.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=142
+2026-08-09T10:01:46.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=89 status=ALIGNED
+2026-08-09T10:01:46.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=11065 state=RUNNING
+2026-08-09T10:01:46.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=142
+2026-08-09T10:01:46.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=142
+2026-08-09T10:01:46.900000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=20 status=ALIGNED
+2026-08-09T10:01:47.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=11069 state=RUNNING
+2026-08-09T10:01:47.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=142
+2026-08-09T10:01:47.200000 [COMPARE] [INFO ] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=142
+2026-08-09T10:01:47.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=48 status=ALIGNED
+2026-08-09T10:01:47.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=11073 state=RUNNING
+2026-08-09T10:01:47.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=142
+2026-08-09T10:01:47.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=143
+2026-08-09T10:01:47.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=76 status=ALIGNED
+2026-08-09T10:01:47.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=11077 state=RUNNING
+2026-08-09T10:01:47.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=143
+2026-08-09T10:01:48.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=143
+2026-08-09T10:01:48.100000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=7 status=ALIGNED
+2026-08-09T10:01:48.200000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=1 completed=11081 state=RUNNING
+2026-08-09T10:01:48.300000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.02 window=143
+2026-08-09T10:01:48.400000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=143
+2026-08-09T10:01:48.500000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=35 status=ALIGNED
+2026-08-09T10:01:48.600000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=5 completed=11085 state=RUNNING
+2026-08-09T10:01:48.700000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.06 window=143
+2026-08-09T10:01:48.800000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=143
+2026-08-09T10:01:48.900000 [COMPARE] [INFO ] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=63 status=ALIGNED
+2026-08-09T10:01:49.000000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=9 completed=11089 state=RUNNING
+2026-08-09T10:01:49.100000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.00 window=143
+2026-08-09T10:01:49.200000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=143
+2026-08-09T10:01:49.300000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=91 status=ALIGNED
+2026-08-09T10:01:49.400000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=3 completed=11093 state=RUNNING
+2026-08-09T10:01:49.500000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.04 window=143
+2026-08-09T10:01:49.600000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=143
+2026-08-09T10:01:49.700000 [COMPARE] [DEBUG] [thread=compare-0] pipeline_id={{PIPELINE_ID}} sample_align source=du_metrics timestamp_delta_ms=22 status=ALIGNED
+2026-08-09T10:01:49.800000 [COMPARE] [DEBUG] [thread=compare-1] pipeline_id={{PIPELINE_ID}} assertion_queue pending=7 completed=11097 state=RUNNING
+2026-08-09T10:01:49.900000 [COMPARE] [DEBUG] [thread=compare-2] pipeline_id={{PIPELINE_ID}} kpi_sample metric=dl_bler value=0.08 window=143
+2026-08-09T10:01:50.000000 [COMPARE] [DEBUG] [thread=compare-3] pipeline_id={{PIPELINE_ID}} baseline_lookup case=active schema=v5 result=HIT revision=143
+2026-08-09T10:01:54.000000 [COMPARE] [INFO ] [thread=compare-fault] pipeline_id={{PIPELINE_ID}} verdict=NOT_RUN reason=CELL_CONFIG_REJECTED
+2026-08-09T10:01:59.000000 [COMPARE] [DEBUG] [thread=main] pipeline_id={{PIPELINE_ID}} diagnostic_snapshot component=compare flush=complete

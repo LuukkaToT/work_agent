@@ -8,8 +8,10 @@ from work_agent.core.policy import POLICIES, assert_read_only_whitelist
 
 _DIAGNOSE_TOOL_NAMES = [
     "get_pipeline_status",
+    "list_log_files",
     "fetch_logs",
     "grep_logs",
+    "lookup_error_code",
     "find_case_history",
     "get_case_spec",
     "search_knowledge",

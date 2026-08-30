@@ -17,7 +17,7 @@ from work_agent.core.ledger import get_ledger
 from work_agent.core.policy import assert_read_only_whitelist
 from work_agent.graph.helpers.context_archive import ContextArchive
 from work_agent.graph.helpers.truncate import CharBudget
-from work_agent.tools.mock.executor import MockScenario
+from work_agent.tools.mock.scenarios import MockScenario
 from work_agent.tools.registry import (
     get_case_provider,
     get_knowledge_search_tool,
@@ -84,10 +84,26 @@ def build_diagnose_tools(
             return _out(f"[get_pipeline_status error] {exc}")
 
     @tool
-    def fetch_logs(pipeline_id: str, tail_lines: int = 200) -> str:
-        """拉取流水线日志尾部（只读）。默认 200 行；需要定位关键词时改用 grep_logs。"""
+    def list_log_files(pipeline_id: str) -> str:
+        """列出流水线的分组件日志文件、组件名、行数和大小；首次看分层日志时调用。"""
         try:
-            text = log_tool.fetch_logs(pipeline_id, tail_lines=tail_lines)
+            return _out(log_tool.list_logs(pipeline_id))
+        except Exception as exc:  # noqa: BLE001
+            return _out(f"[list_log_files error] {exc}")
+
+    @tool
+    def fetch_logs(
+        pipeline_id: str,
+        tail_lines: int = 200,
+        component: str = "",
+    ) -> str:
+        """拉日志尾部（只读）。component 可填 comm/rat/bbh/bbl/marp/compare；留空为合并时间线。"""
+        try:
+            text = log_tool.fetch_logs(
+                pipeline_id,
+                tail_lines=tail_lines,
+                component=component or None,
+            )
             return _out(text)
         except Exception as exc:  # noqa: BLE001
             return _out(f"[fetch_logs error] {exc}")
@@ -98,18 +114,28 @@ def build_diagnose_tools(
         pattern: str,
         context_lines: int = 3,
         max_matches: int = 20,
+        component: str = "",
     ) -> str:
-        """在日志全文检索 pattern（只读），返回命中及上下文。比整包 fetch 更省上下文。"""
+        """按正则检索日志全文。component 可限定单组件；留空同时检索六个组件。"""
         try:
             text = log_tool.grep_logs(
                 pipeline_id,
                 pattern,
                 context_lines=context_lines,
                 max_matches=max_matches,
+                component=component or None,
             )
             return _out(text)
         except Exception as exc:  # noqa: BLE001
             return _out(f"[grep_logs error] {exc}")
+
+    @tool
+    def lookup_error_code(code: str) -> str:
+        """按 errorcode 或摘要关键词查询可能故障组件、是否根因码和建议检查项。"""
+        try:
+            return _out(log_tool.lookup_error_code(code))
+        except Exception as exc:  # noqa: BLE001
+            return _out(f"[lookup_error_code error] {exc}")
 
     @tool
     def find_case_history(case_name: str, limit: int = 5) -> str:
@@ -164,8 +190,10 @@ def build_diagnose_tools(
 
     tools = [
         get_pipeline_status,
+        list_log_files,
         fetch_logs,
         grep_logs,
+        lookup_error_code,
         find_case_history,
         get_case_spec,
         search_knowledge,

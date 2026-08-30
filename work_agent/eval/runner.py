@@ -8,7 +8,7 @@ repository 属于过度设计。真需要看趋势时 jsonl 直接读进 pandas 
 长表设计（一行 = 一个 ``case × strategy``）而不是宽表
 （``baseline_result`` / ``new_result`` 两列）：加第三种策略时长表不用改 schema。
 
-指标里 accuracy 是 6 条样本上的趋势参考，不是统计结论；
+指标里 accuracy 是 20 条 synthetic 样本上的开发期趋势，不是生产统计结论；
 ``context_chars`` 与 ``token_total`` 才是这次改造真正想压的硬指标。
 """
 
@@ -38,6 +38,7 @@ class EvalCase:
     user_input: str
     pipeline: dict[str, Any]
     expected_fail_kind: str
+    expected_root_component: str = ""
     expected_evidence_keys: list[str] = field(default_factory=list)
 
 
@@ -86,6 +87,7 @@ def load_cases(path: Path | str | None = None) -> tuple[str, list[EvalCase]]:
                 user_input=str(raw.get("user_input") or ""),
                 pipeline=dict(raw.get("pipeline") or {}),
                 expected_fail_kind=str(raw["expected_fail_kind"]),
+                expected_root_component=str(raw.get("expected_root_component") or ""),
                 expected_evidence_keys=[str(k) for k in raw.get("expected_evidence_keys") or []],
             )
         )
@@ -199,7 +201,10 @@ def run_case(
             {
                 "error": f"{type(exc).__name__}: {exc}",
                 "fail_kind": "",
+                "root_component": "",
                 "correct": False,
+                "root_component_correct": False if case.expected_root_component else None,
+                "diagnosis_correct": False,
                 "evidence_recall": 0.0,
                 "missing_evidence": list(case.expected_evidence_keys),
                 "context_chars": 0,
@@ -212,12 +217,23 @@ def run_case(
 
     recall, missing = evidence_recall(result.context_text, case.expected_evidence_keys)
     usage = result.token_usage or {}
+    root_component_correct = (
+        result.root_component == case.expected_root_component
+        if case.expected_root_component
+        else None
+    )
+    fail_kind_correct = result.fail_kind == case.expected_fail_kind
     row.update(
         {
             "error": "",
             "pipeline_id": brief.get("pipeline_id", ""),
             "fail_kind": result.fail_kind,
-            "correct": result.fail_kind == case.expected_fail_kind,
+            "root_component": result.root_component,
+            # correct 保留原有 fail_kind 准确率语义，避免历史结果不可比。
+            "correct": fail_kind_correct,
+            "root_component_correct": root_component_correct,
+            "diagnosis_correct": fail_kind_correct
+            and (root_component_correct is not False),
             "evidence_recall": round(recall, 4),
             "missing_evidence": missing,
             "context_chars": result.context_chars,
@@ -253,6 +269,7 @@ def run_suite(
     store_path: Path | str | None = None,
     diagnose: Callable[..., DiagnosisResult] = run_diagnosis,
     on_event: Callable[[str], None] | None = None,
+    pause_seconds: float = 0.0,
 ) -> list[dict[str, Any]]:
     """
     跑整套 golden set，每个 ``case × strategy`` 落一行。
@@ -268,6 +285,8 @@ def run_suite(
         store_path: jsonl 路径；None 用 ``workspace/eval_results.jsonl``。
         diagnose: 诊断内核，单测注入 fake。
         on_event: 进度回调，收到形如 ``case_id/strategy`` 的字符串。
+        pause_seconds: 相邻两次真 LLM 诊断之间的停顿秒数，缓解限流；
+            0 表示不停顿（离线假模型跑批用默认即可）。
 
     返回:
         全部记录行。
@@ -280,22 +299,27 @@ def run_suite(
 
     run_id = uuid.uuid4().hex[:12]
     rows: list[dict[str, Any]] = []
-    for case in case_list:
-        for strategy in strategies:
+    store_target = (
+        Path(store_path) if store_path is not None else results_path()
+    ) if store else None
+    for i, case in enumerate(case_list):
+        for j, strategy in enumerate(strategies):
             if on_event is not None:
                 on_event(f"{case.case_id}/{strategy}")
-            rows.append(
-                run_case(
-                    case,
-                    strategy=strategy,
-                    suite=suite,
-                    run_id=run_id,
-                    diagnose=diagnose,
-                )
+            if i + j > 0 and pause_seconds > 0:
+                time.sleep(pause_seconds)
+            row = run_case(
+                case,
+                strategy=strategy,
+                suite=suite,
+                run_id=run_id,
+                diagnose=diagnose,
             )
+            rows.append(row)
+            if store_target is not None:
+                # 真 LLM 跑批一整轮要几十分钟：逐行落盘，中断不丢已完成的行
+                append_records([row], path=store_target)
 
-    if store and rows:
-        append_records(rows, path=store_path)
     return rows
 
 
@@ -328,7 +352,7 @@ def summarize(rows: Sequence[Mapping[str, Any]]) -> dict[str, dict[str, Any]]:
         rows: run_suite 的记录行。
 
     返回:
-        ``{strategy: {n, accuracy, evidence_recall, context_chars, token_total,
+        ``{strategy: {n, accuracy, root_component_accuracy, evidence_recall, context_chars, token_total,
         latency_ms, tool_calls, errors}}``；数值为均值（errors 为计数）。
     """
     buckets: dict[str, list[Mapping[str, Any]]] = {}
@@ -338,9 +362,16 @@ def summarize(rows: Sequence[Mapping[str, Any]]) -> dict[str, dict[str, Any]]:
     out: dict[str, dict[str, Any]] = {}
     for strategy, items in buckets.items():
         n = len(items)
+        root_items = [i for i in items if i.get("root_component_correct") is not None]
         out[strategy] = {
             "n": n,
             "accuracy": _mean(1.0 if i.get("correct") else 0.0 for i in items),
+            "root_component_accuracy": _mean(
+                1.0 if i.get("root_component_correct") else 0.0 for i in root_items
+            ),
+            "diagnosis_accuracy": _mean(
+                1.0 if i.get("diagnosis_correct") else 0.0 for i in items
+            ),
             "evidence_recall": _mean(float(i.get("evidence_recall") or 0.0) for i in items),
             "context_chars": _mean(float(i.get("context_chars") or 0) for i in items),
             "react_context_chars": _mean(float(i.get("react_context_chars") or 0) for i in items),
@@ -368,14 +399,15 @@ def format_report(summary: Mapping[str, Mapping[str, Any]]) -> str:
         return "(没有可汇总的记录)"
 
     header = (
-        f"{'strategy':<10}{'n':>4}{'accuracy':>10}{'evid_recall':>13}"
+        f"{'strategy':<10}{'n':>4}{'kind_acc':>10}{'root_acc':>10}{'evid_recall':>13}"
         f"{'ctx_chars':>11}{'react_ctx':>11}{'tokens':>9}{'ms':>8}{'tools':>7}{'err':>5}"
     )
     lines = [header, "-" * len(header)]
     for strategy in sorted(summary):
         s = summary[strategy]
         lines.append(
-            f"{strategy:<10}{s['n']:>4}{s['accuracy']:>10.2f}{s['evidence_recall']:>13.2f}"
+            f"{strategy:<10}{s['n']:>4}{s['accuracy']:>10.2f}"
+            f"{s.get('root_component_accuracy', 0):>10.2f}{s['evidence_recall']:>13.2f}"
             f"{s['context_chars']:>11.0f}{s.get('react_context_chars', 0):>11.0f}"
             f"{s['token_total']:>9.0f}"
             f"{s['latency_ms']:>8.0f}{s['tool_calls']:>7.1f}{s['errors']:>5}"
@@ -398,7 +430,7 @@ def format_report(summary: Mapping[str, Mapping[str, Any]]) -> str:
         )
     lines.append("")
     lines.append(
-        f"注：accuracy 基于 {sum(s['n'] for s in summary.values()) // max(1, len(summary))} "
+        f"注：kind/root accuracy 基于 {sum(s['n'] for s in summary.values()) // max(1, len(summary))} "
         "条样本，只作趋势参考；context_chars 与 token 才是硬指标。"
     )
     return "\n".join(lines)

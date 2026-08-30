@@ -1,0 +1,138 @@
+{
+  "note": "Synthetic error-code catalog for ReAct benchmarks. These codes are invented for this repository and are not Huawei or any vendor's proprietary codes.",
+  "codes": [
+    {
+      "code": "E-COMM-1102",
+      "summary": "COMM_LOAD_FAIL",
+      "probable_components": ["comm", "endpoint_service", "network"],
+      "is_root_code": true,
+      "next_checks": ["Read comm.log before the first failure", "Distinguish TCP refusal, name resolution, and protocol rejection"]
+    },
+    {
+      "code": "E-COMM-1107",
+      "summary": "COMM_PROTOCOL_INCOMPATIBLE",
+      "probable_components": ["comm", "software_version"],
+      "is_root_code": true,
+      "next_checks": ["Compare client_protocol and server_protocol", "Check the compatibility matrix"]
+    },
+    {
+      "code": "E-RAT-1203",
+      "summary": "RAT_LOAD_FAIL",
+      "probable_components": ["rat", "comm"],
+      "is_root_code": false,
+      "next_checks": ["Check whether COMM was READY first", "If COMM was ready, inspect RAT validation and process-start events"]
+    },
+    {
+      "code": "E-RAT-1211",
+      "summary": "RAT_PROFILE_REJECTED",
+      "probable_components": ["rat", "case_config"],
+      "is_root_code": true,
+      "next_checks": ["Inspect rejected field and allowed values", "Compare the case profile with band capabilities"]
+    },
+    {
+      "code": "E-RAT-1218",
+      "summary": "RAT_PROCESS_NOT_READY",
+      "probable_components": ["rat", "runtime_resource"],
+      "is_root_code": true,
+      "next_checks": ["Inspect scheduler process startup", "Check pool and worker allocation"]
+    },
+    {
+      "code": "E-RAT-1231",
+      "summary": "PRACH_TIMING_OUT_OF_WINDOW",
+      "probable_components": ["rat", "bbh", "clock"],
+      "is_root_code": false,
+      "next_checks": ["Compare measured timing advance with the accepted window", "Inspect BBH time-alignment and clock calibration"]
+    },
+    {
+      "code": "E-BBH-2101",
+      "summary": "CLOCK_REFERENCE_UNLOCKED",
+      "probable_components": ["bbh", "clock_source", "transport"],
+      "is_root_code": true,
+      "next_checks": ["Inspect PTP and SyncE state", "Check clock offset and holdover duration"]
+    },
+    {
+      "code": "E-BBH-2407",
+      "summary": "FRONTHAUL_SEQUENCE_DISCONTINUITY",
+      "probable_components": ["bbh", "fronthaul", "switch"],
+      "is_root_code": true,
+      "next_checks": ["Inspect eCPRI sequence gaps", "Check packet loss and reordering on the transport path"]
+    },
+    {
+      "code": "E-BBH-2991",
+      "summary": "UPSTREAM_COMPONENT_NOT_READY",
+      "probable_components": ["comm", "rat", "bbh"],
+      "is_root_code": false,
+      "next_checks": ["Use probable_component only as a routing hint", "Verify the earliest concrete error in that component log"]
+    },
+    {
+      "code": "E-BBL-3104",
+      "summary": "CELL_SETUP_DEPENDENCY_FAILED",
+      "probable_components": ["comm", "rat", "bbh", "marp"],
+      "is_root_code": false,
+      "next_checks": ["Read dependency and probable_component fields", "Do not classify this cascade code as the root cause"]
+    },
+    {
+      "code": "E-BBL-3108",
+      "summary": "VUE_CELL_SETUP_FAILED",
+      "probable_components": ["marp", "rat", "bbh", "bbl"],
+      "is_root_code": false,
+      "next_checks": ["Inspect cause_chain and probable_component", "Check MARP antenna/beam mapping when the VUE path fails"]
+    },
+    {
+      "code": "E-BBL-3112",
+      "summary": "CELL_ACTIVATION_TIMEOUT",
+      "probable_components": ["bbl", "bbh", "clock_source"],
+      "is_root_code": false,
+      "next_checks": ["Check the last cell state transition", "Inspect BBH synchronization before blaming BBL"]
+    },
+    {
+      "code": "E-BBL-3120",
+      "summary": "DUPLICATE_PCI",
+      "probable_components": ["bbl", "case_config"],
+      "is_root_code": true,
+      "next_checks": ["Compare PCI across requested cells", "Inspect multi-cell parameter generation"]
+    },
+    {
+      "code": "E-BBL-3209",
+      "summary": "CELL_CONTEXT_POOL_EXHAUSTED",
+      "probable_components": ["bbl", "runtime_resource"],
+      "is_root_code": true,
+      "next_checks": ["Check used and capacity counters", "Look for leaked cell contexts from prior runs"]
+    },
+    {
+      "code": "E-BBL-3306",
+      "summary": "RRC_SETUP_INCOMPLETE",
+      "probable_components": ["bbl", "ue", "radio_link"],
+      "is_root_code": false,
+      "next_checks": ["Confirm whether random access succeeded", "Inspect UE-side receipt and RRCSetupComplete transmission"]
+    },
+    {
+      "code": "E-MARP-4106",
+      "summary": "ANTENNA_MAP_MISSING",
+      "probable_components": ["marp", "case_config"],
+      "is_root_code": true,
+      "next_checks": ["Inspect antenna_map and RF-port bindings", "Validate the case template before rerun"]
+    },
+    {
+      "code": "E-MARP-4114",
+      "summary": "BEAM_CALIBRATION_MISMATCH",
+      "probable_components": ["marp", "calibration_data"],
+      "is_root_code": true,
+      "next_checks": ["Compare calibration revision with active RF profile", "Inspect per-branch phase delta"]
+    },
+    {
+      "code": "E-CMP-5102",
+      "summary": "KPI_OUT_OF_TOLERANCE",
+      "probable_components": ["compare", "upstream_measurement"],
+      "is_root_code": false,
+      "next_checks": ["Inspect metric, baseline, actual value, and tolerance", "Use upstream logs to explain the regression"]
+    },
+    {
+      "code": "E-CMP-5110",
+      "summary": "BASELINE_SCHEMA_MISMATCH",
+      "probable_components": ["compare", "software_version"],
+      "is_root_code": true,
+      "next_checks": ["Compare result schema and baseline schema versions", "Regenerate the baseline only after compatibility is confirmed"]
+    }
+  ]
+}
