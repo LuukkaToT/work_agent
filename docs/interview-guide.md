@@ -114,10 +114,10 @@ intake → router → analysis / execute / pipeline_ops / chat → respond → m
 
 ```powershell
 python -m pytest `
-  tests/test_create_pipelines.py `
-  tests/test_exec_routes.py `
-  tests/test_hitl_ask_env.py `
-  tests/test_ledger.py -q
+  tests/graph/nodes/test_create_pipelines.py `
+  tests/graph/nodes/test_exec_routes.py `
+  tests/graph/nodes/test_hitl_ask_env.py `
+  tests/core/test_ledger.py -q
 ```
 
 不要只看测试通过；任选一个测试，在纸上先预测它应该断言什么，再打开测试代码核对。
@@ -155,9 +155,9 @@ error_analysis.run_diagnosis
 
 ```powershell
 python -m pytest `
-  tests/test_layered_mock_benchmark.py `
-  tests/test_diagnose_tools.py `
-  tests/test_run_diagnosis_strategies.py -q
+  tests/eval/test_layered_mock_benchmark.py `
+  tests/graph/helpers/test_diagnose_tools.py `
+  tests/graph/nodes/test_run_diagnosis_strategies.py -q
 ```
 
 配置好模型后再跑一次真实单 case；这条命令会调用 LLM：

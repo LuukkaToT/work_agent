@@ -72,7 +72,7 @@ run_agent_loop                         run_diagnosis
 | 文件 | 看什么 |
 |------|--------|
 | `work_agent/graph/helpers/agent_loop.py` | `ReActStep`、`trim_steps`、`AgentLoopResult`、`run_agent_loop` |
-| `tests/test_agent_loop.py` | `assert_tool_pairing`：配对不变量。这是硬约束，不是风格。 |
+| `tests/graph/helpers/test_agent_loop.py` | `assert_tool_pairing`：配对不变量。这是硬约束，不是风格。 |
 
 循环不再维护扁平 `messages`，而是 `prelude`（system + 用户目标，永不裁）+ `list[ReActStep]` + `tail`（触顶时的停止提示）。每次 `invoke` 前用 `trim_steps` 拼出真正发给模型的序列。`messages` 返回的是**未裁剪的完整历史**，给 `extract_tool_trace` / 观察提取用——裁的是「发给模型的那份」，不是事后审计那份。
 
@@ -87,9 +87,9 @@ run_agent_loop                         run_diagnosis
 
 单测也按这个边界拆：
 
-- `tests/test_context_selector.py`：不需要 mock。
-- `tests/test_context_manager.py`：注入 `_FakeModel` / `_BoomModel`，验证「短文本不调 LLM」「失败降级」「归档可回读」。
-- `tests/test_run_diagnosis_strategies.py`：把 ReAct 模型和抽取模型都换成假的，验证 `legacy` vs `managed` 接线。
+- `tests/graph/helpers/test_context_selector.py`：不需要 mock。
+- `tests/graph/helpers/test_context_manager.py`：注入 `_FakeModel` / `_BoomModel`，验证「短文本不调 LLM」「失败降级」「归档可回读」。
+- `tests/graph/nodes/test_run_diagnosis_strategies.py`：把 ReAct 模型和抽取模型都换成假的，验证 `legacy` vs `managed` 接线。
 
 ### 1.4 Eval
 
@@ -98,7 +98,7 @@ run_agent_loop                         run_diagnosis
 | `config/eval_cases.json` | golden set。期望值**只存在这里**。 |
 | `work_agent/eval/runner.py` | `evidence_recall`、`run_case`、`run_suite`、`summarize` |
 | `work_agent/cli.py` 的 `eval-diagnose` | `--case` / `--strategy` / `--no-store` |
-| `tests/test_eval_runner.py` | 注入 fake `diagnose`，不调真 LLM。 |
+| `tests/eval/test_eval_runner.py` | 注入 fake `diagnose`，不调真 LLM。 |
 
 跑真实对比（会调 LLM）：
 
@@ -235,7 +235,7 @@ OpenAI 兼容端点的协议约束：每条带 `tool_calls` 的 assistant 消息
 2. 装不下 → `compact()`：整对替换成一条**不带 `tool_calls`** 的摘要 `AIMessage`；
 3. 连摘要都装不下 → 整步丢弃（AI 和 Tool 一起走）。
 
-三种处理都保持配对不变量。`tests/test_agent_loop.py` 的 `assert_tool_pairing` 会对每一次真正发给模型的消息序列做校验，不只校验最终返回值。
+三种处理都保持配对不变量。`tests/graph/helpers/test_agent_loop.py` 的 `assert_tool_pairing` 会对每一次真正发给模型的消息序列做校验，不只校验最终返回值。
 
 热路径上刻意不调 LLM。每步 ReAct 都插一次摘要，延迟和成本都不划算；这里只用确定性的 `compress_observation`。
 
@@ -531,7 +531,7 @@ Prompt 明确要求保留报错关键词原文、不要下结论。LLM 失败或
 
 ### 5.11 返回值从 `list[Message]` 改成 `AgentLoopResult`，旧测试全挂
 
-**触发：** 一改 `run_agent_loop` 的返回值，`tests/test_agent_loop.py` 六条全部 `TypeError: not subscriptable`。
+**触发：** 一改 `run_agent_loop` 的返回值，`tests/graph/helpers/test_agent_loop.py` 六条全部 `TypeError: not subscriptable`。
 
 **原因：** 这是预期的破坏性变更，但说明调用面已经不止测试——任何拿返回值当消息列表的地方都要改。节点侧改为 `loop.messages` / `loop.usage`。
 

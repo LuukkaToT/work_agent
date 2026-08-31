@@ -47,7 +47,7 @@
 
 `compress_observation` 在 keyed 行超限时改为保留**尾部**。日志根因在后，从头部切会把 80 行噪声留下、把 `KeyError` 切掉，两种策略的 recall 都会一起崩，eval 就测不到 ContextManager。
 
-单测：`tests/test_context_budget.py::test_compress_keyed_overflow_keeps_tail_not_head`。
+单测：`tests/graph/helpers/test_context_budget.py::test_compress_keyed_overflow_keeps_tail_not_head`。
 
 副作用：legacy 的 400 字预压现在也留尾，所以 **本轮 evidence_recall 打平 1.0**。这不是 ContextManager 没效，是观察层先被修对了。ContextManager 的增量改在历史封顶和抽取压缩。
 
@@ -237,7 +237,7 @@
 
 ```text
 # 锁住留尾截断 + 长日志形态
-python -m pytest tests/test_context_budget.py tests/test_log_tool.py -q
+python -m pytest tests/graph/helpers/test_context_budget.py tests/tools/mock/test_log_tool.py -q
 
 # 真 LLM 整套（仅当 tool_calls>0 才有资格进对比）
 python -m work_agent.cli eval-diagnose --no-store

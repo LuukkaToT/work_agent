@@ -2,7 +2,7 @@
 FastAPI 网关：鉴权 / 会话归属 / 并发锁 / 响应形状。
 
 全部 mock ``work_agent.runtime`` 的 step 函数，不调 LLM、不起真图——图本身的正确性
-由 tests/test_runtime_step.py 和各节点自己的单测保管，这里只测网关这一层自己的逻辑。
+由 tests/runtime/test_runtime_step.py 和各节点自己的单测保管，这里只测网关这一层自己的逻辑。
 """
 
 from __future__ import annotations

@@ -176,7 +176,7 @@ for step in range(max_steps):
 
 - 工具白名单在函数内部按 `tools_by_name` 匹配，未注册工具直接返回拒绝文案，不抛异常，不影响循环继续；
 - 每步显式调用 `report_progress`，CLI 状态条不用再挂 `BaseCallbackHandler`；
-- 单测只需 mock 一个只有 `bind_tools` / `invoke` 两个方法的假 model，不用起真图、真 LLM（见 `tests/test_agent_loop.py`）。
+- 单测只需 mock 一个只有 `bind_tools` / `invoke` 两个方法的假 model，不用起真图、真 LLM（见 `tests/graph/helpers/test_agent_loop.py`）。
 
 `error_analysis` 节点只负责组装 `system` / `tools` / `human` 交给循环，循环本身与具体业务无关，理论上可复用给其他「受限 ReAct」场景。
 
@@ -184,7 +184,7 @@ for step in range(max_steps):
 
 循环内部不再维护一个扁平的 `messages` 列表，而是维护 `list[ReActStep]`，每个 step 是「一条 AIMessage + 它触发的全部 ToolMessage」。这不是风格偏好，是端点的硬约束：OpenAI 兼容接口要求每个 `tool_calls[].id` 都有配对的 `tool` 消息。如果按单条 Message 裁剪，很容易留下带 `tool_calls` 的 AIMessage 却删掉对应的 ToolMessage（或反过来留下孤儿 ToolMessage），下一次 `invoke` 直接 400。
 
-`trim_steps` 因此只在 step 粒度上操作：新的 step 留全文，旧的 step 用 `compact()` 整对替换成一条**不带 `tool_calls`** 的摘要消息，连摘要都装不下就整步丢弃。三种处理方式都保持配对不变量。`tests/test_agent_loop.py` 里的 `assert_tool_pairing` 会对每一次真正发给模型的消息序列做校验。
+`trim_steps` 因此只在 step 粒度上操作：新的 step 留全文，旧的 step 用 `compact()` 整对替换成一条**不带 `tool_calls`** 的摘要消息，连摘要都装不下就整步丢弃。三种处理方式都保持配对不变量。`tests/graph/helpers/test_agent_loop.py` 里的 `assert_tool_pairing` 会对每一次真正发给模型的消息序列做校验。
 
 裁剪只做确定性压缩（`compress_observation`），不调 LLM、不写盘——这是每轮都会走的热路径，在这里插一次摘要调用会让每步 ReAct 都多一次 LLM 往返。
 
@@ -251,7 +251,7 @@ checkpointer 只按 `thread_id` 存图状态。用户换会话再问「上次执
 
 个人配置表 `user_config` 的 `config` 列存 JSON blob（当前键：`debug_mode`、`version_space`）。`ci_cases` 是 CI 用例目录镜像（`case_path` PK + `logic_env` / `logic_constraint` / `version`），查询入口是 `core/ci_cases.py` 的 `lookup_ci_case`；本阶段只查不灌数。`logic_topologies` 是逻辑组网白名单（`(logic_env, logic_constraint)` PK + BBH/BBL 数量与板型），`init-db` 会从 `config/logic_topologies.csv` upsert 种子；运行时只认库。查询入口是 `core/logic_topologies.py`。
 
-测试：凡读写台账 / 个人配置 / checkpoint 的用例都连 `POSTGRES_TEST_DSN`（未配置或不可达则 skip）；图节点、路由等不碰库的单测仍不连库。`tests/test_storage_backend.py` 断言空 DSN 抛错。
+测试：凡读写台账 / 个人配置 / checkpoint 的用例都连 `POSTGRES_TEST_DSN`（未配置或不可达则 skip）；图节点、路由等不碰库的单测仍不连库。`tests/core/test_storage_backend.py` 断言空 DSN 抛错。
 
 ## 七、Tool 契约
 
@@ -500,8 +500,8 @@ CLI 的 `run_turn`/`resume_pending` 是阻塞的：遇到 `interrupt` 就在进�
 
 ### 测试策略
 
-- `tests/test_runtime_step.py`：mock 假 app（不调 LLM），验证 `run_turn_step`/`resume_step` 遇 interrupt 立刻返回、能正确串联多轮 resume。
-- `tests/test_api_gateway.py`：用 `TestClient` + mock `runtime.run_turn_step`/`resume_step`，只测网关自己的逻辑（鉴权 401、跨用户 403、无 pending 404、并发 409、响应结构转换），图的正确性交给上面那层单测和各节点自己的测试。
+- `tests/runtime/test_runtime_step.py`：mock 假 app（不调 LLM），验证 `run_turn_step`/`resume_step` 遇 interrupt 立刻返回、能正确串联多轮 resume。
+- `tests/api/test_api_gateway.py`：用 `TestClient` + mock `runtime.run_turn_step`/`resume_step`，只测网关自己的逻辑（鉴权 401、跨用户 403、无 pending 404、并发 409、响应结构转换），图的正确性交给上面那层单测和各节点自己的测试。
 
 ## 十四、离线 A/B 评测：怎么证明上下文管理真的有用
 
