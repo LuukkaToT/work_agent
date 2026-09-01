@@ -1,0 +1,81 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+        "enable": true,
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "title": "turn 次数（按 status/code）",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum by (op, status, code) (rate(work_agent_turns_total[5m]))",
+          "legendFormat": "{{op}} {{status}} {{code}}"
+        }
+      ]
+    },
+    {
+      "title": "turn p95 延迟",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum by (le, op) (rate(work_agent_turn_duration_seconds_bucket[5m])))",
+          "legendFormat": "{{op}}"
+        }
+      ]
+    },
+    {
+      "title": "诊断延迟与 token（运营，不是准确率）",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, rate(work_agent_diagnose_latency_seconds_bucket[15m]))",
+          "legendFormat": "diagnose p95"
+        },
+        {
+          "expr": "sum by (direction) (rate(work_agent_llm_tokens_total[15m]))",
+          "legendFormat": "tokens {{direction}}"
+        }
+      ]
+    },
+    {
+      "title": "THREAD_BUSY / respond fallback",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "targets": [
+        {
+          "expr": "sum(rate(work_agent_thread_busy_total[5m]))",
+          "legendFormat": "busy"
+        },
+        {
+          "expr": "sum(rate(work_agent_respond_fallback_total[5m]))",
+          "legendFormat": "fallback"
+        }
+      ]
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "tags": ["work-agent", "ops-not-eval"],
+  "templating": { "list": [] },
+  "time": { "from": "now-6h", "to": "now" },
+  "timezone": "browser",
+  "title": "work-agent 运营（勿混 BFCL/golden）",
+  "uid": "work-agent-ops",
+  "version": 1
+}

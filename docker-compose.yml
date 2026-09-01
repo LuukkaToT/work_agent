@@ -17,5 +17,26 @@ services:
       timeout: 5s
       retries: 10
 
+  app:
+    build: .
+    container_name: work_agent-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DSN: postgresql://work_agent:work_agent@postgres:5432/work_agent
+      LOG_FORMAT: json
+      LOG_LEVEL: INFO
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
 volumes:
   work_agent_pg_data:

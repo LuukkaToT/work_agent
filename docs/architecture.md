@@ -61,7 +61,7 @@ skills/
 
 **公司 w3 MCP Client**：`TOOL_BACKEND=real` 时 `RealKnowledgeSearchTool` 经 [`w3_client.py`](../work_agent/mcp/w3_client.py) 调用 `w3_search`（stdio 或 streamable HTTP）。未配置 `W3_MCP_*` 或调用失败时返回错误字符串，不打断诊断主路径。
 
-**Testing Agent MCP Server**：这是另一个方向的边界——Agent Space 经 `/mcp` 调用整个 Testing Agent；内部 Router、Workflow、SubAgent、Diagnose ReAct 不作为独立 tools 暴露。
+**Testing Agent MCP Server**：这是另一个方向的边界——Agent Space 经 `/mcp` 调用整个 Testing Agent。多步编排（先创建、再查日志）由 **Agent Space 做 ReAct**：拆成多次 `testing_agent_turn`，后续轮带上同一 `thread_id`。内部仍是 **router 单意图分发**，不是顶层 Main ReAct；Router、Workflow、SubAgent、Diagnose ReAct 不作为独立 MCP tools 暴露。
 
 产物落盘保证可追溯：
 
@@ -105,10 +105,21 @@ flowchart LR
 
 ## 五、主流程
 
+复合任务的编排在 **Agent Space**，不在 Testing Agent 内部再套一层 Main ReAct。Agent Space 每次 MCP 调用仍进入下面这张单意图主图。
+
+```mermaid
+flowchart TD
+  Compound["用户复合任务"] --> AgentSpace["Agent Space ReAct"]
+  AgentSpace -->|"turn: 创建流水线"| Testing["Testing Agent"]
+  Testing -->|"waiting_input"| AgentSpace
+  AgentSpace -->|"resume HITL"| Testing
+  AgentSpace -->|"turn 同一 thread_id: 分析日志"| Testing
+```
+
 ```mermaid
 flowchart TD
   Start(["用户输入 messages"]) --> Intake["intake 提取本轮 + 归零任务级"]
-  Intake --> Router["router 意图识别 带对话历史"]
+  Intake --> Router["router 意图识别 带对话历史 非 Main ReAct"]
   Router -->|"analysis"| Analysis["Role test_analysis"]
   Router -->|"execute"| ExecFlow["子图 exec_flow"]
   Router -->|"start/query/diagnose"| PipelineOps["子图 pipeline_ops"]
@@ -461,13 +472,13 @@ M1 到 M16 产出的是**端到端跑得通的最小闭环**，约 1500 到 1800
 | 错误处理与重试 | tool 调用失败、网络超时、LLM 限流的分级重试与降级 | 闭环跑通后立刻做 |
 | 幂等与防重 | create 失败不盲目重试（防双建）；start 可同 pipeline_id 重试 | 同上 |
 | 参数校验 | 用例名/版本/组网的合法性前置校验，避免无效执行 | 同上 |
-| 结构化日志与审计 | 谁在何时触发了什么执行、用了什么参数，可回溯 | 同上 |
+| 结构化日志与审计 | 谁在何时触发了什么执行；REST/MCP 不回 audit，TurnService 打摘要到 stdout | 已落地 P0 |
 | 结果解析健壮性 | 日志格式变化、部分成功、超时未结束等情况 | 接真实 tool 时 |
 | 并发执行 | 多组网或多版本并行跑，结果聚合 | 需求出现时 |
 | 配置分层 | 默认值 / 项目配置 / 用户配置 / 命令行覆盖 | 逐步 |
 | 权限与密钥 | 谁能触发执行、key 管理、日志脱敏 | 上线前必须 |
 | prompt 回归评测 | 测试分析质量的固定评测集，改 prompt 不退化 | 接真实资料后 |
-| 可观测性 | 每步耗时、token 消耗、失败率 | 逐步 |
+| 可观测性 | `/healthz` `/readyz` `/metrics`；诊断耗时/token/fallback；不要和 BFCL 横比 | 已落地 P0/P1；无分布式 tracing |
 | 测试矩阵 | mock 四场景 × 意图入口的端到端用例 | 与功能同步 |
 
 **为什么先窄后深**：过早抽象是最大的浪费。只有真实跑过一遍流程，才知道哪些边界情况真的会发生。所以先把最小闭环打通，再在调测中逐层加固。
@@ -500,6 +511,10 @@ MCP 只暴露三个会话式工具，统一返回 `thread_id/status/reply/summar
 | `testing_agent_resume` | 给 `waiting_input` 会话提交文本、对象或序号数组答案 |
 | `testing_agent_status` | 只读查询最终结果或当前 interrupt |
 
+Agent Space 负责拆任务：一次 `turn` 只做一件事（创建流水线、查进度、分析日志分开调用）。后续轮传入同一 `thread_id`，或在消息里写明 `pipeline_id`，否则新会话看不到「刚才那次」。CLI/REST 直连用户仍走同一套单意图图；没有 Agent Space 时，复合句仍只会被 router 判成一个意图。
+
+HITL **可以重入**：`waiting_input` 时结果里带 `thread_id` 和 `interrupt` 载荷。Agent Space 不必保持 MCP 长连接——图状态在 Postgres checkpointer，用同一 `thread_id` 调 `testing_agent_resume` 或只读的 `testing_agent_status` 即可。挂起时再发 `turn` 会得到 `THREAD_PENDING`。锁只防止两个请求同时 invoke 同一个 thread，不负责跨请求保存 HITL 状态。
+
 返回 `waiting_input` 后，Agent Space 展示 `interrupt` 并调用 `resume`。`turn/resume` 都标记为非幂等：调用超时后只能查 `status`，不能自动重放；已完成会话误重发 `resume` 时，MCP 适配层会返回当前结果而不是再次执行。runtime 的 `node:*` / `tool:*` / `status:*` 事件映射为 MCP progress，progress 发送失败不影响主任务。
 
 MCP 默认关闭。部署配置示例：
@@ -511,7 +526,7 @@ MCP_ALLOWED_HOSTS=testing-agent.example.internal,testing-agent.example.internal:
 # 只有浏览器客户端才需要 MCP_ALLOWED_ORIGINS
 ```
 
-`Authorization: Bearer ...` 认证的是 Agent Space 服务；最终用户工号由 tool 参数 `user_id` 传入并规范化成小写的“一位字母 + 8 位数字”。本阶段不要求用户目录已存在记录，也不做角色权限判断。MCP 子应用启用 DNS rebinding 防护；它被 Mount 到父 FastAPI 后，父 lifespan 显式启动 MCP session manager。
+`Authorization: Bearer ...` 认证的是 Agent Space 服务；最终用户工号由 tool 参数 `user_id` 传入并规范化成小写的“一位字母 + 8 位数字”。本阶段不要求用户目录已存在记录，也不做角色权限判断。MCP 子应用启用 DNS rebinding 防护；它被 Mount 到父 FastAPI 后，父 lifespan 显式启动 MCP session manager。Streamable HTTP 目前 `stateless_http=False`，session manager 仍在进程内；多副本时需要会话粘滞或改成无状态传输，**与 HITL 重入无关**（重入走 checkpoint + `thread_id`）。
 
 “会话状态是否等待中”本身没有单独落一张状态表（没有 `WAITING_APPROVAL` 这种显式字段）——单一数据源就是 checkpointer：`get_state().next` 非空即为等待。多一张状态表反而要操心两处状态不同步的问题，checkpointer 本来就是权威来源，没必要重复记账。
 
@@ -527,23 +542,32 @@ MCP_ALLOWED_HOSTS=testing-agent.example.internal,testing-agent.example.internal:
 
 个人偏好不进图状态。`debug_mode` 和 `version_space`（`27B/27A/26B/26A`，与流水线 version 同一枚举）存在 `user_config` 的 JSON blob 里，前端用 `GET/PATCH /users/me/config` 读写；未设置过的字段为 `null`，PATCH 只覆盖传入的键。`version_space` 是个人默认版本。CI 目录按用例名点查 `lookup_ci_case(case_name)`，只补环境：逻辑组网优先，物理组网兜底。完整逻辑组网按 `(name, constraint)` 点查 `lookup_logic_topology`；快模型只提议参数，代码校验是否在表内，失败则按特征返回候选。容量 ID 按整个 ID 组查映射，精确命中或相似组确认后再由用户多选逻辑组网。`debug_mode` 真正生效的地方只有 `create_pipelines`：提交时按当前 `user_id` 点查 `get_debug_mode`（`None` 当 `False`），塞进 `tool.create(..., options={"debug_mode": ...})`。
 
-### 并发：单进程内存锁，先够用
+### 并发：Postgres advisory lock
 
-同一个 `thread_id` 不能被两个请求同时续跑（checkpointer 不是为并发写设计的）。共享入口层用一个进程内 `dict[thread_id, threading.Lock]` 做非阻塞互斥：REST 返回 409，MCP 返回 `THREAD_BUSY`。这层锁只在单进程内有效，因此首期必须用单 Uvicorn worker、单副本；扩容前改成 Postgres advisory lock。
+同一个 `thread_id` 不能被两个请求同时续跑（checkpointer 不是为并发写设计的）。共享入口层 [`session_locks.try_acquire_thread_lock`](../work_agent/core/session_locks.py) 在配置了 `POSTGRES_DSN` 时用 **session 级** `pg_try_advisory_lock`：checkout 一条连接并占到请求结束，抢不到立刻返回（REST 409，MCP `THREAD_BUSY`），不排队。未配 DSN 时退回进程内内存锁，方便无库单测。
+
+锁绑在 Postgres 后端会话上，进程崩溃后连接断开即自动释放。**PgBouncer 事务池会拆掉这条会话，advisory lock 失效**——网关必须直连 Postgres 或使用 session 池。HITL 重入靠的是 checkpointer，不是这把锁。
 
 ### 测试策略
 
 - `tests/runtime/test_runtime_step.py`：mock 假 app（不调 LLM），验证 `run_turn_step`/`resume_step` 遇 interrupt 立刻返回、能正确串联多轮 resume。
 - `tests/api/test_api_gateway.py`：用 `TestClient` + mock `runtime.run_turn_step`/`resume_step`，只测网关自己的逻辑（鉴权 401、跨用户 403、无 pending 404、并发 409、响应结构转换），图的正确性交给上面那层单测和各节点自己的测试。
+- `tests/api/test_probes.py`：`/healthz` `/readyz` `/metrics`、request_id、未捕获异常不回原文。
 - `tests/mcp/`：用 MCP SDK 内存 Client 测 tool schema、structured output、progress 与 HITL 续答；另测 Bearer middleware 和安全配置。
 
-## 十四、离线 A/B 评测：怎么证明上下文管理真的有用
+## 十四、离线评测：通用 BFCL + 垂直诊断
 
-改上下文策略最容易犯的错是「感觉变好了」。所以 `error_analysis` 的核心逻辑抽成了 `run_diagnosis(context_strategy=...)`，同一个 case 可以分别按 `legacy`（改造前行为：历史不裁剪、抽取上下文按整块丢弃）和 `managed`（ReAct 历史按 step 裁剪 + ContextManager）跑一遍，直接比数。节点自己走 `managed`，`summary` / `audit` 的形状不变。
+上线前分开卡两道门，分数不能横比。
+
+**通用层（工具调用）**：`python -m work_agent.cli eval-react` 把 [BFCL v4](https://gorilla.cs.berkeley.edu/leaderboard.html) 的 `simple` / `multiple` / `parallel` / `irrelevance` 接到 `run_agent_loop`。测的是会不会选错工具、编造参数、不该调还调。评测走 AST 比对，数据缓存到 `workspace/eval_cache/bfcl/`（gitignore），不 check-in 全集。这是本仓库 loop 的回归门槛，**不是 Berkeley 公开榜排名，也不是诊断准确率**。不跑 GAIA / WebArena / SWE-bench：那些要浏览器或改代码，和流水线工具对不上。
+
+上下文策略 A/B 同样用 `legacy` / `managed`；只解释成本与 AST 是否掉点。
+
+**垂直层（诊断）**：改上下文策略最容易犯的错是「感觉变好了」。所以 `error_analysis` 的核心逻辑抽成了 `run_diagnosis(context_strategy=...)`，同一个 case 可以分别按 `legacy`（改造前行为：历史不裁剪、抽取上下文按整块丢弃）和 `managed`（ReAct 历史按 step 裁剪 + ContextManager）跑一遍，直接比数。节点自己走 `managed`，`summary` / `audit` 的形状不变。
 
 golden set 在 `config/eval_cases.json`（20 条、120 个分组件日志，覆盖 case / version / env / none 四类归因）。每条除了 `expected_fail_kind`、`expected_root_component` 还有 `expected_evidence_keys`——那些**必须活到最终 working context** 的关键词。期望值只存在 golden 文件里，不复制进结果行，避免同一份期望在两处漂移。数据规模与场景矩阵见 [baseband-mock-benchmark.md](baseband-mock-benchmark.md)。
 
-`python -m work_agent.cli eval-diagnose` 跑整套（`--case` / `--strategy` / `--no-store`）。
+`python -m work_agent.cli eval-diagnose` 跑垂直集（`--case` / `--strategy` / `--no-store`）。`eval-react --categories irrelevance --limit 20` 做 BFCL 冒烟。上线后看 stdout 事件和 `/metrics` 的延迟/token/fallback，**不要**把这两份离线分数写进 Grafana 和生产运营图。
 
 ### 为什么落 jsonl 而不是 Postgres
 
@@ -552,6 +576,8 @@ golden set 在 `config/eval_cases.json`（20 条、120 个分组件日志，覆�
 表结构用**长表**（一行 = 一个 `case × strategy`，带 `strategy` 列）而不是宽表（`baseline_result` / `new_result` 两列）：加第三种策略时长表不用改 schema。
 
 ### 指标怎么读
+
+通用层看 `eval-react` 的 `ast_acc`（BFCL AST，本仓库门槛，**不是公开榜**）。下表只属于垂直诊断 `eval-diagnose`，两套数字不能横比。
 
 | 指标 | 含义 | 可信度 |
 |------|------|--------|
@@ -565,3 +591,13 @@ golden set 在 `config/eval_cases.json`（20 条、120 个分组件日志，覆�
 `evidence_recall` 是这里最该被盯住的指标：省字符很容易，把根因证据一起省掉就是净损失。反过来 `context_chars` 单独变小也不一定是好事——`legacy` 把每条观察无脑压到 400 字符，字符数很低但那正是「还没判断有没有余量就先丢证据」这个问题本身。两个指标必须一起看。
 
 要诚实的一点：在当前 mock 日志上，`compress_observation` 的关键词过滤已经把观察压得很短，两种策略的差距主要来自去重（同一份日志被取两次时 managed 只留一份）和 ReAct 历史裁剪，抽取阶段的差异不大。真实日志里 ERROR 行成百上千时差距才会显著。评测框架先接好，是为了到那时对比已经是现成的。
+
+## 十五、可观测与部署包装
+
+出事定位靠 **stdout JSON + `request_id`/`thread_id`**，不是 CLI `-v`。`TurnService` 在对外 strip audit 之前打 `turn_complete` / `turn_failed`（以及 resume/status），字段包括 intent、duration、诊断 `latency_ms`/`token_usage`/`fail_kind`、`respond.source`。REST 响应形状不变，不回 audit、不打用户原文。
+
+探活：`GET /healthz` 进程活；`GET /readyz` 能 `SELECT 1`。指标：`GET /metrics`（Prometheus）。公司日志平台刮 stdout，Prometheus 刮 `/metrics`。面板/告警草稿在 `deploy/`，**不要把 BFCL/golden 分数和线上 fallback 率画在一起**。
+
+部署包装：`Dockerfile` + compose `app` 服务 + `deploy/k8s/` 示例。约束仍是：Postgres 直连或 session 池、MCP 多副本粘滞或 replicas=1。细节见 [deploy.md](deploy.md)。
+
+未做：OpenTelemetry 全链路、Kafka audit 总线、评测进库、生产准确率。

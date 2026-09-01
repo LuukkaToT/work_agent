@@ -1,0 +1,77 @@
+# 示例清单，不是完整公司 CD。Ingress / TLS / Secret 平台自己接。
+# 约束：Postgres 直连或 PgBouncer session 池；禁止事务池。
+# MCP 若仍 stateless_http=False，多副本先 replicas: 1 或做会话粘滞。
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: work-agent
+  labels:
+    app: work-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: work-agent
+  template:
+    metadata:
+      labels:
+        app: work-agent
+    spec:
+      initContainers:
+        - name: migrate
+          image: work-agent:latest
+          imagePullPolicy: IfNotPresent
+          command: ["python", "-m", "work_agent.cli", "init-db"]
+          envFrom:
+            - secretRef:
+                name: work-agent
+      containers:
+        - name: app
+          image: work-agent:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: SKIP_MIGRATE
+              value: "1"
+            - name: LOG_FORMAT
+              value: json
+            - name: LOG_LEVEL
+              value: INFO
+          envFrom:
+            - secretRef:
+                name: work-agent
+          ports:
+            - containerPort: 8000
+              name: http
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: work-agent
+  labels:
+    app: work-agent
+spec:
+  selector:
+    app: work-agent
+  ports:
+    - name: http
+      port: 8000
+      targetPort: http

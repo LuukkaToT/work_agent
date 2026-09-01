@@ -196,6 +196,9 @@ def test_resume_turn_rejects_other_users_thread(monkeypatch):
 
 def test_concurrent_request_on_same_thread_returns_409(monkeypatch):
     monkeypatch.setattr(
+        "work_agent.core.session_locks._postgres_dsn", lambda: ""
+    )
+    monkeypatch.setattr(
         app_mod.runtime,
         "resume_step",
         lambda thread_id, answer: {"_thread_id": thread_id, "reply": "done", "summary": {}},

@@ -3,11 +3,16 @@
 from __future__ import annotations
 
 import re
+import time
 from typing import Any, Callable, Literal
 
 from pydantic import BaseModel, Field
 
 from work_agent import runtime
+from work_agent.core.observability import (
+    emit_turn_event,
+    interrupt_types_from_result,
+)
 from work_agent.core.session_locks import try_acquire_thread_lock
 
 EventFn = Callable[[str], None]
@@ -46,6 +51,33 @@ def _assert_thread_owner(thread_id: str, user_id: str) -> None:
         raise TurnServiceError("THREAD_FORBIDDEN", "无权访问该会话")
 
 
+def _log_turn(
+    *,
+    op: str,
+    outcome: str,
+    user_id: str,
+    thread_id: str,
+    started: float,
+    status: str = "",
+    code: str = "",
+    runtime_result: dict[str, Any] | None = None,
+) -> None:
+    try:
+        emit_turn_event(
+            op=op,
+            outcome=outcome,
+            user_id=user_id,
+            thread_id=thread_id,
+            duration_ms=int((time.monotonic() - started) * 1000),
+            status=status,
+            code=code,
+            runtime_result=runtime_result,
+            interrupt_types=interrupt_types_from_result(runtime_result),
+        )
+    except Exception:  # noqa: BLE001
+        return
+
+
 def turn_result_from_runtime(result: dict[str, Any]) -> TurnResult:
     """只挑选稳定对外字段，不泄漏 graph state 或 audit。"""
     thread_id = str(result.get("_thread_id") or "")
@@ -75,43 +107,116 @@ class TurnService:
         thread_id: str | None = None,
         on_event: EventFn | None = None,
     ) -> TurnResult:
-        text = (message or "").strip()
-        if not text:
-            raise TurnServiceError("INVALID_MESSAGE", "message 不能为空")
-        uid = normalize_user_id(user_id)
-        supplied_thread = bool((thread_id or "").strip())
-        tid = (thread_id or "").strip() or runtime.new_thread_id(uid)
-        _assert_thread_owner(tid, uid)
-
-        lock = try_acquire_thread_lock(tid)
-        if lock is None:
-            raise TurnServiceError("THREAD_BUSY", "该会话正在处理上一条请求")
+        started = time.monotonic()
+        uid = ""
+        tid = (thread_id or "").strip()
         try:
-            if supplied_thread:
-                current = runtime.get_turn_status(tid)
-                if current is None:
-                    raise TurnServiceError("THREAD_NOT_FOUND", "会话不存在")
-                if runtime.interrupt_payloads(current):
-                    raise TurnServiceError(
-                        "THREAD_PENDING",
-                        "会话正在等待回答，请调用 testing_agent_resume",
-                    )
-            kwargs: dict[str, Any] = {"thread_id": tid, "user_id": uid}
-            if on_event is not None:
-                kwargs["on_event"] = on_event
-            result = runtime.run_turn_step(text, **kwargs)
-        finally:
-            lock.release()
-        return turn_result_from_runtime(result)
+            text = (message or "").strip()
+            if not text:
+                raise TurnServiceError("INVALID_MESSAGE", "message 不能为空")
+            uid = normalize_user_id(user_id)
+            supplied_thread = bool(tid)
+            tid = tid or runtime.new_thread_id(uid)
+            _assert_thread_owner(tid, uid)
+
+            lock = try_acquire_thread_lock(tid)
+            if lock is None:
+                raise TurnServiceError("THREAD_BUSY", "该会话正在处理上一条请求")
+            try:
+                if supplied_thread:
+                    current = runtime.get_turn_status(tid)
+                    if current is None:
+                        raise TurnServiceError("THREAD_NOT_FOUND", "会话不存在")
+                    if runtime.interrupt_payloads(current):
+                        raise TurnServiceError(
+                            "THREAD_PENDING",
+                            "会话正在等待回答，请调用 testing_agent_resume",
+                        )
+                kwargs: dict[str, Any] = {"thread_id": tid, "user_id": uid}
+                if on_event is not None:
+                    kwargs["on_event"] = on_event
+                result = runtime.run_turn_step(text, **kwargs)
+            finally:
+                lock.release()
+            out = turn_result_from_runtime(result)
+            _log_turn(
+                op="turn",
+                outcome="complete",
+                user_id=uid,
+                thread_id=out.thread_id,
+                started=started,
+                status=out.status,
+                code="ok",
+                runtime_result=result,
+            )
+            return out
+        except TurnServiceError as exc:
+            _log_turn(
+                op="turn",
+                outcome="failed",
+                user_id=uid or user_id,
+                thread_id=tid,
+                started=started,
+                status="error",
+                code=exc.code,
+            )
+            raise
+        except Exception:
+            _log_turn(
+                op="turn",
+                outcome="failed",
+                user_id=uid or user_id,
+                thread_id=tid,
+                started=started,
+                status="error",
+                code="INTERNAL",
+            )
+            raise
 
     def status(self, *, user_id: str, thread_id: str) -> TurnResult:
-        uid = normalize_user_id(user_id)
+        started = time.monotonic()
+        uid = ""
         tid = (thread_id or "").strip()
-        _assert_thread_owner(tid, uid)
-        result = runtime.get_turn_status(tid)
-        if result is None:
-            raise TurnServiceError("THREAD_NOT_FOUND", "会话不存在")
-        return turn_result_from_runtime(result)
+        try:
+            uid = normalize_user_id(user_id)
+            _assert_thread_owner(tid, uid)
+            result = runtime.get_turn_status(tid)
+            if result is None:
+                raise TurnServiceError("THREAD_NOT_FOUND", "会话不存在")
+            out = turn_result_from_runtime(result)
+            _log_turn(
+                op="status",
+                outcome="complete",
+                user_id=uid,
+                thread_id=out.thread_id,
+                started=started,
+                status=out.status,
+                code="ok",
+                runtime_result=result,
+            )
+            return out
+        except TurnServiceError as exc:
+            _log_turn(
+                op="status",
+                outcome="failed",
+                user_id=uid or user_id,
+                thread_id=tid,
+                started=started,
+                status="error",
+                code=exc.code,
+            )
+            raise
+        except Exception:
+            _log_turn(
+                op="status",
+                outcome="failed",
+                user_id=uid or user_id,
+                thread_id=tid,
+                started=started,
+                status="error",
+                code="INTERNAL",
+            )
+            raise
 
     def resume(
         self,
@@ -122,33 +227,69 @@ class TurnService:
         on_event: EventFn | None = None,
         return_current_if_completed: bool = False,
     ) -> TurnResult:
-        if answer is None:
-            raise TurnServiceError("INVALID_ANSWER", "answer 不能为空")
-        if isinstance(answer, str) and not answer.strip():
-            raise TurnServiceError("INVALID_ANSWER", "answer 不能为空")
-        if isinstance(answer, (dict, list)) and not answer:
-            raise TurnServiceError("INVALID_ANSWER", "answer 不能为空")
-
-        uid = normalize_user_id(user_id)
+        started = time.monotonic()
+        uid = ""
         tid = (thread_id or "").strip()
-        _assert_thread_owner(tid, uid)
-        lock = try_acquire_thread_lock(tid)
-        if lock is None:
-            raise TurnServiceError("THREAD_BUSY", "该会话正在处理上一条请求")
         try:
-            kwargs: dict[str, Any] = {}
-            if on_event is not None:
-                kwargs["on_event"] = on_event
-            result = runtime.resume_step(tid, answer, **kwargs)
-            if result is None:
-                if not return_current_if_completed:
-                    raise TurnServiceError(
-                        "THREAD_NOT_PENDING", "该会话当前没有待回答的问题"
-                    )
-                current = runtime.get_turn_status(tid)
-                if current is None:
-                    raise TurnServiceError("THREAD_NOT_FOUND", "会话不存在")
-                result = current
-        finally:
-            lock.release()
-        return turn_result_from_runtime(result)
+            if answer is None:
+                raise TurnServiceError("INVALID_ANSWER", "answer 不能为空")
+            if isinstance(answer, str) and not answer.strip():
+                raise TurnServiceError("INVALID_ANSWER", "answer 不能为空")
+            if isinstance(answer, (dict, list)) and not answer:
+                raise TurnServiceError("INVALID_ANSWER", "answer 不能为空")
+
+            uid = normalize_user_id(user_id)
+            _assert_thread_owner(tid, uid)
+            lock = try_acquire_thread_lock(tid)
+            if lock is None:
+                raise TurnServiceError("THREAD_BUSY", "该会话正在处理上一条请求")
+            try:
+                kwargs: dict[str, Any] = {}
+                if on_event is not None:
+                    kwargs["on_event"] = on_event
+                result = runtime.resume_step(tid, answer, **kwargs)
+                if result is None:
+                    if not return_current_if_completed:
+                        raise TurnServiceError(
+                            "THREAD_NOT_PENDING", "该会话当前没有待回答的问题"
+                        )
+                    current = runtime.get_turn_status(tid)
+                    if current is None:
+                        raise TurnServiceError("THREAD_NOT_FOUND", "会话不存在")
+                    result = current
+            finally:
+                lock.release()
+            out = turn_result_from_runtime(result)
+            _log_turn(
+                op="resume",
+                outcome="complete",
+                user_id=uid,
+                thread_id=out.thread_id,
+                started=started,
+                status=out.status,
+                code="ok",
+                runtime_result=result,
+            )
+            return out
+        except TurnServiceError as exc:
+            _log_turn(
+                op="resume",
+                outcome="failed",
+                user_id=uid or user_id,
+                thread_id=tid,
+                started=started,
+                status="error",
+                code=exc.code,
+            )
+            raise
+        except Exception:
+            _log_turn(
+                op="resume",
+                outcome="failed",
+                user_id=uid or user_id,
+                thread_id=tid,
+                started=started,
+                status="error",
+                code="INTERNAL",
+            )
+            raise

@@ -600,6 +600,101 @@ def eval_diagnose(
         console.print(f"[dim]已追加写入 {results_path()}[/dim]")
 
 
+@app.command("eval-react")
+def eval_react(
+    categories: str = typer.Option(
+        "simple,multiple,parallel,irrelevance",
+        "--categories",
+        help="BFCL 类别，逗号分隔",
+    ),
+    strategy: Optional[str] = typer.Option(
+        None,
+        "--strategy",
+        "-s",
+        help="只跑一种上下文策略（legacy / managed）；默认两种都跑",
+    ),
+    limit: int = typer.Option(
+        0, "--limit", help="每类最多跑多少条；0 表示该类全部"
+    ),
+    no_store: bool = typer.Option(
+        False, "--no-store", help="不写 workspace/eval_react_results.jsonl，只打印"
+    ),
+    pause: float = typer.Option(
+        0.0, "--pause", help="相邻两次之间的停顿秒数；默认 0"
+    ),
+) -> None:
+    """
+    用 BFCL（Berkeley Function Calling Leaderboard）测 run_agent_loop 的工具调用。
+
+    分数只作本仓库门槛，不是公开榜排名，也不能当成诊断准确率。
+    """
+    from work_agent.eval.bfcl import (
+        DEFAULT_CATEGORIES,
+        format_report,
+        load_cases,
+        results_path,
+        run_suite,
+        summarize,
+    )
+    from work_agent.eval.runner import DEFAULT_STRATEGIES
+
+    selected = tuple(
+        part.strip() for part in categories.split(",") if part.strip()
+    ) or DEFAULT_CATEGORIES
+    unknown = [c for c in selected if c not in DEFAULT_CATEGORIES]
+    if unknown:
+        console.print(f"[red]未知类别 {unknown}，可选 {list(DEFAULT_CATEGORIES)}[/red]")
+        raise typer.Exit(code=1)
+
+    strategies = (strategy,) if strategy else DEFAULT_STRATEGIES
+    bad = [s for s in strategies if s not in DEFAULT_STRATEGIES]
+    if bad:
+        console.print(f"[red]未知策略 {bad}，可选 {list(DEFAULT_STRATEGIES)}[/red]")
+        raise typer.Exit(code=1)
+
+    try:
+        cases = load_cases(categories=selected, limit=limit)
+    except Exception as exc:  # noqa: BLE001
+        console.print(f"[red]BFCL 数据读取失败:[/] {exc}")
+        raise typer.Exit(code=1) from exc
+
+    if not cases:
+        console.print("[red]没有可跑的 BFCL 样本[/red]")
+        raise typer.Exit(code=1)
+
+    total = len(cases) * len(strategies)
+    bridge = _RunStatus()
+    bridge.start(f"BFCL 评测中 · 0/{total}")
+    done = 0
+
+    def on_event(label: str) -> None:
+        nonlocal done
+        done += 1
+        bridge.start(f"BFCL 评测中 · {done}/{total} · {label}")
+
+    try:
+        rows = run_suite(
+            cases=cases,
+            strategies=strategies,
+            store=not no_store,
+            on_event=on_event,
+            pause_seconds=pause,
+        )
+    finally:
+        bridge.stop()
+
+    console.print(
+        Panel(format_report(summarize(rows)), title="eval · bfcl-v4", border_style="cyan")
+    )
+    failures = [r for r in rows if r.get("error")]
+    if failures:
+        console.print(f"[yellow]{len(failures)} 行执行出错：[/yellow]")
+        for r in failures[:20]:
+            console.print(f"[dim]  {r['case_id']}/{r['strategy']}: {r['error']}[/dim]")
+    if not no_store:
+        console.print(f"[dim]已追加写入 {results_path()}[/dim]")
+
+
 @app.callback(invoke_without_command=True)
 def main(ctx: typer.Context) -> None:
     """

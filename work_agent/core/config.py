@@ -80,6 +80,8 @@ class Settings:
     mcp_service_token: str = ""
     mcp_allowed_hosts: tuple[str, ...] = ()
     mcp_allowed_origins: tuple[str, ...] = ()
+    log_level: str = "INFO"
+    log_format: str = "json"  # json | text；API 默认 json，CLI 可不调用 configure_logging
 
 
 def _env_bool(name: str, default: bool = False) -> bool:
@@ -164,4 +166,6 @@ def get_settings() -> Settings:
         mcp_service_token=(os.getenv("MCP_SERVICE_TOKEN") or "").strip(),
         mcp_allowed_hosts=_env_csv("MCP_ALLOWED_HOSTS"),
         mcp_allowed_origins=_env_csv("MCP_ALLOWED_ORIGINS"),
+        log_level=(os.getenv("LOG_LEVEL") or "INFO").strip().upper() or "INFO",
+        log_format=(os.getenv("LOG_FORMAT") or "json").strip().lower() or "json",
     )

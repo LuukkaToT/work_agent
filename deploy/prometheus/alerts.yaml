@@ -1,0 +1,49 @@
+# 告警草稿。接公司 Prometheus 后按实际 scrape job 改名称。
+# 这些是运营指标，不要和 eval-diagnose / BFCL ast_acc 画在同一张图、更不要当准确率告警。
+groups:
+  - name: work_agent
+    rules:
+      - alert: WorkAgentReadyFailed
+        expr: probe_success{job="work-agent-readyz"} == 0
+        for: 2m
+        labels:
+          severity: page
+        annotations:
+          summary: work-agent /readyz 失败
+          description: Postgres 连不上或未迁移。先查 DSN / 迁移 Job，不要重启冲 advisory lock。
+
+      - alert: WorkAgentUnhandledErrors
+        expr: increase(work_agent_http_unhandled_total[5m]) > 0
+        for: 5m
+        labels:
+          severity: ticket
+        annotations:
+          summary: work-agent 出现未捕获 500
+          description: 用日志 event=http_unhandled 的 request_id 去对 turn_failed。
+
+      - alert: WorkAgentThreadBusy
+        expr: increase(work_agent_thread_busy_total[5m]) > 10
+        for: 10m
+        labels:
+          severity: ticket
+        annotations:
+          summary: 同一 thread 抢锁失败偏多
+          description: 客户端在 waiting_input 时又发了 turn，或副本太多把锁连接占满。
+
+      - alert: WorkAgentDiagnoseSlow
+        expr: histogram_quantile(0.95, rate(work_agent_diagnose_latency_seconds_bucket[15m])) > 60
+        for: 15m
+        labels:
+          severity: ticket
+        annotations:
+          summary: 诊断 p95 超过 60s
+          description: 这是运营延迟，不是 golden 准确率。对照 token 与 fail_kind 分布。
+
+      - alert: WorkAgentRespondFallback
+        expr: increase(work_agent_respond_fallback_total[15m]) > 5
+        for: 15m
+        labels:
+          severity: ticket
+        annotations:
+          summary: respond 走 fallback 偏多
+          description: LLM 失败被兜底。查 LLM 网关，不要解释成诊断准确率下降。

@@ -12,13 +12,10 @@ from mcp.server.mcpserver import Context
 from mcp.server.mcpserver.exceptions import ToolError
 from mcp.types import ToolAnnotations
 
+from work_agent.core.observability import get_request_id, log_value
 from work_agent.service.turns import TurnResult, TurnService, TurnServiceError
 
 logger = logging.getLogger(__name__)
-
-
-def _log_value(value: str | None) -> str:
-    return str(value or "").replace("\r", " ").replace("\n", " ")[:128]
 
 
 def _progress_callback(ctx: Context):
@@ -51,30 +48,33 @@ async def _call_service(
         result = await anyio.to_thread.run_sync(fn)
     except TurnServiceError as exc:
         logger.warning(
-            "mcp_tool_failed tool=%s user_id=%s thread_id=%s code=%s duration_ms=%d",
+            "mcp_tool_failed tool=%s user_id=%s thread_id=%s code=%s duration_ms=%d request_id=%s",
             tool_name,
-            _log_value(user_id),
-            _log_value(thread_id),
+            log_value(user_id),
+            log_value(thread_id),
             exc.code,
             int((time.monotonic() - started) * 1000),
+            log_value(get_request_id()),
         )
         raise ToolError(str(exc)) from exc
-    except Exception:  # noqa: BLE001
+    except Exception:
         logger.exception(
-            "mcp_tool_failed tool=%s user_id=%s thread_id=%s code=INTERNAL duration_ms=%d",
+            "mcp_tool_failed tool=%s user_id=%s thread_id=%s code=INTERNAL duration_ms=%d request_id=%s",
             tool_name,
-            _log_value(user_id),
-            _log_value(thread_id),
+            log_value(user_id),
+            log_value(thread_id),
             int((time.monotonic() - started) * 1000),
+            log_value(get_request_id()),
         )
         raise
     logger.info(
-        "mcp_tool_complete tool=%s user_id=%s thread_id=%s status=%s duration_ms=%d",
+        "mcp_tool_complete tool=%s user_id=%s thread_id=%s status=%s duration_ms=%d request_id=%s",
         tool_name,
-        _log_value(user_id),
-        _log_value(result.thread_id),
+        log_value(user_id),
+        log_value(result.thread_id),
         result.status,
         int((time.monotonic() - started) * 1000),
+        log_value(get_request_id()),
     )
     return result
 
@@ -89,9 +89,12 @@ def create_testing_agent_mcp(
         title="Testing Agent",
         description="测试分析、流水线执行/查询与失败诊断的统一会话入口",
         instructions=(
-            "先调用 testing_agent_turn。返回 waiting_input 时，把 interrupt 展示给用户，"
-            "再调用 testing_agent_resume；超时后只调用 testing_agent_status，"
-            "不要自动重放 turn 或 resume。"
+            "先调用 testing_agent_turn。一次 turn 只做一件事："
+            "复合任务（例如先创建流水线再分析日志）拆成多次 turn，"
+            "后续轮带上同一 thread_id，或在消息里写明 pipeline_id。"
+            "返回 waiting_input 时，把 interrupt 展示给用户，再调用 testing_agent_resume；"
+            "超时后只调用 testing_agent_status，不要自动重放 turn 或 resume。"
+            "内部 Router、Workflow、Diagnose 不是独立 MCP tools。"
         ),
         version="0.1.0",
     )

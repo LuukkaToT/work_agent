@@ -2,10 +2,29 @@
 
 import pytest
 
+from work_agent.core.observability import add_event_hook, clear_event_hooks
 from work_agent.service.turns import TurnService, TurnServiceError
 
 
-def test_turn_normalizes_user_and_returns_waiting(monkeypatch):
+@pytest.fixture(autouse=True)
+def _memory_thread_locks(monkeypatch):
+    """本文件只测 TurnService 边界，不依赖 Postgres advisory lock。"""
+    monkeypatch.setattr(
+        "work_agent.core.session_locks._postgres_dsn", lambda: ""
+    )
+
+
+@pytest.fixture
+def captured_events():
+    rows: list[dict] = []
+    add_event_hook(rows.append)
+    try:
+        yield rows
+    finally:
+        clear_event_hooks()
+
+
+def test_turn_normalizes_user_and_returns_waiting(monkeypatch, captured_events):
     seen = {}
 
     monkeypatch.setattr(
@@ -33,9 +52,16 @@ def test_turn_normalizes_user_and_returns_waiting(monkeypatch):
     assert result.status == "waiting_input"
     assert result.interrupt[0]["type"] == "confirm_exec"
     assert "audit" not in result.model_dump()
+    assert captured_events
+    event = captured_events[-1]
+    assert event["event"] == "turn_complete"
+    assert event["thread_id"] == "z00888363-abc123"
+    assert event["status"] == "waiting_input"
+    assert "跑一下" not in str(event)
+    assert event["interrupt_types"] == ["confirm_exec"]
 
 
-def test_turn_rejects_new_message_when_thread_is_pending(monkeypatch):
+def test_turn_rejects_new_message_when_thread_is_pending(monkeypatch, captured_events):
     monkeypatch.setattr(
         "work_agent.service.turns.runtime.get_turn_status",
         lambda thread_id: {
@@ -48,6 +74,8 @@ def test_turn_rejects_new_message_when_thread_is_pending(monkeypatch):
         TurnService().turn(
             "继续", user_id="z00888363", thread_id="z00888363-abc123"
         )
+    assert captured_events[-1]["event"] == "turn_failed"
+    assert captured_events[-1]["code"] == "THREAD_PENDING"
 
 
 def test_turn_rejects_unknown_supplied_thread(monkeypatch):
