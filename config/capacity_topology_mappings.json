@@ -1,0 +1,17 @@
+[
+  {
+    "capacity_ids": ["0x1500c"],
+    "topologies": [{"name": "BESA_NR_SDV_BBH_3BBL", "constraint": "H+SLG"}]
+  },
+  {
+    "capacity_ids": ["0x1500d"],
+    "topologies": [{"name": "BESA_NR_SDV_BBH_BBL_AI", "constraint": "H+G"}]
+  },
+  {
+    "capacity_ids": ["0x15109c", "0x10108d"],
+    "topologies": [
+      {"name": "BESA_NR_SDV_BBH_3BBL", "constraint": "H+SLG"},
+      {"name": "BESA_NR_SDV_BBH_BBL_AI", "constraint": "H+G"}
+    ]
+  }
+]

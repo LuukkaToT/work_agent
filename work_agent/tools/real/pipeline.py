@@ -28,7 +28,7 @@ class RealPipelineTool:
     公司流水线适配器。
 
     执行流（create）：
-      1. 校验环境二选一（物理 IP / 逻辑组网+约束）
+      1. 校验环境二选一（物理 IP / 完整逻辑组网）；底层接口仍拆成名称与约束传递
       2. 加载平台默认参数（项目、租户、资源池等）
       3. 拼 create 请求体
       4. 客户端鉴权拿 token 后提交
@@ -70,8 +70,8 @@ class RealPipelineTool:
             case_names: 用例名列表。
             version: 版本。
             physical_env: 物理组网 IP；与逻辑模式互斥。
-            logic_env: 规范逻辑组网名；须与 ``logic_constraint`` 成对。
-            logic_constraint: 逻辑约束。
+            logic_env: 完整逻辑组网的名称部分；须与 ``logic_constraint`` 成对。
+            logic_constraint: 完整逻辑组网的约束部分。
             options: 可选开关（目前 ``debug_mode``）。
 
         返回:

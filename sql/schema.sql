@@ -1,5 +1,10 @@
--- 业务表。新环境执行：python -m work_agent init-db
--- LangGraph checkpoint 三张表由 PostgresSaver.setup() 在同一条 CLI 里创建，不写在这里。
+-- 业务表。生产环境由部署迁移脚本先升级，再启动 API。
+-- LangGraph checkpoint 表仍由 PostgresSaver.setup() 创建。
+
+CREATE TABLE IF NOT EXISTS schema_migrations (
+    version TEXT PRIMARY KEY,
+    applied_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
 
 CREATE TABLE IF NOT EXISTS pipelines (
     pipeline_id TEXT PRIMARY KEY,
@@ -14,7 +19,6 @@ CREATE TABLE IF NOT EXISTS pipelines (
     user_id TEXT NOT NULL DEFAULT ''
 );
 
--- 身份接线前留下的空 user_id，归到 CLI 未配工号时的默认身份。幂等。
 UPDATE pipelines SET user_id = 'local-dev' WHERE user_id = '';
 
 CREATE TABLE IF NOT EXISTS user_config (
@@ -23,21 +27,38 @@ CREATE TABLE IF NOT EXISTS user_config (
     updated_at TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS ci_cases (
-    case_path TEXT PRIMARY KEY,
-    logic_env TEXT NOT NULL DEFAULT '',
-    logic_constraint TEXT NOT NULL DEFAULT '',
-    version TEXT NOT NULL DEFAULT ''
+CREATE TABLE IF NOT EXISTS users (
+    id TEXT PRIMARY KEY CHECK (id ~ '^[a-z][0-9]{8}$'),
+    cn_name TEXT NOT NULL CHECK (btrim(cn_name) <> ''),
+    email TEXT NOT NULL CHECK (btrim(email) <> '')
 );
 
--- 逻辑组网目录：校验白名单 + HITL 候选。种子由 init-db 从 config/logic_topologies.csv upsert。
+CREATE UNIQUE INDEX IF NOT EXISTS users_email_lower_uq ON users (lower(email));
+
 CREATE TABLE IF NOT EXISTS logic_topologies (
-    logic_env TEXT NOT NULL,
-    logic_constraint TEXT NOT NULL,
-    bbh_count INTEGER NOT NULL,
-    bbl_count INTEGER NOT NULL,
-    bbh_board TEXT NOT NULL DEFAULT '',
-    bbl_board TEXT NOT NULL DEFAULT '',
-    aliases TEXT NOT NULL DEFAULT '',
-    PRIMARY KEY (logic_env, logic_constraint)
+    id BIGSERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    constraint_value TEXT NOT NULL,
+    config JSONB NOT NULL DEFAULT '{"boards": []}'::jsonb,
+    aliases TEXT[] NOT NULL DEFAULT '{}',
+    UNIQUE (name, constraint_value),
+    CHECK (btrim(name) <> ''),
+    CHECK (btrim(constraint_value) <> ''),
+    CHECK (jsonb_typeof(config) = 'object'),
+    CHECK (jsonb_typeof(config->'boards') = 'array')
+);
+
+CREATE TABLE IF NOT EXISTS capacity_topology_mappings (
+    id BIGSERIAL PRIMARY KEY,
+    capacity_ids TEXT[] NOT NULL,
+    logic_topology_id BIGINT NOT NULL REFERENCES logic_topologies(id),
+    UNIQUE (capacity_ids, logic_topology_id),
+    CHECK (cardinality(capacity_ids) > 0)
+);
+
+CREATE TABLE IF NOT EXISTS ci_cases (
+    case_name TEXT PRIMARY KEY,
+    physical_topology TEXT NOT NULL DEFAULT '',
+    logic_topology_id BIGINT REFERENCES logic_topologies(id),
+    owner TEXT NOT NULL DEFAULT ''
 );

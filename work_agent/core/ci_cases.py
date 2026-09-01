@@ -1,62 +1,64 @@
-"""
-CI 用例目录镜像：按用例路径查逻辑组网 / 约束 / 版本。
-
-只走 Postgres。表由 ``python -m work_agent init-db`` 创建，运行时不建表。
-本模块只提供查询，不负责从公司 CI 灌数。
-
-``lookup_ci_case(case_path)`` 是给 ``exec_flow`` 用的窄入口：命中返回记录，
-未命中返回 ``None``，由调用方按「口头 > CI 表 > version_space > HITL」补参。
-"""
+"""CI 用例目录：用例默认环境和负责人。"""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 
 from work_agent.core.db import get_pool
+from work_agent.core.logic_topologies import LogicTopologyRecord, record_from_row
 
 
 @dataclass(frozen=True)
 class CiCaseRecord:
-    """CI 表里的一条用例目录记录。"""
+    case_name: str
+    physical_topology: str = ""
+    logic_topology: LogicTopologyRecord | None = None
+    owner: str = ""
 
-    case_path: str
-    logic_env: str
-    logic_constraint: str
-    version: str
+    @property
+    def case_path(self) -> str:
+        return self.case_name
+
+    @property
+    def logic_env(self) -> str:
+        return self.logic_topology.name if self.logic_topology else ""
+
+    @property
+    def logic_constraint(self) -> str:
+        return self.logic_topology.constraint if self.logic_topology else ""
+
+    @property
+    def version(self) -> str:
+        """兼容旧调用；CI 不再提供版本。"""
+        return ""
 
     @property
     def logical_env_complete(self) -> bool:
-        """逻辑组网是否成对（环境 + 约束都有）。"""
-        return bool(self.logic_env.strip() and self.logic_constraint.strip())
+        return self.logic_topology is not None
 
 
-def lookup_ci_case(case_path: str) -> CiCaseRecord | None:
-    """
-    按用例路径精确查一条。
-
-    参数:
-        case_path: 用例路径（与 ``exec_params`` 里 ``case_names`` 同义）。
-
-    返回:
-        命中返回 ``CiCaseRecord``；空路径或未命中返回 ``None``。
-    """
-    path = (case_path or "").strip()
-    if not path:
+def lookup_ci_case(case_name: str) -> CiCaseRecord | None:
+    name = (case_name or "").strip()
+    if not name:
         return None
     with get_pool().connection() as conn:
         row = conn.execute(
             """
-            SELECT case_path, logic_env, logic_constraint, version
-            FROM ci_cases
-            WHERE case_path=%s
+            SELECT c.case_name, c.physical_topology, c.owner,
+                   lt.id, lt.name, lt.constraint_value AS topology_constraint,
+                   lt.config, lt.aliases
+            FROM ci_cases AS c
+            LEFT JOIN logic_topologies AS lt ON lt.id=c.logic_topology_id
+            WHERE c.case_name=%s
             """,
-            (path,),
+            (name,),
         ).fetchone()
     if not row:
         return None
+    topology = record_from_row(row) if row["id"] is not None else None
     return CiCaseRecord(
-        case_path=row["case_path"],
-        logic_env=row["logic_env"] or "",
-        logic_constraint=row["logic_constraint"] or "",
-        version=row["version"] or "",
+        case_name=row["case_name"],
+        physical_topology=row["physical_topology"] or "",
+        logic_topology=topology,
+        owner=row["owner"] or "",
     )

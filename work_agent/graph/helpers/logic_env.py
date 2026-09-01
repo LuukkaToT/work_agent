@@ -138,6 +138,8 @@ def apply_logic_catalog(
     parsed: TopologyUtteranceOut | None = None
     need_parse = False
     for plan in plans:
+        if plan.get("capacity_ids"):
+            continue
         kind = plan.get("env_kind") or _classify_env(str(plan.get("env") or ""))
         env = str(plan.get("env") or "").strip()
         constraint = str(plan.get("logic_constraint") or "").strip()
@@ -152,6 +154,9 @@ def apply_logic_catalog(
 
     out: list[dict[str, Any]] = []
     for plan in plans:
+        if plan.get("capacity_ids"):
+            out.append(dict(plan))
+            continue
         out.append(_gate_one(plan, parsed=parsed, user_input=user_input))
     return out
 
@@ -244,10 +249,10 @@ def pick_logic_candidate(
                     str(choice.get("logic_constraint") or "").strip(),
                 )
         env = str(
-            reply.get("logic_env") or reply.get("env") or ""
+            reply.get("name") or reply.get("logic_env") or reply.get("env") or ""
         ).strip()
         constraint = str(
-            reply.get("logic_constraint") or reply.get("constraint") or ""
+            reply.get("constraint") or reply.get("logic_constraint") or ""
         ).strip()
         if env and constraint:
             return env, constraint
@@ -277,11 +282,15 @@ def format_logic_candidate_message(
     ]
     if candidates:
         for i, c in enumerate(candidates, 1):
-            lines.append(
-                f"  [{i}] {c.get('logic_env')} / {c.get('logic_constraint')}"
-                f"  ({c.get('bbh_count')}BBH+{c.get('bbl_count')}BBL"
-                f" BBH={c.get('bbh_board') or '?'} BBL={c.get('bbl_board') or '?'})"
+            display = c.get("display_name") or (
+                f"{c.get('name') or c.get('logic_env')},"
+                f"{c.get('constraint') or c.get('logic_constraint')}"
             )
+            boards = (c.get("config") or {}).get("boards") or []
+            board_text = ", ".join(
+                f"{b.get('count')}x{b.get('type')}/{b.get('model')}" for b in boards
+            )
+            lines.append(f"  [{i}] {display}" + (f"（{board_text}）" if board_text else ""))
     else:
         lines.append("目录中没有符合特征的条目，请直接给出规范逻辑组网或物理 IP。")
     return "\n".join(lines)

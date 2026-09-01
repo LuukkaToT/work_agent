@@ -41,3 +41,12 @@ def test_find_candidates_by_alias_text(pg_env):
     recs = find_logic_topology_candidates(text="2BBH+1BBL")
     assert recs
     assert all(r.logic_env == "BESA_SDV_2BBH_1BBL" for r in recs)
+
+
+def test_json_board_config_supports_ai(pg_env):
+    rec = lookup_logic_topology("BESA_NR_SDV_BBH_BBL_AI", "H+G")
+    assert rec is not None
+    assert rec.board_count("BBH") == 1
+    assert rec.board_count("BBL") == 1
+    assert rec.board_count("AI") == 1
+    assert rec.display_name == "BESA_NR_SDV_BBH_BBL_AI,H+G"

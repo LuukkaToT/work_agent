@@ -15,12 +15,14 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.types import interrupt
 from pydantic import BaseModel, Field
 
+from work_agent.core.capacity_mappings import extract_capacity_ids, normalize_capacity_ids
 from work_agent.core.ci_cases import lookup_ci_case
 from work_agent.core.config import get_settings
 from work_agent.core.ledger import get_ledger
 from work_agent.core.llm import get_fast_model
 from work_agent.core.user_config import get_debug_mode, get_version_space
 from work_agent.graph.helpers.context import conversation_context
+from work_agent.graph.helpers.capacity_env import apply_capacity_catalog
 from work_agent.graph.helpers.logic_env import apply_logic_catalog
 from work_agent.graph.helpers.sheet_plans import (
     apply_column_mapping,
@@ -47,6 +49,10 @@ class ExecPlanOut(BaseModel):
     physical_env: Optional[str] = Field(
         default=None,
         description="物理组网 IP，如 7.223.50.60；没说则 null",
+    )
+    capacity_ids: list[str] = Field(
+        default_factory=list,
+        description="容量 ID 列表，如 ['0x1500c'] 或 ['0x15109c', '0x10108d']",
     )
     logic_env: Optional[str] = Field(
         default=None,
@@ -110,6 +116,7 @@ def _plan_dict(
     version: str,
     env: str,
     logic_constraint: str = "",
+    capacity_ids: list[str] | tuple[str, ...] | None = None,
 ) -> dict[str, Any]:
     """把计划字段归一成 dict，并计算 missing / env_kind。
 
@@ -135,12 +142,20 @@ def _plan_dict(
         missing.append("env")
     if version not in ALLOWED_VERSIONS:
         missing.append("version")
+    normalized_capacity_ids = (
+        list(normalize_capacity_ids(capacity_ids)) if capacity_ids else []
+    )
+    logic_topology = None
+    if env_kind == "logical" and env_complete:
+        logic_topology = {"name": env, "constraint": logic_constraint}
     return {
         "case_names": list(case_names),
         "version": version,
         "env": env,
         "env_kind": env_kind,
         "logic_constraint": logic_constraint,
+        "logic_topology": logic_topology,
+        "capacity_ids": normalized_capacity_ids,
         "missing": missing,
     }
 
@@ -169,18 +184,14 @@ def _spoken_env_from_item(item: ExecPlanOut) -> tuple[str, str]:
 
 def _resolve_version(
     spoken: str,
-    ci_version: str,
     version_space: str | None,
 ) -> str:
-    """口头 version → CI version → version_space。非法口头值不覆盖。"""
+    """口头 version → version_space。CI 用例表不再保存版本。"""
     spoken_norm = _normalize_version(spoken)
     if spoken_norm in ALLOWED_VERSIONS:
         return spoken_norm
     if spoken_norm:
         return spoken_norm
-    ci_norm = _normalize_version(ci_version)
-    if ci_norm in ALLOWED_VERSIONS:
-        return ci_norm
     space = (version_space or "").strip()
     if space in ALLOWED_VERSIONS:
         return space
@@ -192,8 +203,9 @@ def _resolve_env(
     spoken_constraint: str,
     ci_logic_env: str,
     ci_constraint: str,
+    ci_physical_env: str = "",
 ) -> tuple[str, str]:
-    """口头物理 IP 或完整逻辑组网优先；否则用 CI 的逻辑组网+约束。"""
+    """显式环境优先；缺省时 CI 逻辑组网优先、物理组网兜底。"""
     spoken_env = (spoken_env or "").strip()
     spoken_constraint = (spoken_constraint or "").strip()
     kind = _classify_env(spoken_env)
@@ -211,6 +223,9 @@ def _resolve_env(
     ci_c = (ci_constraint or "").strip()
     if ci_env:
         return ci_env, ci_c
+    ci_physical = (ci_physical_env or "").strip()
+    if _classify_env(ci_physical) == "physical":
+        return ci_physical, ""
     return "", ""
 
 
@@ -220,12 +235,13 @@ def _fill_plans_from_ci_and_config(
     user_id: str,
 ) -> list[dict[str, Any]]:
     """
-    按用例路径补 version / 环境，再按 (version, env_kind, env, constraint) 重分组。
+    按用例名补环境、按用户配置补版本，再按计划参数重分组。
 
-    优先级：口头 → CI 表 → user_config.version_space（仅 version）。
+    显式环境优先；缺省时 CI 逻辑组网优先、CI 物理组网兜底。
+    版本不读 CI，只按口头 → user_config.version_space。
     """
     version_space = get_version_space(user_id)
-    groups: dict[tuple[str, str, str, str], list[str]] = {}
+    groups: dict[tuple[str, str, str, str, tuple[str, ...]], list[str]] = {}
     empty_slots: list[dict[str, Any]] = []
 
     for plan in plans:
@@ -233,11 +249,12 @@ def _fill_plans_from_ci_and_config(
         spoken_version = str(plan.get("version") or "")
         spoken_env = str(plan.get("env") or "").strip()
         spoken_constraint = str(plan.get("logic_constraint") or "").strip()
+        capacity_ids = tuple(plan.get("capacity_ids") or ())
 
         if not names:
-            version = _resolve_version(spoken_version, "", version_space)
-            env, constraint = _resolve_env(
-                spoken_env, spoken_constraint, "", ""
+            version = _resolve_version(spoken_version, version_space)
+            env, constraint = ("", "") if capacity_ids else _resolve_env(
+                spoken_env, spoken_constraint, "", "", ""
             )
             empty_slots.append(
                 _plan_dict(
@@ -245,20 +262,21 @@ def _fill_plans_from_ci_and_config(
                     version=version,
                     env=env,
                     logic_constraint=constraint,
+                    capacity_ids=capacity_ids,
                 )
             )
             continue
 
         for name in names:
             rec = lookup_ci_case(name)
-            ci_ver = rec.version if rec else ""
             ci_env = rec.logic_env if rec else ""
             ci_con = rec.logic_constraint if rec else ""
-            version = _resolve_version(spoken_version, ci_ver, version_space)
-            env, constraint = _resolve_env(
-                spoken_env, spoken_constraint, ci_env, ci_con
+            ci_physical = rec.physical_topology if rec else ""
+            version = _resolve_version(spoken_version, version_space)
+            env, constraint = ("", "") if capacity_ids else _resolve_env(
+                spoken_env, spoken_constraint, ci_env, ci_con, ci_physical
             )
-            key = (version, env, constraint, _classify_env(env))
+            key = (version, env, constraint, _classify_env(env), capacity_ids)
             groups.setdefault(key, []).append(name)
 
     filled = [
@@ -267,17 +285,19 @@ def _fill_plans_from_ci_and_config(
             version=version,
             env=env,
             logic_constraint=constraint,
+            capacity_ids=capacity_ids,
         )
-        for (version, env, constraint, _kind), case_names in groups.items()
+        for (version, env, constraint, _kind, capacity_ids), case_names in groups.items()
     ]
     return filled + empty_slots
 
 
-def _spoken_env_version(plans: list[dict]) -> tuple[str, str, str]:
-    """从口头计划里抽出第一份非空 env / version / logic_constraint。"""
+def _spoken_env_version(plans: list[dict]) -> tuple[str, str, str, list[str]]:
+    """从口头计划里抽出第一份非空环境、版本、约束和容量 ID。"""
     env = ""
     version = ""
     constraint = ""
+    capacity_ids: list[str] = []
     for p in plans:
         if not env and p.get("env"):
             env = str(p.get("env") or "").strip()
@@ -285,7 +305,9 @@ def _spoken_env_version(plans: list[dict]) -> tuple[str, str, str]:
             version = _normalize_version(str(p.get("version") or ""))
         if not constraint and p.get("logic_constraint"):
             constraint = str(p.get("logic_constraint") or "").strip()
-    return env, version, constraint
+        if not capacity_ids and p.get("capacity_ids"):
+            capacity_ids = list(p.get("capacity_ids") or [])
+    return env, version, constraint, capacity_ids
 
 
 def _resolve_sheet_plans(
@@ -374,8 +396,8 @@ def exec_params(state: Mapping[str, Any]) -> dict:
     从用户话抽出执行计划列表与 exec_mode；可走 Excel 读用例。
 
     参数优先级：
-    - version：口头 → CI 表 → user_config.version_space → 仍空则 ask_missing
-    - 环境：口头物理 IP 或完整逻辑组网 → CI 表逻辑组网+约束 → 仍缺则 ask_missing
+    - version：口头 → user_config.version_space → 仍空则 ask_missing
+    - 环境：口头物理 IP / 容量 ID / 完整逻辑组网 → CI 表逻辑组网 → CI 物理组网 → 仍缺则 ask_missing
     - exec_mode：默认 create_and_start
     - sheet_path：有则读表组装 plans（用例名不经模型手抄）
 
@@ -405,6 +427,7 @@ def exec_params(state: Mapping[str, Any]) -> dict:
                     "按原文提取，不要截断；若用例来自表格则 case_names 可为空列表。"
                     "版本只能是 27B / 27A / 26B / 26A；本轮没明确说返回 null。"
                     "物理组网 IP（如 7.223.50.60）填 physical_env；没说则 null。"
+                    "容量 ID 形如 0x1500c；一个或多个都原样放入 capacity_ids。"
                     "逻辑组网（如 3BBL_86_1BBL86）填 logic_env，配套约束（如 85+86）"
                     "填 logic_constraint；没说则 null。物理 IP 和逻辑组网不要填进同一个字段。"
                     "若用户给了 Excel/CSV 路径，填写 sheet_path（尽量保留原路径）。"
@@ -419,16 +442,33 @@ def exec_params(state: Mapping[str, Any]) -> dict:
         ]
     )
 
+    detected_capacity_ids = list(extract_capacity_ids(user_input))
     spoken_plans: list[dict] = []
     for item in parsed.plans or []:
         version = _normalize_version(item.version or "")
         env, constraint = _spoken_env_from_item(item)
+        raw_capacity_ids = item.capacity_ids or detected_capacity_ids
+        try:
+            item_capacity_ids = (
+                list(normalize_capacity_ids(raw_capacity_ids))
+                if raw_capacity_ids
+                else []
+            )
+        except ValueError:
+            # 模型提议仅作参考；用户原文中的十六进制容量 ID 由代码确定性提取。
+            item_capacity_ids = list(detected_capacity_ids)
+        # 显式物理组网优先；否则容量 ID 优先于直接逻辑组网。
+        if _classify_env(env) == "physical":
+            item_capacity_ids = []
+        elif item_capacity_ids:
+            env, constraint = "", ""
         spoken_plans.append(
             {
                 "case_names": list(item.case_names or []),
                 "version": version,
                 "env": env,
                 "logic_constraint": constraint,
+                "capacity_ids": item_capacity_ids,
             }
         )
 
@@ -437,7 +477,7 @@ def exec_params(state: Mapping[str, Any]) -> dict:
     sheet_audit: dict | None = None
 
     if sheet_path:
-        spoken_env, spoken_version, spoken_constraint = _spoken_env_version(
+        spoken_env, spoken_version, spoken_constraint, spoken_capacity_ids = _spoken_env_version(
             spoken_plans
         )
         try:
@@ -456,6 +496,7 @@ def exec_params(state: Mapping[str, Any]) -> dict:
                         version="",
                         env=spoken_env,
                         logic_constraint=spoken_constraint,
+                        capacity_ids=spoken_capacity_ids,
                     )
                 ],
                 "exec_mode": parsed.exec_mode or "create_and_start",
@@ -484,6 +525,7 @@ def exec_params(state: Mapping[str, Any]) -> dict:
                 "version": _normalize_version(str(p.get("version") or "")),
                 "env": str(p.get("env") or "").strip(),
                 "logic_constraint": str(p.get("logic_constraint") or "").strip(),
+                "capacity_ids": list(spoken_capacity_ids),
             }
             for p in raw_plans
         ]
@@ -494,6 +536,7 @@ def exec_params(state: Mapping[str, Any]) -> dict:
                     "version": spoken_version,
                     "env": spoken_env,
                     "logic_constraint": "",
+                    "capacity_ids": list(spoken_capacity_ids),
                 }
             ]
     else:
@@ -505,12 +548,14 @@ def exec_params(state: Mapping[str, Any]) -> dict:
                     "version": "",
                     "env": "",
                     "logic_constraint": "",
+                    "capacity_ids": list(detected_capacity_ids),
                 }
             ]
 
     user_id = state.get("user_id") or ""
     plans = _fill_plans_from_ci_and_config(plans, user_id=user_id)
     plans = apply_logic_catalog(plans, user_input=user_input)
+    plans = apply_capacity_catalog(plans)
 
     exec_mode: ExecMode = parsed.exec_mode or "create_and_start"
     params: dict[str, Any] = {
@@ -577,13 +622,19 @@ def _submit_one_pipeline(
     create 失败不盲目重试，防双建。
     """
     local_id = f"local-{uuid.uuid4().hex[:8]}"
+    display_env = f"{env},{logic_constraint}" if env_kind == "logical" else env
     entry: dict[str, Any] = {
         "pipeline_id": local_id,
         "case_names": case_names,
         "version": version,
-        "env": env,
+        "env": display_env,
         "env_kind": env_kind,
         "logic_constraint": logic_constraint,
+        "logic_topology": (
+            {"name": env, "constraint": logic_constraint}
+            if env_kind == "logical"
+            else None
+        ),
         "status": "pending",
         "error": "",
         "notes": [],
@@ -594,7 +645,7 @@ def _submit_one_pipeline(
         task_id=task_id,
         case_names=case_names,
         version=version,
-        env=env,
+        env=display_env,
         status="creating",
         user_id=user_id,
     )

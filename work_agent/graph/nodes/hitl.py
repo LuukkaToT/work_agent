@@ -18,6 +18,13 @@ from typing import Any, Mapping
 
 from langgraph.types import interrupt
 
+from work_agent.core.capacity_mappings import lookup_capacity_topologies
+from work_agent.graph.helpers.capacity_env import (
+    format_capacity_group_message,
+    format_logic_topology_multi_message,
+    pick_capacity_group,
+    pick_logic_topologies,
+)
 from work_agent.graph.helpers.logic_env import (
     apply_logic_catalog,
     format_logic_candidate_message,
@@ -50,6 +57,7 @@ def _parse_env_reply(reply: Any) -> tuple[str, str]:
             return physical, ""
         env = str(
             reply.get("env")
+            or reply.get("name")
             or reply.get("logic_env")
             or reply.get("topology")
             or ""
@@ -119,11 +127,90 @@ def _parse_version(reply: Any) -> str:
     return str(reply or "").strip().upper()
 
 
+def _expand_capacity_selections(plans: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """完成“相似容量组单选 → 映射逻辑组网多选”，并把多选展开成计划。"""
+    expanded: list[dict[str, Any]] = []
+    for plan_index, original in enumerate(plans):
+        plan = dict(original)
+        group_candidates = list(plan.get("capacity_group_candidates") or [])
+        if group_candidates:
+            selected_group = None
+            while selected_group is None:
+                reply = interrupt(
+                    {
+                        "type": "pick_capacity_group",
+                        "message": format_capacity_group_message(group_candidates),
+                        "plan_index": plan_index,
+                        "current": plan,
+                        "candidates": group_candidates,
+                        "multiple": False,
+                    }
+                )
+                selected_group = pick_capacity_group(plan, reply)
+            plan["capacity_ids"] = list(selected_group)
+            plan["capacity_match"] = "fuzzy_confirmed"
+            plan["logic_candidates"] = [
+                record.as_choice()
+                for record in lookup_capacity_topologies(selected_group)
+            ]
+            plan.pop("capacity_group_candidates", None)
+
+        logic_candidates = list(plan.get("logic_candidates") or [])
+        if plan.get("capacity_ids") and logic_candidates:
+            selected: list[tuple[str, str]] = []
+            while not selected:
+                reply = interrupt(
+                    {
+                        "type": "pick_logic_topologies",
+                        "message": format_logic_topology_multi_message(logic_candidates),
+                        "plan_index": plan_index,
+                        "current": plan,
+                        "candidates": logic_candidates,
+                        "multiple": True,
+                    }
+                )
+                selected = pick_logic_topologies(plan, reply)
+            for name, constraint in selected:
+                item = _plan_dict(
+                    case_names=list(plan.get("case_names") or []),
+                    version=str(plan.get("version") or ""),
+                    env=name,
+                    logic_constraint=constraint,
+                    capacity_ids=list(plan.get("capacity_ids") or []),
+                )
+                selected_choice = next(
+                    (
+                        choice
+                        for choice in logic_candidates
+                        if str(choice.get("name") or choice.get("logic_env") or "").strip()
+                        == name
+                        and str(
+                            choice.get("constraint")
+                            or choice.get("logic_constraint")
+                            or ""
+                        ).strip()
+                        == constraint
+                    ),
+                    {},
+                )
+                item["logic_topology"] = {
+                    "id": selected_choice.get("id"),
+                    "name": name,
+                    "constraint": constraint,
+                    "config": selected_choice.get("config") or {"boards": []},
+                }
+                item["capacity_match"] = plan.get("capacity_match")
+                expanded.append(item)
+            continue
+        expanded.append(plan)
+    return expanded
+
+
 def ask_missing(state: Mapping[str, Any]) -> dict:
     """
     按计划逐条补缺参（用例/版本/环境）。
 
-    环境可填物理 IP，或完整逻辑组网（逻辑环境 + 约束）。
+    环境可填物理 IP，或完整逻辑组网（名称 + 约束）。
 
     参数:
         state: 读 ``exec_params.plans``（可缺省为空计划）。
@@ -135,6 +222,7 @@ def ask_missing(state: Mapping[str, Any]) -> dict:
     plans = [dict(p) for p in (params.get("plans") or [])]
     if not plans:
         plans = [_plan_dict(case_names=[], version="", env="")]
+    plans = _expand_capacity_selections(plans)
 
     for idx, plan in enumerate(plans):
         while True:
@@ -193,7 +281,7 @@ def ask_missing(state: Mapping[str, Any]) -> dict:
                     msg = (
                         f"第 {idx + 1}/{len(plans)} 条计划缺少环境。"
                         "请提供物理组网 IP（如 7.223.50.60），"
-                        "或完整逻辑组网（逻辑环境 + 约束，"
+                        "或完整逻辑组网（名称 + 约束，"
                         "例如 3BBL_86_1BBL86 / 85+86）"
                     )
                     interrupt_type = "ask_env"
@@ -213,13 +301,21 @@ def ask_missing(state: Mapping[str, Any]) -> dict:
                     env, constraint = _apply_env_reply(plan, reply)
                 plan["env"] = env
                 plan["logic_constraint"] = constraint
+                if env:
+                    # 用户手工改填物理/直接逻辑组网时，放弃未命中的容量组。
+                    plan["capacity_ids"] = []
 
+            selected_topology = plan.get("logic_topology")
             rebuilt = _plan_dict(
                 case_names=list(plan.get("case_names") or []),
                 version=str(plan.get("version") or ""),
                 env=str(plan.get("env") or ""),
                 logic_constraint=str(plan.get("logic_constraint") or ""),
+                capacity_ids=list(plan.get("capacity_ids") or []),
             )
+            if plan.get("capacity_ids") and isinstance(selected_topology, dict):
+                # 补用例/版本时保留容量映射选项携带的目录 id 与 JSON config。
+                rebuilt["logic_topology"] = dict(selected_topology)
             gated = apply_logic_catalog([rebuilt], user_input="")[0]
             plan.update(gated)
             if plan.get("missing"):

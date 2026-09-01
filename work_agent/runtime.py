@@ -22,7 +22,7 @@ from work_agent.graph.helpers.progress import reset_progress_hook, set_progress_
 from work_agent.graph.main_graph import build_graph
 
 # ask 收到的是 interrupt 的原始载荷列表，怎么展示交给调用方
-AskFn = Callable[[list[Any]], str]
+AskFn = Callable[[list[Any]], Any]
 # 进度事件：node:intake / tool:fetch_logs / status:waiting_input
 EventFn = Callable[[str], None]
 
@@ -347,7 +347,7 @@ def run_turn_step(
 
 def resume_step(
     thread_id: str,
-    answer: str,
+    answer: Any,
     *,
     on_event: EventFn | None = None,
 ) -> dict[str, Any] | None:
@@ -363,6 +363,13 @@ def resume_step(
         图结果 dict（同 ``run_turn_step``）；该 thread 当前没有 pending interrupt
         时返回 None（调用方应回 404，而不是当成正常结果处理）。
     """
+    if answer is None:
+        return None
+    if isinstance(answer, str) and not answer.strip():
+        return None
+    if isinstance(answer, (dict, list)) and not answer:
+        return None
+
     payloads = get_pending_interrupts(thread_id)
     if not payloads:
         return None
@@ -371,8 +378,9 @@ def resume_step(
     config = make_thread_config(thread_id)
     token = set_progress_hook(on_event)
     try:
+        normalized_answer = answer.strip() if isinstance(answer, str) else answer
         result = _stream_graph(
-            app, Command(resume=answer.strip()), config=config, on_event=on_event
+            app, Command(resume=normalized_answer), config=config, on_event=on_event
         )
     finally:
         reset_progress_hook(token)

@@ -1,0 +1,44 @@
+[
+  {
+    "name": "BESA_SDV_2BBH_1BBL",
+    "constraint": "1G_2A",
+    "config": {"boards": [{"type": "BBH", "model": "G", "count": 2}, {"type": "BBL", "model": "A", "count": 1}]},
+    "aliases": ["2BBH+1BBL", "2BBH1BBL"]
+  },
+  {
+    "name": "BESA_SDV_2BBH_1BBL",
+    "constraint": "2G_1A",
+    "config": {"boards": [{"type": "BBH", "model": "G", "count": 2}, {"type": "BBL", "model": "A", "count": 1}]},
+    "aliases": ["2BBH+1BBL", "2BBH1BBL"]
+  },
+  {
+    "name": "BESA_SDV_1BBH_1BBL",
+    "constraint": "1G_1A",
+    "config": {"boards": [{"type": "BBH", "model": "G", "count": 1}, {"type": "BBL", "model": "A", "count": 1}]},
+    "aliases": ["1BBH+1BBL", "1BBH1BBL"]
+  },
+  {
+    "name": "BESA_SDV_3BBH_1BBL",
+    "constraint": "3G_1A",
+    "config": {"boards": [{"type": "BBH", "model": "G", "count": 3}, {"type": "BBL", "model": "A", "count": 1}]},
+    "aliases": ["3BBH+1BBL", "3BBH1BBL"]
+  },
+  {
+    "name": "BESA_SDV_2BBH_2BBL",
+    "constraint": "2A_2G",
+    "config": {"boards": [{"type": "BBH", "model": "A", "count": 2}, {"type": "BBL", "model": "G", "count": 2}]},
+    "aliases": ["2BBH+2BBL", "2BBH2BBL"]
+  },
+  {
+    "name": "BESA_NR_SDV_BBH_3BBL",
+    "constraint": "H+SLG",
+    "config": {"boards": [{"type": "BBH", "model": "H", "count": 1}, {"type": "BBL", "model": "SLG", "count": 3}]},
+    "aliases": ["BBH+3BBL"]
+  },
+  {
+    "name": "BESA_NR_SDV_BBH_BBL_AI",
+    "constraint": "H+G",
+    "config": {"boards": [{"type": "BBH", "model": "H", "count": 1}, {"type": "BBL", "model": "G", "count": 1}, {"type": "AI", "model": "AI", "count": 1}]},
+    "aliases": ["BBH+BBL+AI"]
+  }
+]

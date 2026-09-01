@@ -18,6 +18,7 @@ FastAPI 网关：把 runtime 的两阶段 HITL 包成 HTTP 接口。
 
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 from typing import Any
 
 from fastapi import Depends, FastAPI, HTTPException
@@ -34,6 +35,7 @@ from work_agent.api.schemas import (
     UserConfigView,
 )
 from work_agent.core.sessions import list_sessions
+from work_agent.core.db_init import verify_schema_and_seed
 from work_agent.core.user_config import (
     get_debug_mode,
     get_version_space,
@@ -41,7 +43,13 @@ from work_agent.core.user_config import (
     set_version_space,
 )
 
-app = FastAPI(title="work_agent gateway", version="0.1.0")
+@asynccontextmanager
+async def _lifespan(_: FastAPI):
+    verify_schema_and_seed()
+    yield
+
+
+app = FastAPI(title="work_agent gateway", version="0.2.0", lifespan=_lifespan)
 
 
 def _thread_prefix(user_id: str) -> str:

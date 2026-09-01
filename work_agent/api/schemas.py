@@ -21,7 +21,18 @@ class TurnRequest(BaseModel):
 class ResumeRequest(BaseModel):
     """``POST /turns/{thread_id}/resume`` 请求体。"""
 
-    answer: str = Field(..., min_length=1, description="对上一个 interrupt 的回答")
+    answer: str | dict[str, Any] | list[int] = Field(
+        ..., description="对上一个 interrupt 的文本、单选或多选回答"
+    )
+
+    @field_validator("answer")
+    @classmethod
+    def answer_must_not_be_empty(cls, value: object) -> object:
+        if isinstance(value, str) and not value.strip():
+            raise ValueError("answer 不能为空")
+        if isinstance(value, (dict, list)) and not value:
+            raise ValueError("answer 不能为空")
+        return value
 
 
 class TurnResponse(BaseModel):

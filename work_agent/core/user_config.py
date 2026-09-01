@@ -23,7 +23,7 @@ from typing import Any, Protocol
 
 from work_agent.core.db import get_pool
 
-# 与流水线 ``version`` / CI 表 ``version`` 同一套枚举；个人默认版本只允许这些值。
+# 与流水线 ``version`` 同一套枚举；CI 用例目录不再保存版本。
 VERSION_SPACES = frozenset({"27B", "27A", "26B", "26A"})
 
 

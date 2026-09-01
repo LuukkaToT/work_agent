@@ -76,7 +76,9 @@ workspace/
 
 ## 四、参数解析：物理 / 逻辑组网与优先级链
 
-执行计划的环境可以是 **物理组网 IP**（如 `7.223.50.60`），或 **目录内的完整逻辑组网**（`logic_env` + `logic_constraint`，如 `BESA_SDV_2BBH_1BBL` / `1G_2A`）。`exec_params` 抽完口头字段后，按用例路径查 CI 表补缺，再拿 Postgres `logic_topologies` 做成员校验。口头逻辑组网由快模型抽特征并提议规范名，**代码以表为准**：命中则写入 plan；未命中则按 BBH/BBL/板型筛候选，HITL 让用户点选。`PipelineTool.create` 环境二选一：`physical_env`，或 `logic_env` + `logic_constraint`。
+执行计划的环境可以由 **物理组网 IP**（如 `7.223.50.60`）、**容量 ID 组**（如单个 `0x1500c`，或一组 `0x15109c,0x10108d`），或 **目录内的完整逻辑组网**指定。一个“逻辑组网”是不可拆分的业务对象，由 `name + constraint` 共同标识，例如 `BESA_NR_SDV_BBH_3BBL,H+SLG`；BBH、BBL、AI 等板型及数量统一放在 `config.boards` JSON 中。底层 `PipelineTool.create` 为兼容平台接口，仍把这个对象拆成 `logic_env` 和 `logic_constraint` 两个参数传递。
+
+容量 ID 组先做无序、去重后的精确匹配。精确命中时把该组映射的全部逻辑组网交给用户多选；未命中时先按相似度列出容量 ID 组供单选，再展示所选容量组映射的全部逻辑组网供多选。每个被选中的逻辑组网展开成一条执行计划。直接输入完整逻辑组网仍然支持，并由 Postgres `logic_topologies` 校验；未命中时按 BBH/BBL/板型筛候选交给 HITL 点选。
 
 一次用户输入可拆成 **多条执行计划**：`(version, env_kind, env, logic_constraint)` 不同则各一次 `create`；同一组网多个用例合并为一条。`exec_mode`：`create_only`（只建不跑）或 `create_and_start`（默认，创建并启动）。
 
@@ -84,16 +86,17 @@ workspace/
 
 ```mermaid
 flowchart LR
-  A["1 本轮口头 version / 物理 IP / 逻辑组网"] --> B["2 CI 表 lookup_ci_case"]
-  B --> C["3 user_config.version_space 只补 version"]
-  C --> D["4 logic_topologies 校验；失败则候选 HITL"]
+  A["1 本轮口头 version / 物理 IP / 容量 ID / 完整逻辑组网"] --> B["2 容量组精确或相似匹配；逻辑组网多选"]
+  B --> C["3 无显式环境时：CI 逻辑组网优先，物理组网兜底"]
+  C --> D["4 user_config.version_space 只补 version"]
+  D --> E["5 logic_topologies 校验；失败则候选 HITL"]
 ```
 
 | 参数 | 缺失时行为 |
 |------|-----------|
 | `case_names` | 缺失则 interrupt 询问；agent **不预校验**用例名，流水线自己验证 |
-| `version` | 枚举 `27B/27A/26B/26A`；口头 → CI 表 → `version_space` → 仍空则 interrupt。非法口头值不覆盖 |
-| `env` | 口头物理 IP 或目录内完整逻辑组网 → CI 表逻辑组网+约束 → `logic_topologies` 校验。非法逻辑组网按特征列出候选 HITL 点选。`version_space` 不补环境 |
+| `version` | 枚举 `27B/27A/26B/26A`；口头 → `version_space` → 仍空则 interrupt。CI 用例目录不再提供版本 |
+| `env` | 显式物理 IP / 容量 ID / 完整逻辑组网优先；没有显式环境时，CI 逻辑组网优先、CI 物理组网兜底。容量 ID 走映射与多选，直接逻辑组网走目录校验；`version_space` 不补环境 |
 | `exec_mode` | 默认 `create_and_start`；用户说「只创建」则为 `create_only` |
 
 个人运行参数仍有一部分在 `config/profile.yaml`（轮询间隔、start 重试次数等）。默认版本不再写在 yaml 里，而是 `user_config.version_space`。跑错环境代价高，所以环境不允许用个人配置静默填充：口头和 CI 表都没有才 interrupt。`poll_*` 配置保留但执行链路已不再轮询；`create_retry_attempts` 控制 **start** 失败后的同 `pipeline_id` 重试次数（create 失败不盲目重试，防双建）。
@@ -245,11 +248,16 @@ checkpointer 只按 `thread_id` 存图状态。用户换会话再问「上次执
 
 ### 存储后端：Postgres + 显式 init-db
 
-`checkpointer`（`core/checkpoint.py`）、台账（`core/ledger.py`）和个人配置（`core/user_config.py`）只走 Postgres，共用 `core/db.py` 的连接池。生产连 `POSTGRES_DSN`，集成测试连 `POSTGRES_TEST_DSN`（必须是另一个 database）。表不在运行时创建：新环境先建空库，再跑 `python -m work_agent init-db`（测试库加 `--test`），脚本执行 `sql/schema.sql` 并调用一次 `PostgresSaver.setup()`。未配 DSN 时 `get_pool()` 直接报错，不再回落 SQLite。
+`checkpointer`（`core/checkpoint.py`）、台账（`core/ledger.py`）和个人配置（`core/user_config.py`）只走 Postgres，共用 `core/db.py` 的连接池。生产连 `POSTGRES_DSN`，集成测试连 `POSTGRES_TEST_DSN`（必须是另一个 database）。部署时必须先运行 `python -m scripts.migrate_database`：脚本按 `sql/migrations` 中的版本顺序升级业务表、应用最终 `sql/schema.sql`、幂等导入 JSON 目录种子，并调用一次 `PostgresSaver.setup()`。API 启动只检查最新迁移是否已应用并同步种子，不会替部署流程执行结构迁移。原有 `python -m work_agent init-db` 入口保留并复用相同迁移实现。未配 DSN 时 `get_pool()` 直接报错，不再回落 SQLite。
 
 `pipelines.user_id` 存的是工号字符串，不是（未来）用户表的 int 主键。查询方法（`get` / `latest` / `find_by_case` / `find_by_task` / `list_recent`）都支持可选的 `user_id` 过滤。身份接线前的空 `user_id` 由 `schema.sql` 里那条幂等 `UPDATE` 回填成 `core/identity.py` 的 `DEFAULT_USER_ID`（`local-dev`），不在每次构造 Ledger 时偷偷跑。
 
-个人配置表 `user_config` 的 `config` 列存 JSON blob（当前键：`debug_mode`、`version_space`）。`ci_cases` 是 CI 用例目录镜像（`case_path` PK + `logic_env` / `logic_constraint` / `version`），查询入口是 `core/ci_cases.py` 的 `lookup_ci_case`；本阶段只查不灌数。`logic_topologies` 是逻辑组网白名单（`(logic_env, logic_constraint)` PK + BBH/BBL 数量与板型），`init-db` 会从 `config/logic_topologies.csv` upsert 种子；运行时只认库。查询入口是 `core/logic_topologies.py`。
+个人配置表 `user_config` 的 `config` 列存 JSON blob（当前键：`debug_mode`、`version_space`）。业务目录表如下：
+
+- `users`：`id` 为规范化的小写工号（一个英文字母 + 8 位数字），另有 `cn_name`、唯一邮箱；本阶段只有 repository，没有用户 CRUD HTTP 接口，角色与权限表留到后续阶段。
+- `logic_topologies`：`id` 主键，`(name, constraint_value)` 唯一，`config` JSONB 保存 `boards` 数组，`aliases` 保存检索别名；种子来自 `config/logic_topologies.json`。
+- `capacity_topology_mappings`：`capacity_ids` 数组与 `logic_topology_id` 的多对多映射；种子来自 `config/capacity_topology_mappings.json`。
+- `ci_cases`：字段为 `case_name`、`physical_topology`、`logic_topology_id`、`owner`，不再保存版本；查询入口是 `lookup_ci_case(case_name)`。
 
 测试：凡读写台账 / 个人配置 / checkpoint 的用例都连 `POSTGRES_TEST_DSN`（未配置或不可达则 skip）；图节点、路由等不碰库的单测仍不连库。`tests/core/test_storage_backend.py` 断言空 DSN 抛错。
 
@@ -277,7 +285,7 @@ class PipelineTool(Protocol):
 
 Agent 侧命名纯净：`create` / `start` / `query`。`pipeline_id` **由服务端返回**。公司 SDK 放 `external/`，拼写怪异的公司函数名只在 `tools/real/` 做映射，不污染 Protocol。
 
-`create` 的环境参数二选一：`physical_env`（物理 IP），或 `logic_env` + `logic_constraint`（逻辑组网，由平台分配物理机）。两种都给或都缺则 `ValueError`。`options` 仍只收开关（目前 `debug_mode`）。`debug_mode` 不进图状态：前端 `GET/PATCH /users/me/config` 改偏好，`create_pipelines` 提交时按 `user_id` 点查 `get_debug_mode`（未设置过当 `False`）再塞进 `options`。计划上的 `env_kind` 决定走哪条模式；台账 `env` 列仍存展示字符串（IP 或 logic_env），不为此改表。Mock 把模式记在 `PipelineHandle.env_kind` / `logic_constraint`，不模拟公司 API 对两种模式的行为差异。
+`create` 的环境参数二选一：`physical_env`（物理 IP），或完整逻辑组网。完整逻辑组网只在平台适配器边界拆成 `logic_env`（名称）与 `logic_constraint`（约束）；两种都给或都缺则 `ValueError`。`options` 仍只收开关（目前 `debug_mode`）。`debug_mode` 不进图状态：前端 `GET/PATCH /users/me/config` 改偏好，`create_pipelines` 提交时按 `user_id` 点查 `get_debug_mode`（未设置过当 `False`）再塞进 `options`。计划上的 `env_kind` 决定走哪条模式；台账 `env` 列存展示字符串：物理模式存 IP，逻辑模式存 `name,constraint`。Mock 把模式记在 `PipelineHandle.env_kind` / `logic_constraint`，不模拟公司 API 对两种模式的行为差异。
 
 `RealPipelineTool` 已接好真实执行流骨架：校验环境 → 加载平台默认参数 → 拼 create 大 JSON → 鉴权拿 token → HTTP create/start/query → 把响应映射回 `PipelineHandle` / `PipelineResult`。请求体是模拟 schema（对照 `external/pipeline_create.sample.json`）；明天换真实 API 时改 `pipeline_payload.py` / `pipeline_client.py` 里带 `COMPANY_REPLACE` 的函数，以及 `.env` 的 `PIPELINE_API_*`，图和 Protocol 不用动。
 
@@ -476,7 +484,7 @@ CLI 的 `run_turn`/`resume_pending` 是阻塞的：遇到 `interrupt` 就在进�
 
 - `POST /turns`：body 给 `message` + 可选 `thread_id`；没有 interrupt 直接拿到 `status=done` 的最终结果，有 interrupt 拿到 `status=waiting_input` + 原始载荷。
 - `GET /turns/{thread_id}`：纯查询当前状态，不触发任何执行——客户端刷新页面/换设备后，原来那次 POST 响应里的载荷丢了，靠这个端点重新问一遍「这个会话现在是什么状态」，不用只靠前端自己缓存。底层是 `runtime.get_turn_status`，直接读 checkpointer 的 `get_state()`，不重新 invoke 图。
-- `POST /turns/{thread_id}/resume`：body 给 `answer`，续跑一步；可能再拿到下一个 interrupt，也可能拿到最终结果；该会话没有 pending 时返回 404。
+- `POST /turns/{thread_id}/resume`：body 给 `answer`，续跑一步；`answer` 支持字符串、结构化对象或序号数组，以承载容量组单选和逻辑组网多选；可能再拿到下一个 interrupt，也可能拿到最终结果；该会话没有 pending 时返回 404。
 
 这和 CLI 用的图、checkpointer 是同一套，区别只在“谁来问 ask()”——CLI 里是终端 `input()`，HTTP 里是前端拿到 `waiting_input` 后自己渲染 UI，用户填完再发一次 `resume`。
 
@@ -492,7 +500,7 @@ CLI 的 `run_turn`/`resume_pending` 是阻塞的：遇到 `interrupt` 就在进�
 
 `state.py` 的 `user_id` 是会话级字段（`intake` 绝不重置，跟 `messages`/`dialogue_summary` 同类）：CLI/API 拿到工号后，`runtime.run_turn`/`run_turn_step` 把它和 `messages` 一起塞进每次 invoke 的 payload（`{"messages": [...], "user_id": user_id}`）——每轮都传、不依赖“只在第一轮写”，天然幂等。`resume_step`/`resume_pending` 续跑时不用再传：那一轮的 `user_id` 在 thread 创建时已经写进 checkpoint 了。
 
-个人偏好不进图状态。`debug_mode` 和 `version_space`（`27B/27A/26B/26A`，与流水线 version 同一枚举）存在 `user_config` 的 JSON blob 里，前端用 `GET/PATCH /users/me/config` 读写；未设置过的字段为 `null`，PATCH 只覆盖传入的键。`version_space` 是个人默认版本。CI 目录按用例路径点查 `lookup_ci_case(case_path)`。逻辑组网目录按 `(logic_env, logic_constraint)` 点查 `lookup_logic_topology`：快模型只提议参数，代码校验是否在表内；失败则按特征返回候选并 HITL 点选。`exec_params` 末尾按「口头 > CI 表 > `version_space`（仅 version）> 组网目录校验 > HITL」补参。`debug_mode` 真正生效的地方只有 `create_pipelines`：提交时按当前 `user_id` 点查 `get_debug_mode`（`None` 当 `False`），塞进 `tool.create(..., options={"debug_mode": ...})`。
+个人偏好不进图状态。`debug_mode` 和 `version_space`（`27B/27A/26B/26A`，与流水线 version 同一枚举）存在 `user_config` 的 JSON blob 里，前端用 `GET/PATCH /users/me/config` 读写；未设置过的字段为 `null`，PATCH 只覆盖传入的键。`version_space` 是个人默认版本。CI 目录按用例名点查 `lookup_ci_case(case_name)`，只补环境：逻辑组网优先，物理组网兜底。完整逻辑组网按 `(name, constraint)` 点查 `lookup_logic_topology`；快模型只提议参数，代码校验是否在表内，失败则按特征返回候选。容量 ID 按整个 ID 组查映射，精确命中或相似组确认后再由用户多选逻辑组网。`debug_mode` 真正生效的地方只有 `create_pipelines`：提交时按当前 `user_id` 点查 `get_debug_mode`（`None` 当 `False`），塞进 `tool.create(..., options={"debug_mode": ...})`。
 
 ### 并发：单进程内存锁，先够用
 

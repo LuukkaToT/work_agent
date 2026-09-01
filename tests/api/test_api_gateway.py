@@ -157,6 +157,23 @@ def test_resume_turn_success(monkeypatch):
     assert r.json()["status"] == "done"
 
 
+def test_resume_turn_accepts_structured_multi_select(monkeypatch):
+    seen = {}
+
+    def fake_resume(thread_id, answer):
+        seen["answer"] = answer
+        return {"_thread_id": thread_id, "reply": "done", "summary": {}}
+
+    monkeypatch.setattr(app_mod.runtime, "resume_step", fake_resume)
+    r = client.post(
+        "/turns/z00888363-abc123/resume",
+        json={"answer": {"indices": [1, 3]}},
+        headers=AUTH,
+    )
+    assert r.status_code == 200
+    assert seen["answer"] == {"indices": [1, 3]}
+
+
 def test_resume_turn_no_pending_returns_404(monkeypatch):
     monkeypatch.setattr(app_mod.runtime, "resume_step", lambda thread_id, answer: None)
 

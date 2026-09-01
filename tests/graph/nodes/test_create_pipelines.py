@@ -444,7 +444,11 @@ def test_create_pipelines_logical_mode_kwargs(monkeypatch):
     )
 
     assert out["summary"]["status"] == "submitted"
-    assert out["pipelines"][0]["env"] == "BESA_SDV_2BBH_1BBL"
+    assert out["pipelines"][0]["env"] == "BESA_SDV_2BBH_1BBL,1G_2A"
+    assert out["pipelines"][0]["logic_topology"] == {
+        "name": "BESA_SDV_2BBH_1BBL",
+        "constraint": "1G_2A",
+    }
     assert out["pipelines"][0]["env_kind"] == "logical"
     assert out["pipelines"][0]["logic_constraint"] == "1G_2A"
     assert tool.create_kwargs[0] == {
@@ -452,7 +456,7 @@ def test_create_pipelines_logical_mode_kwargs(monkeypatch):
         "logic_env": "BESA_SDV_2BBH_1BBL",
         "logic_constraint": "1G_2A",
     }
-    assert ledger.rows[0]["env"] == "BESA_SDV_2BBH_1BBL"
+    assert ledger.rows[0]["env"] == "BESA_SDV_2BBH_1BBL,1G_2A"
 
 
 def test_create_pipelines_physical_mode_kwargs(monkeypatch):

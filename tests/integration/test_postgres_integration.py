@@ -18,6 +18,7 @@ from langgraph.graph import END, START, StateGraph
 import work_agent.core.checkpoint as checkpoint_mod
 import work_agent.core.identity as identity_mod
 from work_agent.core.db_init import init_database
+from work_agent.core.db_init import latest_schema_version
 
 
 class _CounterState(TypedDict):
@@ -127,3 +128,22 @@ def test_init_db_backfills_legacy_empty_user_id(pg_pool, pg_ledger, pg_test_dsn)
         assert rec.user_id == identity_mod.DEFAULT_USER_ID
     finally:
         _cleanup_pipelines(pg_pool, [pid])
+
+
+def test_latest_business_schema_migration_is_recorded(pg_pool):
+    with pg_pool.connection() as conn:
+        row = conn.execute(
+            "SELECT 1 FROM schema_migrations WHERE version=%s",
+            (latest_schema_version(),),
+        ).fetchone()
+        columns = {
+            item["column_name"]
+            for item in conn.execute(
+                """
+                SELECT column_name FROM information_schema.columns
+                WHERE table_name='logic_topologies'
+                """
+            ).fetchall()
+        }
+    assert row is not None
+    assert {"id", "name", "constraint_value", "config", "aliases"} <= columns
