@@ -237,7 +237,7 @@ def test_get_config_requires_auth():
 
 
 def test_get_config_unset_returns_null_debug_mode(pg_env, pg_pool):
-    uid = f"z{uuid.uuid4().hex[:8]}"
+    uid = f"z{uuid.uuid4().int % 100000000:08d}"
     try:
         r = client.get("/users/me/config", headers={"X-User-Id": uid})
         assert r.status_code == 200
@@ -248,7 +248,7 @@ def test_get_config_unset_returns_null_debug_mode(pg_env, pg_pool):
 
 
 def test_patch_config_roundtrip(pg_env, pg_pool):
-    uid = f"z{uuid.uuid4().hex[:8]}"
+    uid = f"z{uuid.uuid4().int % 100000000:08d}"
     headers = {"X-User-Id": uid}
     try:
         r = client.patch(
@@ -270,7 +270,7 @@ def test_patch_config_roundtrip(pg_env, pg_pool):
 
 
 def test_patch_config_version_space_roundtrip_and_merge(pg_env, pg_pool):
-    uid = f"z{uuid.uuid4().hex[:8]}"
+    uid = f"z{uuid.uuid4().int % 100000000:08d}"
     headers = {"X-User-Id": uid}
     try:
         r = client.patch(
@@ -294,7 +294,7 @@ def test_patch_config_version_space_roundtrip_and_merge(pg_env, pg_pool):
 
 
 def test_patch_config_rejects_unknown_version_space(pg_env, pg_pool):
-    uid = f"z{uuid.uuid4().hex[:8]}"
+    uid = f"z{uuid.uuid4().int % 100000000:08d}"
     try:
         r = client.patch(
             "/users/me/config",

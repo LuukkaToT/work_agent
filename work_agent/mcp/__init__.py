@@ -1,4 +1,4 @@
-"""MCP 相关适配（当前仅公司 w3_search Client）。"""
+"""MCP Client 与 Testing Agent Server 适配。"""
 
 from work_agent.mcp.w3_client import (
     McpW3SearchClient,

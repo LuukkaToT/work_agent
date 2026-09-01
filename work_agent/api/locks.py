@@ -11,25 +11,6 @@ checkpointer 的读-改-写不是为并发设计的：两个请求同时对同�
 这个不是问题，留在阶段2之后按需再做。
 """
 
-from __future__ import annotations
+from work_agent.core.session_locks import try_acquire_thread_lock
 
-import threading
-from collections import defaultdict
-
-_locks: dict[str, threading.Lock] = defaultdict(threading.Lock)
-_locks_guard = threading.Lock()
-
-
-def try_acquire_thread_lock(thread_id: str) -> threading.Lock | None:
-    """
-    非阻塞尝试获取某 thread 的锁。
-
-    参数:
-        thread_id: 会话 id。
-
-    返回:
-        拿到锁则返回锁对象（调用方用完必须 ``release()``）；拿不到返回 None。
-    """
-    with _locks_guard:
-        lock = _locks[thread_id]
-    return lock if lock.acquire(blocking=False) else None
+__all__ = ["try_acquire_thread_lock"]

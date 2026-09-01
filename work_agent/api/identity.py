@@ -13,9 +13,8 @@ import re
 
 from fastapi import Header, HTTPException
 
-# 工号形如 z00888363：字母开头，后面 5~16 位字母数字。故意写得宽松一点，
-# 只是为了挡掉明显的空值/乱填，不是真正的工号规则校验。
-_GONGHAO_RE = re.compile(r"^[A-Za-z][A-Za-z0-9]{4,15}$")
+# 与 users 表、REST/MCP TurnService 保持同一规则。
+_GONGHAO_RE = re.compile(r"^[a-z][0-9]{8}$")
 
 
 class HeaderIdentityProvider:
@@ -36,12 +35,13 @@ class HeaderIdentityProvider:
         异常:
             HTTPException(401): 缺失或格式不对。
         """
-        if not x_user_id or not _GONGHAO_RE.match(x_user_id):
+        normalized = (x_user_id or "").strip().lower()
+        if not _GONGHAO_RE.fullmatch(normalized):
             raise HTTPException(
                 status_code=401,
                 detail="缺少或非法的 X-User-Id 请求头（mock 鉴权，示例：z00888363）",
             )
-        return x_user_id
+        return normalized
 
 
 # 单例：路由层统一用 Depends(get_current_user_id)。

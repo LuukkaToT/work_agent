@@ -75,6 +75,28 @@ class Settings:
     profile_path: Path
     postgres_dsn: str  # 生产库；空串表示未配置
     postgres_test_dsn: str  # 测试库；必须与生产 DSN 指向不同 database
+    # MCP 对外入口；默认关闭，部署环境显式开启并提供服务令牌与 Host 白名单。
+    mcp_enabled: bool = False
+    mcp_service_token: str = ""
+    mcp_allowed_hosts: tuple[str, ...] = ()
+    mcp_allowed_origins: tuple[str, ...] = ()
+
+
+def _env_bool(name: str, default: bool = False) -> bool:
+    raw = (os.getenv(name) or "").strip().casefold()
+    if not raw:
+        return default
+    return raw in {"1", "true", "yes", "on"}
+
+
+def _env_csv(name: str) -> tuple[str, ...]:
+    return tuple(
+        dict.fromkeys(
+            part.strip()
+            for part in (os.getenv(name) or "").split(",")
+            if part.strip()
+        )
+    )
 
 
 def _load_profile(path: Path) -> Profile:
@@ -138,4 +160,8 @@ def get_settings() -> Settings:
         profile_path=profile_path,
         postgres_dsn=os.getenv("POSTGRES_DSN", ""),
         postgres_test_dsn=os.getenv("POSTGRES_TEST_DSN", ""),
+        mcp_enabled=_env_bool("MCP_ENABLED"),
+        mcp_service_token=(os.getenv("MCP_SERVICE_TOKEN") or "").strip(),
+        mcp_allowed_hosts=_env_csv("MCP_ALLOWED_HOSTS"),
+        mcp_allowed_origins=_env_csv("MCP_ALLOWED_ORIGINS"),
     )

@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
 
 from work_agent.core.user_config import VERSION_SPACES
+from work_agent.service.turns import TurnResult
 
 
 class TurnRequest(BaseModel):
@@ -35,19 +36,8 @@ class ResumeRequest(BaseModel):
         return value
 
 
-class TurnResponse(BaseModel):
+class TurnResponse(TurnResult):
     """跑一轮 / 续跑一轮的统一响应形状。"""
-
-    thread_id: str
-    status: Literal["done", "waiting_input"]
-    reply: str | None = Field(default=None, description="status=done 时的最终回复")
-    summary: dict[str, Any] | None = Field(
-        default=None, description="status=done 时的结构化 summary"
-    )
-    interrupt: list[Any] = Field(
-        default_factory=list,
-        description="status=waiting_input 时的原始 interrupt 载荷列表",
-    )
 
 
 class SessionSummary(BaseModel):

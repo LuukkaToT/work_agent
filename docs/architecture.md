@@ -61,6 +61,8 @@ skills/
 
 **公司 w3 MCP Client**：`TOOL_BACKEND=real` 时 `RealKnowledgeSearchTool` 经 [`w3_client.py`](../work_agent/mcp/w3_client.py) 调用 `w3_search`（stdio 或 streamable HTTP）。未配置 `W3_MCP_*` 或调用失败时返回错误字符串，不打断诊断主路径。
 
+**Testing Agent MCP Server**：这是另一个方向的边界——Agent Space 经 `/mcp` 调用整个 Testing Agent；内部 Router、Workflow、SubAgent、Diagnose ReAct 不作为独立 tools 暴露。
+
 产物落盘保证可追溯：
 
 ```text
@@ -472,9 +474,9 @@ M1 到 M16 产出的是**端到端跑得通的最小闭环**，约 1500 到 1800
 
 代码量本身不是质量指标。这套架构真正的价值是边界清晰：接公司真实 tool 时只需要写 `tools/real/` 下的实现（SDK 放 `external/`），图、Role、CLI 一行都不用改。
 
-## 十三、Agent Gateway：CLI 之外的 HTTP 接入层
+## 十三、Agent Gateway：CLI 之外的 REST / MCP 接入层
 
-要部署到服务器给多用户用，CLI 单进程不够了，需要一个 HTTP 入口。`work_agent/api/`（`uvicorn work_agent.api.app:app`）就是这层——**图本身完全不用改**，只是把 `runtime.py` 换了一种被调用的方式，这也是这套架构在设计时就分离好「图 / CLI 壳」两层的收益。
+要部署到服务器给多用户用，CLI 单进程不够了，需要 HTTP 入口。`uvicorn work_agent.api.app:app` 同时承载原有 REST 和 `/mcp` Streamable HTTP；两者共用 TurnService、runtime、checkpointer、会话归属校验和互斥锁，**图本身完全不用改**。
 
 ### 两阶段 HITL 怎么搬到 HTTP 上
 
@@ -487,6 +489,29 @@ CLI 的 `run_turn`/`resume_pending` 是阻塞的：遇到 `interrupt` 就在进�
 - `POST /turns/{thread_id}/resume`：body 给 `answer`，续跑一步；`answer` 支持字符串、结构化对象或序号数组，以承载容量组单选和逻辑组网多选；可能再拿到下一个 interrupt，也可能拿到最终结果；该会话没有 pending 时返回 404。
 
 这和 CLI 用的图、checkpointer 是同一套，区别只在“谁来问 ask()”——CLI 里是终端 `input()`，HTTP 里是前端拿到 `waiting_input` 后自己渲染 UI，用户填完再发一次 `resume`。
+
+### Agent Space 通过 MCP 怎么调用
+
+MCP 只暴露三个会话式工具，统一返回 `thread_id/status/reply/summary/interrupt`，不泄漏 graph state 或 audit：
+
+| Tool | 行为 |
+|------|------|
+| `testing_agent_turn` | 发起新会话，或给已完成会话发送下一轮消息 |
+| `testing_agent_resume` | 给 `waiting_input` 会话提交文本、对象或序号数组答案 |
+| `testing_agent_status` | 只读查询最终结果或当前 interrupt |
+
+返回 `waiting_input` 后，Agent Space 展示 `interrupt` 并调用 `resume`。`turn/resume` 都标记为非幂等：调用超时后只能查 `status`，不能自动重放；已完成会话误重发 `resume` 时，MCP 适配层会返回当前结果而不是再次执行。runtime 的 `node:*` / `tool:*` / `status:*` 事件映射为 MCP progress，progress 发送失败不影响主任务。
+
+MCP 默认关闭。部署配置示例：
+
+```ini
+MCP_ENABLED=true
+MCP_SERVICE_TOKEN=${SECRET_FROM_DEPLOYMENT_PLATFORM}
+MCP_ALLOWED_HOSTS=testing-agent.example.internal,testing-agent.example.internal:443
+# 只有浏览器客户端才需要 MCP_ALLOWED_ORIGINS
+```
+
+`Authorization: Bearer ...` 认证的是 Agent Space 服务；最终用户工号由 tool 参数 `user_id` 传入并规范化成小写的“一位字母 + 8 位数字”。本阶段不要求用户目录已存在记录，也不做角色权限判断。MCP 子应用启用 DNS rebinding 防护；它被 Mount 到父 FastAPI 后，父 lifespan 显式启动 MCP session manager。
 
 “会话状态是否等待中”本身没有单独落一张状态表（没有 `WAITING_APPROVAL` 这种显式字段）——单一数据源就是 checkpointer：`get_state().next` 非空即为等待。多一张状态表反而要操心两处状态不同步的问题，checkpointer 本来就是权威来源，没必要重复记账。
 
@@ -504,12 +529,13 @@ CLI 的 `run_turn`/`resume_pending` 是阻塞的：遇到 `interrupt` 就在进�
 
 ### 并发：单进程内存锁，先够用
 
-同一个 `thread_id` 不能被两个请求同时续跑（checkpointer 不是为并发写设计的）。`api/locks.py` 用一个进程内 `dict[thread_id, threading.Lock]` 做非阻塞互斥：抢不到锁直接 409，不排队等，避免请求堆在线程池里。这层锁只在单进程内有效，多副本部署需要换成 Postgres advisory lock 或分布式锁——当前单进程部署，先不做。
+同一个 `thread_id` 不能被两个请求同时续跑（checkpointer 不是为并发写设计的）。共享入口层用一个进程内 `dict[thread_id, threading.Lock]` 做非阻塞互斥：REST 返回 409，MCP 返回 `THREAD_BUSY`。这层锁只在单进程内有效，因此首期必须用单 Uvicorn worker、单副本；扩容前改成 Postgres advisory lock。
 
 ### 测试策略
 
 - `tests/runtime/test_runtime_step.py`：mock 假 app（不调 LLM），验证 `run_turn_step`/`resume_step` 遇 interrupt 立刻返回、能正确串联多轮 resume。
 - `tests/api/test_api_gateway.py`：用 `TestClient` + mock `runtime.run_turn_step`/`resume_step`，只测网关自己的逻辑（鉴权 401、跨用户 403、无 pending 404、并发 409、响应结构转换），图的正确性交给上面那层单测和各节点自己的测试。
+- `tests/mcp/`：用 MCP SDK 内存 Client 测 tool schema、structured output、progress 与 HITL 续答；另测 Bearer middleware 和安全配置。
 
 ## 十四、离线 A/B 评测：怎么证明上下文管理真的有用
 

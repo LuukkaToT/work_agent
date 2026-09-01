@@ -519,7 +519,7 @@ checkpoint 不是缓存，是断点续跑的**唯一权威数据源**——`inte
 | 无失败归因            | 已有受限 ReAct `error_analysis`（只读工具 + evidence/ruled_out） | 继续接真实日志 API / w3 MCP 检索 |
 | 鉴权是假的           | FastAPI 网关（两阶段 HITL）+ CLI/API 统一身份接线、`ledger` 按 `user_id` 的读写隔离都已完成：CLI 用 `EnvIdentityProvider` 读环境变量，HTTP 用 `HeaderIdentityProvider` 读请求头，两边生成的 `thread_id` 前缀规则一致；台账全部写入/读取路径（`exec_flow.py`/`pipeline_resolve.py`/`diagnose_tools.py`/CLI `runs`）都真实按 `user_id` 过滤，历史空值靠 `_init_db`/`_ensure_table` 里一条幂等 `UPDATE` 回填成默认身份，没有丢数据。剩下没做的只是两个 Provider 内部还是 mock，不校验真实 token/session | 接公司真实鉴权只用改 `EnvIdentityProvider`/`HeaderIdentityProvider` 内部实现，调用形状（返回一个工号字符串）不用变 |
 | RAG 默认关 embedding | 离线/单测默认纯 BM25；`rag_use_embeddings` 可开 | 内网 embedding 端点稳定后再默认打开 |
-| MCP 仅 Client 规划   | 已实现 `RealKnowledgeSearchTool` + `work_agent/mcp/w3_client.py`；未配置时返回提示字符串 | 配置 `W3_MCP_*` 指向公司 w3_search |
+| MCP 双向接入 | Client 侧已有 `w3_client.py` 调公司检索；Server 侧通过 `/mcp` 向 Agent Space 暴露 turn/resume/status 三个会话工具 | 配置公司 w3 MCP 与 Agent Space 服务令牌，扩容前把 thread 锁迁到 Postgres |
 | 摘要质量依赖 LLM       | 压缩可能丢细节                        | 关键事实已落台账，摘要只影响指代消解；必要时改成结构化摘要                   |
 | 可观测性缺失（见 Q21） | 线上侧仍没接 Prometheus/Grafana、没有告警和分布式 tracing。但诊断链路已经有了自己的度量：`audit` 里带 `context_chars` / `token_usage` / `latency_ms` / `trimmed_steps` / `selected_context_ids`，另有离线 A/B（`eval-diagnose`）在固定 golden set 上对比两种上下文策略 | `audit` 已经是结构化事件流，加个 sink 写 Kafka/落一张 events 表即可抽取失败率、重试次数、耗时等指标，不需要重新埋点 |
 | 评测仍是 synthetic 小样本 | golden set 已扩到 20 条、120 个分组件日志，但仍不足以代表生产分布 | 同时报告 kind/root-component accuracy、evidence recall、成本和延迟；接脱敏真实日志后再分层扩集并给置信区间 |
