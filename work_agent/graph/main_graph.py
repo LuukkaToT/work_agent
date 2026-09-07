@@ -62,10 +62,11 @@ def intake(state: TestFlowState) -> dict:
     if not user_input:
         raise ValueError("本轮用户消息为空")
 
-    task_id = str(uuid.uuid4())[:8]
+    task_id = str(uuid.uuid4())
 
     return {
         "task_id": task_id,
+        "execution_version": 1,
         "user_input": user_input,
         "intent": "",
         "requirement": "",

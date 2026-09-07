@@ -65,6 +65,7 @@ class TestFlowState(TypedDict):
 
     # --- 任务级：会话 / 路由 ---
     task_id: str  # 本次任务 id
+    execution_version: int  # Durable execution protocol; absent on legacy checkpoints.
     user_input: str  # 本轮用户输入（从 messages[-1] 提取）
     intent: str  # analysis | execute | query | start | diagnose | chat
     requirement: str  # 预留：结构化需求（目前先等于 user_input）

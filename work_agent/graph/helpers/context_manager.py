@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 from typing import Iterable
 
 from work_agent.core.usage import TokenUsage
-from work_agent.graph.helpers.context_archive import ArchiveRef, ContextArchive, reference_note
+from work_agent.graph.helpers.context_archive import Archive, ArchiveRef, reference_note
 from work_agent.graph.helpers.context_compressor import ContextCompressor
 from work_agent.graph.helpers.context_selector import (
     ContextItem,
@@ -48,7 +48,7 @@ class ContextManager:
         self,
         *,
         compressor: ContextCompressor | None = None,
-        archive: ContextArchive | None = None,
+        archive: Archive | None = None,
         max_compress_items: int = _DEFAULT_MAX_COMPRESS_ITEMS,
         summary_max_chars: int = _DEFAULT_SUMMARY_MAX_CHARS,
     ) -> None:

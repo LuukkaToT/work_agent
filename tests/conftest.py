@@ -12,6 +12,7 @@ from dataclasses import replace
 
 import pytest
 from psycopg.rows import dict_row
+from psycopg.conninfo import conninfo_to_dict
 from psycopg_pool import ConnectionPool
 
 import work_agent.core.checkpoint as checkpoint_mod
@@ -50,7 +51,10 @@ def pytest_sessionstart(session: pytest.Session) -> None:
     settings = get_settings()
     prod = (settings.postgres_dsn or "").strip()
     test = (settings.postgres_test_dsn or "").strip()
-    if prod and test and prod == test:
+    if prod and test and (
+        prod == test
+        or conninfo_to_dict(prod).get("dbname") == conninfo_to_dict(test).get("dbname")
+    ):
         pytest.exit(
             "POSTGRES_TEST_DSN 不能与 POSTGRES_DSN 相同，拒绝用生产库跑测试",
             returncode=2,

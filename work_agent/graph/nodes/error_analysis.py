@@ -333,6 +333,33 @@ def run_diagnosis(
     )
     usage = usage + extract_usage
 
+    long_term, message = diagnosis_conclusion(structured, analysis_text)
+    ruled = structured.get("ruled_out") or []
+    return DiagnosisResult(
+        structured=structured,
+        analysis_text=long_term,
+        message=message,
+        strategy=context_strategy,
+        context_text=extract_ctx,
+        selected_context_ids=selected_ids,
+        context_chars=context_chars,
+        latency_ms=int((time.perf_counter() - started) * 1000),
+        token_usage=usage.as_dict(),
+        tool_calls=sum(1 for t in tool_trace if t.get("type") == "call"),
+        tool_trace=tool_trace,
+        budget_used=budget.used,
+        obs_compressed_n=len(obs_compressed),
+        ruled_out_n=len(ruled),
+        react_limit=react_limit,
+        trimmed_steps=trimmed_steps,
+        compressed_ids=compressed_ids,
+        react_context_chars=react_context_chars,
+        archived_n=len(live_archive.refs) if live_archive is not None else 0,
+    )
+
+
+def diagnosis_conclusion(structured: dict, analysis_text: str) -> tuple[str, str]:
+    """Shared online/offline presentation, without model or storage work."""
     ruled = structured.get("ruled_out") or []
     long_term = assemble_blocks(
         [
@@ -357,27 +384,7 @@ def run_diagnosis(
         f"根因组件={structured.get('root_component') or 'unknown'}。"
         f"建议：{structured.get('suggestion') or ''}"
     )
-    return DiagnosisResult(
-        structured=structured,
-        analysis_text=long_term or analysis_text[:1500],
-        message=message,
-        strategy=context_strategy,
-        context_text=extract_ctx,
-        selected_context_ids=selected_ids,
-        context_chars=context_chars,
-        latency_ms=int((time.perf_counter() - started) * 1000),
-        token_usage=usage.as_dict(),
-        tool_calls=sum(1 for t in tool_trace if t.get("type") == "call"),
-        tool_trace=tool_trace,
-        budget_used=budget.used,
-        obs_compressed_n=len(obs_compressed),
-        ruled_out_n=len(ruled),
-        react_limit=react_limit,
-        trimmed_steps=trimmed_steps,
-        compressed_ids=compressed_ids,
-        react_context_chars=react_context_chars,
-        archived_n=len(live_archive.refs) if live_archive is not None else 0,
-    )
+    return long_term or analysis_text[:1500], message
 
 
 def error_analysis(state: Mapping[str, Any]) -> dict:
@@ -410,7 +417,11 @@ def error_analysis(state: Mapping[str, Any]) -> dict:
         context_strategy="managed",
         run_id=str(state.get("task_id") or ""),
     )
+    return diagnosis_output(result, pids)
 
+
+def diagnosis_output(result: DiagnosisResult, pids: list[str]) -> dict:
+    """Expose only compact output and audit to the enclosing graph."""
     return {
         "summary": {
             "status": "ok",
@@ -487,6 +498,7 @@ def _extract_structured(
     *,
     analysis_text: str,
     obs_compressed: list[str],
+    strict: bool = False,
 ) -> tuple[dict[str, Any], TokenUsage]:
     """
     二次结构化抽取。
@@ -520,6 +532,8 @@ def _extract_structured(
             raise ValueError("结构化抽取未返回 parsed")
         return parsed.model_dump(), usage
     except Exception:  # noqa: BLE001
+        if strict:
+            raise
         return {
             "fail_kind": "unknown",
             "root_component": "unknown",

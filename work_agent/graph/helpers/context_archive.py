@@ -13,6 +13,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Protocol
 
 from work_agent.core.config import get_settings
 from work_agent.graph.helpers.context_selector import ContextItem
@@ -27,6 +28,19 @@ class ArchiveRef:
     artifact_id: str
     path: str
     chars: int
+
+
+class Archive(Protocol):
+    """Storage contract shared by offline files and durable online archives."""
+
+    @property
+    def refs(self) -> list[ArchiveRef]: ...
+
+    def store(self, item: ContextItem) -> ArchiveRef: ...
+
+    def store_all(self, items: list[ContextItem]) -> list[ArchiveRef]: ...
+
+    def read(self, artifact_id: str) -> str: ...
 
 
 class ContextArchive:

@@ -15,7 +15,7 @@ from langchain_core.tools import BaseTool, tool
 
 from work_agent.core.ledger import get_ledger
 from work_agent.core.policy import assert_read_only_whitelist
-from work_agent.graph.helpers.context_archive import ContextArchive
+from work_agent.graph.helpers.context_archive import Archive
 from work_agent.graph.helpers.truncate import CharBudget
 from work_agent.tools.mock.scenarios import MockScenario
 from work_agent.tools.registry import (
@@ -34,7 +34,8 @@ def build_diagnose_tools(
     budget: CharBudget | None = None,
     tool_result_max_chars: int = _DEFAULT_MAX_CHARS,
     user_id: str = "",
-    archive: ContextArchive | None = None,
+    archive: Archive | None = None,
+    durable: bool = False,
 ) -> list[BaseTool]:
     """
     构造诊断白名单工具（只读；禁止 create/start）。
@@ -66,6 +67,9 @@ def build_diagnose_tools(
 
     def _out(text: str) -> str:
         """经预算截断后返回工具文本。"""
+        # Online nodes archive the complete text, then budget a prompt copy.
+        if durable:
+            return text
         return budget.take(text, max_chars=max_chars)
 
     @tool
@@ -81,6 +85,8 @@ def build_diagnose_tools(
             }
             return _out(json.dumps(payload, ensure_ascii=False, indent=2))
         except Exception as exc:  # noqa: BLE001
+            if durable:
+                raise
             return _out(f"[get_pipeline_status error] {exc}")
 
     @tool
@@ -89,6 +95,8 @@ def build_diagnose_tools(
         try:
             return _out(log_tool.list_logs(pipeline_id))
         except Exception as exc:  # noqa: BLE001
+            if durable:
+                raise
             return _out(f"[list_log_files error] {exc}")
 
     @tool
@@ -106,6 +114,8 @@ def build_diagnose_tools(
             )
             return _out(text)
         except Exception as exc:  # noqa: BLE001
+            if durable:
+                raise
             return _out(f"[fetch_logs error] {exc}")
 
     @tool
@@ -127,6 +137,8 @@ def build_diagnose_tools(
             )
             return _out(text)
         except Exception as exc:  # noqa: BLE001
+            if durable:
+                raise
             return _out(f"[grep_logs error] {exc}")
 
     @tool
@@ -135,6 +147,8 @@ def build_diagnose_tools(
         try:
             return _out(log_tool.lookup_error_code(code))
         except Exception as exc:  # noqa: BLE001
+            if durable:
+                raise
             return _out(f"[lookup_error_code error] {exc}")
 
     @tool
@@ -159,6 +173,8 @@ def build_diagnose_tools(
                 return _out(f"[find_case_history] no records for case={case_name!r}")
             return _out(json.dumps(payload, ensure_ascii=False, indent=2))
         except Exception as exc:  # noqa: BLE001
+            if durable:
+                raise
             return _out(f"[find_case_history error] {exc}")
 
     @tool
@@ -169,6 +185,8 @@ def build_diagnose_tools(
             payload = [asdict(c) for c in cases]
             return _out(json.dumps(payload, ensure_ascii=False, indent=2))
         except Exception as exc:  # noqa: BLE001
+            if durable:
+                raise
             return _out(f"[get_case_spec error] {exc}")
 
     @tool
@@ -178,6 +196,8 @@ def build_diagnose_tools(
             text = knowledge.search(query, top_k=top_k)
             return _out(text)
         except Exception as exc:  # noqa: BLE001
+            if durable:
+                raise
             return _out(f"[search_knowledge error] {exc}")
 
     @tool
@@ -186,6 +206,8 @@ def build_diagnose_tools(
         try:
             return _out(archive.read(artifact_id))
         except Exception as exc:  # noqa: BLE001
+            if durable:
+                raise
             return _out(f"[fetch_archived_block error] {exc}")
 
     tools = [

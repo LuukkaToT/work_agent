@@ -14,6 +14,7 @@ from __future__ import annotations
 import hashlib
 import threading
 from collections import defaultdict
+from contextvars import ContextVar
 from typing import Protocol
 
 from work_agent.core import db as db_mod
@@ -22,12 +23,49 @@ from work_agent.core import db as db_mod
 _LOCK_NAMESPACE = 42
 _locks: dict[str, threading.Lock] = defaultdict(threading.Lock)
 _locks_guard = threading.Lock()
+_owned_locks: ContextVar[frozenset[tuple[int, str]]] = ContextVar(
+    "owned_thread_locks", default=frozenset()
+)
 
 
 class ThreadLock(Protocol):
     """调用方成功 acquire 后必须 ``release()``。"""
 
     def release(self) -> None: ...
+
+
+class _OwnedThreadLock:
+    def __init__(self, lock: ThreadLock, thread_id: str) -> None:
+        self._lock = lock
+        self._released = False
+        self._token = _owned_locks.set(
+            _owned_locks.get() | {(threading.get_ident(), thread_id)}
+        )
+
+    def release(self) -> None:
+        if self._released:
+            return
+        self._released = True
+        try:
+            self._lock.release()
+        finally:
+            _owned_locks.reset(self._token)
+
+
+def owns_thread_lock(thread_id: str) -> bool:
+    """True only for the current execution context, including its service wrapper."""
+    return (threading.get_ident(), thread_id) in _owned_locks.get()
+
+
+def is_thread_locked(thread_id: str) -> bool:
+    """Probe the same memory/advisory lock used by writers; never runs the graph."""
+    if owns_thread_lock(thread_id):
+        return True
+    lock = try_acquire_thread_lock(thread_id)
+    if lock is None:
+        return True
+    lock.release()
+    return False
 
 
 class _PostgresThreadLock:
@@ -74,9 +112,8 @@ def try_acquire_thread_lock(thread_id: str) -> ThreadLock | None:
     tid = (thread_id or "").strip()
     if not tid:
         return None
-    if _postgres_dsn():
-        return _pg_try_acquire(tid)
-    return _memory_try_acquire(tid)
+    lock = _pg_try_acquire(tid) if _postgres_dsn() else _memory_try_acquire(tid)
+    return _OwnedThreadLock(lock, tid) if lock is not None else None
 
 
 def _memory_try_acquire(thread_id: str) -> ThreadLock | None:

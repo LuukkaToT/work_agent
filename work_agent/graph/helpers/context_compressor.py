@@ -128,6 +128,13 @@ class ContextCompressor:
         return self._model
 
 
+class DeterministicContextCompressor(ContextCompressor):
+    """Prompt projection with no hidden model calls inside an online node."""
+
+    def _summarize(self, text: str, *, limit: int) -> tuple[str, TokenUsage, bool]:
+        return compress_observation(text, max_chars=limit), TokenUsage(), True
+
+
 def _as_text(content: object) -> str:
     """把 content（str 或分段 list）归一成纯文本。"""
     if isinstance(content, str):

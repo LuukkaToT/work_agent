@@ -27,7 +27,7 @@ from langchain_core.messages import (
 from langchain_core.tools import BaseTool
 
 from work_agent.core.usage import TokenUsage, usage_from_message
-from work_agent.graph.helpers.context_archive import ContextArchive, reference_note
+from work_agent.graph.helpers.context_archive import Archive, reference_note
 from work_agent.graph.helpers.context_budget import (
     PRIORITY_RAW_TOOL,
     compress_observation,
@@ -78,7 +78,7 @@ class ReActStep:
         """展开成消息序列；AIMessage 紧跟它配对的 ToolMessage。"""
         return [self.assistant_message, *self.tool_messages]
 
-    def compact(self, *, max_chars: int, archive: ContextArchive | None = None) -> ReActStep:
+    def compact(self, *, max_chars: int, archive: Archive | None = None) -> ReActStep:
         """
         压成一条不带 tool_calls 的消息。
 
@@ -135,7 +135,7 @@ class ReActStep:
             pin=PIN_NORMAL,
         )
 
-    def stub_step(self, *, archive: ContextArchive) -> ReActStep:
+    def stub_step(self, *, archive: Archive) -> ReActStep:
         """
         整步丢弃时留下的占位：单条 AIMessage，只说原文去了哪个 artifact。
 
@@ -172,7 +172,7 @@ def trim_steps(
     *,
     max_chars: int,
     summary_max_chars: int = _DEFAULT_STEP_SUMMARY_MAX_CHARS,
-    archive: ContextArchive | None = None,
+    archive: Archive | None = None,
 ) -> tuple[list[ReActStep], int]:
     """
     按 step 粒度裁剪历史：新的留全文，旧的压缩，压完还超就整步丢。
@@ -226,7 +226,7 @@ def run_agent_loop(
     observation_max_chars: int = 4000,
     history_max_chars: int = 0,
     step_summary_max_chars: int = _DEFAULT_STEP_SUMMARY_MAX_CHARS,
-    archive: ContextArchive | None = None,
+    archive: Archive | None = None,
 ) -> AgentLoopResult:
     """
     执行显式 ReAct 风格循环：bind_tools -> 按名执行白名单工具 -> 压缩观察 -> 再决策。
@@ -298,25 +298,10 @@ def run_agent_loop(
             step_id=f"step{step_index + 1:02d}", assistant_message=ai_msg
         )
         for tc in tool_calls:
-            name = tc.get("name") or ""
-            args = tc.get("args") or {}
-            call_id = tc.get("id") or ""
-            report_progress(f"tool:{name}")
-
-            tool = tools_by_name.get(name)
-            if tool is None:
-                observation = f"[unknown tool] {name!r} 不在白名单内，拒绝执行"
-            else:
-                try:
-                    raw = tool.invoke(args)
-                except Exception as exc:  # noqa: BLE001
-                    raw = f"[tool error] {name}: {exc}"
-                observation = compress_observation(
-                    str(raw), max_chars=observation_max_chars
-                )
-
             step.tool_messages.append(
-                ToolMessage(content=observation, tool_call_id=call_id, name=name)
+                execute_tool_call(
+                    tc, tools_by_name, observation_max_chars=observation_max_chars
+                )
             )
         steps.append(step)
 
@@ -335,6 +320,36 @@ def run_agent_loop(
         context_chars=context_chars,
         trimmed_steps=trimmed_total,
     )
+
+
+def execute_tool_call(
+    call: dict,
+    tools_by_name: dict[str, BaseTool],
+    *,
+    observation_max_chars: int | None = None,
+    propagate_errors: bool = False,
+) -> ToolMessage:
+    """Execute exactly one whitelisted call; online keeps its complete result.
+
+    Offline callers retain the historical observation/error compression API.
+    Online callers propagate failures so an unfinished call can be retried.
+    """
+    name = call.get("name") or ""
+    report_progress(f"tool:{name}")
+    tool = tools_by_name.get(name)
+    if tool is None:
+        observation = f"[unknown tool] {name!r} 不在白名单内，拒绝执行"
+    else:
+        try:
+            raw = tool.invoke(call.get("args") or {})
+        except Exception as exc:  # noqa: BLE001
+            if propagate_errors:
+                raise
+            raw = f"[tool error] {name}: {exc}"
+        observation = _content_text(raw) if isinstance(raw, ToolMessage) else str(raw)
+        if observation_max_chars is not None:
+            observation = compress_observation(observation, max_chars=observation_max_chars)
+    return ToolMessage(content=observation, tool_call_id=call.get("id") or "", name=name)
 
 
 def _flatten(
