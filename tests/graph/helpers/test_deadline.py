@@ -8,8 +8,9 @@ import pytest
 from langchain_core.messages import AIMessage
 from langchain_core.tools import tool
 
+from work_agent.core.investigation_journal import MemoryInvestigationJournal
 from work_agent.core.transcript import MemoryTranscriptStore, Transcript, TranscriptScope
-from work_agent.graph.helpers.agent_loop import run_agent_loop
+from work_agent.graph.helpers.agent_loop import execute_tool_call, run_agent_loop
 from work_agent.graph.helpers.component_agent import run_component_investigation
 from work_agent.graph.helpers.deadline import Deadline, DeadlineExceeded, invoke_with_deadline
 from work_agent.graph.helpers.diagnosis_models import InvestigationBudget, InvestigationTask, LogScope
@@ -123,6 +124,69 @@ def test_timeout_does_not_record_late_tool_result():
     kinds = [event.kind for event in transcript.events(limit=100)]
     assert "tool_result" not in kinds
     assert "loop_end" not in kinds
+
+
+def test_timeout_still_charges_started_tool_requests():
+    journal = MemoryInvestigationJournal()
+    journal.ensure_run(
+        "run-charge",
+        user_id="user-1",
+        pipeline_id="p1",
+        max_rounds=3,
+        max_tool_calls=24,
+    )
+    started: list[int] = []
+
+    def _charge() -> None:
+        started.append(1)
+        journal.add_used_tool_calls("run-charge", 1)
+
+    task = _task()
+    transcript = _transcript("exec-timeout-charge")
+    model = _SlowModel(
+        0.0,
+        AIMessage(
+            content="调用工具",
+            tool_calls=[{"id": "1", "name": "sleepy_echo", "args": {"text": "x"}}],
+        ),
+    )
+    report, _evidences, _usage, _trace = run_component_investigation(
+        task,
+        transcript=transcript,
+        model=model,
+        extract_model=object(),
+        on_tool_start=_charge,
+        loop_fn=lambda **kwargs: run_agent_loop(
+            **{key: value for key, value in kwargs.items() if key != "tools"},
+            tools=[sleepy_echo],
+        ),
+    )
+    time.sleep(1.2)
+    assert report.status == "timeout"
+    assert started == [1]
+    assert journal.get_run("run-charge").used_tool_calls == 1
+    journal.persist_pending(
+        investigation_id="inv-charge",
+        run_id="run-charge",
+        round_index=1,
+        component="bbh",
+        question="时钟是否失锁",
+        log_scope={"pipeline_id": "p1", "component": "bbh", "tail_lines": 200},
+    )
+    running = journal.claim("inv-charge", timeout_seconds=10)
+    assert journal.finish_succeeded("inv-charge", running.owner_token, "ref", tool_calls=5)
+    assert journal.get_run("run-charge").used_tool_calls == 1
+
+
+def test_unknown_tool_does_not_charge():
+    hits: list[int] = []
+    observation = execute_tool_call(
+        {"id": "1", "name": "missing_tool", "args": {}},
+        {},
+        on_tool_start=lambda: hits.append(1),
+    )
+    assert hits == []
+    assert observation.status == "error"
 
 
 def test_loop_without_deadline_still_writes_end():

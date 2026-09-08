@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 from httpx import HTTPError
 
@@ -238,6 +238,7 @@ def run_agent_loop(
     transcript: Transcript | None = None,
     protected_items: list[ContextItem] | None = None,
     deadline: Deadline | None = None,
+    on_tool_start: Callable[[], None] | None = None,
 ) -> AgentLoopResult:
     """
     执行显式 ReAct 风格循环：bind_tools -> 按名执行白名单工具 -> 压缩观察 -> 再决策。
@@ -259,6 +260,7 @@ def run_agent_loop(
             开启 preserve_raw，否则此前被工具出口截断的部分无法凭空恢复。
         protected_items: 宿主提供的反证、未解决问题等任务状态，不能由相关性裁掉。
         deadline: 可选截止；传入时每次模型/工具调用前检查，超时后不再写成功结果。
+        on_tool_start: 白名单工具即将 invoke 前调用；用于按发起记账，未知工具不触发。
 
     返回:
         AgentLoopResult；旧模式保持压缩 observation 的兼容行为，transcript 模式
@@ -408,6 +410,7 @@ def run_agent_loop(
                     observation_max_chars=None if transcript is not None else observation_max_chars,
                     capture_expected_errors=transcript is not None,
                     deadline=deadline,
+                    on_tool_start=on_tool_start,
                 )
             except DeadlineExceeded:
                 raise
@@ -450,6 +453,7 @@ def execute_tool_call(
     propagate_errors: bool = False,
     capture_expected_errors: bool = False,
     deadline: Deadline | None = None,
+    on_tool_start: Callable[[], None] | None = None,
 ) -> ToolMessage:
     """执行一个白名单调用，区分可呈现的取证失败和必须上抛的运行时错误。
 
@@ -461,6 +465,7 @@ def execute_tool_call(
             转成 status=error 的观察。程序异常和 transcript 写入失败必须上抛，
             不能把数据库不可用伪装成「查不到日志」。旧调用方维持原来的兼容行为。
         deadline: 可选截止；到期则上抛 DeadlineExceeded，不当成工具失败观察。
+        on_tool_start: 即将执行白名单工具前调用一次；未知工具不扣费。
     """
     if deadline is not None:
         deadline.check()
@@ -472,6 +477,8 @@ def execute_tool_call(
         status = "error"
         observation = f"[unknown tool] {name!r} 不在白名单内，拒绝执行"
     else:
+        if on_tool_start is not None:
+            on_tool_start()
         try:
             raw = tool.invoke(call.get("args") or {})
         except DeadlineExceeded:

@@ -323,8 +323,7 @@ def run_component_diagnosis(
     pipeline_id = _first_pipeline_id(pipelines)
     version_tag = _version_tag(pipelines)
     diagnosis_task_id = _scope_id(run_id, "adhoc")
-    prior_run = live_journal.get_run(diagnosis_task_id)
-    live_journal.ensure_run(
+    run_rec = live_journal.ensure_run(
         diagnosis_task_id,
         user_id=_scope_id(user_id, "anonymous"),
         pipeline_id=pipeline_id,
@@ -332,14 +331,16 @@ def run_component_diagnosis(
         max_tool_calls=budget.max_tool_calls,
     )
 
-    overview, init_calls, init_trace = _init_overview(
-        pipeline_id, scenario=scenario, transcript=main_transcript
+    def _charge_tool() -> None:
+        live_journal.add_used_tool_calls(diagnosis_task_id, 1)
+
+    overview, _init_calls, init_trace = _init_overview(
+        pipeline_id,
+        scenario=scenario,
+        transcript=main_transcript,
+        on_tool_start=_charge_tool,
     )
-    if prior_run is None:
-        budget.charge(init_calls)
-        live_journal.add_used_tool_calls(diagnosis_task_id, init_calls)
-    else:
-        budget.used_tool_calls = prior_run.used_tool_calls
+    _sync_budget(budget, live_journal, diagnosis_task_id)
     session.tool_trace.extend(init_trace)
     recorder.messages(
         "diagnosis/start",
@@ -353,6 +354,7 @@ def run_component_diagnosis(
         main_scope=main_transcript.scope,
         scenario=scenario,
         user_id=user_id,
+        on_tool_start=_charge_tool,
     )
     runner = _wrap_journal_runner(
         inner_runner,
@@ -380,8 +382,9 @@ def run_component_diagnosis(
     context_text = ""
     context_chars = 0
     react_context_chars = 0
+    start_round = max(1, run_rec.current_round)
 
-    for round_index in range(1, budget.max_rounds + 1):
+    for round_index in range(start_round, budget.max_rounds + 1):
         if budget.remaining_seconds() <= 0:
             stop_reason = "budget_timeout"
             last_decision = MainDecision(
@@ -604,9 +607,13 @@ def _version_tag(pipelines: Sequence[Mapping[str, Any]]) -> str:
 
 
 def _init_overview(
-    pipeline_id: str, *, scenario: MockScenario, transcript: Transcript
+    pipeline_id: str,
+    *,
+    scenario: MockScenario,
+    transcript: Transcript,
+    on_tool_start: Callable[[], None] | None = None,
 ) -> tuple[str, int, list[dict[str, Any]]]:
-    """确定性初始化：日志目录与流水线状态，计入工具次数。"""
+    """确定性初始化：日志目录与流水线状态；每次真正 invoke 前由回调记账。"""
     tools = {
         t.name: t
         for t in build_diagnose_tools(
@@ -627,6 +634,8 @@ def _init_overview(
         if tool is None:
             continue
         trace.append({"type": "call", "name": name, "args_preview": json.dumps(args, ensure_ascii=False)})
+        if on_tool_start is not None:
+            on_tool_start()
         try:
             text = str(tool.invoke(args))
             status = "success"
@@ -813,7 +822,7 @@ def _wrap_journal_runner(
             journal.finish_failed(rec.investigation_id, rec.owner_token, "result_ref")
             raise
         if not journal.finish_succeeded(
-            rec.investigation_id, rec.owner_token, result_ref, tool_calls=report.tool_calls
+            rec.investigation_id, rec.owner_token, result_ref
         ):
             latest = journal.get_task(rec.investigation_id)
             if latest is not None and latest.status == "SUCCEEDED" and latest.result_ref:
@@ -868,6 +877,7 @@ def _make_default_runner(
     main_scope: TranscriptScope,
     scenario: MockScenario,
     user_id: str,
+    on_tool_start: Callable[[], None] | None = None,
 ) -> InvestigateFn:
     def _run(task: InvestigationTask) -> tuple[ComponentReport, list[Evidence], TokenUsage, list[dict[str, Any]]]:
         scope = TranscriptScope(
@@ -881,6 +891,7 @@ def _make_default_runner(
             scenario=scenario,
             user_id=user_id,
             transcript=Transcript(store, scope),
+            on_tool_start=on_tool_start,
         )
 
     return _run

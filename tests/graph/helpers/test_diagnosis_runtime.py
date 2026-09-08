@@ -790,3 +790,52 @@ def test_claimed_execution_id_differs_from_investigation_id():
     assert rec.execution_id == seen[0].execution_id
     assert rec.status == "SUCCEEDED"
 
+
+def test_resume_starts_at_persisted_current_round():
+    scenario = "bench06_bbh_clock_unlocked"
+    pid = _start_pipeline(scenario)
+    journal = MemoryInvestigationJournal()
+    run_id = "task-resume-round"
+    user_id = "user-1"
+    journal.ensure_run(
+        run_id,
+        user_id=user_id,
+        pipeline_id=pid,
+        max_rounds=3,
+        max_tool_calls=24,
+    )
+    journal.update_run(run_id, current_round=2)
+    seen_rounds: list[int] = []
+
+    def decide(snapshot: dict) -> MainDecision:
+        seen_rounds.append(snapshot["round"])
+        return MainDecision(
+            action="conclude",
+            fail_kind="unknown",
+            conclusion="从 current_round 续跑",
+            stop_reason="resume",
+        )
+
+    run_component_diagnosis(
+        pipelines=[{"pipeline_id": pid, "case_names": ["c"], "version": "27B", "status": "failed"}],
+        user_input="诊断",
+        user_id=user_id,
+        scenario=scenario,
+        run_id=run_id,
+        transcript=Transcript(
+            MemoryTranscriptStore(),
+            TranscriptScope(user_id, run_id, "diagnose-main", "main-resume-round"),
+        ),
+        decide_fn=decide,
+        investigate_fn=lambda task: (
+            _report(task.component, investigation_id=task.investigation_id),
+            [],
+            TokenUsage(),
+            [],
+        ),
+        journal=journal,
+    )
+    assert seen_rounds
+    assert seen_rounds[0] == 2
+    assert 1 not in seen_rounds
+

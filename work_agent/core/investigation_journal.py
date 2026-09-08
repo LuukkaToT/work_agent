@@ -11,6 +11,7 @@ MemoryInvestigationJournal 给单测与无 DSN 调用。若诊断注入的是 Me
 from __future__ import annotations
 
 import copy
+import json
 import threading
 import time
 import uuid
@@ -28,6 +29,14 @@ class InvestigationJournalError(RuntimeError):
 
 class InvestigationInProgress(InvestigationJournalError):
     """任务仍被有效租约占用，不能再 claim。"""
+
+
+class InvestigationConflict(InvestigationJournalError):
+    """同一 ID 已绑定不同 intent，不能静默当成幂等重放。"""
+
+    def __init__(self, code: str, message: str) -> None:
+        super().__init__(message)
+        self.code = code
 
 
 @dataclass
@@ -80,6 +89,47 @@ def _scope_json(value: Mapping[str, Any] | dict) -> dict:
     if hasattr(value, "model_dump"):
         return value.model_dump(mode="json")
     return dict(value)
+
+
+def _canonical(value: Any) -> str:
+    return json.dumps(value, sort_keys=True, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
+
+
+def _check_run_identity(
+    rec: DiagnosisRunRecord,
+    *,
+    user_id: str,
+    pipeline_id: str,
+    max_rounds: int,
+    max_tool_calls: int,
+) -> None:
+    if (
+        rec.user_id != user_id
+        or rec.pipeline_id != pipeline_id
+        or int(rec.max_rounds) != int(max_rounds)
+        or int(rec.max_tool_calls) != int(max_tool_calls)
+    ):
+        raise InvestigationConflict("run_id_conflict", "run_id 已绑定不同的诊断身份")
+
+
+def _check_task_identity(
+    rec: InvestigationTaskRecord,
+    *,
+    run_id: str,
+    round_index: int,
+    component: str,
+    question: str,
+    log_scope: Mapping[str, Any],
+) -> None:
+    incoming = _scope_json(log_scope)
+    if (
+        rec.run_id != run_id
+        or int(rec.round_index) != int(round_index)
+        or rec.component != component
+        or rec.question != question
+        or _canonical(rec.log_scope) != _canonical(incoming)
+    ):
+        raise InvestigationConflict("investigation_id_conflict", "investigation_id 已绑定不同的调查载荷")
 
 
 class InvestigationJournal:
@@ -188,6 +238,14 @@ class MemoryInvestigationJournal(InvestigationJournal):
                     updated_at=stamp,
                 )
                 self._runs[run_id] = rec
+            else:
+                _check_run_identity(
+                    rec,
+                    user_id=user_id,
+                    pipeline_id=pipeline_id,
+                    max_rounds=max_rounds,
+                    max_tool_calls=max_tool_calls,
+                )
             return copy.deepcopy(rec)
 
     def update_run(
@@ -248,6 +306,15 @@ class MemoryInvestigationJournal(InvestigationJournal):
                     updated_at=stamp,
                 )
                 self._tasks[investigation_id] = rec
+            else:
+                _check_task_identity(
+                    rec,
+                    run_id=run_id,
+                    round_index=round_index,
+                    component=component,
+                    question=question,
+                    log_scope=log_scope,
+                )
             return copy.deepcopy(rec)
 
     def get_task(self, investigation_id: str) -> InvestigationTaskRecord | None:
@@ -315,10 +382,7 @@ class MemoryInvestigationJournal(InvestigationJournal):
             rec.error_code = ""
             rec.lease_until = 0
             rec.updated_at = _now()
-            run = self._runs.get(rec.run_id)
-            if run is not None:
-                run.used_tool_calls += max(0, int(tool_calls))
-                run.updated_at = rec.updated_at
+            _ = tool_calls
             return True
 
     def finish_failed(self, investigation_id: str, owner_token: str, error_code: str) -> bool:
@@ -424,6 +488,13 @@ class PostgresInvestigationJournal(InvestigationJournal):
                 rec = self._decode_run(row)
                 if rec is None:
                     raise InvestigationJournalError("无法创建 diagnosis_run")
+                _check_run_identity(
+                    rec,
+                    user_id=user_id,
+                    pipeline_id=pipeline_id,
+                    max_rounds=max_rounds,
+                    max_tool_calls=max_tool_calls,
+                )
                 return rec
         except InvestigationJournalError:
             raise
@@ -516,6 +587,14 @@ class PostgresInvestigationJournal(InvestigationJournal):
                 )
                 if rec is None:
                     raise InvestigationJournalError("无法创建 investigation_task")
+                _check_task_identity(
+                    rec,
+                    run_id=run_id,
+                    round_index=round_index,
+                    component=component,
+                    question=question,
+                    log_scope=log_scope,
+                )
                 return rec
         except InvestigationJournalError:
             raise
@@ -622,12 +701,7 @@ class PostgresInvestigationJournal(InvestigationJournal):
                 ).fetchone()
                 if row is None:
                     return False
-                if tool_calls:
-                    conn.execute(
-                        "UPDATE diagnosis_run SET used_tool_calls=used_tool_calls+%s, updated_at=now() "
-                        "WHERE run_id=%s",
-                        (max(0, int(tool_calls)), row["run_id"]),
-                    )
+                _ = tool_calls
                 return True
         except Exception as exc:
             raise InvestigationJournalError("无法完成调查任务") from exc

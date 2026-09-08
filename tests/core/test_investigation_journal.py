@@ -5,6 +5,7 @@ from __future__ import annotations
 import pytest
 
 from work_agent.core.investigation_journal import (
+    InvestigationConflict,
     InvestigationInProgress,
     MemoryInvestigationJournal,
 )
@@ -45,7 +46,8 @@ def test_claim_finish_and_replay_does_not_new_attempt():
     assert claimed.status == "RUNNING"
     assert claimed.attempt == 1
     assert claimed.execution_id
-    assert journal.finish_succeeded("inv-1", claimed.owner_token, "sha256_" + "a" * 64, tool_calls=2)
+    journal.add_used_tool_calls("run-1", 2)
+    assert journal.finish_succeeded("inv-1", claimed.owner_token, "sha256_" + "a" * 64)
     run = journal.get_run("run-1")
     assert run is not None
     assert run.used_tool_calls == 2
@@ -146,3 +148,101 @@ def test_old_execution_cannot_restart_loop():
     )
     assert result.messages[-1].content == "新 attempt"
     assert fresh.get("loop/start") is not None
+
+
+def test_ensure_run_same_intent_is_idempotent():
+    journal = _journal()
+    again = journal.ensure_run(
+        "run-1",
+        user_id="user-1",
+        pipeline_id="p1",
+        max_rounds=3,
+        max_tool_calls=24,
+    )
+    assert again.run_id == "run-1"
+    assert again.pipeline_id == "p1"
+
+
+def test_ensure_run_rejects_different_identity():
+    journal = _journal()
+    with pytest.raises(InvestigationConflict, match="run_id") as err:
+        journal.ensure_run(
+            "run-1",
+            user_id="other",
+            pipeline_id="p1",
+            max_rounds=3,
+            max_tool_calls=24,
+        )
+    assert err.value.code == "run_id_conflict"
+    with pytest.raises(InvestigationConflict):
+        journal.ensure_run(
+            "run-1",
+            user_id="user-1",
+            pipeline_id="p2",
+            max_rounds=3,
+            max_tool_calls=24,
+        )
+    with pytest.raises(InvestigationConflict):
+        journal.ensure_run(
+            "run-1",
+            user_id="user-1",
+            pipeline_id="p1",
+            max_rounds=9,
+            max_tool_calls=24,
+        )
+
+
+def test_persist_pending_same_payload_is_idempotent():
+    journal = _journal()
+    first = journal.get_task("inv-1")
+    again = journal.persist_pending(
+        investigation_id="inv-1",
+        run_id="run-1",
+        round_index=1,
+        component="bbh",
+        question="时钟",
+        log_scope={"pipeline_id": "p1", "component": "bbh", "tail_lines": 200},
+    )
+    assert first is not None
+    assert again.investigation_id == first.investigation_id
+    assert again.status == first.status
+
+
+def test_persist_pending_rejects_different_payload():
+    journal = _journal()
+    with pytest.raises(InvestigationConflict, match="investigation_id") as err:
+        journal.persist_pending(
+            investigation_id="inv-1",
+            run_id="run-1",
+            round_index=1,
+            component="bbh",
+            question="另一问题",
+            log_scope={"pipeline_id": "p1", "component": "bbh", "tail_lines": 200},
+        )
+    assert err.value.code == "investigation_id_conflict"
+    with pytest.raises(InvestigationConflict):
+        journal.persist_pending(
+            investigation_id="inv-1",
+            run_id="run-1",
+            round_index=2,
+            component="bbh",
+            question="时钟",
+            log_scope={"pipeline_id": "p1", "component": "bbh", "tail_lines": 200},
+        )
+    with pytest.raises(InvestigationConflict):
+        journal.persist_pending(
+            investigation_id="inv-1",
+            run_id="run-1",
+            round_index=1,
+            component="bbh",
+            question="时钟",
+            log_scope={"pipeline_id": "p1", "component": "bbh", "tail_lines": 800},
+        )
+
+
+def test_finish_succeeded_does_not_add_tool_quota():
+    journal = _journal()
+    journal.add_used_tool_calls("run-1", 3)
+    claimed = journal.claim("inv-1", timeout_seconds=10)
+    assert journal.finish_succeeded("inv-1", claimed.owner_token, "ref", tool_calls=9)
+    assert journal.get_run("run-1").used_tool_calls == 3

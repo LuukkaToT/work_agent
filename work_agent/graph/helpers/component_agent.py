@@ -64,6 +64,7 @@ def run_component_investigation(
     extract_model: BaseChatModel | None = None,
     loop_fn: Callable[..., Any] | None = None,
     deadline: Deadline | None = None,
+    on_tool_start: Callable[[], None] | None = None,
 ) -> tuple[ComponentReport, list[Evidence], TokenUsage, list[dict[str, Any]]]:
     """
     跑一次组件调查。
@@ -76,6 +77,7 @@ def run_component_investigation(
         model / extract_model: 注入用；None 分别用推理模型与快模型。
         loop_fn: 注入 ``run_agent_loop``；单测可替换。
         deadline: 可选截止；None 时按任务超时新建。父线程超时先 cancel 再返回。
+        on_tool_start: 透传给循环；白名单工具真正发起前记账。
 
     返回:
         (报告, 证据列表, token 用量, 工具轨迹)。
@@ -112,6 +114,7 @@ def run_component_investigation(
             history_max_chars=task.budget.history_max_chars,
             transcript=transcript,
             deadline=live_deadline,
+            on_tool_start=on_tool_start,
         )
         return loop, loop.usage
 
@@ -158,13 +161,19 @@ def run_component_investigation(
 
 
 def _call_loop(runner: Callable[..., Any], **kwargs: Any) -> Any:
-    """向循环注入 deadline；旧的测试替身若不接受该参数则退回原调用。"""
+    """向循环注入可选参数；旧的测试替身若不接受则逐个去掉再试。"""
+    optional = ("deadline", "on_tool_start")
     try:
         return runner(**kwargs)
     except TypeError as exc:
-        if "deadline" in kwargs and "deadline" in str(exc):
-            kwargs.pop("deadline", None)
-            return runner(**kwargs)
+        message = str(exc)
+        dropped = False
+        for name in optional:
+            if name in kwargs and name in message:
+                kwargs.pop(name, None)
+                dropped = True
+        if dropped:
+            return _call_loop(runner, **kwargs)
         raise
 
 
