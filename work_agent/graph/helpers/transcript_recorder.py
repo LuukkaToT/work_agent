@@ -15,6 +15,7 @@ from typing import Any, Mapping, Sequence
 from langchain_core.messages import BaseMessage, messages_from_dict, messages_to_dict
 
 from work_agent.core.transcript import Transcript, TranscriptError
+from work_agent.graph.helpers.deadline import Deadline, DeadlineExceeded, invoke_with_deadline
 
 
 def message_payload(messages: Sequence[BaseMessage]) -> list[dict[str, Any]]:
@@ -42,10 +43,12 @@ class TranscriptRecorder:
     参数:
         transcript: 已经由宿主绑定用户、任务、agent 和本次执行 ID 的历史流。
             模型提供的参数不能改变这些范围。
+        deadline: 可选截止。已取消后禁止再写成功的模型响应和工具结果。
     """
 
-    def __init__(self, transcript: Transcript) -> None:
+    def __init__(self, transcript: Transcript, deadline: Deadline | None = None) -> None:
         self.transcript = transcript
+        self.deadline = deadline
 
     def messages(
         self,
@@ -63,7 +66,10 @@ class TranscriptRecorder:
         异常:
             TranscriptError: 正文或事件落库失败。原文已写但事件未提交时可能留下
                 未被引用的正文，不能据此宣称工具执行已完成；重试写入可内容去重。
+            DeadlineExceeded: 调查已取消或到期，成功结果不得再写入。
         """
+        if self.deadline is not None:
+            self.deadline.check()
         ref = self.transcript.put_json(message_payload(messages))
         self.transcript.record(
             event_id,
@@ -104,13 +110,17 @@ class TranscriptRecorder:
         """
         self.messages(f"{invocation_id}/input", "model_input", messages, metadata=metadata)
         try:
-            result = model.invoke(messages)
+            result = invoke_with_deadline(model, messages, self.deadline)
+        except DeadlineExceeded:
+            raise
         except TranscriptError:
             raise
         except Exception as exc:
             self.failure(f"{invocation_id}/failure", exc, stage="model")
             raise
 
+        if self.deadline is not None:
+            self.deadline.check()
         if isinstance(result, BaseMessage):
             self.messages(f"{invocation_id}/response", "model_response", [result])
         elif isinstance(result, dict):

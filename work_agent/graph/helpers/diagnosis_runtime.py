@@ -19,6 +19,13 @@ from langchain_core.messages import HumanMessage, SystemMessage
 
 from work_agent.core.components import get_component
 from work_agent.core.config import get_settings
+from work_agent.core.investigation_journal import (
+    InvestigationInProgress,
+    InvestigationJournal,
+    InvestigationTaskRecord,
+    MemoryInvestigationJournal,
+    PostgresInvestigationJournal,
+)
 from work_agent.core.llm import get_reasoning_model
 from work_agent.core.transcript import (
     MemoryTranscriptStore,
@@ -104,7 +111,11 @@ class DiagnosisBudget:
 
 @dataclass
 class DiagnosisSession:
-    """一次并行诊断的可变状态；不写入图 checkpoint。"""
+    """一次并行诊断的可变状态；不写入图 checkpoint。
+
+    调查进度由 InvestigationJournal 持久化：SUCCEEDED 回放 result_ref，
+    EXPIRED 换新 execution_id 重跑。本对象只是本进程内的工作副本。
+    """
 
     reports: dict[str, ComponentReport] = field(default_factory=dict)
     tasks: dict[str, InvestigationTask] = field(default_factory=dict)
@@ -281,11 +292,13 @@ def run_component_diagnosis(
     investigate_fn: InvestigateFn | None = None,
     reasoning_model: BaseChatModel | None = None,
     compressor: Any = None,
+    journal: InvestigationJournal | None = None,
 ) -> Any:
     """
     并行组件诊断内核，供 ``run_diagnosis`` 与 eval 注入。
 
     新引擎强制 transcript。主 ReAct 只看报告摘要、证据引用和缺口。
+    调查任务走 journal：同一 run_id 恢复时 SUCCEEDED 不重跑，EXPIRED 换 attempt。
     """
     from work_agent.graph.nodes.error_analysis import DiagnosisResult, diagnosis_conclusion
 
@@ -305,15 +318,28 @@ def run_component_diagnosis(
         user_id=user_id, task_id=run_id, injected=transcript
     )
     store = main_transcript.store_backend
+    live_journal = _bind_journal(journal, store)
     recorder = TranscriptRecorder(main_transcript)
     pipeline_id = _first_pipeline_id(pipelines)
     version_tag = _version_tag(pipelines)
     diagnosis_task_id = _scope_id(run_id, "adhoc")
+    prior_run = live_journal.get_run(diagnosis_task_id)
+    live_journal.ensure_run(
+        diagnosis_task_id,
+        user_id=_scope_id(user_id, "anonymous"),
+        pipeline_id=pipeline_id,
+        max_rounds=budget.max_rounds,
+        max_tool_calls=budget.max_tool_calls,
+    )
 
     overview, init_calls, init_trace = _init_overview(
         pipeline_id, scenario=scenario, transcript=main_transcript
     )
-    budget.charge(init_calls)
+    if prior_run is None:
+        budget.charge(init_calls)
+        live_journal.add_used_tool_calls(diagnosis_task_id, init_calls)
+    else:
+        budget.used_tool_calls = prior_run.used_tool_calls
     session.tool_trace.extend(init_trace)
     recorder.messages(
         "diagnosis/start",
@@ -322,13 +348,31 @@ def run_component_diagnosis(
         metadata={"pipeline_id": pipeline_id, "engine": "component_parallel"},
     )
 
-    runner = investigate_fn or _make_default_runner(
+    inner_runner = investigate_fn or _make_default_runner(
         store=store,
         main_scope=main_transcript.scope,
         scenario=scenario,
         user_id=user_id,
     )
+    runner = _wrap_journal_runner(
+        inner_runner,
+        journal=live_journal,
+        store=store,
+        main_scope=main_transcript.scope,
+    )
     decide = decide_fn or _make_llm_decide(reasoning_model or get_reasoning_model(temperature=0))
+
+    recovered_usage = _restore_from_journal(
+        journal=live_journal,
+        run_id=diagnosis_task_id,
+        store=store,
+        main_scope=main_transcript.scope,
+        session=session,
+        budget=budget,
+        runner=runner,
+    )
+    usage = usage + recovered_usage
+    _sync_budget(budget, live_journal, diagnosis_task_id)
 
     stop_reason = "max_rounds"
     last_decision = MainDecision(action="insufficient_evidence", stop_reason="max_rounds")
@@ -384,6 +428,7 @@ def run_component_diagnosis(
         )
         _merge_hypotheses(session, last_decision.hypotheses)
 
+        live_journal.update_run(diagnosis_task_id, current_round=round_index)
         if last_decision.action != "investigate":
             stop_reason = last_decision.stop_reason or last_decision.action
             break
@@ -394,6 +439,7 @@ def run_component_diagnosis(
             )
             break
 
+        reuse_ids = _succeeded_ids_by_fingerprint(live_journal, diagnosis_task_id)
         tasks = allocate_task_budget(
             last_decision.investigations[: budget.max_workers],
             budget=budget,
@@ -402,6 +448,12 @@ def run_component_diagnosis(
             round_index=round_index,
             version_tag=version_tag,
         )
+        tasks = [
+            task.model_copy(update={"investigation_id": reuse_ids[task.fingerprint()]})
+            if task.fingerprint() in reuse_ids
+            else task
+            for task in tasks
+        ]
         runnable: list[InvestigationTask] = []
         for task in tasks:
             cached = session.reports.get(task.investigation_id)
@@ -412,6 +464,14 @@ def run_component_diagnosis(
             if reason == "duplicate":
                 session.skipped.append(f"duplicate:{task.component}:{task.question}")
                 continue
+            live_journal.persist_pending(
+                investigation_id=task.investigation_id,
+                run_id=diagnosis_task_id,
+                round_index=task.round_index,
+                component=task.component,
+                question=task.question,
+                log_scope=task.log_scope.model_dump(mode="json"),
+            )
             session.tasks[task.investigation_id] = task
             runnable.append(task)
         if not runnable:
@@ -432,12 +492,12 @@ def run_component_diagnosis(
         )
         for (report, evidences, inv_usage, trace), task in zip(results, runnable):
             usage = usage + inv_usage
-            budget.charge(report.tool_calls)
             session.reports[report.investigation_id] = report
             session.tasks[task.investigation_id] = task
             session.tool_trace.extend(trace)
             for item in evidences:
                 session.evidence[item.evidence_id] = item
+        _sync_budget(budget, live_journal, diagnosis_task_id)
         if round_index == budget.max_rounds and last_decision.action == "investigate":
             stop_reason = "max_rounds"
 
@@ -473,6 +533,7 @@ def run_component_diagnosis(
             )
         stop_reason = last_decision.stop_reason or stop_reason
 
+    _finalize_run_status(live_journal, diagnosis_task_id, last_decision, stop_reason)
     structured = _finalize_structured(last_decision, session, stop_reason)
     long_term, message = diagnosis_conclusion(structured, structured.get("conclusion") or "")
     main_transcript.record(
@@ -578,6 +639,229 @@ def _init_overview(
     return "\n\n".join(chunks), calls, trace
 
 
+def _bind_journal(
+    injected: InvestigationJournal | None,
+    store: MemoryTranscriptStore | PostgresTranscriptStore,
+) -> InvestigationJournal:
+    """Memory transcript 必须配 Memory journal，即使环境里有 POSTGRES_DSN。"""
+    if injected is not None:
+        return injected
+    if isinstance(store, MemoryTranscriptStore):
+        return MemoryInvestigationJournal()
+    if (get_settings().postgres_dsn or "").strip():
+        return PostgresInvestigationJournal()
+    return MemoryInvestigationJournal()
+
+
+def _sync_budget(budget: DiagnosisBudget, journal: InvestigationJournal, run_id: str) -> None:
+    rec = journal.get_run(run_id)
+    if rec is not None:
+        budget.used_tool_calls = rec.used_tool_calls
+
+
+def _finalize_run_status(
+    journal: InvestigationJournal,
+    run_id: str,
+    decision: MainDecision,
+    stop_reason: str,
+) -> None:
+    if decision.action == "conclude":
+        status = "succeeded"
+    elif decision.action == "insufficient_evidence" or stop_reason:
+        status = "insufficient"
+    else:
+        status = "failed"
+    journal.update_run(run_id, status=status)
+
+
+def _component_transcript(
+    store: MemoryTranscriptStore | PostgresTranscriptStore,
+    main_scope: TranscriptScope,
+    component: str,
+    execution_id: str,
+) -> Transcript:
+    return Transcript(
+        store,
+        TranscriptScope(
+            user_id=main_scope.user_id,
+            task_id=main_scope.task_id,
+            agent_id=f"component-{component}",
+            execution_id=execution_id,
+        ),
+    )
+
+
+def _persist_result(
+    store: MemoryTranscriptStore | PostgresTranscriptStore,
+    main_scope: TranscriptScope,
+    rec: InvestigationTaskRecord,
+    report: ComponentReport,
+    evidences: Sequence[Evidence],
+) -> str:
+    transcript = _component_transcript(store, main_scope, rec.component, rec.execution_id)
+    ref = transcript.put_json(
+        {
+            "report": report.model_dump(mode="json"),
+            "evidences": [item.model_dump(mode="json") for item in evidences],
+        }
+    )
+    return ref.artifact_id
+
+
+def _replay_result(
+    store: MemoryTranscriptStore | PostgresTranscriptStore,
+    main_scope: TranscriptScope,
+    rec: InvestigationTaskRecord,
+) -> tuple[ComponentReport, list[Evidence], TokenUsage, list[dict[str, Any]]]:
+    transcript = _component_transcript(store, main_scope, rec.component, rec.execution_id)
+    payload = transcript.read_json(rec.result_ref)
+    report = ComponentReport.model_validate(payload["report"])
+    evidences = [Evidence.model_validate(item) for item in payload.get("evidences") or []]
+    return report, evidences, TokenUsage(), [{"type": "replay", "name": "result_ref"}]
+
+
+def _task_from_record(rec: InvestigationTaskRecord, budget: DiagnosisBudget) -> InvestigationTask:
+    scope = LogScope.model_validate(rec.log_scope)
+    return InvestigationTask(
+        investigation_id=rec.investigation_id,
+        diagnosis_task_id=rec.run_id,
+        round_index=rec.round_index,
+        component=rec.component,
+        question=rec.question,
+        pipeline_id=scope.pipeline_id,
+        log_scope=scope,
+        budget=InvestigationBudget(
+            max_steps=budget.component_max_steps,
+            timeout_seconds=budget.component_timeout_seconds,
+        ),
+        execution_id=rec.execution_id,
+        owner_token=rec.owner_token,
+    )
+
+
+def _succeeded_ids_by_fingerprint(journal: InvestigationJournal, run_id: str) -> dict[str, str]:
+    out: dict[str, str] = {}
+    for rec in journal.list_tasks(run_id):
+        if rec.status != "SUCCEEDED":
+            continue
+        try:
+            task = _task_from_record(rec, DiagnosisBudget())
+        except Exception:  # noqa: BLE001
+            continue
+        out[task.fingerprint()] = rec.investigation_id
+    return out
+
+
+def _timeout_report(task: InvestigationTask, *, findings: str) -> ComponentReport:
+    return ComponentReport(
+        investigation_id=task.investigation_id,
+        component=task.component,
+        status="timeout",
+        findings=[findings],
+        coverage=f"pipeline={task.pipeline_id} component={task.component}",
+        missing=["调查未能在租约内完成"],
+    )
+
+
+def _wrap_journal_runner(
+    inner: InvestigateFn,
+    *,
+    journal: InvestigationJournal,
+    store: MemoryTranscriptStore | PostgresTranscriptStore,
+    main_scope: TranscriptScope,
+) -> InvestigateFn:
+    def _run(task: InvestigationTask) -> tuple[ComponentReport, list[Evidence], TokenUsage, list[dict[str, Any]]]:
+        rec = journal.get_task(task.investigation_id)
+        if rec is None:
+            rec = journal.persist_pending(
+                investigation_id=task.investigation_id,
+                run_id=task.diagnosis_task_id,
+                round_index=task.round_index,
+                component=task.component,
+                question=task.question,
+                log_scope=task.log_scope.model_dump(mode="json"),
+            )
+        if rec.status == "SUCCEEDED" and rec.result_ref:
+            return _replay_result(store, main_scope, rec)
+        try:
+            rec = journal.claim(task.investigation_id, timeout_seconds=task.budget.timeout_seconds)
+        except InvestigationInProgress:
+            return (
+                _timeout_report(task, findings="调查仍被其他租约占用"),
+                [],
+                TokenUsage(),
+                [],
+            )
+        if rec.status == "SUCCEEDED" and rec.result_ref:
+            return _replay_result(store, main_scope, rec)
+        live = task.model_copy(update={"execution_id": rec.execution_id, "owner_token": rec.owner_token})
+        try:
+            report, evidences, usage, trace = inner(live)
+        except Exception:
+            journal.finish_failed(rec.investigation_id, rec.owner_token, "exception")
+            raise
+        if report.status == "timeout":
+            expired = journal.expire_owned(rec.investigation_id, rec.owner_token)
+            if not expired:
+                latest = journal.get_task(rec.investigation_id)
+                if latest is not None and latest.status == "SUCCEEDED" and latest.result_ref:
+                    return _replay_result(store, main_scope, latest)
+            return report, evidences, usage, trace
+        try:
+            result_ref = _persist_result(store, main_scope, rec, report, evidences)
+        except Exception:
+            journal.finish_failed(rec.investigation_id, rec.owner_token, "result_ref")
+            raise
+        if not journal.finish_succeeded(
+            rec.investigation_id, rec.owner_token, result_ref, tool_calls=report.tool_calls
+        ):
+            latest = journal.get_task(rec.investigation_id)
+            if latest is not None and latest.status == "SUCCEEDED" and latest.result_ref:
+                return _replay_result(store, main_scope, latest)
+        return report, evidences, usage, trace
+
+    return _run
+
+
+def _restore_from_journal(
+    *,
+    journal: InvestigationJournal,
+    run_id: str,
+    store: MemoryTranscriptStore | PostgresTranscriptStore,
+    main_scope: TranscriptScope,
+    session: DiagnosisSession,
+    budget: DiagnosisBudget,
+    runner: InvestigateFn,
+) -> TokenUsage:
+    """回放 SUCCEEDED，只重跑 PENDING / EXPIRED。"""
+    journal.expire_stale(run_id)
+    incomplete: list[InvestigationTask] = []
+    usage = TokenUsage()
+    for rec in journal.list_tasks(run_id):
+        if rec.status == "SUCCEEDED" and rec.result_ref:
+            try:
+                report, evidences, _usage, _trace = _replay_result(store, main_scope, rec)
+            except Exception:  # noqa: BLE001
+                continue
+            session.reports[rec.investigation_id] = report
+            session.tasks[rec.investigation_id] = _task_from_record(rec, budget)
+            for item in evidences:
+                session.evidence[item.evidence_id] = item
+        elif rec.status in {"PENDING", "EXPIRED"}:
+            incomplete.append(_task_from_record(rec, budget))
+    if not incomplete:
+        return usage
+    results = run_parallel_investigations(incomplete, runner, max_workers=budget.max_workers)
+    for (report, evidences, inv_usage, trace), task in zip(results, incomplete):
+        usage = usage + inv_usage
+        session.reports[report.investigation_id] = report
+        session.tasks[task.investigation_id] = task
+        session.tool_trace.extend(trace)
+        for item in evidences:
+            session.evidence[item.evidence_id] = item
+    return usage
+
+
 def _make_default_runner(
     *,
     store: MemoryTranscriptStore | PostgresTranscriptStore,
@@ -590,7 +874,7 @@ def _make_default_runner(
             user_id=main_scope.user_id,
             task_id=main_scope.task_id,
             agent_id=f"component-{task.component}",
-            execution_id=task.investigation_id,
+            execution_id=(task.execution_id or "").strip() or task.investigation_id,
         )
         return run_component_investigation(
             task,

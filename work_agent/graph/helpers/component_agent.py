@@ -1,8 +1,8 @@
 """
 组件 Agent：对一条 InvestigationTask 跑范围锁定的 ReAct。
 
-独立 transcript（agent_id=component，execution_id=investigation_id）。
-已知工具失败记为观察；程序异常上抛。超时产出缺失报告，不拖死整轮。
+独立 transcript（agent_id=component-{id}，execution_id 必须是本 attempt 的新 ID）。
+已知工具失败记为观察；程序异常上抛。超时先 cancel Deadline，产出缺失报告，不拖死整轮。
 """
 
 from __future__ import annotations
@@ -21,6 +21,7 @@ from work_agent.core.llm import get_fast_model, get_reasoning_model
 from work_agent.core.transcript import Transcript
 from work_agent.core.usage import TokenUsage, usage_from_message
 from work_agent.graph.helpers.agent_loop import run_agent_loop
+from work_agent.graph.helpers.deadline import Deadline, DeadlineExceeded
 from work_agent.graph.helpers.diagnose_tools import build_scoped_diagnose_tools
 from work_agent.graph.helpers.diagnosis_models import (
     ComponentReport,
@@ -62,6 +63,7 @@ def run_component_investigation(
     model: BaseChatModel | None = None,
     extract_model: BaseChatModel | None = None,
     loop_fn: Callable[..., Any] | None = None,
+    deadline: Deadline | None = None,
 ) -> tuple[ComponentReport, list[Evidence], TokenUsage, list[dict[str, Any]]]:
     """
     跑一次组件调查。
@@ -70,14 +72,16 @@ def run_component_investigation(
         task: 派发前已生成 ID、已锁定范围的任务。
         scenario: mock 故障场景。
         user_id: 工号，仅透传给只读工具。
-        transcript: 本调查独立历史流，必须已经绑定 execution_id=investigation_id。
+        transcript: 本调查独立历史流，必须已经绑定本 attempt 的 execution_id。
         model / extract_model: 注入用；None 分别用推理模型与快模型。
         loop_fn: 注入 ``run_agent_loop``；单测可替换。
+        deadline: 可选截止；None 时按任务超时新建。父线程超时先 cancel 再返回。
 
     返回:
         (报告, 证据列表, token 用量, 工具轨迹)。
     """
     started = time.perf_counter()
+    live_deadline = deadline or Deadline(task.budget.timeout_seconds)
     spec = get_component(task.component)
     budget = CharBudget(limit=40_000)
     tools = build_scoped_diagnose_tools(
@@ -97,7 +101,8 @@ def run_component_investigation(
     runner = loop_fn or run_agent_loop
 
     def _body() -> tuple[Any, TokenUsage]:
-        loop = runner(
+        loop = _call_loop(
+            runner,
             model=react_model,
             tools=tools,
             system=system,
@@ -106,6 +111,7 @@ def run_component_investigation(
             observation_max_chars=task.budget.tool_result_max_chars,
             history_max_chars=task.budget.history_max_chars,
             transcript=transcript,
+            deadline=live_deadline,
         )
         return loop, loop.usage
 
@@ -115,7 +121,8 @@ def run_component_investigation(
     try:
         loop, loop_usage = future.result(timeout=task.budget.timeout_seconds)
         usage = usage + loop_usage
-    except FuturesTimeout:
+    except (FuturesTimeout, DeadlineExceeded):
+        live_deadline.cancel()
         pool.shutdown(wait=False)
         elapsed_ms = int((time.perf_counter() - started) * 1000)
         report = ComponentReport(
@@ -143,10 +150,22 @@ def run_component_investigation(
         tool_calls=tool_calls,
         elapsed_ms=int((time.perf_counter() - started) * 1000),
         extract_model=extract_model,
+        deadline=live_deadline,
     )
     usage = usage + extract_usage
     transcript.put_json(report.model_dump())
     return report, evidences, usage, tool_trace
+
+
+def _call_loop(runner: Callable[..., Any], **kwargs: Any) -> Any:
+    """向循环注入 deadline；旧的测试替身若不接受该参数则退回原调用。"""
+    try:
+        return runner(**kwargs)
+    except TypeError as exc:
+        if "deadline" in kwargs and "deadline" in str(exc):
+            kwargs.pop("deadline", None)
+            return runner(**kwargs)
+        raise
 
 
 def collect_evidence(
@@ -207,20 +226,30 @@ def extract_component_report(
     tool_calls: int,
     elapsed_ms: int,
     extract_model: BaseChatModel | None = None,
+    deadline: Deadline | None = None,
 ) -> tuple[ComponentReport, TokenUsage]:
     """快模型抽报告；证据 ID 以已落盘列表为准，模型不能编造引用。"""
     fallback = _fallback_report(task, messages, evidences, tool_calls, elapsed_ms)
+    if deadline is not None:
+        try:
+            deadline.check()
+        except DeadlineExceeded:
+            return fallback, TokenUsage()
     observations = _observation_digest(messages, evidences)
     try:
         model = extract_model or get_fast_model(temperature=0)
         structured = model.with_structured_output(
             ComponentReportDraft, include_raw=True, method="function_calling"
         )
-        raw = structured.invoke(
+        from work_agent.graph.helpers.deadline import invoke_with_deadline
+
+        raw = invoke_with_deadline(
+            structured,
             [
                 SystemMessage(content=_EXTRACT_SYSTEM),
                 HumanMessage(content=observations),
-            ]
+            ],
+            deadline,
         )
         if isinstance(raw, dict):
             usage = usage_from_message(raw.get("raw"))

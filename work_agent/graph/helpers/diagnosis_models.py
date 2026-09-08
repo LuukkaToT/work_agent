@@ -123,6 +123,8 @@ class InvestigationTask(BaseModel):
     pipeline_id: str = Field(description="锁定的流水线")
     log_scope: LogScope
     budget: InvestigationBudget = Field(default_factory=InvestigationBudget)
+    execution_id: str = Field(default="", description="本 attempt 的执行 ID；claim 后写入，禁止复用旧流")
+    owner_token: str = Field(default="", description="本 attempt 的租约令牌；finish 时做 fencing")
 
     @field_validator("investigation_id", "diagnosis_task_id", "pipeline_id")
     @classmethod

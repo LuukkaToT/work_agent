@@ -6,6 +6,7 @@ import threading
 import time
 from dataclasses import replace
 
+from work_agent.core.investigation_journal import MemoryInvestigationJournal
 from work_agent.core.transcript import MemoryTranscriptStore, Transcript, TranscriptScope
 from work_agent.core.usage import TokenUsage
 from work_agent.graph.helpers.diagnosis_models import (
@@ -561,3 +562,231 @@ def test_transcript_keeps_original_and_context_is_bounded():
     assert "E-BBH-2101" in result.context_text
     assert result.context_chars == len(result.context_text)
     assert result.context_chars <= 40000
+
+
+def _seed_report(component: str, investigation_id: str, excerpt: str) -> tuple[ComponentReport, Evidence]:
+    evidence = Evidence(
+        evidence_id=f"ev-{component}-1",
+        source="log",
+        component=component,
+        artifact_id="sha256_" + "b" * 64,
+        excerpt=excerpt,
+        file=f"{component}.log",
+    )
+    report = ComponentReport(
+        investigation_id=investigation_id,
+        component=component,
+        status="ok",
+        findings=[excerpt],
+        evidence_ids=[evidence.evidence_id],
+        coverage=f"{component}.log tail=200",
+        tool_calls=1,
+    )
+    return report, evidence
+
+
+def test_crash_resume_replays_succeeded_and_reruns_expired_only():
+    scenario = "bench06_bbh_clock_unlocked"
+    pid = _start_pipeline(scenario)
+    store = MemoryTranscriptStore()
+    journal = MemoryInvestigationJournal()
+    run_id = "task-crash-1"
+    user_id = "user-1"
+    journal.ensure_run(
+        run_id,
+        user_id=user_id,
+        pipeline_id=pid,
+        max_rounds=3,
+        max_tool_calls=24,
+    )
+    journal.add_used_tool_calls(run_id, 2)
+
+    ids = {"bbh": "invbbhsucceeded000000000000000001", "bbl": "invbblsucceeded000000000000000002", "comm": "invcommexpired00000000000000003"}
+    excerpts = {
+        "bbh": "ptp_state=UNLOCKED E-BBH-2101",
+        "bbl": "activation timeout E-BBL-3112",
+        "comm": "link only",
+    }
+    old_comm_exec = ""
+    for component, inv_id in ids.items():
+        journal.persist_pending(
+            investigation_id=inv_id,
+            run_id=run_id,
+            round_index=1,
+            component=component,
+            question=f"{component} 是否异常",
+            log_scope={"pipeline_id": pid, "component": component, "tail_lines": 200, "start_ts": "missing", "end_ts": "missing", "version_tag": "27B"},
+        )
+        rec = journal.claim(inv_id, timeout_seconds=30)
+        if component == "comm":
+            old_comm_exec = rec.execution_id
+            journal.expire_owned(inv_id, rec.owner_token)
+            continue
+        report, evidence = _seed_report(component, inv_id, excerpts[component])
+        transcript = Transcript(
+            store,
+            TranscriptScope(user_id, run_id, f"component-{component}", rec.execution_id),
+        )
+        ref = transcript.put_json(
+            {"report": report.model_dump(mode="json"), "evidences": [evidence.model_dump(mode="json")]}
+        )
+        assert journal.finish_succeeded(inv_id, rec.owner_token, ref.artifact_id, tool_calls=1)
+
+    calls: list[tuple[str, str]] = []
+
+    def runner(task: InvestigationTask):
+        calls.append((task.component, task.execution_id))
+        report, evidence = _seed_report(task.component, task.investigation_id, "COMM 重跑命中")
+        return report, [evidence], TokenUsage(), [{"type": "call", "name": "fetch_logs"}]
+
+    def decide(snapshot: dict) -> MainDecision:
+        reports = snapshot.get("reports") or []
+        if len(reports) >= 3:
+            return MainDecision(
+                action="conclude",
+                fail_kind="env",
+                root_component="bbh",
+                evidence="ptp_state=UNLOCKED",
+                evidence_ids=snapshot["known_evidence_ids"],
+                conclusion="BBH/BBL 回放，COMM 仅重跑",
+                suggestion="修时钟",
+                stop_reason="evidence_sufficient",
+            )
+        return MainDecision(
+            action="investigate",
+            investigations=[
+                InvestigateSpec(component="bbh", question="bbh 是否异常"),
+                InvestigateSpec(component="bbl", question="bbl 是否异常"),
+                InvestigateSpec(component="comm", question="comm 是否异常"),
+            ],
+        )
+
+    recover = Transcript(
+        store,
+        TranscriptScope(user_id, run_id, "diagnose-main", "main-exec-recover-1"),
+    )
+    result = run_component_diagnosis(
+        pipelines=[{"pipeline_id": pid, "case_names": ["c"], "version": "27B", "status": "failed"}],
+        user_input="诊断",
+        user_id=user_id,
+        scenario=scenario,
+        run_id=run_id,
+        transcript=recover,
+        decide_fn=decide,
+        investigate_fn=runner,
+        journal=journal,
+    )
+    assert [item[0] for item in calls] == ["comm"]
+    assert calls[0][1] != old_comm_exec
+    findings = "\n".join(result.structured.get("component_findings") or [])
+    assert "bbh" in findings and "bbl" in findings and "comm" in findings
+    assert "ptp_state=UNLOCKED" in result.context_text or "E-BBH-2101" in result.context_text
+    assert "COMM 重跑命中" in result.context_text or "comm" in findings
+    comm = journal.get_task(ids["comm"])
+    assert comm is not None
+    assert comm.status == "SUCCEEDED"
+    assert comm.execution_id == calls[0][1]
+    assert comm.attempt == 2
+    assert journal.get_run(run_id).used_tool_calls >= 4
+
+
+def test_timeout_report_expires_lease_not_succeeded():
+    scenario = "bench06_bbh_clock_unlocked"
+    pid = _start_pipeline(scenario)
+    journal = MemoryInvestigationJournal()
+    store = MemoryTranscriptStore()
+    run_id = "task-timeout-lease"
+    transcript = Transcript(
+        store,
+        TranscriptScope("user-1", run_id, "diagnose-main", "main-timeout-1"),
+    )
+
+    def runner(task: InvestigationTask):
+        return (
+            _report(task.component, status="timeout", investigation_id=task.investigation_id, missing=["超时"]),
+            [],
+            TokenUsage(),
+            [],
+        )
+
+    def decide(snapshot: dict) -> MainDecision:
+        if snapshot["round"] == 1 and not snapshot.get("reports"):
+            return MainDecision(
+                action="investigate",
+                investigations=[InvestigateSpec(component="bbh", question="时钟")],
+            )
+        return MainDecision(
+            action="insufficient_evidence",
+            stop_reason="timeout",
+            missing_info=["组件超时"],
+        )
+
+    run_component_diagnosis(
+        pipelines=[{"pipeline_id": pid, "case_names": ["c"], "version": "27B", "status": "failed"}],
+        user_input="诊断",
+        user_id="user-1",
+        scenario=scenario,
+        run_id=run_id,
+        transcript=transcript,
+        decide_fn=decide,
+        investigate_fn=runner,
+        journal=journal,
+    )
+    tasks = journal.list_tasks(run_id)
+    assert tasks
+    assert tasks[0].status == "EXPIRED"
+    assert tasks[0].result_ref == ""
+
+
+def test_claimed_execution_id_differs_from_investigation_id():
+    scenario = "bench06_bbh_clock_unlocked"
+    pid = _start_pipeline(scenario)
+    journal = MemoryInvestigationJournal()
+    seen: list[InvestigationTask] = []
+
+    def runner(task: InvestigationTask):
+        seen.append(task)
+        return (
+            _report(task.component, investigation_id=task.investigation_id, tool_calls=1),
+            [_evidence(f"ev-{task.component}-1", task.component, "hit", artifact="sha256_" + "e" * 64)],
+            TokenUsage(),
+            [],
+        )
+
+    def decide(snapshot: dict) -> MainDecision:
+        if snapshot["round"] == 1:
+            return MainDecision(
+                action="investigate",
+                investigations=[InvestigateSpec(component="bbh", question="时钟")],
+            )
+        return MainDecision(
+            action="conclude",
+            fail_kind="env",
+            root_component="bbh",
+            evidence_ids=snapshot["known_evidence_ids"],
+            conclusion="ok",
+            stop_reason="evidence_sufficient",
+        )
+
+    run_component_diagnosis(
+        pipelines=[{"pipeline_id": pid, "case_names": ["c"], "version": "27B", "status": "failed"}],
+        user_input="诊断",
+        user_id="user-1",
+        scenario=scenario,
+        run_id="task-exec-id",
+        transcript=Transcript(
+            MemoryTranscriptStore(),
+            TranscriptScope("user-1", "task-exec-id", "diagnose-main", "main-exec-id-1"),
+        ),
+        decide_fn=decide,
+        investigate_fn=runner,
+        journal=journal,
+    )
+    assert seen
+    assert seen[0].execution_id
+    assert seen[0].execution_id != seen[0].investigation_id
+    rec = journal.get_task(seen[0].investigation_id)
+    assert rec is not None
+    assert rec.execution_id == seen[0].execution_id
+    assert rec.status == "SUCCEEDED"
+

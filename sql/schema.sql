@@ -62,3 +62,37 @@ CREATE TABLE IF NOT EXISTS ci_cases (
     logic_topology_id BIGINT REFERENCES logic_topologies(id),
     owner TEXT NOT NULL DEFAULT ''
 );
+
+CREATE TABLE IF NOT EXISTS diagnosis_run (
+    run_id TEXT PRIMARY KEY CHECK (length(btrim(run_id)) > 0),
+    user_id VARCHAR(256) NOT NULL DEFAULT '',
+    pipeline_id VARCHAR(256) NOT NULL CHECK (length(btrim(pipeline_id)) > 0),
+    status TEXT NOT NULL DEFAULT 'running'
+        CHECK (status IN ('running', 'succeeded', 'failed', 'insufficient')),
+    current_round INTEGER NOT NULL DEFAULT 0 CHECK (current_round >= 0),
+    max_rounds INTEGER NOT NULL CHECK (max_rounds >= 1),
+    max_tool_calls INTEGER NOT NULL CHECK (max_tool_calls >= 0),
+    used_tool_calls INTEGER NOT NULL DEFAULT 0 CHECK (used_tool_calls >= 0),
+    orchestrator_ref TEXT NOT NULL DEFAULT '',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS investigation_task (
+    investigation_id TEXT PRIMARY KEY CHECK (length(btrim(investigation_id)) > 0),
+    run_id TEXT NOT NULL REFERENCES diagnosis_run(run_id) ON DELETE CASCADE,
+    round_index INTEGER NOT NULL CHECK (round_index >= 1),
+    component VARCHAR(32) NOT NULL CHECK (length(btrim(component)) > 0),
+    question TEXT NOT NULL CHECK (length(btrim(question)) > 0),
+    log_scope JSONB NOT NULL CHECK (jsonb_typeof(log_scope) = 'object'),
+    status TEXT NOT NULL DEFAULT 'PENDING'
+        CHECK (status IN ('PENDING', 'RUNNING', 'SUCCEEDED', 'FAILED', 'EXPIRED')),
+    attempt INTEGER NOT NULL DEFAULT 0 CHECK (attempt >= 0),
+    owner_token TEXT NOT NULL DEFAULT '',
+    lease_until DOUBLE PRECISION NOT NULL DEFAULT 0,
+    execution_id TEXT NOT NULL DEFAULT '',
+    result_ref TEXT NOT NULL DEFAULT '',
+    error_code TEXT NOT NULL DEFAULT '',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);

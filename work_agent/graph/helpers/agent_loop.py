@@ -36,6 +36,7 @@ from work_agent.graph.helpers.context_budget import (
     compress_observation,
 )
 from work_agent.graph.helpers.context_selector import PIN_NORMAL, ContextItem
+from work_agent.graph.helpers.deadline import Deadline, DeadlineExceeded
 from work_agent.graph.helpers.progress import report_progress
 
 if TYPE_CHECKING:
@@ -236,6 +237,7 @@ def run_agent_loop(
     archive: Archive | None = None,
     transcript: Transcript | None = None,
     protected_items: list[ContextItem] | None = None,
+    deadline: Deadline | None = None,
 ) -> AgentLoopResult:
     """
     执行显式 ReAct 风格循环：bind_tools -> 按名执行白名单工具 -> 压缩观察 -> 再决策。
@@ -256,6 +258,7 @@ def run_agent_loop(
             指令与引用，但不是供应商 tokenizer 的 token 上限。工具工厂也必须
             开启 preserve_raw，否则此前被工具出口截断的部分无法凭空恢复。
         protected_items: 宿主提供的反证、未解决问题等任务状态，不能由相关性裁掉。
+        deadline: 可选截止；传入时每次模型/工具调用前检查，超时后不再写成功结果。
 
     返回:
         AgentLoopResult；旧模式保持压缩 observation 的兼容行为，transcript 模式
@@ -287,9 +290,11 @@ def run_agent_loop(
         from work_agent.graph.helpers.context_manager import ContextManager
         from work_agent.graph.helpers.transcript_recorder import TranscriptRecorder
 
+        if deadline is not None:
+            deadline.check()
         if transcript.get("loop/start") is not None:
             raise TranscriptConflict("该历史流已经启动过，请用新的执行 ID 或从 checkpoint 恢复")
-        recorder = TranscriptRecorder(transcript)
+        recorder = TranscriptRecorder(transcript, deadline=deadline)
         schemas = [
             {"name": t.name, "description": t.description, "parameters": t.get_input_schema().model_json_schema()}
             for t in tools
@@ -347,15 +352,19 @@ def run_agent_loop(
         输入清单与消息正文在调用前提交，响应在调用后提交，崩溃时可以区分
         「尚未发起」「发起后结果不确定」和「响应已收到」，但不自行推断重试权限。
         """
+        if deadline is not None:
+            deadline.check()
         sent = compose()
         if recorder is None:
-            return selected_model.invoke(sent)
+            from work_agent.graph.helpers.deadline import invoke_with_deadline
+
+            return invoke_with_deadline(selected_model, sent, deadline)
         input_event_ids.append(f"{invocation_id}/input")
         return recorder.invoke(invocation_id, selected_model, sent, metadata=context_manifest)
 
     def finish() -> AgentLoopResult:
         """只在最后一条响应已经保存后记录循环结束，正文不回写主图状态。"""
-        if transcript is not None:
+        if transcript is not None and (deadline is None or not deadline.cancelled()):
             transcript.record("loop/end", "loop_end", {"decisions": decisions, "usage": usage.as_dict()})
         return AgentLoopResult(
             messages=_flatten(prelude, steps, tail), usage=usage, steps=decisions,
@@ -363,6 +372,8 @@ def run_agent_loop(
         )
 
     for step_index in range(max_steps):
+        if deadline is not None:
+            deadline.check()
         report_progress("status:thinking")
         invocation_id = f"react/{step_index + 1:03d}"
         ai_msg = invoke(invocation_id, bound_model)
@@ -382,6 +393,8 @@ def run_agent_loop(
         for tool_index, tc in enumerate(tool_calls, start=1):
             tool_event_id = f"{invocation_id}/tool/{tool_index:03d}"
             if transcript is not None:
+                if deadline is not None:
+                    deadline.check()
                 request = _tool_call_payload(tc)
                 request_ref = transcript.put_json(request)
                 transcript.record(
@@ -394,7 +407,10 @@ def run_agent_loop(
                     tc, tools_by_name,
                     observation_max_chars=None if transcript is not None else observation_max_chars,
                     capture_expected_errors=transcript is not None,
+                    deadline=deadline,
                 )
+            except DeadlineExceeded:
+                raise
             except Exception as exc:
                 if recorder is not None:
                     from work_agent.core.transcript import TranscriptError
@@ -403,6 +419,8 @@ def run_agent_loop(
                         recorder.failure(f"{tool_event_id}/failure", exc, stage="tool")
                 raise
             if recorder is not None:
+                if deadline is not None:
+                    deadline.check()
                 text_ref = transcript.put_text(_content_text(observation))
                 recorder.messages(
                     f"{tool_event_id}/result", "tool_result", [observation],
@@ -431,6 +449,7 @@ def execute_tool_call(
     observation_max_chars: int | None = None,
     propagate_errors: bool = False,
     capture_expected_errors: bool = False,
+    deadline: Deadline | None = None,
 ) -> ToolMessage:
     """执行一个白名单调用，区分可呈现的取证失败和必须上抛的运行时错误。
 
@@ -441,7 +460,10 @@ def execute_tool_call(
         capture_expected_errors: 新模式仅将网络、权限、参数、缺失数据等已知错误
             转成 status=error 的观察。程序异常和 transcript 写入失败必须上抛，
             不能把数据库不可用伪装成「查不到日志」。旧调用方维持原来的兼容行为。
+        deadline: 可选截止；到期则上抛 DeadlineExceeded，不当成工具失败观察。
     """
+    if deadline is not None:
+        deadline.check()
     name = call.get("name") or ""
     report_progress(f"tool:{name}")
     tool = tools_by_name.get(name)
@@ -452,6 +474,8 @@ def execute_tool_call(
     else:
         try:
             raw = tool.invoke(call.get("args") or {})
+        except DeadlineExceeded:
+            raise
         except Exception as exc:  # noqa: BLE001
             if propagate_errors:
                 raise
