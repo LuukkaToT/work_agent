@@ -1,5 +1,7 @@
 import uuid
 
+import pytest
+
 from work_agent.graph.helpers.diagnose_tools import build_diagnose_tools
 from work_agent.graph.helpers.truncate import CharBudget
 from work_agent.tools.registry import get_pipeline_tool
@@ -180,3 +182,30 @@ def _archived_item(item_id: str, text: str):
         priority=4,
         pin=PIN_NORMAL,
     )
+
+
+def test_scope_lock_tools_force_pipeline_and_reject_foreign_component():
+    from work_agent.graph.helpers.diagnose_tools import (
+        apply_tool_scope,
+        scope_lock_tools,
+    )
+
+    locked = apply_tool_scope(
+        "fetch_logs",
+        {"pipeline_id": "p1", "tail_lines": 20},
+        pipeline_id="p1",
+        component="marp",
+    )
+    assert locked["component"] == "marp"
+    tools = {
+        t.name: t
+        for t in scope_lock_tools(
+            build_diagnose_tools(scenario="case_error"),
+            pipeline_id="p1",
+            component="marp",
+            allowed_names=["fetch_logs", "grep_logs", "search_knowledge"],
+        )
+    }
+    assert set(tools) == {"fetch_logs", "grep_logs", "search_knowledge"}
+    with pytest.raises(ValueError, match="越界"):
+        tools["grep_logs"].invoke({"pipeline_id": "p1", "pattern": "x", "component": "bbh"})

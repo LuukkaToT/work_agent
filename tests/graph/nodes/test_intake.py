@@ -19,7 +19,7 @@ def test_intake_extracts_user_input_from_last_message():
     )
     assert out["user_input"] == "执行用例 case_a"
     assert out["task_id"]
-    assert len(out["task_id"]) == 8
+    assert len(out["task_id"]) == 36
 
 
 def test_intake_resets_task_fields():

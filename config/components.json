@@ -1,0 +1,61 @@
+{
+  "tools_default": [
+    "get_pipeline_status",
+    "list_log_files",
+    "fetch_logs",
+    "grep_logs",
+    "lookup_error_code",
+    "search_knowledge",
+    "fetch_archived_block"
+  ],
+  "components": [
+    {
+      "id": "comm",
+      "aliases": ["COMM", "通信", "链路", "transport"],
+      "log_component": "comm",
+      "related": ["rat", "bbh"],
+      "skill_dir": "components/comm",
+      "tools": []
+    },
+    {
+      "id": "rat",
+      "aliases": ["RAT", "无线", "小区配置", "rrc"],
+      "log_component": "rat",
+      "related": ["comm", "bbh", "bbl"],
+      "skill_dir": "components/rat",
+      "tools": []
+    },
+    {
+      "id": "bbh",
+      "aliases": ["BBH", "基带高", "时钟", "前传", "ptp"],
+      "log_component": "bbh",
+      "related": ["bbl", "comm", "rat"],
+      "skill_dir": "components/bbh",
+      "tools": []
+    },
+    {
+      "id": "bbl",
+      "aliases": ["BBL", "基带低", "激活", "订阅"],
+      "log_component": "bbl",
+      "related": ["bbh", "rat", "marp"],
+      "skill_dir": "components/bbl",
+      "tools": []
+    },
+    {
+      "id": "marp",
+      "aliases": ["MARP", "天线", "波束", "校准"],
+      "log_component": "marp",
+      "related": ["bbl", "compare"],
+      "skill_dir": "components/marp",
+      "tools": []
+    },
+    {
+      "id": "compare",
+      "aliases": ["COMPARE", "对比", "KPI", "基线"],
+      "log_component": "compare",
+      "related": ["marp", "bbh", "bbl"],
+      "skill_dir": "components/compare",
+      "tools": []
+    }
+  ]
+}

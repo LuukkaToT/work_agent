@@ -15,6 +15,9 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
+
+from httpx import HTTPError
 
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import (
@@ -34,6 +37,9 @@ from work_agent.graph.helpers.context_budget import (
 )
 from work_agent.graph.helpers.context_selector import PIN_NORMAL, ContextItem
 from work_agent.graph.helpers.progress import report_progress
+
+if TYPE_CHECKING:
+    from work_agent.core.transcript import Transcript
 
 _STOP_HINT = (
     "已达到最大步数，禁止再调用任何工具。"
@@ -165,6 +171,7 @@ class AgentLoopResult:
     steps: int  # 实际发生的模型决策轮数
     context_chars: int  # 最后一次实际发送给模型的上下文字符数
     trimmed_steps: int  # 被压缩或丢弃的 step 数
+    input_event_ids: list[str] = field(default_factory=list)  # 每轮实际输入，可按事件回读
 
 
 def trim_steps(
@@ -227,6 +234,8 @@ def run_agent_loop(
     history_max_chars: int = 0,
     step_summary_max_chars: int = _DEFAULT_STEP_SUMMARY_MAX_CHARS,
     archive: Archive | None = None,
+    transcript: Transcript | None = None,
+    protected_items: list[ContextItem] | None = None,
 ) -> AgentLoopResult:
     """
     执行显式 ReAct 风格循环：bind_tools -> 按名执行白名单工具 -> 压缩观察 -> 再决策。
@@ -242,13 +251,20 @@ def run_agent_loop(
         step_summary_max_chars: 压缩历史 step 时每条观察的字符上限。
         archive: 归档器；传入且触发历史裁剪时，被压/被丢的 step 原文落盘，
             压缩消息挂 artifact 引用，模型可用 ``fetch_archived_block`` 回读。
+        transcript: 全量历史流；传入时工具结果先保存完整正文，再由 ContextManager
+            组装副本。此模式的 history_max_chars 是整份消息的字符预算，包含固定
+            指令与引用，但不是供应商 tokenizer 的 token 上限。工具工厂也必须
+            开启 preserve_raw，否则此前被工具出口截断的部分无法凭空恢复。
+        protected_items: 宿主提供的反证、未解决问题等任务状态，不能由相关性裁掉。
 
     返回:
-        AgentLoopResult；``messages`` 是未裁剪的完整历史，可直接喂给
-        extract_tool_trace / collect_compressed_observations。
+        AgentLoopResult；旧模式保持压缩 observation 的兼容行为，transcript 模式
+        的 messages 保存完整工具结果。两者均可用于提取 trace，只有组装后的副本
+        才发给模型。跨进程回读历史不意味着从本循环中断位置恢复执行。
     """
+    if transcript is not None and (max_steps < 1 or history_max_chars <= 0):
+        raise ValueError("全量历史模式要求正数的步骤上限与上下文预算")
     tools_by_name = {t.name: t for t in tools}
-    bound_model = model.bind_tools(tools)
 
     prelude: list[BaseMessage] = [
         SystemMessage(content=system),
@@ -260,10 +276,60 @@ def run_agent_loop(
     context_chars = 0
     trimmed_total = 0
     decisions = 0
+    input_event_ids: list[str] = []
+    recorder = None
+    manager = None
+    context_manifest: dict = {}
+    if transcript is not None:
+        # 一次执行流只能启动一次。再次运行必须使用新的 execution_id，不能把旧
+        # transcript 当成执行账本，看到响应后就自行跳过工具或重置预算。
+        from work_agent.core.transcript import TranscriptConflict
+        from work_agent.graph.helpers.context_manager import ContextManager
+        from work_agent.graph.helpers.transcript_recorder import TranscriptRecorder
+
+        if transcript.get("loop/start") is not None:
+            raise TranscriptConflict("该历史流已经启动过，请用新的执行 ID 或从 checkpoint 恢复")
+        recorder = TranscriptRecorder(transcript)
+        schemas = [
+            {"name": t.name, "description": t.description, "parameters": t.get_input_schema().model_json_schema()}
+            for t in tools
+        ]
+        tools_ref = transcript.put_json(schemas)
+        recorder.messages(
+            "loop/start", "loop_start", prelude,
+            metadata={
+                "max_steps": max_steps,
+                "context_max_chars": history_max_chars,
+                "observation_max_chars": observation_max_chars,
+                "tools_ref": tools_ref.artifact_id,
+                "model_name": str(getattr(model, "model_name", getattr(model, "model", ""))),
+                "policy_version": "transcript_rules_v1",
+            },
+        )
+        manager = ContextManager(archive=transcript)
+
+    bound_model = model.bind_tools(tools)
 
     def compose() -> list[BaseMessage]:
         """拼出本次真正发给模型的消息（system/goal 恒定不裁）。"""
-        nonlocal trimmed_total, context_chars
+        nonlocal trimmed_total, context_chars, context_manifest
+        if manager is not None:
+            rendered = manager.compose_messages(
+                prelude=prelude, steps=steps, tail=tail, goal=user,
+                limit=history_max_chars, observation_max_chars=observation_max_chars,
+                protected_items=protected_items or [],
+            )
+            context_chars = rendered.context_chars
+            trimmed_total = max(trimmed_total, len(rendered.compressed_ids) + len(rendered.omitted_ids))
+            context_manifest = {
+                "policy_version": rendered.policy_version,
+                "selected_ids": rendered.selected_ids,
+                "compressed_ids": rendered.compressed_ids,
+                "omitted_ids": rendered.omitted_ids,
+                "context_chars": context_chars,
+                "context_max_chars": history_max_chars,
+            }
+            return rendered.messages
         visible, trimmed = trim_steps(
             steps,
             max_chars=history_max_chars,
@@ -275,9 +341,31 @@ def run_agent_loop(
         context_chars = sum(_message_chars(m) for m in sent)
         return sent
 
+    def invoke(invocation_id: str, selected_model) -> AIMessage:
+        """固定本次输入后再调用模型；记录失败不能被当成普通观察继续。
+
+        输入清单与消息正文在调用前提交，响应在调用后提交，崩溃时可以区分
+        「尚未发起」「发起后结果不确定」和「响应已收到」，但不自行推断重试权限。
+        """
+        sent = compose()
+        if recorder is None:
+            return selected_model.invoke(sent)
+        input_event_ids.append(f"{invocation_id}/input")
+        return recorder.invoke(invocation_id, selected_model, sent, metadata=context_manifest)
+
+    def finish() -> AgentLoopResult:
+        """只在最后一条响应已经保存后记录循环结束，正文不回写主图状态。"""
+        if transcript is not None:
+            transcript.record("loop/end", "loop_end", {"decisions": decisions, "usage": usage.as_dict()})
+        return AgentLoopResult(
+            messages=_flatten(prelude, steps, tail), usage=usage, steps=decisions,
+            context_chars=context_chars, trimmed_steps=trimmed_total, input_event_ids=input_event_ids,
+        )
+
     for step_index in range(max_steps):
         report_progress("status:thinking")
-        ai_msg = bound_model.invoke(compose())
+        invocation_id = f"react/{step_index + 1:03d}"
+        ai_msg = invoke(invocation_id, bound_model)
         usage = usage + usage_from_message(ai_msg)
         decisions += 1
 
@@ -286,40 +374,54 @@ def run_agent_loop(
             steps.append(
                 ReActStep(step_id=f"step{step_index + 1:02d}", assistant_message=ai_msg)
             )
-            return AgentLoopResult(
-                messages=_flatten(prelude, steps, tail),
-                usage=usage,
-                steps=decisions,
-                context_chars=context_chars,
-                trimmed_steps=trimmed_total,
-            )
+            return finish()
 
         step = ReActStep(
             step_id=f"step{step_index + 1:02d}", assistant_message=ai_msg
         )
-        for tc in tool_calls:
-            step.tool_messages.append(
-                execute_tool_call(
-                    tc, tools_by_name, observation_max_chars=observation_max_chars
+        for tool_index, tc in enumerate(tool_calls, start=1):
+            tool_event_id = f"{invocation_id}/tool/{tool_index:03d}"
+            if transcript is not None:
+                request = _tool_call_payload(tc)
+                request_ref = transcript.put_json(request)
+                transcript.record(
+                    f"{tool_event_id}/request", "tool_request",
+                    {"step_id": step.step_id, "tool_call_id": request.get("id"),
+                     "tool_name": request.get("name"), "request_ref": request_ref.artifact_id},
                 )
-            )
+            try:
+                observation = execute_tool_call(
+                    tc, tools_by_name,
+                    observation_max_chars=None if transcript is not None else observation_max_chars,
+                    capture_expected_errors=transcript is not None,
+                )
+            except Exception as exc:
+                if recorder is not None:
+                    from work_agent.core.transcript import TranscriptError
+
+                    if not isinstance(exc, TranscriptError):
+                        recorder.failure(f"{tool_event_id}/failure", exc, stage="tool")
+                raise
+            if recorder is not None:
+                text_ref = transcript.put_text(_content_text(observation))
+                recorder.messages(
+                    f"{tool_event_id}/result", "tool_result", [observation],
+                    metadata={"step_id": step.step_id, "tool_call_id": observation.tool_call_id,
+                              "tool_name": observation.name, "status": observation.status,
+                              "text_ref": text_ref.artifact_id},
+                )
+            step.tool_messages.append(observation)
         steps.append(step)
 
         if step_index == max_steps - 1:
             tail.append(HumanMessage(content=_STOP_HINT))
             # 用未 bind_tools 的 model：触顶后不允许再产生 tool_calls
-            final_msg = model.invoke(compose())
+            final_msg = invoke("react/final", model)
             usage = usage + usage_from_message(final_msg)
             decisions += 1
             tail.append(final_msg)
 
-    return AgentLoopResult(
-        messages=_flatten(prelude, steps, tail),
-        usage=usage,
-        steps=decisions,
-        context_chars=context_chars,
-        trimmed_steps=trimmed_total,
-    )
+    return finish()
 
 
 def execute_tool_call(
@@ -328,16 +430,24 @@ def execute_tool_call(
     *,
     observation_max_chars: int | None = None,
     propagate_errors: bool = False,
+    capture_expected_errors: bool = False,
 ) -> ToolMessage:
-    """Execute exactly one whitelisted call; online keeps its complete result.
+    """执行一个白名单调用，区分可呈现的取证失败和必须上抛的运行时错误。
 
-    Offline callers retain the historical observation/error compression API.
-    Online callers propagate failures so an unfinished call can be retried.
+    参数:
+        observation_max_chars: 旧模式的观察压缩上限；None 保存原始返回，供新模式
+            先持久化，再在 ContextManager 中投影。
+        propagate_errors: 持久化子节点可选择把全部异常上抛，由调度层决定恢复。
+        capture_expected_errors: 新模式仅将网络、权限、参数、缺失数据等已知错误
+            转成 status=error 的观察。程序异常和 transcript 写入失败必须上抛，
+            不能把数据库不可用伪装成「查不到日志」。旧调用方维持原来的兼容行为。
     """
     name = call.get("name") or ""
     report_progress(f"tool:{name}")
     tool = tools_by_name.get(name)
+    status = "success"
     if tool is None:
+        status = "error"
         observation = f"[unknown tool] {name!r} 不在白名单内，拒绝执行"
     else:
         try:
@@ -345,11 +455,29 @@ def execute_tool_call(
         except Exception as exc:  # noqa: BLE001
             if propagate_errors:
                 raise
+            if capture_expected_errors and not isinstance(
+                exc, (OSError, HTTPError, ValueError, KeyError)
+            ):
+                raise
+            status = "error"
             raw = f"[tool error] {name}: {exc}"
         observation = _content_text(raw) if isinstance(raw, ToolMessage) else str(raw)
         if observation_max_chars is not None:
             observation = compress_observation(observation, max_chars=observation_max_chars)
-    return ToolMessage(content=observation, tool_call_id=call.get("id") or "", name=name)
+    return ToolMessage(content=observation, tool_call_id=call.get("id") or "", name=name, status=status)
+
+
+def _tool_call_payload(call: object) -> dict:
+    """把供应商相关的 tool_call 对象收成可归档 JSON，不含模型客户端本身。"""
+    if isinstance(call, dict):
+        args = call.get("args") or {}
+        return {"id": call.get("id") or "", "name": call.get("name") or "", "args": args}
+    args = getattr(call, "args", None) or {}
+    return {
+        "id": getattr(call, "id", "") or "",
+        "name": getattr(call, "name", "") or "",
+        "args": args,
+    }
 
 
 def _flatten(

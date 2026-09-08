@@ -16,3 +16,10 @@ rag_top_k: 3
 rag_pool_n: 20
 rag_min_rrf_score: 0.01
 rag_use_embeddings: false
+diagnosis_engine: legacy
+diagnosis_max_workers: 3
+diagnosis_max_rounds: 3
+diagnosis_component_max_steps: 4
+diagnosis_max_tool_calls: 24
+diagnosis_timeout_seconds: 300
+diagnosis_component_timeout_seconds: 90

@@ -7,6 +7,8 @@ import json
 import pytest
 
 from work_agent.eval.runner import (
+    ALLOWED_STRATEGIES,
+    DEFAULT_STRATEGIES,
     EvalCase,
     append_records,
     evidence_recall,
@@ -270,6 +272,46 @@ def test_format_report_shows_context_delta(tmp_path):
 
 def test_format_report_handles_empty():
     assert "没有可汇总" in format_report({})
+
+
+def test_default_strategies_do_not_include_component_parallel():
+    assert DEFAULT_STRATEGIES == ("legacy", "managed")
+    assert "component_parallel" in ALLOWED_STRATEGIES
+    assert "component_parallel" not in DEFAULT_STRATEGIES
+
+
+def test_run_suite_can_select_component_parallel_without_changing_default(tmp_path):
+    seen: list[str] = []
+
+    def diagnose(**kwargs):
+        seen.append(str(kwargs.get("diagnosis_engine")))
+        return _fake_diagnose(**kwargs)
+
+    rows = run_suite(
+        cases=[_case("c1")],
+        suite="t",
+        strategies=("component_parallel",),
+        store_path=tmp_path / "cp.jsonl",
+        diagnose=diagnose,
+    )
+    assert [r["strategy"] for r in rows] == ["component_parallel"]
+    assert seen == ["component_parallel"]
+
+
+def test_run_suite_default_does_not_pass_new_engine(tmp_path):
+    engines: list[str | None] = []
+
+    def diagnose(**kwargs):
+        engines.append(kwargs.get("diagnosis_engine"))
+        return _fake_diagnose(**kwargs)
+
+    run_suite(
+        cases=[_case("c1")],
+        suite="t",
+        store_path=tmp_path / "d.jsonl",
+        diagnose=diagnose,
+    )
+    assert engines == [None, None]
 
 
 def test_append_records_is_append_only(tmp_path):

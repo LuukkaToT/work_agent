@@ -26,7 +26,22 @@ from work_agent.graph.nodes.error_analysis import DiagnosisResult, run_diagnosis
 from work_agent.tools.registry import get_pipeline_tool
 
 DEFAULT_STRATEGIES: tuple[str, ...] = ("legacy", "managed")
+ALLOWED_STRATEGIES: tuple[str, ...] = ("legacy", "managed", "component_parallel")
 _RESULT_FILENAME = "eval_results.jsonl"
+
+
+def _context_strategy(strategy: str) -> str:
+    """component_parallel 是诊断引擎，不是上下文策略；评测时按 managed 投影。"""
+    if strategy == "component_parallel":
+        return "managed"
+    return strategy
+
+
+def _diagnosis_engine(strategy: str) -> str | None:
+    """只有显式选择新引擎时才覆盖 profile；默认策略保持 legacy 引擎。"""
+    if strategy == "component_parallel":
+        return "component_parallel"
+    return None
 
 
 @dataclass(frozen=True)
@@ -192,7 +207,8 @@ def run_case(
         result = diagnose(
             pipelines=[brief],
             user_input=case.user_input,
-            context_strategy=strategy,
+            context_strategy=_context_strategy(strategy),
+            diagnosis_engine=_diagnosis_engine(strategy),
             scenario=case.scenario,
             run_id=f"{run_id}-{case.case_id}-{strategy}",
         )

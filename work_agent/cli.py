@@ -520,7 +520,7 @@ def eval_diagnose(
         None,
         "--strategy",
         "-s",
-        help="只跑一种上下文策略（legacy / managed）；默认两种都跑做对比",
+        help="只跑一种策略（legacy / managed / component_parallel）；默认只对比 legacy 与 managed",
     ),
     no_store: bool = typer.Option(
         False, "--no-store", help="不写 workspace/eval_results.jsonl，只打印"
@@ -532,7 +532,10 @@ def eval_diagnose(
     ),
 ) -> None:
     """
-    在 golden set 上对比 legacy / managed 两种上下文策略（离线，会真调 LLM）。
+    在 golden set 上对比上下文策略（离线，会真调 LLM）。
+
+    默认只跑 legacy / managed。``component_parallel`` 需显式 ``--strategy``，
+    不会改成线上或评测默认引擎。
 
     参数:
         case: 只跑某条 case_id。
@@ -541,6 +544,7 @@ def eval_diagnose(
         pause: 相邻诊断间停顿秒数。
     """
     from work_agent.eval.runner import (
+        ALLOWED_STRATEGIES,
         DEFAULT_STRATEGIES,
         format_report,
         load_cases,
@@ -562,9 +566,9 @@ def eval_diagnose(
             raise typer.Exit(code=1)
 
     strategies = (strategy,) if strategy else DEFAULT_STRATEGIES
-    unknown = [s for s in strategies if s not in DEFAULT_STRATEGIES]
+    unknown = [s for s in strategies if s not in ALLOWED_STRATEGIES]
     if unknown:
-        console.print(f"[red]未知策略 {unknown}，可选 {list(DEFAULT_STRATEGIES)}[/red]")
+        console.print(f"[red]未知策略 {unknown}，可选 {list(ALLOWED_STRATEGIES)}[/red]")
         raise typer.Exit(code=1)
 
     total = len(cases) * len(strategies)

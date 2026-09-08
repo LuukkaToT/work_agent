@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import pytest
 from langchain_core.messages import AIMessage
 
 import work_agent.graph.nodes.error_analysis as ea
+from work_agent.core.transcript import MemoryTranscriptStore, Transcript, TranscriptScope
 from work_agent.graph.helpers.context_archive import ContextArchive
 from work_agent.graph.helpers.context_compressor import ContextCompressor
 from work_agent.graph.nodes.error_analysis import ErrorAnalysisOut, run_diagnosis
@@ -284,7 +286,136 @@ def test_very_long_user_input_does_not_break_immutable_budget(tmp_path, monkeypa
     assert "goal" in result.selected_context_ids
 
 
+def test_managed_without_transcript_writes_no_history(tmp_path, monkeypatch):
+    result = _run("managed", tmp_path, monkeypatch)
+    assert result.transcript_event_n == 0
+
+
+def test_injected_transcript_records_loop_and_extract(tmp_path, monkeypatch):
+    _install(monkeypatch)
+    transcript = Transcript(
+        MemoryTranscriptStore(),
+        TranscriptScope("user-1", "task-1", "diagnose", "diag-exec"),
+    )
+    result = run_diagnosis(
+        pipelines=_BRIEF,
+        user_input="CaseA_235T_nmimo 为什么报 KeyError？",
+        user_id="user-1",
+        context_strategy="managed",
+        scenario="case_error",
+        run_id="task-1",
+        compressor=ContextCompressor(model_factory=lambda: _FakeFast()),
+        transcript=transcript,
+    )
+    assert result.fail_kind == "case"
+    assert result.transcript_event_n > 0
+    assert transcript.get("loop/start") is not None
+    assert transcript.get("loop/end") is not None
+    assert transcript.get("extract/result") is not None
+
+
+def test_legacy_rejects_injected_transcript(tmp_path, monkeypatch):
+    _install(monkeypatch)
+    transcript = Transcript(
+        MemoryTranscriptStore(),
+        TranscriptScope("user-1", "task-1", "diagnose", "legacy-exec"),
+    )
+    with pytest.raises(ValueError, match="全量历史仅支持 managed"):
+        run_diagnosis(
+            pipelines=_BRIEF,
+            user_input="为什么失败",
+            context_strategy="legacy",
+            transcript=transcript,
+        )
+
+
 def test_node_handles_empty_pipelines():
     out = ea.error_analysis({"pipelines": []})
     assert out["summary"]["status"] == "not_found"
     assert out["audit"][0]["status"] == "empty"
+
+
+def test_default_diagnosis_engine_is_legacy(monkeypatch):
+    """现网入口不切新引擎：error_analysis 默认仍走单次 ReAct。"""
+    from work_agent.core.config import get_settings
+
+    assert get_settings().profile.diagnosis_engine == "legacy"
+    _install(monkeypatch)
+    out = ea.error_analysis(
+        {
+            "pipelines": _BRIEF,
+            "user_input": "为什么失败",
+            "user_id": "u1",
+            "task_id": "task-legacy-engine",
+        }
+    )
+    assert out["summary"]["error_analysis"]["fail_kind"] == "case"
+    assert out["audit"][0]["context_strategy"] == "managed"
+    assert out["summary"]["error_analysis"].get("evidence_refs") == []
+    assert out["summary"]["error_analysis"].get("stop_reason") == ""
+
+
+def test_run_diagnosis_dispatches_component_parallel_engine():
+    from work_agent.core.transcript import MemoryTranscriptStore, Transcript, TranscriptScope
+    from work_agent.graph.helpers.diagnosis_models import InvestigateSpec, MainDecision
+
+    transcript = Transcript(
+        MemoryTranscriptStore(),
+        TranscriptScope("user-1", "task-cp", "diagnose-main", "mainexec0000000000000000000000cp"),
+    )
+    decisions = [
+        MainDecision(
+            action="investigate",
+            investigations=[InvestigateSpec(component="bbh", question="时钟")],
+        ),
+        MainDecision(
+            action="conclude",
+            fail_kind="env",
+            root_component="bbh",
+            evidence="ptp",
+            conclusion="时钟问题",
+            suggestion="修时钟",
+            stop_reason="evidence_sufficient",
+        ),
+    ]
+
+    def decide(snapshot):  # noqa: ANN001
+        return decisions.pop(0)
+
+    def investigate(task):  # noqa: ANN001
+        from work_agent.core.usage import TokenUsage
+        from work_agent.graph.helpers.diagnosis_models import ComponentReport, Evidence
+
+        evidence = Evidence(
+            evidence_id="ev-bbh-1",
+            source="log",
+            component="bbh",
+            artifact_id="sha256_" + "e" * 64,
+            excerpt="ptp_state=UNLOCKED",
+        )
+        report = ComponentReport(
+            investigation_id=task.investigation_id,
+            component="bbh",
+            status="ok",
+            findings=["时钟失锁"],
+            evidence_ids=["ev-bbh-1"],
+            coverage="bbh.log",
+            tool_calls=1,
+        )
+        return report, [evidence], TokenUsage(), [{"type": "call", "name": "fetch_logs"}]
+
+    result = run_diagnosis(
+        pipelines=_BRIEF,
+        user_input="BBL 激活超时",
+        context_strategy="managed",
+        scenario="bench06_bbh_clock_unlocked",
+        run_id="task-cp",
+        transcript=transcript,
+        diagnosis_engine="component_parallel",
+        decide_fn=decide,
+        investigate_fn=investigate,
+    )
+    assert result.strategy == "component_parallel"
+    assert result.fail_kind == "env"
+    assert result.structured.get("evidence_refs") == ["ev-bbh-1"]
+    assert result.structured.get("stop_reason") == "evidence_sufficient"

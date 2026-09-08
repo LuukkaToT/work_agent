@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import time
+import uuid
 from dataclasses import dataclass, field
 from typing import Any, Literal, Mapping, Sequence
 
@@ -22,6 +23,13 @@ from pydantic import BaseModel, Field
 from work_agent.core.config import get_settings
 from work_agent.core.llm import get_fast_model, get_reasoning_model
 from work_agent.core.skills import load_skill
+from work_agent.core.transcript import (
+    MemoryTranscriptStore,
+    PostgresTranscriptStore,
+    Transcript,
+    TranscriptError,
+    TranscriptScope,
+)
 from work_agent.core.usage import TokenUsage, usage_from_message
 from work_agent.graph.helpers.agent_loop import run_agent_loop
 from work_agent.graph.helpers.context_archive import ContextArchive
@@ -44,6 +52,7 @@ from work_agent.graph.helpers.context_selector import (
 )
 from work_agent.graph.helpers.diagnose_tools import build_diagnose_tools
 from work_agent.graph.helpers.truncate import CharBudget, clip_text
+from work_agent.graph.helpers.transcript_recorder import TranscriptRecorder
 
 ContextStrategy = Literal["legacy", "managed"]
 
@@ -82,6 +91,19 @@ class ErrorAnalysisOut(BaseModel):
         default_factory=list,
         description="已排除的假设（只保留结论，不保留排查全过程）",
     )
+    evidence_refs: list[str] = Field(
+        default_factory=list,
+        description="已存证据 ID 列表；旧引擎缺省为空",
+    )
+    component_findings: list[str] = Field(
+        default_factory=list,
+        description="各组件发现摘要；旧引擎缺省为空",
+    )
+    candidate_hypotheses: list[str] = Field(
+        default_factory=list,
+        description="候选假设；旧引擎缺省为空",
+    )
+    stop_reason: str = Field(default="", description="停止原因；旧引擎缺省空串")
 
 
 @dataclass(frozen=True)
@@ -112,6 +134,8 @@ class DiagnosisResult:
     react_context_chars: int = 0
     # 归档条数（managed 且传了 archive 时 > 0）：被裁历史 + 抽取期被压块的原文都在里面。
     archived_n: int = 0
+    # 全量历史事件数；未开启 transcript 时为 0。不进入 summary。
+    transcript_event_n: int = 0
 
     @property
     def fail_kind(self) -> str:
@@ -217,6 +241,11 @@ def run_diagnosis(
     run_id: str = "",
     compressor: ContextCompressor | None = None,
     archive: ContextArchive | None = None,
+    transcript: Transcript | None = None,
+    diagnosis_engine: str | None = None,
+    decide_fn: Any = None,
+    investigate_fn: Any = None,
+    reasoning_model: Any = None,
 ) -> DiagnosisResult:
     """
     对已消解的 pipelines 跑一次受限 ReAct 归因。
@@ -237,23 +266,55 @@ def run_diagnosis(
         run_id: 归档目录名，一般传 task_id。
         compressor: 注入用（单测 / eval）；None 用默认快模型压缩器。
         archive: 注入用；None 时 managed 策略自建一个按 run_id 分目录的归档。
+        transcript: 注入用全量历史流。None 时仅当 profile.diagnosis_transcript
+            开启且策略为 managed 才自动创建。legacy 不得写入 transcript。
+        diagnosis_engine: ``legacy`` 或 ``component_parallel``；None 时读
+            profile，默认 legacy。任务开始时固定，中途不切换。
+        decide_fn / investigate_fn / reasoning_model: 仅新引擎注入用。
 
     返回:
         DiagnosisResult。
     """
+    engine = diagnosis_engine or get_settings().profile.diagnosis_engine
+    if engine == "component_parallel":
+        from work_agent.graph.helpers.diagnosis_runtime import run_component_diagnosis
+
+        return run_component_diagnosis(
+            pipelines=pipelines,
+            user_input=user_input,
+            user_id=user_id,
+            scenario=scenario,  # type: ignore[arg-type]
+            run_id=run_id,
+            transcript=transcript,
+            decide_fn=decide_fn,
+            investigate_fn=investigate_fn,
+            reasoning_model=reasoning_model,
+            compressor=compressor,
+        )
+
     started = time.perf_counter()
     profile = get_settings().profile
     react_limit = profile.react_max_steps
     budget = CharBudget(limit=profile.react_total_chars_budget)
     managed = context_strategy == "managed"
     usage = TokenUsage()
+    live_transcript = _bind_diagnosis_transcript(
+        user_id=user_id,
+        task_id=run_id,
+        injected=transcript,
+        managed=managed,
+        enabled=profile.diagnosis_transcript,
+    )
 
     # 归档器在 ReAct 循环前就建好（仅 managed）：循环内裁剪历史时当场落盘，
     # 抽取期 ContextManager 复用同一实例，两阶段共享一份 external context。
-    # legacy 恒为 None，基线行为不变。
-    live_archive: ContextArchive | None = None
+    # legacy 恒为 None，基线行为不变。开启 transcript 时原文与回读共用这一份。
+    live_archive: ContextArchive | Transcript | None = None
     if managed:
-        live_archive = archive if archive is not None else ContextArchive(run_id=run_id)
+        if live_transcript is not None:
+            live_archive = live_transcript
+        else:
+            live_archive = archive if archive is not None else ContextArchive(run_id=run_id)
 
     system = _load_system_prompt()
     tools = build_diagnose_tools(
@@ -262,6 +323,7 @@ def run_diagnosis(
         tool_result_max_chars=profile.tool_result_max_chars,
         user_id=user_id,
         archive=live_archive,
+        transcript=live_transcript,
     )
     model = get_reasoning_model(temperature=0)  # Role：开放式多步推理
     human = _build_human_prompt(pipelines, user_input)
@@ -281,7 +343,8 @@ def run_diagnosis(
             max_steps=react_limit,
             observation_max_chars=profile.react_observation_max_chars,
             history_max_chars=profile.react_history_max_chars if managed else 0,
-            archive=live_archive,
+            archive=None if live_transcript is not None else live_archive,
+            transcript=live_transcript,
         )
         usage = usage + loop.usage
         trimmed_steps = loop.trimmed_steps
@@ -290,6 +353,8 @@ def run_diagnosis(
         obs_compressed = collect_compressed_observations(loop.messages)
         obs_items = collect_observation_items(loop.messages)
         analysis_text = _last_text(loop.messages) or "未能生成归因结论"
+    except TranscriptError:
+        raise
     except Exception as exc:  # noqa: BLE001
         analysis_text = f"归因过程失败: {exc}"
 
@@ -328,10 +393,33 @@ def run_diagnosis(
         )
         context_chars = len(extract_ctx)
 
+    if live_transcript is not None:
+        TranscriptRecorder(live_transcript).messages(
+            "extract/input",
+            "extract_input",
+            [
+                SystemMessage(content=_EXTRACT_SYSTEM),
+                HumanMessage(content=extract_ctx),
+            ],
+            metadata={
+                "selected_ids": selected_ids,
+                "context_chars": context_chars,
+            },
+        )
     structured, extract_usage = _extract_structured(
         extract_ctx, analysis_text=analysis_text, obs_compressed=obs_compressed
     )
     usage = usage + extract_usage
+    if live_transcript is not None:
+        result_ref = live_transcript.put_json(structured)
+        live_transcript.record(
+            "extract/result",
+            "extract_result",
+            {
+                "result_ref": result_ref.artifact_id,
+                "fail_kind": structured.get("fail_kind"),
+            },
+        )
 
     long_term, message = diagnosis_conclusion(structured, analysis_text)
     ruled = structured.get("ruled_out") or []
@@ -355,6 +443,9 @@ def run_diagnosis(
         compressed_ids=compressed_ids,
         react_context_chars=react_context_chars,
         archived_n=len(live_archive.refs) if live_archive is not None else 0,
+        transcript_event_n=(
+            len(live_transcript.events(limit=1000)) if live_transcript is not None else 0
+        ),
     )
 
 
@@ -542,6 +633,10 @@ def _extract_structured(
             "conclusion": analysis_text[:200],
             "suggestion": "请人工查看流水线日志",
             "ruled_out": [],
+            "evidence_refs": [],
+            "component_findings": [],
+            "candidate_hypotheses": [],
+            "stop_reason": "",
         }, TokenUsage()
 
 
@@ -596,6 +691,49 @@ def _iter_observations(messages: list):
         if not isinstance(content, str):
             content = str(content)
         yield (getattr(msg, "name", "") or "tool"), content
+
+
+def _bind_diagnosis_transcript(
+    *,
+    user_id: str,
+    task_id: str,
+    injected: Transcript | None,
+    managed: bool,
+    enabled: bool,
+) -> Transcript | None:
+    """为一次诊断绑定全量历史流；未开启或 legacy 返回 None。
+
+    参数:
+        user_id: 工号；空串记为 anonymous，避免把未鉴权会话写进他人作用域。
+        task_id: 本轮任务标识，通常是 run_id / task_id；空串记为 adhoc。
+        injected: 单测或评测注入的历史流。
+        managed: 是否走 managed 策略。
+        enabled: profile.diagnosis_transcript。仅在未注入时生效。
+    """
+    if injected is not None:
+        if not managed:
+            raise ValueError("全量历史仅支持 managed 策略")
+        return injected
+    if not (managed and enabled):
+        return None
+    settings = get_settings()
+    scope = TranscriptScope(
+        user_id=_scope_id(user_id, "anonymous"),
+        task_id=_scope_id(task_id, "adhoc"),
+        agent_id="diagnose",
+        execution_id=uuid.uuid4().hex,
+    )
+    store: MemoryTranscriptStore | PostgresTranscriptStore
+    if (settings.postgres_dsn or "").strip():
+        store = PostgresTranscriptStore()
+    else:
+        store = MemoryTranscriptStore()
+    return Transcript(store, scope)
+
+
+def _scope_id(value: str, default: str) -> str:
+    """去掉首尾空白后作为作用域字段；空值用调用方提供的缺省值。"""
+    return (value or "").strip() or default
 
 
 def _last_text(messages: list) -> str:

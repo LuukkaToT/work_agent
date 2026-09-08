@@ -48,6 +48,17 @@ class Profile:
     # 对话记忆
     memory_summary_threshold: int = 12  # 超过此消息数才触发摘要
     memory_keep_recent: int = 8  # 摘要后保留的最近消息数
+    # 诊断全量历史：默认关闭。开启后 managed 诊断在截断前写入 transcript。
+    diagnosis_transcript: bool = False
+    # 诊断引擎：legacy 为现网单次 ReAct；component_parallel 为主 ReAct + 并行组件取证。
+    # 与 legacy/managed 上下文策略分开配置；任务开始时固定，中途不切换。
+    diagnosis_engine: str = "legacy"
+    diagnosis_max_workers: int = 3
+    diagnosis_max_rounds: int = 3
+    diagnosis_component_max_steps: int = 4
+    diagnosis_max_tool_calls: int = 24
+    diagnosis_timeout_seconds: int = 300
+    diagnosis_component_timeout_seconds: int = 90
     # 检索（本地混合 RAG）
     rag_top_k: int = 3  # 最终返回条数
     rag_pool_n: int = 20  # 每路召回池大小
@@ -82,6 +93,16 @@ class Settings:
     mcp_allowed_origins: tuple[str, ...] = ()
     log_level: str = "INFO"
     log_format: str = "json"  # json | text；API 默认 json，CLI 可不调用 configure_logging
+
+
+def _diagnosis_engine(raw: object) -> str:
+    """只接受 legacy / component_parallel；其它值直接拒绝，避免静默跑错引擎。"""
+    value = str(raw or "legacy").strip() or "legacy"
+    if value not in {"legacy", "component_parallel"}:
+        raise ValueError(
+            f"diagnosis_engine 必须是 legacy 或 component_parallel，收到 {value!r}"
+        )
+    return value
 
 
 def _env_bool(name: str, default: bool = False) -> bool:
@@ -119,6 +140,16 @@ def _load_profile(path: Path) -> Profile:
         react_history_max_chars=int(data.get("react_history_max_chars", 20000)),
         memory_summary_threshold=int(data.get("memory_summary_threshold", 12)),
         memory_keep_recent=int(data.get("memory_keep_recent", 8)),
+        diagnosis_transcript=bool(data.get("diagnosis_transcript", False)),
+        diagnosis_engine=_diagnosis_engine(data.get("diagnosis_engine", "legacy")),
+        diagnosis_max_workers=int(data.get("diagnosis_max_workers", 3)),
+        diagnosis_max_rounds=int(data.get("diagnosis_max_rounds", 3)),
+        diagnosis_component_max_steps=int(data.get("diagnosis_component_max_steps", 4)),
+        diagnosis_max_tool_calls=int(data.get("diagnosis_max_tool_calls", 24)),
+        diagnosis_timeout_seconds=int(data.get("diagnosis_timeout_seconds", 300)),
+        diagnosis_component_timeout_seconds=int(
+            data.get("diagnosis_component_timeout_seconds", 90)
+        ),
         rag_top_k=int(data.get("rag_top_k", 3)),
         rag_pool_n=int(data.get("rag_pool_n", 20)),
         rag_min_rrf_score=float(data.get("rag_min_rrf_score", 0.01)),
