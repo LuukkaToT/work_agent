@@ -165,6 +165,11 @@ def test_token_usage_includes_react_and_extraction(tmp_path, monkeypatch):
     assert result.token_usage["total"] == (
         result.token_usage["input"] + result.token_usage["output"]
     )
+    assert result.react_llm_calls == 4
+    assert result.extract_llm_calls == 1
+    assert result.react_prompt_chars_sum > 0
+    assert result.react_token_input == 100 + 120 + 140 + 160
+    assert result.extract_token_input == 300
 
 
 def test_managed_reports_selected_ids_but_legacy_cannot(tmp_path, monkeypatch):

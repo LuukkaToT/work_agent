@@ -11,6 +11,7 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, replace
 from typing import Callable
 
@@ -85,6 +86,13 @@ class ContextCompressor:
                 # 已经够短就不烧 token，即便要挂 archive 引用也只是拼个后缀。
                 out.append(replace(item, text=f"{item.text}\n{suffix}") if suffix else item)
                 continue
+            if item.kind == "evidence":
+                # 日志/状态证据只做原文摘录，避免摘要模型丢掉恢复行或改写时间关系。
+                text = plain_excerpt(item.text, max_chars_each)
+                if suffix:
+                    text = f"{text}\n{suffix}"
+                out.append(replace(item, text=text))
+                continue
 
             text, item_usage, ok = self._summarize(item.text, limit=max_chars_each)
             usage = usage + item_usage
@@ -121,6 +129,70 @@ class ContextCompressor:
             # 摘要失败不能拖垮诊断：退回确定性截断，并记为降级。
             return compress_observation(text, max_chars=limit), TokenUsage(), False
 
+    def compress_batch(
+        self, items: list[ContextItem], *, max_chars_each: int,
+    ) -> CompressionOutcome:
+        """抽取阶段的必保留块一次摘要；格式错误不重试，不丢已发生的用量。
+
+        JSON 的键必须与待压块 ID 完全一致，避免把某块摘要挂到另一份原文。
+        普通块是否应被压缩由调用方决定；原 compress 接口行为保持不变。
+        """
+        if max_chars_each < 32:
+            raise ValueError("批量摘要每块至少需要 32 字符")
+        prepared: list[ContextItem] = []
+        for item in items:
+            if item.kind == "evidence" and len(item.text) > max_chars_each:
+                prepared.append(replace(item, text=plain_excerpt(item.text, max_chars_each)))
+            else:
+                prepared.append(item)
+        targets = [
+            item for item in prepared
+            if item.kind != "evidence" and len(item.text) > max_chars_each
+        ]
+        if not targets:
+            return CompressionOutcome(prepared, TokenUsage(), 0, [])
+        usage = TokenUsage()
+        summaries: dict[str, str] = {}
+        degraded: list[str] = []
+        try:
+            model = self._ensure_model()
+            usage = TokenUsage(calls=1)
+            response = model.invoke([
+                SystemMessage(content=(
+                    "逐块压缩诊断结论，保留故障类别、根因组件、证据、已排除假设及未解决矛盾。"
+                    "保留原文标识、参数、否定与时间关系，不新增推测，不按报错关键词过滤正常或恢复证据。"
+                    f"每块不超过 {max_chars_each} 字符。只返回 JSON 对象，键为输入块 ID，值为摘要字符串；"
+                    "必须保留全部 ID，不合并块，不输出 Markdown 围栏。"
+                )),
+                HumanMessage(content=json.dumps(
+                    {item.item_id: item.text for item in targets}, ensure_ascii=False,
+                )),
+            ])
+            usage = usage_from_message(response)
+            parsed = json.loads(_as_text(response.content))
+            if (
+                not isinstance(parsed, dict)
+                or set(parsed) != {item.item_id for item in targets}
+                or any(not isinstance(value, str) or not value.strip() for value in parsed.values())
+            ):
+                raise ValueError("批量摘要块 ID 或正文无效")
+            summaries = parsed
+        except Exception:  # noqa: BLE001 - 一次失败即原文摘录降级
+            degraded = [item.item_id for item in targets]
+        target_ids = {item.item_id for item in targets}
+        return CompressionOutcome(
+            items=[
+                replace(
+                    item,
+                    text=plain_excerpt(summaries.get(item.item_id, item.text), max_chars_each),
+                )
+                if item.item_id in target_ids
+                else item
+                for item in prepared
+            ],
+            usage=usage, llm_calls=usage.calls, degraded_ids=degraded,
+        )
+
     def _ensure_model(self) -> BaseChatModel:
         """惰性构造并复用 model（避免每块都新建客户端）。"""
         if self._model is None:
@@ -133,6 +205,27 @@ class DeterministicContextCompressor(ContextCompressor):
 
     def _summarize(self, text: str, *, limit: int) -> tuple[str, TokenUsage, bool]:
         return compress_observation(text, max_chars=limit), TokenUsage(), True
+
+    def compress_batch(
+        self, items: list[ContextItem], *, max_chars_each: int,
+    ) -> CompressionOutcome:
+        return CompressionOutcome(
+            [replace(item, text=plain_excerpt(item.text, max_chars_each)) for item in items],
+            TokenUsage(), 0, [],
+        )
+
+
+def plain_excerpt(text: str, limit: int) -> str:
+    """有界头尾原文摘录；不将否定、恢复或排除理由过滤掉。"""
+    if len(text) <= limit:
+        return text
+    marker = "\n[原文中段省略]\n"
+    if limit <= len(marker):
+        return marker[:max(0, limit)]
+    room = limit - len(marker)
+    head = (room + 1) // 2
+    tail = room - head
+    return text[:head] + marker + (text[-tail:] if tail else "")
 
 
 def _as_text(content: object) -> str:

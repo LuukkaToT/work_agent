@@ -227,6 +227,11 @@ def run_case(
                 "latency_ms": int((time.perf_counter() - started) * 1000),
                 "archived_n": 0,
                 "readback_calls": 0,
+                "react_token_input": 0,
+                "react_llm_calls": 0,
+                "compress_llm_calls": 0,
+                "extract_llm_calls": 0,
+                "react_prompt_chars_sum": 0,
             }
         )
         return row
@@ -271,6 +276,14 @@ def run_case(
                 for t in result.tool_trace
                 if t.get("type") == "call" and t.get("name") == "fetch_archived_block"
             ),
+            "react_token_input": int(getattr(result, "react_token_input", 0) or 0),
+            "react_token_output": int(getattr(result, "react_token_output", 0) or 0),
+            "react_llm_calls": int(getattr(result, "react_llm_calls", 0) or 0),
+            "compress_token_total": int(getattr(result, "compress_token_total", 0) or 0),
+            "compress_llm_calls": int(getattr(result, "compress_llm_calls", 0) or 0),
+            "extract_token_input": int(getattr(result, "extract_token_input", 0) or 0),
+            "extract_llm_calls": int(getattr(result, "extract_llm_calls", 0) or 0),
+            "react_prompt_chars_sum": int(getattr(result, "react_prompt_chars_sum", 0) or 0),
         }
     )
     return row
@@ -392,6 +405,7 @@ def summarize(rows: Sequence[Mapping[str, Any]]) -> dict[str, dict[str, Any]]:
             "context_chars": _mean(float(i.get("context_chars") or 0) for i in items),
             "react_context_chars": _mean(float(i.get("react_context_chars") or 0) for i in items),
             "token_total": _mean(float(i.get("token_total") or 0) for i in items),
+            "token_median": _median(float(i.get("token_total") or 0) for i in items),
             "latency_ms": _mean(float(i.get("latency_ms") or 0) for i in items),
             "tool_calls": _mean(float(i.get("tool_calls") or 0) for i in items),
             "archived_n": _mean(float(i.get("archived_n") or 0) for i in items),
@@ -442,12 +456,14 @@ def format_report(summary: Mapping[str, Mapping[str, Any]]) -> str:
             lines.append(f"managed 相对 legacy 的 ReAct 历史 context_chars 变化：{rdelta:+.1%}")
         lines.append(
             f"证据留存 {base['evidence_recall']:.2f} → {new['evidence_recall']:.2f}，"
-            f"token {base['token_total']:.0f} → {new['token_total']:.0f}"
+            f"token 均值 {base['token_total']:.0f} → {new['token_total']:.0f}，"
+            f"中位数 {base.get('token_median', 0):.0f} → {new.get('token_median', 0):.0f}"
         )
     lines.append("")
     lines.append(
         f"注：kind/root accuracy 基于 {sum(s['n'] for s in summary.values()) // max(1, len(summary))} "
-        "条样本，只作趋势参考；context_chars 与 token 才是硬指标。"
+        "条样本，只作趋势参考。短任务 token 看中位数；均值会被长尾拉高。"
+        "context_chars 是抽取窗口，react_ctx 是最后一轮 ReAct 快照。"
     )
     return "\n".join(lines)
 
@@ -456,3 +472,14 @@ def _mean(values: Iterable[float]) -> float:
     """空序列返回 0.0 的均值。"""
     items = list(values)
     return sum(items) / len(items) if items else 0.0
+
+
+def _median(values: Iterable[float]) -> float:
+    """空序列返回 0.0 的中位数。"""
+    items = sorted(values)
+    if not items:
+        return 0.0
+    mid = len(items) // 2
+    if len(items) % 2:
+        return float(items[mid])
+    return (items[mid - 1] + items[mid]) / 2.0

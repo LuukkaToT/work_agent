@@ -43,7 +43,7 @@ from work_agent.graph.helpers.context_budget import (
     compress_observation,
 )
 from work_agent.graph.helpers.context_compressor import ContextCompressor
-from work_agent.graph.helpers.context_manager import ContextManager
+from work_agent.graph.helpers.diagnosis_context import render_diagnosis_context
 from work_agent.graph.helpers.context_selector import (
     PIN_IMMUTABLE,
     PIN_NORMAL,
@@ -60,8 +60,11 @@ ContextStrategy = Literal["legacy", "managed"]
 _GOAL_MAX_CHARS = 2000
 
 _EXTRACT_SYSTEM = (
-    "根据下列压缩上下文提取结构化字段。"
-    "root_component 填最可能的首个故障组件，而不是最后报级联错误的组件；"
+    "根据下列上下文整理主诊断结论，提取结构化字段，不重新独立诊断。"
+    "默认忠实提取 conclusion_draft 中的类别、根因及排除理由，不根据旁证或常识无依据改判。"
+    "如果本案原文证据与草稿明确冲突，或草稿对某字段没有明确结论，将有争议字段填 unknown，"
+    "并在 conclusion 中说明冲突或缺口，保留相关原文证据；无争议字段仍可保留。"
+    "分类口径严格遵循下方共用规则。"
     "evidence 必须来自工具摘录原文短摘；"
     "ruled_out 只保留已排除假设及一句话理由；"
     "没有的信息填 unknown/空列表。"
@@ -132,6 +135,15 @@ class DiagnosisResult:
     # 最后一次真正发给 ReAct 模型的历史字符数（含 prelude）。和抽取
     # context_chars 不是同一层：legacy 不裁历史，managed 受 react_history_max_chars 约束。
     react_context_chars: int = 0
+    # 各轮发给 ReAct 的字符之和；比 react_context_chars 更能解释 token 长尾。
+    react_prompt_chars_sum: int = 0
+    react_token_input: int = 0
+    react_token_output: int = 0
+    react_llm_calls: int = 0
+    compress_token_total: int = 0
+    compress_llm_calls: int = 0
+    extract_token_input: int = 0
+    extract_llm_calls: int = 0
     # 归档条数（managed 且传了 archive 时 > 0）：被裁历史 + 抽取期被压块的原文都在里面。
     archived_n: int = 0
     # 全量历史事件数；未开启 transcript 时为 0。不进入 summary。
@@ -333,6 +345,10 @@ def run_diagnosis(
     obs_items: list[ContextItem] = []
     trimmed_steps = 0
     react_context_chars = 0
+    react_prompt_chars_sum = 0
+    react_usage = TokenUsage()
+    compress_usage = TokenUsage()
+    extract_usage = TokenUsage()
     analysis_text = ""
     try:
         loop = run_agent_loop(
@@ -347,8 +363,10 @@ def run_diagnosis(
             transcript=live_transcript,
         )
         usage = usage + loop.usage
+        react_usage = loop.usage
         trimmed_steps = loop.trimmed_steps
         react_context_chars = loop.context_chars
+        react_prompt_chars_sum = loop.prompt_chars_sum
         tool_trace = extract_tool_trace(loop.messages)
         obs_compressed = collect_compressed_observations(loop.messages)
         obs_items = collect_observation_items(loop.messages)
@@ -358,21 +376,23 @@ def run_diagnosis(
     except Exception as exc:  # noqa: BLE001
         analysis_text = f"归因过程失败: {exc}"
 
-    limit = min(12_000, profile.react_total_chars_budget // 2)
+    limit = min(profile.extract_chars_budget, profile.react_total_chars_budget // 2)
     selected_ids: list[str] = []
     compressed_ids: list[str] = []
     if managed:
-        manager = ContextManager(compressor=compressor, archive=live_archive)
-        rendered = manager.render(
+        rendered = render_diagnosis_context(
             _managed_items(user_input, analysis_text, obs_items),
             goal=user_input or analysis_text,
             limit=limit,
+            compressor=compressor,
+            archive=live_archive,
         )
         extract_ctx = rendered.text
         selected_ids = rendered.selected_ids
         compressed_ids = rendered.compressed_ids
         context_chars = rendered.context_chars
         # 压缩自身烧掉的 token 必须计入总量，否则 A/B 是自欺
+        compress_usage = rendered.usage
         usage = usage + rendered.usage
     else:
         extract_ctx = assemble_blocks(
@@ -393,12 +413,13 @@ def run_diagnosis(
         )
         context_chars = len(extract_ctx)
 
+    extract_system = _extract_system_prompt()
     if live_transcript is not None:
         TranscriptRecorder(live_transcript).messages(
             "extract/input",
             "extract_input",
             [
-                SystemMessage(content=_EXTRACT_SYSTEM),
+                SystemMessage(content=extract_system),
                 HumanMessage(content=extract_ctx),
             ],
             metadata={
@@ -407,7 +428,8 @@ def run_diagnosis(
             },
         )
     structured, extract_usage = _extract_structured(
-        extract_ctx, analysis_text=analysis_text, obs_compressed=obs_compressed
+        extract_ctx, analysis_text=analysis_text, obs_compressed=obs_compressed,
+        system_prompt=extract_system,
     )
     usage = usage + extract_usage
     if live_transcript is not None:
@@ -442,6 +464,14 @@ def run_diagnosis(
         trimmed_steps=trimmed_steps,
         compressed_ids=compressed_ids,
         react_context_chars=react_context_chars,
+        react_prompt_chars_sum=react_prompt_chars_sum,
+        react_token_input=react_usage.input_tokens,
+        react_token_output=react_usage.output_tokens,
+        react_llm_calls=react_usage.calls,
+        compress_token_total=compress_usage.total_tokens,
+        compress_llm_calls=compress_usage.calls,
+        extract_token_input=extract_usage.input_tokens,
+        extract_llm_calls=extract_usage.calls,
         archived_n=len(live_archive.refs) if live_archive is not None else 0,
         transcript_event_n=(
             len(live_transcript.events(limit=1000)) if live_transcript is not None else 0
@@ -590,6 +620,7 @@ def _extract_structured(
     analysis_text: str,
     obs_compressed: list[str],
     strict: bool = False,
+    system_prompt: str | None = None,
 ) -> tuple[dict[str, Any], TokenUsage]:
     """
     二次结构化抽取。
@@ -609,7 +640,7 @@ def _extract_structured(
         )
         raw = structured_llm.invoke(
             [
-                SystemMessage(content=_EXTRACT_SYSTEM),
+                SystemMessage(content=system_prompt or _extract_system_prompt()),
                 HumanMessage(content=extract_ctx),
             ]
         )
@@ -621,7 +652,10 @@ def _extract_structured(
             parsed = raw
         if parsed is None:
             raise ValueError("结构化抽取未返回 parsed")
-        return parsed.model_dump(), usage
+        result = parsed.model_dump()
+        if result.get("fail_kind") == "none":
+            result.update(root_component="none", root_cause="none")
+        return result, usage
     except Exception:  # noqa: BLE001
         if strict:
             raise
@@ -640,11 +674,17 @@ def _extract_structured(
         }, TokenUsage()
 
 
+def _extract_system_prompt() -> str:
+    """与主 ReAct 共用同一份分类规则；缺失规则是配置错误，不能静默漂移。"""
+    rules = load_skill("error_analysis").references["classification.md"]
+    return _EXTRACT_SYSTEM + "\n\n" + rules.strip()
+
+
 def _load_system_prompt() -> str:
     """加载 error_analysis skill；缺文件时用内置兜底 prompt。"""
     try:
         pack = load_skill("error_analysis")
-        return pack.as_system_prompt(references={})
+        return pack.as_system_prompt(references={"classification.md": pack.references["classification.md"]})
     except FileNotFoundError:
         return (
             "你是测试失败归因助手。只用只读工具取证。"

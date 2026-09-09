@@ -52,7 +52,7 @@ def build_diagnose_tools(
         user_id: 当前操作者工号；``find_case_history`` 只在其名下记录里查，
             空串表示未接身份（此时按台账回填后的语义查不到任何记录）。
         archive: 归档器；传入时额外注册 ``fetch_archived_block``，
-            供模型按 artifact 引用回读被裁剪历史的原文。None 不注册，
+            供模型按 artifact 引用回读被裁剪历史的摘录。None 不注册，
             工具集保持原有 8 个（legacy 基线不变）。
         durable: 在线持久化子图用：跳过出口预算并把异常上抛。轻量 transcript
             不要打开它，否则会同时改变预算和错误语义。
@@ -214,9 +214,11 @@ def build_diagnose_tools(
 
     @tool
     def fetch_archived_block(artifact_id: str) -> str:
-        """按 artifact 引用回读已归档的历史原文（只读）。历史步骤被压缩后摘要缺细节时用它取回全文。"""
+        """按 artifact 引用回读已归档内容（只读）。返回有界摘录，原文仍在 archive。"""
         try:
-            return _out(archive.read(artifact_id))
+            from work_agent.graph.helpers.diagnosis_context import excerpt_archived_block
+
+            return _out(excerpt_archived_block(archive.read(artifact_id)))
         except Exception as exc:  # noqa: BLE001
             if durable:
                 raise

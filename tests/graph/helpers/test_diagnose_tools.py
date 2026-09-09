@@ -171,6 +171,21 @@ def test_fetch_archived_block_reads_and_reports_missing(tmp_path):
     assert "KeyError: 'antenna_map'" in got
 
 
+def test_fetch_archived_block_excerpts_long_original(tmp_path):
+    from work_agent.graph.helpers.context_archive import ContextArchive
+
+    archive = ContextArchive(tmp_path, run_id="t")
+    tools = {t.name: t for t in build_diagnose_tools(scenario="case_error", archive=archive)}
+    raw = "2026-09-09 10:00:00 INFO padding\n" * 200
+    raw += "2026-09-09 10:05:01 ERROR KeyError: 'antenna_map'\n"
+    raw += "2026-09-09 10:05:02 INFO padding\n" * 200
+    ref = archive.store(_archived_item("obs-long", raw))
+    got = tools["fetch_archived_block"].invoke({"artifact_id": ref.artifact_id})
+    assert "KeyError: 'antenna_map'" in got
+    assert len(got) < len(raw)
+    assert archive.read(ref.artifact_id) == raw
+
+
 def _archived_item(item_id: str, text: str):
     from work_agent.graph.helpers.context_selector import PIN_NORMAL, ContextItem
 

@@ -60,10 +60,11 @@ def _item(
     priority: int = PRIORITY_RAW_TOOL,
     pin: str = PIN_NORMAL,
     source: str = "fetch_logs",
+    kind: str = "tool_result",
 ) -> ContextItem:
     return ContextItem(
         item_id=item_id,
-        kind="tool_result",
+        kind=kind,
         source=source,
         text=text,
         priority=priority,
@@ -205,3 +206,64 @@ def test_manager_without_archive_still_renders(tmp_path):
     )
     assert result.archived == []
     assert result.context_chars <= 300
+
+
+def test_compress_skips_llm_for_evidence_kind():
+    model = _FakeModel()
+    comp = ContextCompressor(model_factory=lambda: model)
+    outcome = comp.compress(
+        [_item("log", "ERROR timeout " + "x" * 2000, kind="evidence")],
+        max_chars_each=80,
+    )
+    assert model.calls == 0
+    assert outcome.llm_calls == 0
+    assert len(outcome.items[0].text) <= 80
+    assert "ERROR timeout" in outcome.items[0].text
+
+
+def test_compress_batch_skips_evidence_and_aligns_json_keys():
+    import json
+
+    class _BatchModel:
+        def __init__(self) -> None:
+            self.calls = 0
+            self.payload: dict[str, str] | None = None
+
+        def invoke(self, messages):  # noqa: ANN001
+            self.calls += 1
+            self.payload = json.loads(messages[-1].content)
+            return AIMessage(
+                content=json.dumps(
+                    {key: f"摘要:{key}" for key in self.payload},
+                    ensure_ascii=False,
+                ),
+                usage_metadata={
+                    "input_tokens": 12,
+                    "output_tokens": 4,
+                    "total_tokens": 16,
+                },
+            )
+
+    model = _BatchModel()
+    comp = ContextCompressor(model_factory=lambda: model)
+    outcome = comp.compress_batch(
+        [
+            _item("log", "ERROR " + "e" * 2000, kind="evidence", source="fetch_logs"),
+            _item(
+                "draft",
+                "结论草稿 " + "c" * 2000,
+                kind="conclusion",
+                source="react",
+                pin=PIN_PROTECTED,
+            ),
+        ],
+        max_chars_each=80,
+    )
+    assert model.calls == 1
+    assert model.payload is not None
+    assert set(model.payload) == {"draft"}
+    by_id = {item.item_id: item for item in outcome.items}
+    assert len(by_id["log"].text) <= 80
+    assert "ERROR" in by_id["log"].text
+    assert by_id["draft"].text.startswith("摘要:draft")
+    assert outcome.usage.calls == 1

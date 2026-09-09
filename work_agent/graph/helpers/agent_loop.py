@@ -172,6 +172,7 @@ class AgentLoopResult:
     steps: int  # 实际发生的模型决策轮数
     context_chars: int  # 最后一次实际发送给模型的上下文字符数
     trimmed_steps: int  # 被压缩或丢弃的 step 数
+    prompt_chars_sum: int = 0  # 各轮 compose 后发给模型的字符之和，不是最后一轮快照
     input_event_ids: list[str] = field(default_factory=list)  # 每轮实际输入，可按事件回读
 
 
@@ -279,6 +280,7 @@ def run_agent_loop(
     tail: list[BaseMessage] = []
     usage = TokenUsage()
     context_chars = 0
+    prompt_chars_sum = 0
     trimmed_total = 0
     decisions = 0
     input_event_ids: list[str] = []
@@ -354,9 +356,11 @@ def run_agent_loop(
         输入清单与消息正文在调用前提交，响应在调用后提交，崩溃时可以区分
         「尚未发起」「发起后结果不确定」和「响应已收到」，但不自行推断重试权限。
         """
+        nonlocal prompt_chars_sum
         if deadline is not None:
             deadline.check()
         sent = compose()
+        prompt_chars_sum += context_chars
         if recorder is None:
             from work_agent.graph.helpers.deadline import invoke_with_deadline
 
@@ -370,7 +374,8 @@ def run_agent_loop(
             transcript.record("loop/end", "loop_end", {"decisions": decisions, "usage": usage.as_dict()})
         return AgentLoopResult(
             messages=_flatten(prelude, steps, tail), usage=usage, steps=decisions,
-            context_chars=context_chars, trimmed_steps=trimmed_total, input_event_ids=input_event_ids,
+            context_chars=context_chars, trimmed_steps=trimmed_total,
+            prompt_chars_sum=prompt_chars_sum, input_event_ids=input_event_ids,
         )
 
     for step_index in range(max_steps):

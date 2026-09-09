@@ -80,6 +80,7 @@ def test_no_tool_calls_returns_immediately():
         model=model, tools=[echo], system="sys", user="user", max_steps=5
     )
     assert model.invoke_calls == 1
+    assert result.prompt_chars_sum == result.context_chars > 0
     assert isinstance(result.messages[0], SystemMessage)
     assert isinstance(result.messages[1], HumanMessage)
     assert result.messages[-1].content == "没有异常，直接结论"
@@ -276,6 +277,7 @@ def test_history_trimming_shrinks_what_model_receives():
     )
 
     assert result.trimmed_steps >= 1
+    assert result.prompt_chars_sum >= result.context_chars
     # 每次真正发给模型的消息都必须满足配对不变量
     for sent in model.received:
         assert_tool_pairing(sent)

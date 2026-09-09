@@ -268,6 +268,7 @@ def test_format_report_shows_context_delta(tmp_path):
     assert "context_chars 变化" in text
     # 小样本准确率必须标注为趋势参考，避免被当成统计结论
     assert "趋势参考" in text
+    assert "中位数" in text
 
 
 def test_format_report_handles_empty():

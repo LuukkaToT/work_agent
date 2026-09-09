@@ -12,9 +12,9 @@ from typing import Any
 
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import BaseMessage
-from langchain_openai import ChatOpenAI
 
 from work_agent.core.config import get_settings
+from work_agent.core.openai_compat import CompatChatOpenAI
 
 
 def get_chat_model(
@@ -23,7 +23,7 @@ def get_chat_model(
     model: str | None = None,
 ) -> BaseChatModel:
     """
-    构造 ChatOpenAI 兼容客户端（全项目唯一入口）。
+    构造 OpenAI 兼容客户端（全项目唯一入口）。
 
     参数:
         temperature: 覆盖 Settings 默认温度；None 用配置值。
@@ -38,8 +38,9 @@ def get_chat_model(
             "未找到 LLM_API_KEY / GEMINI_API_KEY，请检查仓库根目录 .env"
         )
 
-    # ChatOpenAI 走 /chat/completions；Gemini 兼容端点支持这个，不支持 /responses
-    return ChatOpenAI(
+    # ChatOpenAI 走 /chat/completions；Gemini 兼容端点支持这个，不支持 /responses。
+    # CompatChatOpenAI 只补 Gemini 3 多轮 tool_calls 的 thought_signature，公司网关无此字段时原样透传。
+    return CompatChatOpenAI(
         model=model or s.llm_model,
         base_url=s.llm_base_url,
         api_key=s.llm_api_key,

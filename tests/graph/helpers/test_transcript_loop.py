@@ -277,9 +277,9 @@ def test_compose_messages_excerpts_but_archive_keeps_middle_evidence():
     assert rendered.compressed_ids == ["step01"]
 
 
-def test_fetch_archived_block_returns_uncut_original():
+def test_fetch_archived_block_returns_bounded_excerpt():
     transcript = _transcript("fetch-archive")
-    raw = ("H" * 4000) + MARKER + ("T" * 4000)
+    raw = ("H" * 4000) + f"\nERROR {MARKER}\n" + ("T" * 4000)
     ref = transcript.put_text(raw)
     tools = {
         item.name: item
@@ -291,7 +291,8 @@ def test_fetch_archived_block_returns_uncut_original():
     }
     out = tools["fetch_archived_block"].invoke({"artifact_id": ref.artifact_id})
     assert MARKER in out
-    assert len(out) == len(raw)
+    assert len(out) < len(raw)
+    assert transcript.read(ref.artifact_id) == raw
 
 
 def test_transcript_write_failure_is_not_swallowed():
