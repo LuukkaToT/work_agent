@@ -73,6 +73,19 @@ class ComponentRegistry:
 
 
 def _validate_spec(raw: dict, *, tools_default: tuple[str, ...]) -> ComponentSpec:
+    """
+    把登记 JSON 的一条收成 ``ComponentSpec``。
+
+    参数:
+        raw: ``components.json`` 里单条组件对象。
+        tools_default: 文件级默认工具白名单；条目未写 ``tools`` 时沿用。
+
+    返回:
+        校验后的规格。
+
+    异常:
+        ValueError: id 不在六类日志组件、log_component 与 id 不一致，或 related 含未知标识。
+    """
     cid = str(raw.get("id") or "").strip()
     if cid not in LOG_COMPONENTS:
         raise ValueError(f"组件 id 必须是六类日志组件之一，收到 {cid!r}")

@@ -67,6 +67,17 @@ class TranscriptExpired(TranscriptError):
 
 
 def _identifier(value: str, name: str, maximum: int = 256) -> None:
+    """
+    校验隔离键字段：非空、无首尾空白与控制字符、长度上限。
+
+    参数:
+        value: 待校验字符串。
+        name: 字段名，写进错误信息。
+        maximum: 最大字符数。
+
+    异常:
+        TranscriptError: 不合规则。
+    """
     if (
         not isinstance(value, str) or not value.strip() or value != value.strip()
         or len(value) > maximum or any(ord(c) < 32 or ord(c) == 127 for c in value)
@@ -76,6 +87,12 @@ def _identifier(value: str, name: str, maximum: int = 256) -> None:
 
 
 def _text(value: str) -> str:
+    """
+    校验正文：必须是不含空字符、可 UTF-8 编码的字符串。
+
+    返回:
+        原字符串（不裁剪、不改大小写）。
+    """
     if not isinstance(value, str) or "\x00" in value:
         raise TranscriptError("正文必须是字符串，且不能包含空字符")
     try:
@@ -86,6 +103,7 @@ def _text(value: str) -> str:
 
 
 def _canonical(value: Any) -> str:
+    """稳定 JSON：按键排序、无多余空格、保留中文、禁止 NaN。"""
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False)
 
 
@@ -110,6 +128,8 @@ def _mask(value: str) -> str:
 
 
 def _redact_text(value: str) -> str:
+    """替换 Bearer 与「键: 值」口令片段；其它正文原样保留。"""
+
     def replace(match: re.Match) -> str:
         for name, quote in (("double", '"'), ("single", "'"), ("plain", "")):
             secret = match.group(name)
@@ -132,6 +152,7 @@ def redact(value: Any) -> Any:
         业务秘密，调用方应按业务补充规则，不能把此函数当作安全边界。
     """
     def visit(item: Any) -> Any:
+        """递归走 dict/list；敏感键整值打码，字符串走 ``_redact_text``。"""
         if isinstance(item, dict):
             return {
                 key: (_mask(val) if isinstance(val, str) else _REDACTED)
@@ -162,15 +183,18 @@ class TranscriptScope:
     execution_id: str
 
     def __post_init__(self) -> None:
+        """构造后立即校验四个隔离字段。"""
         for name in ("user_id", "task_id", "agent_id", "execution_id"):
             _identifier(getattr(self, name), name)
 
     @property
     def stream_id(self) -> str:
+        """四个字段稳定 JSON 的 SHA-256 十六进制，跨进程可复现。"""
         return hashlib.sha256(_canonical(self._values).encode("utf-8")).hexdigest()
 
     @property
     def _values(self) -> tuple[str, str, str, str]:
+        """按固定顺序取出隔离键，给编码与库行比对用。"""
         return self.user_id, self.task_id, self.agent_id, self.execution_id
 
 
@@ -185,17 +209,28 @@ class TranscriptEvent:
 
 
 def _scope(scope: TranscriptScope) -> None:
+    """确认作用域类型；不是 ``TranscriptScope`` 直接失败。"""
     if not isinstance(scope, TranscriptScope):
         raise TranscriptError("作用域必须是 TranscriptScope")
 
 
 def _retention(days: float) -> float:
+    """
+    把闲置天数收成秒。
+
+    参数:
+        days: 大于 0 且不超过 36500，允许小数。
+
+    返回:
+        对应秒数。
+    """
     if type(days) not in (int, float) or not 0 < days <= 36500:
         raise TranscriptError("闲置保留天数必须大于零且不超过 36500，允许小数")
     return float(days) * 86400
 
 
 def _page(after_seq: int, limit: int) -> None:
+    """校验事件分页：``after_seq`` 非负 64 位，``limit`` 为 1～1000。"""
     if type(after_seq) is not int or not 0 <= after_seq <= _MAX_SEQ:
         raise TranscriptError("after_seq 必须是非负的有符号 64 位整数")
     if type(limit) is not int or not 1 <= limit <= 1000:
@@ -203,6 +238,12 @@ def _page(after_seq: int, limit: int) -> None:
 
 
 def _payload(value: Any) -> tuple[dict, str]:
+    """
+    复制并编码事件 payload，同时给出原始 JSON 的 SHA-256。
+
+    返回:
+        ``(独立 dict 副本, 十六进制摘要)``。
+    """
     if type(value) is not dict:
         raise TranscriptError("事件 payload 必须是 JSON 字典")
     try:
@@ -216,6 +257,7 @@ def _payload(value: Any) -> tuple[dict, str]:
 
 
 def _sanitize(value: Any, redactor: Callable | None) -> Any:
+    """先默认脱敏，再跑业务 redactor；业务异常阻止写入。"""
     safe = redact(value)
     if redactor is None:
         return safe
@@ -226,6 +268,7 @@ def _sanitize(value: Any, redactor: Callable | None) -> Any:
 
 
 def _ref(scope: TranscriptScope, artifact_id: str, chars: int, backend: str) -> ArchiveRef:
+    """构造归档引用 URI；运行时才导入 ArchiveRef，避免与图层循环导入。"""
     # 运行时仅在构造引用时导入，避免图层接线反向导入本模块形成循环。
     from work_agent.graph.helpers.context_archive import ArchiveRef
 
@@ -253,6 +296,7 @@ class _TranscriptStore:
         return self._record(scope, event_id, kind, payload, None)
 
     def _record(self, scope, event_id, kind, payload, redactor) -> TranscriptEvent:
+        """校验、脱敏后交给后端 ``_append``；``redactor`` 为 None 时只做默认脱敏。"""
         _scope(scope)
         _identifier(event_id, "event_id")
         _identifier(kind, "kind", 64)
@@ -265,6 +309,7 @@ class _TranscriptStore:
         return self._put_text(scope, text, None)
 
     def _put_text(self, scope, text, redactor) -> ArchiveRef:
+        """校验并脱敏字符串后交给 ``_save_text``。"""
         _scope(scope)
         safe = _text(_sanitize(_text(text), redactor))
         return self._save_text(scope, safe)
@@ -279,6 +324,8 @@ class _TranscriptStore:
 
 @dataclass
 class _MemoryStream:
+    """内存里一条记录流：事件、正文、独立锁与闲置到期时间。"""
+
     scope: TranscriptScope
     expires_at: float
     events: dict[str, tuple[TranscriptEvent, str]] = field(default_factory=dict)
@@ -298,12 +345,14 @@ class MemoryTranscriptStore(_TranscriptStore):
     """
 
     def __init__(self, *, retention_days: float = 30) -> None:
+        """见类文档 ``retention_days``。"""
         self._retention_seconds = _retention(retention_days)
         self._streams: dict[str, _MemoryStream] = {}
         self._streams_lock = threading.RLock()
 
     @contextmanager
     def _stream(self, scope: TranscriptScope, *, write: bool = False):
+        """取出当前作用域的内存流；写路径可新建，过期显式报错。"""
         _scope(scope)
         with self._streams_lock:
             stream = self._streams.get(scope.stream_id)
@@ -323,6 +372,7 @@ class MemoryTranscriptStore(_TranscriptStore):
                 stream.expires_at = time.time() + self._retention_seconds
 
     def _append(self, scope, event_id, kind, payload, digest) -> TranscriptEvent:
+        """内存追加：同标识同摘要幂等，不同则冲突。"""
         with self._stream(scope, write=True) as stream:
             existing = stream.events.get(event_id)
             if existing is not None:
@@ -354,6 +404,7 @@ class MemoryTranscriptStore(_TranscriptStore):
             return copy.deepcopy(list(islice(ordered, limit)))
 
     def _put_artifact(self, scope, artifact_id, text) -> ArchiveRef:
+        """按 artifact_id 写入内存正文；摘要冲突则拒绝。"""
         with self._stream(scope, write=True) as stream:
             existing = stream.artifacts.get(artifact_id)
             if existing is not None and existing != text:
@@ -393,6 +444,7 @@ class PostgresTranscriptStore(_TranscriptStore):
     """
 
     def __init__(self, *, pool=None, retention_days: float = 30) -> None:
+        """见类文档 ``pool`` / ``retention_days``；此处不连库。"""
         self._pool = pool
         self._retention_seconds = _retention(retention_days)
 
@@ -403,6 +455,7 @@ class PostgresTranscriptStore(_TranscriptStore):
 
     @contextmanager
     def _stream(self, scope: TranscriptScope, *, write: bool = False):
+        """事务内锁定 stream 行；写路径可插入，过期按库时钟判定。"""
         _scope(scope)
         try:
             with self.pool.connection() as conn, conn.transaction(), conn.cursor(row_factory=dict_row) as cur:
@@ -445,9 +498,11 @@ class PostgresTranscriptStore(_TranscriptStore):
 
     @staticmethod
     def _event(row) -> TranscriptEvent:
+        """把事件表行收成快照；payload 深拷贝。"""
         return TranscriptEvent(row["event_id"], row["seq"], row["kind"], copy.deepcopy(row["payload"]))
 
     def _append(self, scope, event_id, kind, payload, digest) -> TranscriptEvent:
+        """库内追加事件并推进 ``last_seq``；冲突规则同内存实现。"""
         with self._stream(scope, write=True) as (cur, stream):
             if stream is None:
                 raise TranscriptError("无法创建或锁定记录流")
@@ -495,6 +550,7 @@ class PostgresTranscriptStore(_TranscriptStore):
             return [self._event(row) for row in rows]
 
     def _put_artifact(self, scope, artifact_id, text) -> ArchiveRef:
+        """写入 ``agent_transcript_artifacts``；同摘要冲突拒绝。"""
         with self._stream(scope, write=True) as (cur, _):
             row = cur.execute(
                 "SELECT content FROM agent_transcript_artifacts WHERE stream_id=%s AND artifact_id=%s",
@@ -550,6 +606,7 @@ class Transcript:
 
     def __init__(self, store: MemoryTranscriptStore | PostgresTranscriptStore, scope: TranscriptScope,
                  *, redactor: Callable[[Any], Any] | None = None) -> None:
+        """见类文档；``redactor`` 非空时必须可调用。"""
         _scope(scope)
         if redactor is not None and not callable(redactor):
             raise TranscriptError("redactor 必须是可调用的业务脱敏函数")

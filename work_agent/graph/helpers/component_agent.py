@@ -103,6 +103,7 @@ def run_component_investigation(
     runner = loop_fn or run_agent_loop
 
     def _body() -> tuple[Any, TokenUsage]:
+        """在工作线程里跑 ReAct 循环，把 loop 与用量一并带回。"""
         loop = _call_loop(
             runner,
             model=react_model,
@@ -161,7 +162,16 @@ def run_component_investigation(
 
 
 def _call_loop(runner: Callable[..., Any], **kwargs: Any) -> Any:
-    """向循环注入可选参数；旧的测试替身若不接受则逐个去掉再试。"""
+    """
+    调用 ``run_agent_loop``（或测试替身）。
+
+    参数:
+        runner: 循环函数。
+        **kwargs: 透传参数；``deadline`` / ``on_tool_start`` 若被旧替身拒绝则去掉再试。
+
+    返回:
+        runner 的返回值。
+    """
     optional = ("deadline", "on_tool_start")
     try:
         return runner(**kwargs)
@@ -187,6 +197,14 @@ def collect_evidence(
 
     grep/fetch 记为 log；lookup/search_knowledge 记为 knowledge。
     工具错误与越界拒绝不作为证据。
+
+    参数:
+        task: 当前调查任务。
+        messages: ReAct 循环产出的消息。
+        transcript: 本调查独立归档。
+
+    返回:
+        已落盘引用的证据列表。
     """
     out: list[Evidence] = []
     seq = 0
@@ -237,7 +255,23 @@ def extract_component_report(
     extract_model: BaseChatModel | None = None,
     deadline: Deadline | None = None,
 ) -> tuple[ComponentReport, TokenUsage]:
-    """快模型抽报告；证据 ID 以已落盘列表为准，模型不能编造引用。"""
+    """
+    快模型抽报告；证据 ID 以已落盘列表为准，模型不能编造引用。
+
+    抽取失败或已过截止时退回规则报告。
+
+    参数:
+        task: 当前调查任务。
+        messages: ReAct 消息，给抽取当观察。
+        evidences: 已采集证据。
+        tool_calls: 本调查工具调用次数。
+        elapsed_ms: 调查耗时毫秒。
+        extract_model: 注入用；None 用快模型。
+        deadline: 抽取前再检查一次截止。
+
+    返回:
+        ``(报告, 抽取用量)``。
+    """
     fallback = _fallback_report(task, messages, evidences, tool_calls, elapsed_ms)
     if deadline is not None:
         try:
@@ -301,6 +335,7 @@ def extract_component_report(
 
 
 def _component_user_prompt(task: InvestigationTask) -> str:
+    """拼本调查的用户消息：任务 JSON + 范围锁定规则。"""
     import json
 
     payload = {
@@ -324,6 +359,7 @@ def _component_user_prompt(task: InvestigationTask) -> str:
 
 
 def _coverage(task: InvestigationTask) -> str:
+    """把 log_scope 收成报告里的覆盖范围一句。"""
     scope = task.log_scope
     return (
         f"pipeline={scope.pipeline_id} component={scope.component}.log "
@@ -333,6 +369,12 @@ def _coverage(task: InvestigationTask) -> str:
 
 
 def _evidence_source(tool_name: str) -> str | None:
+    """
+    工具名映射到证据来源。
+
+    返回:
+        ``log`` / ``knowledge``；未登记的工具返回 ``None``（不采证）。
+    """
     if tool_name in {"fetch_logs", "grep_logs"}:
         return "log"
     if tool_name in {"search_knowledge", "lookup_error_code"}:
@@ -341,6 +383,7 @@ def _evidence_source(tool_name: str) -> str | None:
 
 
 def _is_tool_failure_text(text: str) -> bool:
+    """判断工具正文是否是错误/越界拒绝，这类不当证据。"""
     head = text.lstrip()
     return head.startswith("[") and (
         "error]" in head[:80].casefold()
@@ -351,6 +394,7 @@ def _is_tool_failure_text(text: str) -> bool:
 
 
 def _excerpt(text: str, limit: int = 400) -> str:
+    """压空白后截断；超出 ``limit`` 时末尾加省略号。"""
     compact = " ".join(text.split())
     if len(compact) <= limit:
         return compact
@@ -358,6 +402,7 @@ def _excerpt(text: str, limit: int = 400) -> str:
 
 
 def _observation_digest(messages: list, evidences: list[Evidence]) -> str:
+    """把工具观察与已落盘证据收成抽取模型的用户输入 JSON。"""
     import json
 
     lines: list[str] = []
@@ -383,6 +428,7 @@ def _fallback_report(
     tool_calls: int,
     elapsed_ms: int,
 ) -> ComponentReport:
+    """抽取失败时按日志命中/工具错误给出规则报告，避免空 status。"""
     log_hits = [item for item in evidences if item.source == "log"]
     tool_error = _had_tool_error(messages)
     if tool_error and not log_hits:
@@ -411,6 +457,7 @@ def _fallback_report(
 
 
 def _had_tool_error(messages: list) -> bool:
+    """消息里是否出现工具 error 状态或失败正文。"""
     for msg in messages or []:
         if not isinstance(msg, ToolMessage):
             continue
@@ -423,6 +470,17 @@ def _had_tool_error(messages: list) -> bool:
 
 
 def _coerce_status(status: str, messages: list, evidences: list[Evidence]) -> str:
+    """
+    用证据覆盖模型给的 status：无日志命中不能写 ok；有命中不能写 no_hit。
+
+    参数:
+        status: 抽取稿上的状态。
+        messages: ReAct 消息，用于判断工具失败。
+        evidences: 已采集证据。
+
+    返回:
+        ``ok`` / ``timeout`` / ``tool_error`` / ``no_hit`` 之一。
+    """
     log_hits = [item for item in evidences if item.source == "log"]
     if status == "timeout":
         return "timeout"

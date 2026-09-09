@@ -28,6 +28,7 @@ from work_agent.graph.helpers.diagnosis_runtime import (
     run_component_diagnosis,
     run_parallel_investigations,
     skip_reason,
+    _init_overview,
 )
 from work_agent.graph.helpers.truncate import clip_text
 from work_agent.tools.mock.logs import MockLogTool
@@ -249,6 +250,26 @@ def _memory_transcript(task_id: str = "task-diag-1") -> Transcript:
         MemoryTranscriptStore(),
         TranscriptScope("user-1", task_id, "diagnose-main", "mainexec000000000000000000000001"),
     )
+
+
+def test_init_overview_includes_failure_cues_and_charges_tools():
+    charged: list[int] = []
+    overview, calls, trace = _init_overview(
+        "pipe-overview",
+        scenario="bench01_comm_connection_refused",
+        transcript=_memory_transcript("task-overview"),
+        on_tool_start=lambda: charged.append(1),
+    )
+    assert "## failure_cues" in overview
+    assert "E-COMM-1102" in overview
+    assert "list_log_files" in overview
+    assert "get_pipeline_status" in overview
+    assert calls == len(charged)
+    assert calls >= 4
+    names = [item["name"] for item in trace if item.get("type") == "call"]
+    assert "list_log_files" in names
+    assert "get_pipeline_status" in names
+    assert names.count("grep_logs") == 2
 
 
 def _run_engine(scenario: str, decide, runner, *, transcript=None, **kwargs):

@@ -19,6 +19,18 @@ _CAPACITY_ID_IN_TEXT_RE = re.compile(r"0x[0-9a-f]+", re.IGNORECASE)
 
 
 def normalize_capacity_id(value: object) -> str:
+    """
+    把单个容量 ID 收成小写 ``0x`` 十六进制。
+
+    参数:
+        value: 原始字符串或可转 str 的值。
+
+    返回:
+        规范化后的 ID。
+
+    异常:
+        ValueError: 不是 ``0x`` + 十六进制。
+    """
     text = str(value or "").strip().lower()
     if not _CAPACITY_ID_RE.fullmatch(text):
         raise ValueError(f"非法容量 ID: {value!r}")
@@ -26,6 +38,18 @@ def normalize_capacity_id(value: object) -> str:
 
 
 def normalize_capacity_ids(values: Iterable[object]) -> tuple[str, ...]:
+    """
+    规范化一组容量 ID：去重、排序，得到稳定主键。
+
+    参数:
+        values: 任意可迭代的容量 ID。
+
+    返回:
+        排序后的元组。
+
+    异常:
+        ValueError: 组为空，或其中任一项非法。
+    """
     normalized = sorted({normalize_capacity_id(value) for value in values})
     if not normalized:
         raise ValueError("容量 ID 组不能为空")
@@ -33,20 +57,41 @@ def normalize_capacity_ids(values: Iterable[object]) -> tuple[str, ...]:
 
 
 def extract_capacity_ids(text: str) -> tuple[str, ...]:
+    """
+    从自由文本里抽出容量 ID 并规范化。
+
+    参数:
+        text: 用户话术或日志片段。
+
+    返回:
+        抽出的 ID 组；没有命中则空元组。
+    """
     found = _CAPACITY_ID_IN_TEXT_RE.findall(text or "")
     return normalize_capacity_ids(found) if found else ()
 
 
 @dataclass(frozen=True)
 class CapacityGroupCandidate:
+    """相似容量组候选：ID 组与双向相似度。"""
+
     capacity_ids: tuple[str, ...]
     score: float
 
     def as_choice(self) -> dict[str, Any]:
+        """收成前端/工具可选的 JSON：``capacity_ids`` 与四位小数 ``score``。"""
         return {"capacity_ids": list(self.capacity_ids), "score": round(self.score, 4)}
 
 
 def lookup_capacity_topologies(capacity_ids: Iterable[object]) -> list[LogicTopologyRecord]:
+    """
+    按精确容量 ID 组查已映射的逻辑组网。
+
+    参数:
+        capacity_ids: 容量 ID 组；会先规范化。
+
+    返回:
+        命中的逻辑组网记录，按名称与约束排序。
+    """
     group = normalize_capacity_ids(capacity_ids)
     with get_pool().connection() as conn:
         rows = conn.execute(
@@ -64,6 +109,8 @@ def lookup_capacity_topologies(capacity_ids: Iterable[object]) -> list[LogicTopo
 
 
 def _group_similarity(left: tuple[str, ...], right: tuple[str, ...]) -> float:
+    """两组 ID 的双向平均字符串相似度，给近似推荐用。"""
+
     def directional(source: tuple[str, ...], target: tuple[str, ...]) -> float:
         return sum(
             max(SequenceMatcher(None, item, candidate).ratio() for candidate in target)
@@ -76,6 +123,17 @@ def _group_similarity(left: tuple[str, ...], right: tuple[str, ...]) -> float:
 def find_similar_capacity_groups(
     capacity_ids: Iterable[object], *, limit: int = 5, min_score: float = 0.6
 ) -> list[CapacityGroupCandidate]:
+    """
+    在已落库映射里找与给定组相近、但不是同一组的容量 ID 组。
+
+    参数:
+        capacity_ids: 查询组。
+        limit: 最多返回条数；至少 1。
+        min_score: 相似度下限。
+
+    返回:
+        按分数降序、ID 组升序的候选列表。
+    """
     wanted = normalize_capacity_ids(capacity_ids)
     with get_pool().connection() as conn:
         rows = conn.execute(
@@ -94,6 +152,19 @@ def find_similar_capacity_groups(
 
 
 def seed_capacity_mappings(conn: Any, json_path: str | Path | None = None) -> int:
+    """
+    把 ``config/capacity_topology_mappings.json`` 灌进库；已有映射跳过。
+
+    参数:
+        conn: 已打开的 Postgres 连接（须能 ``execute``）。
+        json_path: 覆盖种子文件；默认仓库配置路径。文件不存在则返回 0。
+
+    返回:
+        尝试写入的映射条数（含因冲突未插入的尝试次数）。
+
+    异常:
+        ValueError: JSON 不是数组、组没有组网，或引用了不存在的逻辑组网。
+    """
     path = Path(json_path) if json_path else _JSON_PATH
     if not path.exists():
         return 0

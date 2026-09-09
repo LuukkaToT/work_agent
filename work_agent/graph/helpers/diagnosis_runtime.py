@@ -48,6 +48,7 @@ from work_agent.graph.helpers.context_selector import (
     ContextItem,
 )
 from work_agent.graph.helpers.diagnose_tools import build_diagnose_tools
+from work_agent.graph.helpers.log_bootstrap import scan_failure_cues
 from work_agent.graph.helpers.diagnosis_models import (
     ComponentReport,
     Evidence,
@@ -65,13 +66,15 @@ from work_agent.tools.mock.scenarios import MockScenario
 _GOAL_MAX_CHARS = 2000
 _ORCHESTRATOR_SYSTEM = """你是诊断编排器，不是再搜一遍全量日志的取证员。
 
-根据流水线概览、各组件报告摘要、证据引用和缺口，输出结构化动作：
+根据流水线概览、failure_cues、各组件报告摘要、证据引用和缺口，输出结构化动作：
 - investigate：本轮最多 3 个组件调查，写清待验证问题；不强制全查六组件。
 - conclude：证据充分时结案。必须解释相关现象和关键反证。
   时间先后或组件依赖本身不能单独当因果。
 - insufficient_evidence：预算将尽或资料不足时给出候选原因与缺失。
 
 硬约束：
+- 首轮必须根据 failure_cues 提出少量可验证假设，只派相关组件；不得因为没把握就全查六组件。
+- cues 与错误码目录里的 probable_components 是路由提示，不是根因；cascade=true / DEPENDENCY_FAILED 优先查上游。
 - 结论引用的 evidence_ids 必须是已给出的证据 ID，禁止编造。
 - 知识检索只是旁证。
 - 无命中只缩小范围，不能写成该组件正常。
@@ -613,7 +616,7 @@ def _init_overview(
     transcript: Transcript,
     on_tool_start: Callable[[], None] | None = None,
 ) -> tuple[str, int, list[dict[str, Any]]]:
-    """确定性初始化：日志目录与流水线状态；每次真正 invoke 前由回调记账。"""
+    """确定性初始化：目录、状态，再有界粗扫 failure_cues；每次真正 invoke 前由回调记账。"""
     tools = {
         t.name: t
         for t in build_diagnose_tools(
@@ -645,6 +648,14 @@ def _init_overview(
         calls += 1
         trace.append({"type": "result", "name": name, "content_chars": len(text), "status": status})
         chunks.append(f"## {name}\n{text}")
+    cues_text, cue_calls, cue_trace = scan_failure_cues(
+        pipeline_id,
+        tools=tools,
+        on_tool_start=on_tool_start,
+    )
+    calls += cue_calls
+    trace.extend(cue_trace)
+    chunks.append(cues_text)
     return "\n\n".join(chunks), calls, trace
 
 
